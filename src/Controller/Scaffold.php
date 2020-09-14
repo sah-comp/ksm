@@ -260,7 +260,12 @@ class Controller_Scaffold extends Controller
     {
         $data = Flight::request()->data;
         foreach ($data as $key => $value) {
-            $this->record->{$key} = $value;
+            if (strpos($key, '_')) {
+                // a subrecord has to be updated.
+                error_log('To do in Scaffold::inline(): Related record update');
+            } else {
+                $this->record->{$key} = $value;
+            }
         }
         try {
             R::store($this->record);
