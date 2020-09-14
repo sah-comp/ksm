@@ -10,3 +10,9 @@
     text-decoration: none;
     margin-right: 2em;
 }
+
+a.logo {
+    width: 4em;
+    background-image: url(/img/logo-ksm.png);
+    background-size: 48px 16px;
+}
