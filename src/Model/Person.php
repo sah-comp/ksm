@@ -26,7 +26,7 @@ class Model_Person extends Model
     {
         $this->setAction('index', array('idle', 'toggleEnabled', 'expunge'));
     }
-    
+
     /**
      * Toggle the enabled attribute and store the bean.
      *
@@ -48,6 +48,16 @@ class Model_Person extends Model
     {
         return array(
             array(
+                'name' => 'account',
+                'sort' => array(
+                    'name' => 'person.account'
+                ),
+                'filter' => array(
+                    'tag' => 'text'
+                ),
+                'width' => '8rem'
+            ),
+            array(
                 'name' => 'nickname',
                 'sort' => array(
                     'name' => 'person.nickname'
@@ -55,30 +65,24 @@ class Model_Person extends Model
                 'filter' => array(
                     'tag' => 'text'
                 ),
-				'width' => '8rem'
-            ),
-            array(
-                'name' => 'lastname',
-                'sort' => array(
-                    'name' => 'person.lastname'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            ),
-            array(
-                'name' => 'firstname',
-                'sort' => array(
-                    'name' => 'person.firstname'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
+                'width' => '8rem'
             ),
             array(
                 'name' => 'organization',
                 'sort' => array(
                     'name' => 'person.organization'
+                ),
+                'filter' => array(
+                    'tag' => 'text'
+                )
+            ),
+            array(
+                'name' => 'address.city',
+                'callback' => [
+                    'name' => 'billingAddressCity'
+                ],
+                'sort' => array(
+                    'name' => 'address.city'
                 ),
                 'filter' => array(
                     'tag' => 'text'
@@ -113,11 +117,53 @@ class Model_Person extends Model
                 'filter' => array(
                     'tag' => 'bool'
                 ),
-				'width' => '5rem'
+                'width' => '5rem'
             )
         );
     }
-    
+
+    /**
+     * Returns SQL string.
+     *
+     * @param string (optional) $fields to select
+     * @param string (optional) $where
+     * @param string (optional) $order
+     * @param int (optional) $offset
+     * @param int (optional) $limit
+     * @return string $sql
+     */
+    public function getSql($fields = 'id', $where = '1', $order = null, $offset = null, $limit = null)
+    {
+        $sql = <<<SQL
+		SELECT
+		    {$fields}, address.*
+		FROM
+		    {$this->bean->getMeta('type')}
+		LEFT JOIN address ON (address.person_id = person.id AND label = 'billing')
+		WHERE
+		    {$where}
+SQL;
+        //add optional order by
+        if ($order) {
+            $sql .= " ORDER BY {$order}";
+        }
+        //add optional limit
+        if ($offset || $limit) {
+            $sql .= " LIMIT {$offset}, {$limit}";
+        }
+        return $sql;
+    }
+
+    /**
+     * Returns the billings address city name.
+     * @return string
+     */
+    public function billingAddressCity()
+    {
+        $address = $this->getAddress('billing');
+        return $address->city;
+    }
+
     /**
      * Returns an address bean of this person with a given label.
      *
@@ -170,26 +216,25 @@ class Model_Person extends Model
      */
     public function update()
     {
-        
         if ($this->bean->email) {
             $this->addValidator('email', array(
                 new Validator_IsEmail(),
                 new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'email'))
             ));
         }
-        
-		// set the phonetic names
-		$this->bean->phoneticlastname = soundex($this->bean->lastname);
-		$this->bean->phoneticfirstname = soundex($this->bean->firstname);
-		// set the name according to sort rule
-		$this->bean->name = implode(' ', array($this->bean->firstname, $this->bean->lastname));
-		// company name
-		if (trim($this->bean->name) == '' && $this->bean->organization || $this->bean->company) {
-			$this->bean->name = $this->bean->organization;
-		}
-		if (trim($this->bean->name) == '') {
-			$this->bean->name = $this->bean->nickname;
-		}
-		parent::update();
+
+        // set the phonetic names
+        $this->bean->phoneticlastname = soundex($this->bean->lastname);
+        $this->bean->phoneticfirstname = soundex($this->bean->firstname);
+        // set the name according to sort rule
+        $this->bean->name = implode(' ', array($this->bean->firstname, $this->bean->lastname));
+        // company name
+        if (trim($this->bean->name) == '' && $this->bean->organization || $this->bean->company) {
+            $this->bean->name = $this->bean->organization;
+        }
+        if (trim($this->bean->name) == '') {
+            $this->bean->name = $this->bean->nickname;
+        }
+        parent::update();
     }
 }
