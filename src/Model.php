@@ -537,12 +537,14 @@ SQL;
         if (empty($this->validators)) {
             return true;
         }
+        $validators_with_errors = [];
         $suggest = true;
         foreach ($this->validators as $attribute => $attributeValidators) {
             foreach ($attributeValidators as $validator) {
                 if (! $validator->validate($this->bean->$attribute)) {
                     $suggest = false;
                     $this->addError(I18n::__(strtolower(get_class($validator)).'_invalid'), $attribute);
+                    $validators_with_errors[] = get_class($validator);
                 }
             }
         }
@@ -552,7 +554,8 @@ SQL;
         //validation failed, react according to validation mode
         switch (self::$validation_mode) {
             case self::VALIDATION_MODE_EXCEPTION:
-                throw new Exception_Validation("Invalid {$this->bean->getMeta('type')}#{$this->bean->getId()}");
+                $validators_with_errors_flat = implode(', ', $validators_with_errors);
+                throw new Exception_Validation("Invalid {$this->bean->getMeta('type')}#{$this->bean->getId()} because {$validators_with_errors_flat}");
                 break;
             case self::VALIDATION_MODE_IMPLICIT:
                 $this->bean->invalid = true;
