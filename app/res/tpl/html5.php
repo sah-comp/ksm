@@ -22,6 +22,7 @@
 		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
 		<link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/custom.css">
 		<?php if (isset($stylesheets) && is_array($stylesheets)): ?>
             <?php foreach ($stylesheets as $_n=>$_stylesheet): ?>
             <link rel="stylesheet" href="/css/<?php echo $_stylesheet; ?>.css">
