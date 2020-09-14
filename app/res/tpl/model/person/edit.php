@@ -8,6 +8,9 @@
  * @version $Id$
  */
 ?>
+<?php
+$_personkinds = $record->sharedPersonkind;
+?>
 <!-- person edit form -->
 <div>
     <input type="hidden" name="dialog[type]" value="<?php echo $record->getMeta('type') ?>" />
@@ -40,11 +43,18 @@
                 <?php echo I18n::__('person_label_language') ?>
             </label>
         </div>
-        <div class="span4">
+        <div class="span2">
             <label
                 for="person-account"
                 class="<?php echo ($record->hasError('account')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('person_label_account') ?>
+            </label>
+        </div>
+        <div class="span2">
+            <label
+                for="person-vatid"
+                class="<?php echo ($record->hasError('vatid')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('person_label_vatid') ?>
             </label>
         </div>
     </div>
@@ -66,6 +76,7 @@
             <select
                 id="person-language"
                 name="dialog[language]">
+                <option value=""><?php echo I18n::__('person_language_select') ?></option>
                 <?php foreach (R::findAll('language') as $_lang_id => $_lang): ?>
                 <option
                     value="<?php echo $_lang->iso ?>"
@@ -75,13 +86,21 @@
                 <?php endforeach ?>
             </select>
         </div>
-        <div class="span4">
+        <div class="span2">
             <input
                 id="person-account"
                 class="autowidth"
                 type="text"
                 name="dialog[account]"
                 value="<?php echo htmlspecialchars($record->account) ?>" />
+        </div>
+        <div class="span2">
+            <input
+                id="person-vatid"
+                class="autowidth"
+                type="text"
+                name="dialog[vatid]"
+                value="<?php echo htmlspecialchars($record->vatid) ?>" />
         </div>
     </div>
     <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
@@ -102,6 +121,30 @@
         </label>
     </div>
     <!-- end of grid based data -->
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('person_legend_kind') ?></legend>
+    <?php foreach (R::findAll('personkind') as $_id => $_personkind): ?>
+    <div class="row">
+        <input
+            type="hidden"
+            name="dialog[sharedPersonkind][<?php echo $_personkind->getId() ?>][type]"
+            value="personkind" />
+        <input
+            type="hidden"
+            name="dialog[sharedPersonkind][<?php echo $_personkind->getId() ?>][id]"
+            value="0" />
+        <label
+            for="person-personkind-<?php echo $_personkind->getId() ?>"
+            class="cb"><?php echo htmlspecialchars($_personkind->name) ?></label>
+        <input
+            type="checkbox"
+            id="person-personkind-<?php echo $_personkind->getId() ?>"
+            name="dialog[sharedPersonkind][<?php echo $_personkind->getId() ?>][id]"
+            value="<?php echo $_personkind->getId() ?>"
+            <?php echo (isset($_personkinds[$_personkind->getId()])) ? 'checked="checked"' : '' ?> />
+    </div>
+    <?php endforeach ?>
 </fieldset>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('person_legend_email') ?></legend>
@@ -205,6 +248,17 @@
             <?php echo ($record->company) ? 'checked="checked"' : '' ?>
             value="1" />
     </div>
+    <div class="row <?php echo ($record->hasError('owner')) ? 'error' : ''; ?>">
+        <label
+            for="person-owner">
+            <?php echo I18n::__('person_label_owner') ?>
+        </label>
+        <input
+            id="person-owner"
+            type="text"
+            name="dialog[owner]"
+            value="<?php echo htmlspecialchars($record->owner) ?>" />
+    </div>
     <div class="row <?php echo ($record->hasError('jobtitle')) ? 'error' : ''; ?>">
         <label
             for="person-jobtitle">
@@ -241,6 +295,28 @@
             name="dialog[phone]"
             value="<?php echo htmlspecialchars($record->phone) ?>" />
     </div>
+    <div class="row <?php echo ($record->hasError('phonesec')) ? 'error' : ''; ?>">
+        <label
+            for="person-phonesec">
+            <?php echo I18n::__('person_label_phonesec') ?>
+        </label>
+        <input
+            id="person-phonesec"
+            type="text"
+            name="dialog[phonesec]"
+            value="<?php echo htmlspecialchars($record->phonesec) ?>" />
+    </div>
+    <div class="row <?php echo ($record->hasError('cellphone')) ? 'error' : ''; ?>">
+        <label
+            for="person-cellphone">
+            <?php echo I18n::__('person_label_cellphone') ?>
+        </label>
+        <input
+            id="person-cellphone"
+            type="text"
+            name="dialog[cellphone]"
+            value="<?php echo htmlspecialchars($record->cellphone) ?>" />
+    </div>
     <div class="row <?php echo ($record->hasError('fax')) ? 'error' : ''; ?>">
         <label
             for="person-fax">
@@ -267,6 +343,20 @@
             value="<?php echo htmlspecialchars($record->url) ?>" />
     </div>
 </fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('person_legend_note') ?></legend>
+    <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
+        <label
+            for="person-note">
+            <?php echo I18n::__('person_label_note') ?>
+        </label>
+        <textarea
+            id="person-note"
+            name="dialog[note]"
+            rows="3"
+            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+    </div>
+</fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(
         'tab_id' => 'person-tabs',
@@ -283,7 +373,9 @@
             <div
                 id="person-<?php echo $record->getId() ?>-address-container"
                 class="container attachable detachable sortable">
-                <?php if (count($record->ownAddress) == 0) $record->ownAddress[] = R::dispense('address') ?>
+                <?php if (count($record->ownAddress) == 0) {
+        $record->ownAddress[] = R::dispense('address');
+    } ?>
                 <?php $index = 0 ?>
                 <?php foreach ($record->ownAddress as $_address_id => $_address): ?>
                 <?php $index++ ?>
