@@ -1251,6 +1251,10 @@ table.scaffold a {
     text-decoration: none;
 }
 
+table.scaffold tr.invalid {
+    color: #ce838f;
+}
+
 /* form table stuff */
 .panel table {
     table-layout: fixed;

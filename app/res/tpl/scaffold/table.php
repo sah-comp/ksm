@@ -174,7 +174,7 @@
             id="<?php echo $_record->getMeta('type') ?>-<?php echo $_record->getId() ?>"
             data-type="<?php echo $_record->getMeta('type') ?>"
             data-id="<?php echo $_record->getId() ?>"
-            class="bean bean-<?php echo $_record->getMeta('type') ?>">
+            class="bean bean-<?php echo $_record->getMeta('type') ?> <?php echo (isset($_record->invalid) && $_record->invalid) ? 'invalid' : '' ?>">
             <!-- table cells of the real bean -->
             <td>
                 <a
