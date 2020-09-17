@@ -113,7 +113,7 @@ class Migrator
         echo "\nDone.\n\n";
 
         foreach ($this->results as $infotext) {
-            echo $infotext."\n";
+            echo $infotext;
         }
     }
 
@@ -1872,7 +1872,7 @@ class Migrator
 
             // gather the machine_id from contract_machine from legacy database
             R::selectDatabase('legacy');
-            $appointment_type_id = R::getCell("SELECT appointment_type AS apptype FROM appointment_appointment_type WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
+            $appointment_type_id = R::getCell("SELECT appointment_type_id AS apptype FROM appointment_appointment_type WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
             R::selectDatabase('default');
 
             if ($appointment_type = R::load('appointmenttype', $appointment_type_id)) {
