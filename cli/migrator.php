@@ -41,6 +41,13 @@ class Migrator
     public $args = [];
 
     /**
+     * Holds the migration results as text.
+     *
+     * @var array
+     */
+    public $results = [];
+
+    /**
      * Constructor.
      *
      * @param array $credentials
@@ -78,22 +85,36 @@ class Migrator
     {
         if ($this->args['--verbose']) {
             // we are being verbose.
-            echo "\nI am migrating the following objects: vehiclebrands, vehicles, clients, contracts, machines, articles and appointments.\n";
-            echo "This will take some time. Please be patient. I will keep you informed while migration.\n";
+            echo "\nI am migrating the following objects: vehiclebrands, vehicles, clients, contracts, machines, articles and appointments, as well as some relations and article statistics.\n";
+            echo "This will take some time. Please be patient. I will keep you informed while migrating the information of your legacy database.\n";
         } else {
             echo "\n";
         }
 
         $this->migrateLanguages();
         $this->migrateClients();
+        $this->migrateContacts();
+        $this->migrateContactinfo();
         $this->migrateVehiclesBrands();
         $this->migrateVehicles();
         $this->migrateMachineBrands();
         $this->migrateMachines();
+        $this->migrateMachineDocuments();
         $this->migrateSuppliers();
         $this->migrateArticles();
+        $this->migrateArtstat();
+        $this->migrateArticleMachine();
+        $this->migrateAppointmentTypes();
+        $this->migrateContractTypes();
+        $this->migrateLocations();
+        $this->migrateContracts();
+        $this->migrateAppointments();
 
         echo "\nDone.\n\n";
+
+        foreach ($this->results as $infotext) {
+            echo $infotext."\n";
+        }
     }
 
     /**
@@ -752,7 +773,9 @@ class Migrator
         $english->enabled = true;
         R::store($english);
 
-        echo "\nMigrated {$count_languages} languages.\n";
+        $res = "\nMigrated {$count_languages} languages.\n";
+        echo $res;
+        $this->results[] = $res;
 
         return true;
     }
@@ -768,7 +791,6 @@ class Migrator
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
         R::wipe('address');
-        R::wipe('contact');
         R::wipe('person');
         // relation person_personkind will be updated automatically
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
@@ -843,10 +865,135 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_clients} clients, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_clients} clients, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_clients} clients.\n";
+            $res = "\nMigrated {$count_clients} clients.\n";
         }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate contacts.
+     *
+     * @return bool
+     */
+    public function migrateContacts()
+    {
+        $legacy_table = 'contacts';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('contact');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM contacts ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM contacts");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('contact');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->name = $this->prettyValue($legacy_record['name']);
+            $record->gender = $this->prettyValue($legacy_record['gender']);
+            $record->jobdescription = $this->prettyValue($legacy_record['position']);
+
+            if ($person = R::load('person', $legacy_record['client_id'])) {
+                $record->person = $person;
+            } else {
+                $record->person = null;
+            }
+
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated contact \"{$legacy_record['name']}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate contact infos.
+     *
+     * @return bool
+     */
+    public function migrateContactinfo()
+    {
+        $legacy_table = 'infos';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('contactinfo');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM infos ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM infos");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('contactinfo');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->label = $this->prettyValue($legacy_record['type']);
+            $record->value = $this->prettyValue($legacy_record['value']);
+
+            if ($contact = R::load('contact', $legacy_record['owner_id'])) {
+                $record->contact = $contact;
+            } else {
+                $record->contact = null;
+            }
+
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated contactinfo of contact \"{$contact['name']}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
 
@@ -895,10 +1042,12 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_legacy} {$legacy_table}.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
         }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
 
@@ -946,10 +1095,12 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_legacy} {$legacy_table}.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
         }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
 
@@ -1001,10 +1152,12 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_legacy} {$legacy_table}.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
         }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
 
@@ -1085,12 +1238,75 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_legacy} {$legacy_table}.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
         }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
+
+    /**
+     * Migrate uploaded files related to machines.
+     *
+     * @return bool
+     */
+    public function migrateMachineDocuments()
+    {
+        $legacy_table = 'files';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('artifact');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM files ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM files");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('artifact');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->name = $this->prettyValue($legacy_record['name']);
+            $record->filename = str_replace('files/', '', $this->prettyValue($legacy_record['path']));
+
+            if ($machine = R::load('machine', $legacy_record['owner_id'])) {
+                $record->machine = $machine;
+            } else {
+                $record->machine = null;
+            }
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated file \"{$legacy_record['name']}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
 
     /**
      * Migrate suppliers.
@@ -1136,10 +1352,12 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_legacy} {$legacy_table}.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
         }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
 
@@ -1195,10 +1413,495 @@ class Migrator
 
         // tidy up
         if ($invalid_counter > 0) {
-            echo "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
         } else {
-            echo "\nMigrated {$count_legacy} {$legacy_table}.\n";
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
         }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate article statistics.
+     *
+     * @return bool
+     */
+    public function migrateArtstat()
+    {
+        $legacy_table = 'article statistics';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('artstat');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM article_statistics ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM article_statistics");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('artstat');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
+            $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
+            $record->stamp = strtotime($legacy_record['updated_at']);
+
+            if ($article = R::load('article', $legacy_record['article_id'])) {
+                $record->article = $article;
+            } else {
+                $record->article = null;
+            }
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated article statistic of article \"{$article->number}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate article machine relations into the installedpart bean.
+     *
+     * @return bool
+     */
+    public function migrateArticleMachine()
+    {
+        $legacy_table = 'article machine relations';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('installedpart');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM article_machine ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM article_machine");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('installedpart');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
+            $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
+            $record->stamp = strtotime($legacy_record['installed_at']);
+
+            if ($article = R::load('article', $legacy_record['article_id'])) {
+                $record->article = $article;
+            } else {
+                $record->article = null;
+            }
+
+            if ($machine = R::load('machine', $legacy_record['machine_id'])) {
+                $machine->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+                $record->machine = $machine;
+            } else {
+                $record->machine = null;
+            }
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated article \"{$article->number}\" as part of machine {$machine->name}\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate appointment types.
+     *
+     * @return bool
+     */
+    public function migrateAppointmentTypes()
+    {
+        $legacy_table = 'appointment types';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('appointmenttype');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM appointment_types ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM appointment_types");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('appointmenttype');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->name = $this->prettyValue($legacy_record['name']);
+            $record->color = $this->prettyValue($legacy_record['color']);
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated appointment type \"{$legacy_record['name']}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate contract types.
+     *
+     * @return bool
+     */
+    public function migrateContractTypes()
+    {
+        $legacy_table = 'contract types';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('contracttype');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM contract_types ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM contract_types");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('contracttype');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->name = $this->prettyValue($legacy_record['name']);
+            $record->text = "Lorem ipsum";//should be text or longtext in database later on
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated contract type \"{$legacy_record['name']}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate locations.
+     *
+     * @return bool
+     */
+    public function migrateLocations()
+    {
+        $legacy_table = 'locations';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('location');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM locations ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM locations");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('location');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->name = $this->prettyValue($legacy_record['name']);
+
+            if ($person = R::load('person', $legacy_record['client_id'])) {
+                $record->person = $person;
+            } else {
+                $record->person = null;
+            }
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated location \"{$legacy_record['name']}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate contracts.
+     *
+     * @return bool
+     */
+    public function migrateContracts()
+    {
+        $legacy_table = 'contracts';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('contract');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM contracts ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM contracts");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('contract');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->startdate = $this->prettyDate($legacy_record['start_date']);
+            $record->enddate = $this->prettyDate($legacy_record['end_date']);
+            $record->terminationdate = $this->prettyDate($legacy_record['deleted_at']);
+            $record->priceperunit = $this->prettyValue($legacy_record['price_per_unit']);
+            $record->unit = $this->prettyValue($legacy_record['unit']);
+            $record->note = $this->prettyValue($legacy_record['notes']);
+            $record->number = $this->prettyValue($legacy_record['number']);
+            $record->currentprice = $this->prettyValue($legacy_record['current_price']);
+            $record->restprice = $this->prettyValue($legacy_record['rest_price']);
+
+            if ($person = R::load('person', $legacy_record['client_id'])) {
+                $record->person = $person;
+            } else {
+                $record->person = null;
+            }
+
+            if ($location = R::load('location', $legacy_record['location_id'])) {
+                $record->location = $location;
+            } else {
+                $record->location = null;
+            }
+
+            if ($contracttype = R::load('contracttype', $legacy_record['contract_type_id'])) {
+                $record->contracttype = $contracttype;
+            } else {
+                $record->contracttype = null;
+            }
+
+            // gather the machine_id from contract_machine from legacy database
+            R::selectDatabase('legacy');
+            $machine_id = R::getCell("SELECT machine_id AS mid FROM contract_machine WHERE contract_id = ? LIMIT 1", [$legacy_record['id']]);
+            R::selectDatabase('default');
+
+            if ($machine = R::load('machine', $machine_id)) {
+                $record->machine = $machine;
+            } else {
+                $record->machine = null;
+            }
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated contract for client \"{$person->name}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
+    }
+
+    /**
+     * Migrate appointments.
+     *
+     * @return bool
+     */
+    public function migrateAppointments()
+    {
+        $legacy_table = 'appointments';
+        // clean up the new database
+        R::selectDatabase('default');
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::wipe('appointment');
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM appointments ORDER BY id");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM appointments");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        R::freeze(false);
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('appointment');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->date = $this->prettyDate($legacy_record['date']);
+            $record->starttime = $this->prettyTime($legacy_record['start_time']);
+            $record->endtime = $this->prettyTime($legacy_record['end_time']);
+            $record->duration = $this->prettyTime($legacy_record['duration']);//in hours
+            $record->terminationdate = $this->prettyDate($legacy_record['deleted_at']);
+
+            $record->fix = $this->prettyValue($legacy_record['fix']);
+            $record->completed = $this->prettyValue($legacy_record['completed']);
+            $record->note = $this->prettyValue($legacy_record['notes']);
+            $record->interval = $this->prettyValue($legacy_record['interval']);
+            $record->rescheduled = $this->prettyValue($legacy_record['rescheduled']);
+
+            if ($person = R::load('person', $legacy_record['client_id'])) {
+                $record->person = $person;
+            } else {
+                $record->person = null;
+            }
+
+            if ($contact = R::load('contact', $legacy_record['contact_id'])) {
+                $record->contact = $contact;
+            } else {
+                $record->contact = null;
+            }
+
+            // gather the machine_id from contract_machine from legacy database
+            R::selectDatabase('legacy');
+            $machine_id = R::getCell("SELECT machine_id AS mid FROM appointment_machine WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
+            R::selectDatabase('default');
+
+            if ($machine = R::load('machine', $machine_id)) {
+                $record->machine = $machine;
+            } else {
+                $record->machine = null;
+            }
+
+            // gather the machine_id from contract_machine from legacy database
+            R::selectDatabase('legacy');
+            $appointment_type_id = R::getCell("SELECT appointment_type AS apptype FROM appointment_appointment_type WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
+            R::selectDatabase('default');
+
+            if ($appointment_type = R::load('appointmenttype', $appointment_type_id)) {
+                $record->appointmenttype = $appointment_type;
+            } else {
+                $record->appointmenttype = null;
+            }
+
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated appointment for client \"{$person->name}\" for machine \"{$machine->name}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
         return true;
     }
 
@@ -1272,6 +1975,34 @@ class Migrator
     {
         if ($value === null) {
             return '';
+        }
+        return $value;
+    }
+
+    /**
+     * Return empty date instead of NULL. If not NULL it returns the original value.
+     *
+     * @param mixed
+     * @return string
+     */
+    public function prettyDate($value)
+    {
+        if ($value === null) {
+            return '0000-00-00 00:00:00';
+        }
+        return $value;
+    }
+
+    /**
+     * Return empty time instead of NULL. If not NULL it returns the original value.
+     *
+     * @param mixed
+     * @return string
+     */
+    public function prettyTime($value)
+    {
+        if ($value === null) {
+            return '00:00:00';
         }
         return $value;
     }
