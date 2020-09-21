@@ -17,7 +17,8 @@
 		"gabordemooij/redbean": "dev-master",
         "netcarver/textile": "v3.6.*",
         "phpmailer/phpmailer": "dev-master",
-		"docopt/docopt": "v1.0.4"
+		"docopt/docopt": "v1.0.4",
+        "goodby/csv": "*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*"
