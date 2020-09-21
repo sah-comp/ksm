@@ -113,7 +113,7 @@ class Migrator
         echo "\nDone.\n\n";
 
         foreach ($this->results as $infotext) {
-            echo $infotext;
+            echo str_replace("\n", "", $infotext)."\n";
         }
     }
 
