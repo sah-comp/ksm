@@ -1,4 +1,8 @@
 <?php
+use Goodby\CSV\Import\Standard\Lexer;
+use Goodby\CSV\Import\Standard\Interpreter;
+use Goodby\CSV\Import\Standard\LexerConfig;
+
 /**
  * Cinnebar.
  *
@@ -91,6 +95,7 @@ class Migrator
             echo "\n";
         }
 
+        // Migration from the backup SQL of the legacy application
         $this->migrateLanguages();
         $this->migrateClients();
         $this->migrateContacts();
@@ -110,11 +115,38 @@ class Migrator
         $this->migrateContracts();
         $this->migrateAppointments();
 
+        // Importing from other sources
+        //$this->importSuppliers();
+
         echo "\nDone.\n\n";
 
         foreach ($this->results as $infotext) {
             echo str_replace("\n", "", $infotext)."\n";
         }
+    }
+
+    /**
+     * Import suppliers from a Excel sheet that was converted to a CSV file.
+     */
+    public function importSuppliers()
+    {
+        $config = new LexerConfig();
+        $config
+                ->setDelimiter(";")
+                ->setToCharset("UTF-8");
+        $lexer = new Lexer($config);
+        $interpreter = new Interpreter();
+        //$interpreter->unstrict();
+        $interpreter->addObserver(function (array $row) {
+            $index = 0;
+            echo "Supplier " . $row[1] . "\n";
+            if ($row[1]) {
+                //a complete record
+            } else {
+                //additional infos to the previous record
+            }
+        });
+        $lexer->parse(__DIR__.'/../public/upload/ksm-suppliers.csv', $interpreter);
     }
 
     /**
@@ -794,7 +826,7 @@ class Migrator
         R::wipe('person');
         // relation person_personkind will be updated automatically
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
-        $customerkind = R::load('personkind', 2);// personkind "kunde"
+        $customerkind = R::load('personkind', KSM_MIGRATOR_PERSONKIND_CUSTOMER);// personkind "kunde"
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -905,12 +937,7 @@ class Migrator
             $record->gender = $this->prettyValue($legacy_record['gender']);
             $record->jobdescription = $this->prettyValue($legacy_record['position']);
 
-            if ($person = R::load('person', $legacy_record['client_id'])) {
-                $record->person = $person;
-            } else {
-                $record->person = null;
-            }
-
+            $record->person = $this->ksmClient($legacy_record['client_id']);
 
             R::store($record);
             if ($record->invalid) {
@@ -1688,11 +1715,7 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['name']);
 
-            if ($person = R::load('person', $legacy_record['client_id'])) {
-                $record->person = $person;
-            } else {
-                $record->person = null;
-            }
+            $record->person = $this->ksmClient($legacy_record['client_id']);
 
             R::store($record);
             if ($record->invalid) {
@@ -1755,11 +1778,7 @@ class Migrator
             $record->currentprice = $this->prettyValue($legacy_record['current_price']);
             $record->restprice = $this->prettyValue($legacy_record['rest_price']);
 
-            if ($person = R::load('person', $legacy_record['client_id'])) {
-                $record->person = $person;
-            } else {
-                $record->person = null;
-            }
+            $record->person = $this->ksmClient($legacy_record['client_id']);
 
             if ($location = R::load('location', $legacy_record['location_id'])) {
                 $record->location = $location;
@@ -1847,11 +1866,7 @@ class Migrator
             $record->interval = $this->prettyValue($legacy_record['interval']);
             $record->rescheduled = $this->prettyValue($legacy_record['rescheduled']);
 
-            if ($person = R::load('person', $legacy_record['client_id'])) {
-                $record->person = $person;
-            } else {
-                $record->person = null;
-            }
+            $record->person = $this->ksmClient($legacy_record['client_id']);
 
             if ($contact = R::load('contact', $legacy_record['contact_id'])) {
                 $record->contact = $contact;
@@ -1966,6 +1981,20 @@ class Migrator
     }
 
     /**
+     * Returns a person bean that will most likly be the KSM client of the legacy app.
+     *
+     * @param int $id the id of the legacy client record
+     */
+    public function ksmClient($legacy_id)
+    {
+        R::selectDatabase('legacy');
+        $ksm_id = R::getCell("SELECT ksm_id FROM clients WHERE id = ? LIMIT 1", [$legacy_id]);
+        R::selectDatabase('default');
+        $person = R::findOne("person", "account = ? LIMIT 1", [$ksm_id]);
+        return $person;
+    }
+
+    /**
      * Return empty string instead of NULL. If not NULL it returns the original value.
      *
      * @param mixed
@@ -2028,6 +2057,16 @@ require __DIR__ . '/../app/config/config.php';
  * Bootstrap.
  */
 require __DIR__ . '/../app/config/bootstrap.php';
+
+/**
+ * Define the ID for "customer".
+ */
+define('KSM_MIGRATOR_PERSONKIND_CUSTOMER', 2);
+
+/**
+ * Define the ID for "supplier".
+ */
+define('KSM_MIGRATOR_PERSONKIND_SUPPLIER', 3);
 
 /**
  * Define our command line interface using docopt.

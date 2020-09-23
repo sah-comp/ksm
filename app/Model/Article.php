@@ -43,5 +43,7 @@ class Model_Article extends Model
      */
     public function dispense()
     {
+        $this->addConverter('purchaseprice', new Converter_Decimal());
+        $this->addConverter('salesprice', new Converter_Decimal());
     }
 }
