@@ -75,6 +75,7 @@ $_personkinds = $record->sharedPersonkind;
         <div class="span2">
             <select
                 id="person-language"
+                class="autowidth"
                 name="dialog[language]">
                 <option value=""><?php echo I18n::__('person_language_select') ?></option>
                 <?php foreach (R::findAll('language') as $_lang_id => $_lang): ?>

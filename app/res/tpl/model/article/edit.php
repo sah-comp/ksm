@@ -115,10 +115,38 @@
             <?php foreach (R::findAll('supplier') as $_id => $_supplier): ?>
             <option
                 value="<?php echo $_supplier->getId() ?>"
-                <?php echo ($record->getId() == $_supplier->getId()) ? 'disabled="disabled"' : '' ?>
-                <?php echo ($record->supplier_id == $_supplier->getId()) ? 'selected="selected"' : '' ?>><?php echo $_supplier->name ?></option>
+                <?php echo ($record->supplier_id == $_supplier->getId()) ? 'selected="selected"' : '' ?>><?php echo $_supplier->name ?>
+            </option>
             <?php endforeach ?>
         </select>
     </div>
 </fieldset>
+<div class="tab-container">
+    <?php Flight::render('shared/navigation/tabs', array(
+        'tab_id' => 'article-tabs',
+        'tabs' => array(
+            'article-machine' => I18n::__('article_machine_tab')
+        ),
+        'default_tab' => 'article-machine'
+    )) ?>
+    <fieldset
+        id="article-machine"
+        class="tab"
+        style="display: block;">
+        <legend class="verbose"><?php echo I18n::__('article_machine_tab_legend') ?></legend>
+            <div
+                id="article-<?php echo $record->getId() ?>-machine-container"
+                class="container attachable detachable sortable">
+                <?php $index = 0 ?>
+                <?php foreach ($record->ownInstalledpart as $_installedpart_id => $_installedpart): ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/article/own/installedpart', array(
+                    'record' => $record,
+                    '_installedpart' => $_installedpart,
+                    'index' => $index
+                )) ?>
+                <?php endforeach ?>
+            </div>
+    </fieldset>
+</div>
 <!-- end of article edit form -->

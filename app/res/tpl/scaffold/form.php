@@ -22,11 +22,11 @@
         method="POST"
         accept-charset="utf-8"
         enctype="multipart/form-data">
-        
+
         <!-- form details -->
         <?php echo $form_details ?>
         <!-- end of form details -->
-        
+
         <!-- Scaffold buttons -->
         <div class="buttons">
             <select name="next_action">
