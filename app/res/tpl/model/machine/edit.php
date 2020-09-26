@@ -14,7 +14,7 @@
     <input type="hidden" name="dialog[id]" value="<?php echo $record->getId() ?>" />
 </div>
 <fieldset>
-    <legend class="verbose"><?php echo I18n::__('machine_legend') ?></legend>
+    <legend class="verbose"><?php echo I18n::__('machine_legend_manufactor') ?></legend>
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
         <div class="span2">
@@ -103,17 +103,63 @@
                 value="<?php echo htmlspecialchars($record->workinghours) ?>" />
         </div>
     </div>
-    <div class="row <?php echo ($record->hasError('internalnumber')) ? 'error' : ''; ?>">
-        <label
-            for="machine-internalnumber">
-            <?php echo I18n::__('machine_label_internalnumber') ?>
-        </label>
-        <input
-            id="machine-internalnumber"
-            type="text"
-            name="dialog[internalnumber]"
-            value="<?php echo htmlspecialchars($record->internalnumber) ?>"/>
+</fieldset>
+<fieldset>
+    <legend><?php echo I18n::__('machine_legend_internals') ?></legend>
+    <div class="row nomargins">
+        <div class="span3">&nbsp;</div>
+        <div class="span3">
+            <label
+                for="machine-internalnumber"
+                class="<?php echo ($record->hasError('internalnumber')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('machine_label_internalnumber') ?>
+            </label>
+        </div>
+        <div class="span3">
+            <label
+                for="machine-lastservice"
+                class="<?php echo ($record->hasError('lastservice')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('machine_label_lastservice') ?>
+            </label>
+        </div>
+        <div class="span3">
+            <label
+                for="machine-masterdata"
+                class="<?php echo ($record->hasError('masterdata')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('machine_label_masterdata') ?>
+            </label>
+        </div>
     </div>
+    <div class="row">
+        <div class="span3">&nbsp;</div>
+        <div class="span3">
+            <input
+                id="machine-internalnumber"
+                class="autowidth"
+                type="text"
+                name="dialog[internalnumber]"
+                value="<?php echo htmlspecialchars($record->internalnumber) ?>"/>
+        </div>
+        <div class="span3">
+            <input
+                id="machine-lastservice"
+                class="autowidth"
+                type="date"
+                name="dialog[lastservice]"
+                value="<?php echo htmlspecialchars($record->localizedDate('lastservice')) ?>" />
+        </div>
+        <div class="tab span3">
+            <select
+                id="machine-masterdata"
+                class="autowidth">
+                <option value="0" <?php echo ($record->masterdata == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('machine_label_option_false') ?></option>
+                <option value="1" <?php echo ($record->masterdata == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('machine_label_option_true') ?></option>
+            </select>
+        </div>
+    </div>
+</fieldset>
+<fieldset>
+    <legend><?php echo I18n::__('machine_legend_techincal_specifications') ?></legend>
     <div class="row <?php echo ($record->hasError('forks')) ? 'error' : ''; ?>">
         <label
             for="machine-forks">
@@ -125,9 +171,6 @@
             name="dialog[forks]"
             value="<?php echo htmlspecialchars($record->forks) ?>"/>
     </div>
-</fieldset>
-<fieldset>
-    <legend></legend>
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
         <div class="span3">
@@ -300,5 +343,30 @@
         </div>
     </div>
 
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('machine_legend_note') ?></legend>
+    <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
+        <label
+            for="machine-note">
+            <?php echo I18n::__('machine_label_note') ?>
+        </label>
+        <textarea
+            id="machine-note"
+            name="dialog[note]"
+            rows="3"
+            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+    </div>
+    <div class="row <?php echo ($record->hasError('specialagreement')) ? 'error' : ''; ?>">
+        <label
+            for="machine-specialagreement">
+            <?php echo I18n::__('machine_label_specialagreement') ?>
+        </label>
+        <textarea
+            id="machine-specialagreement"
+            name="dialog[specialagreement]"
+            rows="3"
+            cols="60"><?php echo htmlspecialchars($record->specialagreement) ?></textarea>
+    </div>
 </fieldset>
 <!-- end of machine edit form -->

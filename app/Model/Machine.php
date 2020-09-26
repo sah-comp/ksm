@@ -47,5 +47,9 @@ class Model_Machine extends Model
             new Validator_HasValue(),
             new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
         ]);
+        $this->addConverter(
+            'lastservice',
+            new Converter_Mysqldate()
+        );
     }
 }
