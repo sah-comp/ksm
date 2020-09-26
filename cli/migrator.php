@@ -830,9 +830,9 @@ class Migrator
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_clients = R::getCell("SELECT count(*) AS count FROM clients ORDER BY id");
+        $count_clients = R::getCell("SELECT count(*) AS count FROM clients");
         echo "Migrate {$count_clients} clients\n";
-        $legacy_clients = R::getAll("SELECT * FROM clients");
+        $legacy_clients = R::getAll("SELECT * FROM clients ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -882,6 +882,7 @@ class Migrator
             $person->ownAddress[] = $address;
             $person->sharedPersonkind[] = $customerkind;
 
+            $person->legacyid = $legacy_client['id']; // keep track of the old id
             R::store($person);
             if ($person->invalid) {
                 $invalid_counter++;
@@ -917,14 +918,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('contact');
+        //R::wipe('contact');
+        R::exec("DROP TABLE contact");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM contacts ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM contacts");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM contacts");
+        $legacy_records = R::getAll("SELECT * FROM contacts ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -937,8 +939,9 @@ class Migrator
             $record->gender = $this->prettyValue($legacy_record['gender']);
             $record->jobdescription = $this->prettyValue($legacy_record['position']);
 
-            $record->person = $this->ksmClient($legacy_record['client_id']);
+            $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -974,14 +977,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('contactinfo');
+        //R::wipe('contactinfo');
+        R::exec("DROP TABLE contactinfo");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM infos ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM infos");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM infos");
+        $legacy_records = R::getAll("SELECT * FROM infos ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -993,13 +997,9 @@ class Migrator
             $record->label = $this->prettyValue($legacy_record['type']);
             $record->value = $this->prettyValue($legacy_record['value']);
 
-            if ($contact = R::load('contact', $legacy_record['owner_id'])) {
-                $record->contact = $contact;
-            } else {
-                $record->contact = null;
-            }
+            $record->contact = $this->findByLegacyIdOrDispense('contact', $legacy_record['owner_id']);
 
-
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1036,14 +1036,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('vehiclebrand');
+        //R::wipe('vehiclebrand');
+        R::exec("DROP TABLE vehiclebrand");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM vehicle_brands ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM vehicle_brands");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM vehicle_brands");
+        $legacy_records = R::getAll("SELECT * FROM vehicle_brands ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1054,6 +1055,7 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['name']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1089,14 +1091,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('machinebrand');
+        //R::wipe('machinebrand');
+        R::exec("DROP TABLE machinebrand");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM machine_brands ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM machine_brands");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM machine_brands");
+        $legacy_records = R::getAll("SELECT * FROM machine_brands ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1107,6 +1110,7 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['name']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1142,14 +1146,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('vehicle');
+        //R::wipe('vehicle');
+        R::exec("DROP TABLE vehicle");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM vehicles ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM vehicles");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM vehicles");
+        $legacy_records = R::getAll("SELECT * FROM vehicles ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1160,10 +1165,11 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['type']);
             $record->licenseplate = $this->prettyValue($legacy_record['plate_number']);
-            $brand = R::load('vehiclebrand', $legacy_record['vehicle_brand_id']);
-            $record->vehiclebrand = $brand;
             $record->user = $legacy_record['user_id'];
 
+            $record->vehiclebrand = $this->findByLegacyIdOrDispense('vehiclebrand', $legacy_record['vehicle_brand_id']);
+
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1199,14 +1205,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('machine');
+        //R::wipe('machine');
+        R::exec("DROP TABLE machine");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM machines ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM machines");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM machines");
+        $legacy_records = R::getAll("SELECT * FROM machines ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1215,8 +1222,7 @@ class Migrator
             $record = R::dispense('machine');
             $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
 
-            $brand = R::load('machinebrand', $legacy_record['machine_brand_id']);
-            $record->machinebrand = $brand;
+            $record->machinebrand = $this->findByLegacyIdOrDispense('machinebrand', $legacy_record['machine_brand_id']);
 
             $record->name = $this->prettyValue($legacy_record['type']);
             $record->serialnumber = $this->prettyValue($legacy_record['serial_number']);
@@ -1250,6 +1256,7 @@ class Migrator
             $record->drivingcost = $this->prettyValue($legacy_record['driving_costs']);
             $record->masterdata = $this->prettyValue($legacy_record['master_data']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1285,14 +1292,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('artifact');
+        //R::wipe('artifact');
+        R::exec("DROP TABLE artifact");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM files ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM files");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM files");
+        $legacy_records = R::getAll("SELECT * FROM files ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1304,12 +1312,9 @@ class Migrator
             $record->name = $this->prettyValue($legacy_record['name']);
             $record->filename = str_replace('files/', '', $this->prettyValue($legacy_record['path']));
 
-            if ($machine = R::load('machine', $legacy_record['owner_id'])) {
-                $record->machine = $machine;
-            } else {
-                $record->machine = null;
-            }
+            $record->machine = $this->findByLegacyIdOrDispense('machine', $legacy_record['owner_id']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1346,14 +1351,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('supplier');
+        //R::wipe('supplier');
+        R::exec("DROP TABLE supplier");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM suppliers ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM suppliers");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM suppliers");
+        $legacy_records = R::getAll("SELECT * FROM suppliers ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1364,6 +1370,7 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['name']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1399,14 +1406,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('article');
+        //R::wipe('article');
+        R::exec("DROP TABLE article");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM articles ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM articles");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM articles");
+        $legacy_records = R::getAll("SELECT * FROM articles ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1422,9 +1430,9 @@ class Migrator
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
             $record->description = $this->prettyValue($legacy_record['description']);
 
-            $supplier = R::load('supplier', $legacy_record['supplier_id']);
-            $record->supplier = $supplier;
+            $record->supplier = $this->findByLegacyIdOrDispense('supplier', $legacy_record['supplier_id']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1460,14 +1468,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('artstat');
+        //R::wipe('artstat');
+        R::exec("DROP TABLE artstat");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM article_statistics ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM article_statistics");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM article_statistics");
+        $legacy_records = R::getAll("SELECT * FROM article_statistics ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1480,12 +1489,9 @@ class Migrator
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
             $record->stamp = strtotime($legacy_record['updated_at']);
 
-            if ($article = R::load('article', $legacy_record['article_id'])) {
-                $record->article = $article;
-            } else {
-                $record->article = null;
-            }
+            $record->article = $this->findByLegacyIdOrDispense('article', $legacy_record['article_id']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1521,14 +1527,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('installedpart');
+        //R::wipe('installedpart');
+        R::exec("DROP TABLE installedpart");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM article_machine ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM article_machine");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM article_machine");
+        $legacy_records = R::getAll("SELECT * FROM article_machine ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1541,19 +1548,10 @@ class Migrator
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
             $record->stamp = strtotime($legacy_record['installed_at']);
 
-            if ($article = R::load('article', $legacy_record['article_id'])) {
-                $record->article = $article;
-            } else {
-                $record->article = null;
-            }
+            $record->article = $this->findByLegacyIdOrDispense('article', $legacy_record['article_id']);
+            $record->machine = $this->findByLegacyIdOrDispense('machine', $legacy_record['machine_id']);
 
-            if ($machine = R::load('machine', $legacy_record['machine_id'])) {
-                $machine->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
-                $record->machine = $machine;
-            } else {
-                $record->machine = null;
-            }
-
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1589,14 +1587,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('appointmenttype');
+        //R::wipe('appointmenttype');
+        R::exec("DROP TABLE appointmenttype");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM appointment_types ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM appointment_types");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM appointment_types");
+        $legacy_records = R::getAll("SELECT * FROM appointment_types ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1608,6 +1607,7 @@ class Migrator
             $record->name = $this->prettyValue($legacy_record['name']);
             $record->color = $this->prettyValue($legacy_record['color']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1643,14 +1643,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('contracttype');
+        //R::wipe('contracttype');
+        R::exec("DROP TABLE contracttype");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM contract_types ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM contract_types");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM contract_types");
+        $legacy_records = R::getAll("SELECT * FROM contract_types ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1662,6 +1663,7 @@ class Migrator
             $record->name = $this->prettyValue($legacy_record['name']);
             $record->text = "Lorem ipsum";//should be text or longtext in database later on
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1697,14 +1699,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('location');
+        //R::wipe('location');
+        R::exec("DROP TABLE location");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM locations ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM locations");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM locations");
+        $legacy_records = R::getAll("SELECT * FROM locations ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1715,8 +1718,9 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['name']);
 
-            $record->person = $this->ksmClient($legacy_record['client_id']);
+            $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1752,14 +1756,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('contract');
+        //R::wipe('contract');
+        R::exec("DROP TABLE contract");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM contracts ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM contracts");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM contracts");
+        $legacy_records = R::getAll("SELECT * FROM contracts ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1778,31 +1783,18 @@ class Migrator
             $record->currentprice = $this->prettyValue($legacy_record['current_price']);
             $record->restprice = $this->prettyValue($legacy_record['rest_price']);
 
-            $record->person = $this->ksmClient($legacy_record['client_id']);
+            $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
-            if ($location = R::load('location', $legacy_record['location_id'])) {
-                $record->location = $location;
-            } else {
-                $record->location = null;
-            }
-
-            if ($contracttype = R::load('contracttype', $legacy_record['contract_type_id'])) {
-                $record->contracttype = $contracttype;
-            } else {
-                $record->contracttype = null;
-            }
+            $record->location = $this->findByLegacyIdOrDispense('location', $legacy_record['location_id']);
+            $record->contracttype = $this->findByLegacyIdOrDispense('contracttype', $legacy_record['contract_type_id']);
 
             // gather the machine_id from contract_machine from legacy database
             R::selectDatabase('legacy');
             $machine_id = R::getCell("SELECT machine_id AS mid FROM contract_machine WHERE contract_id = ? LIMIT 1", [$legacy_record['id']]);
             R::selectDatabase('default');
+            $record->machine = $this->findByLegacyIdOrDispense('machine', $machine_id);
 
-            if ($machine = R::load('machine', $machine_id)) {
-                $record->machine = $machine;
-            } else {
-                $record->machine = null;
-            }
-
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1838,14 +1830,15 @@ class Migrator
         // clean up the new database
         R::selectDatabase('default');
         R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        R::wipe('appointment');
+        //R::wipe('appointment');
+        R::exec("DROP TABLE appointment");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
-        $count_legacy = R::getCell("SELECT count(*) AS count FROM appointments ORDER BY id");
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM appointments");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM appointments");
+        $legacy_records = R::getAll("SELECT * FROM appointments ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         R::freeze(false);
@@ -1866,36 +1859,23 @@ class Migrator
             $record->interval = $this->prettyValue($legacy_record['interval']);
             $record->rescheduled = $this->prettyValue($legacy_record['rescheduled']);
 
-            $record->person = $this->ksmClient($legacy_record['client_id']);
+            $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
-            if ($contact = R::load('contact', $legacy_record['contact_id'])) {
-                $record->contact = $contact;
-            } else {
-                $record->contact = null;
-            }
+            $record->contact = $this->findByLegacyIdOrDispense('contact', $legacy_record['contact_id']);
 
             // gather the machine_id from contract_machine from legacy database
             R::selectDatabase('legacy');
             $machine_id = R::getCell("SELECT machine_id AS mid FROM appointment_machine WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
             R::selectDatabase('default');
-
-            if ($machine = R::load('machine', $machine_id)) {
-                $record->machine = $machine;
-            } else {
-                $record->machine = null;
-            }
+            $record->machine = $this->findByLegacyIdOrDispense('machine', $machine_id);
 
             // gather the machine_id from contract_machine from legacy database
             R::selectDatabase('legacy');
             $appointment_type_id = R::getCell("SELECT appointment_type_id AS apptype FROM appointment_appointment_type WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
             R::selectDatabase('default');
+            $record->appointmenttype = $this->findByLegacyIdOrDispense('appointmenttype', $appointment_type_id);
 
-            if ($appointment_type = R::load('appointmenttype', $appointment_type_id)) {
-                $record->appointmenttype = $appointment_type;
-            } else {
-                $record->appointmenttype = null;
-            }
-
+            $record->legacyid = $legacy_record['id'];
             R::store($record);
             if ($record->invalid) {
                 $invalid_counter++;
@@ -1981,17 +1961,20 @@ class Migrator
     }
 
     /**
-     * Returns a person bean that will most likly be the KSM client of the legacy app.
+     * Returns a bean of the give type.
      *
-     * @param int $id the id of the legacy client record
+     * @param string $type
+     * @param int $legacy_id
+     * @return RedbeanPHP_OODBBean
      */
-    public function ksmClient($legacy_id)
+    public function findByLegacyIdOrDispense($type, $legacy_id)
     {
-        R::selectDatabase('legacy');
-        $ksm_id = R::getCell("SELECT ksm_id FROM clients WHERE id = ? LIMIT 1", [$legacy_id]);
-        R::selectDatabase('default');
-        $person = R::findOne("person", "account = ? LIMIT 1", [$ksm_id]);
-        return $person;
+        if (!$record = R::findOne($type, "legacyid = ? LIMIT 1", [$legacy_id])) {
+            $record = R::dispense($type);
+            $record->void = true;
+        }
+        $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+        return $record;
     }
 
     /**
