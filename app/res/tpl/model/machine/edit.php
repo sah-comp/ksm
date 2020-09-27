@@ -369,4 +369,72 @@
             cols="60"><?php echo htmlspecialchars($record->specialagreement) ?></textarea>
     </div>
 </fieldset>
+<div class="tab-container">
+    <?php Flight::render('shared/navigation/tabs', array(
+        'tab_id' => 'machine-tabs',
+        'tabs' => array(
+            'machine-article' => I18n::__('machine_article_tab'),
+            'machine-appointment' => I18n::__('machine_appointment_tab'),
+            'machine-contract' => I18n::__('machine_contract_tab')
+        ),
+        'default_tab' => 'machine-article'
+    )) ?>
+    <fieldset
+        id="machine-article"
+        class="tab"
+        style="display: block;">
+        <legend class="verbose"><?php echo I18n::__('machine_article_legend_tab') ?></legend>
+            <div
+                id="machine-<?php echo $record->getId() ?>-article-container"
+                class="container attachable detachable sortable">
+                <?php $index = 0 ?>
+                <?php foreach ($record->with("ORDER BY @joined.article.number")->ownInstalledpart as $_id => $_ip): ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/machine/own/installedpart', array(
+                    'record' => $record,
+                    '_installedpart' => $_ip,
+                    'index' => $index
+                )) ?>
+                <?php endforeach ?>
+            </div>
+    </fieldset>
+    <fieldset
+        id="machine-appointment"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('machine_appointment_legend_tab') ?></legend>
+            <div
+                id="machine-<?php echo $record->getId() ?>-appointment-container"
+                class="container attachable detachable sortable">
+                <?php $index = 0 ?>
+                <?php foreach ($record->with("ORDER BY date, starttime")->ownAppointment as $_id => $_appointment): ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/machine/own/appointment', array(
+                    'record' => $record,
+                    '_appointment' => $_appointment,
+                    'index' => $index
+                )) ?>
+                <?php endforeach ?>
+            </div>
+    </fieldset>
+    <fieldset
+        id="machine-contract"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('machine_contract_legend_tab') ?></legend>
+            <div
+                id="machine-<?php echo $record->getId() ?>-contract-container"
+                class="container attachable detachable sortable">
+                <?php $index = 0 ?>
+                <?php foreach ($record->with("ORDER BY startdate")->ownContract as $_id => $_contract): ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/machine/own/contract', array(
+                    'record' => $record,
+                    '_contract' => $_contract,
+                    'index' => $index
+                )) ?>
+                <?php endforeach ?>
+            </div>
+    </fieldset>
+</div>
 <!-- end of machine edit form -->

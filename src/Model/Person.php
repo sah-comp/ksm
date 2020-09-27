@@ -77,18 +77,6 @@ class Model_Person extends Model
                 )
             ),
             array(
-                'name' => 'address.city',
-                'callback' => [
-                    'name' => 'billingAddressCity'
-                ],
-                'sort' => array(
-                    'name' => 'address.city'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            ),
-            array(
                 'name' => 'email',
                 'sort' => array(
                     'name' => 'person.email'
@@ -136,10 +124,9 @@ class Model_Person extends Model
     {
         $sql = <<<SQL
 		SELECT
-		    {$fields}, address.*
+		    {$fields}
 		FROM
 		    {$this->bean->getMeta('type')}
-		LEFT JOIN address ON (address.person_id = person.id AND label = 'billing')
 		WHERE
 		    {$where}
 SQL;
