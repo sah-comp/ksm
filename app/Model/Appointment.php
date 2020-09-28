@@ -27,6 +27,32 @@ class Model_Appointment extends Model
     {
         return [
             [
+                'name' => 'date',
+                'sort' => [
+                    'name' => 'appointment.date'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'starttime',
+                'sort' => [
+                    'name' => 'appointment.starttime'
+                ],
+                'callback' => [
+                    'name' => 'localizedTime'
+                ],
+                'filter' => [
+                    'tag' => 'time'
+                ],
+                'width' => '8rem'
+            ],
+            [
                 'name' => 'note',
                 'sort' => [
                     'name' => 'note'
@@ -36,6 +62,20 @@ class Model_Appointment extends Model
                 ]
             ]
         ];
+    }
+
+    /**
+     * Returns a string with styling information of a scaffold table row.
+     *
+     * @return string
+     */
+    public function scaffoldStyle()
+    {
+        if (! $this->bean->appointmenttype) {
+            return "style=\"border-left: 3px solid inherit;\"";
+        }
+        return "style=\"border-left: 3px solid {$this->bean->appointmenttype->color};\"";
+        //return "style=\"box-shadow: inset 0 0 0 4px coral;;\"";
     }
 
     /**
