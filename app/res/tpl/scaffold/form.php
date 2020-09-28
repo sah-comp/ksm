@@ -23,6 +23,8 @@
         accept-charset="utf-8"
         enctype="multipart/form-data">
 
+        <input type="hidden" name="token" value="<?php echo Model::getCSRFToken() ?>" />
+
         <!-- form details -->
         <?php echo $form_details ?>
         <!-- end of form details -->
