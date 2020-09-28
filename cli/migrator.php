@@ -94,7 +94,6 @@ class Migrator
         } else {
             echo "\n";
         }
-
         // Migration from the backup SQL of the legacy application
         $this->migrateLanguages();
         $this->migrateClients();
@@ -835,7 +834,6 @@ class Migrator
         $legacy_clients = R::getAll("SELECT * FROM clients ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_clients as $index => $legacy_client) {
             $person = R::dispense('person');
@@ -929,7 +927,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM contacts ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('contact');
@@ -988,7 +985,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM infos ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('contactinfo');
@@ -1047,7 +1043,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM vehicle_brands ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('vehiclebrand');
@@ -1102,7 +1097,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM machine_brands ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('machinebrand');
@@ -1157,7 +1151,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM vehicles ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('vehicle');
@@ -1216,7 +1209,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM machines ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('machine');
@@ -1303,7 +1295,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM files ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('artifact');
@@ -1362,7 +1353,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM suppliers ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('supplier');
@@ -1417,7 +1407,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM articles ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('article');
@@ -1479,7 +1468,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM article_statistics ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('artstat');
@@ -1538,7 +1526,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM article_machine ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('installedpart');
@@ -1598,7 +1585,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM appointment_types ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('appointmenttype');
@@ -1654,7 +1640,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM contract_types ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('contracttype');
@@ -1710,7 +1695,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM locations ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('location');
@@ -1767,7 +1751,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM contracts ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('contract');
@@ -1841,7 +1824,6 @@ class Migrator
         $legacy_records = R::getAll("SELECT * FROM appointments ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
-        R::freeze(false);
         $invalid_counter = 0;
         foreach ($legacy_records as $index => $legacy_record) {
             $record = R::dispense('appointment');
@@ -2080,7 +2062,6 @@ $legacy_database = [
     'db_password' => 'elo58JiTs3_'
 ];
 
-//R::freeze(false);
-
+R::freeze(false);
 $migrator = new Migrator($legacy_database, $args);
 $migrator->run();
