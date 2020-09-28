@@ -15,6 +15,25 @@
 </div>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('appointment_legend') ?></legend>
+
+    <div class="row <?php echo ($record->hasError('appointmenttype_id')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-appointmenttype">
+            <?php echo I18n::__('appointment_label_appointmenttype') ?>
+        </label>
+        <select
+            id="appointment-appointmenttype"
+            name="dialog[appointmenttype_id]">
+            <option value=""><?php echo I18n::__('appointment_appointmenttype_none') ?></option>
+            <?php foreach (R::findAll('appointmenttype') as $_id => $_appointmenttype): ?>
+            <option
+                value="<?php echo $_appointmenttype->getId() ?>"
+                <?php echo ($record->appointmenttype_id == $_appointmenttype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_appointmenttype->name ?>
+            </option>
+            <?php endforeach ?>
+        </select>
+    </div>
+
     <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
         <label
             for="appointment-note">
