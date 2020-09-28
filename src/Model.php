@@ -389,6 +389,18 @@ SQL;
     }
 
     /**
+     * Returns a string with styling information of a scaffold table row.
+     *
+     * e.g. style="border-right: 4px solid red"
+     *
+     * @return string
+     */
+    public function scaffoldStyle()
+    {
+        return '';
+    }
+
+    /**
      * Update.
      */
     public function update()
