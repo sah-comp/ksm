@@ -38,6 +38,7 @@
             name="dialog[color]"
             value="<?php echo htmlspecialchars($record->color) ?>"
             required="required" />
+        <p class="info"><?php echo I18n::__('appointmenttype_info_color') ?></p>
     </div>
 </fieldset>
 <!-- end of appointmenttype edit form -->
