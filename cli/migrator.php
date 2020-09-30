@@ -1475,7 +1475,7 @@ class Migrator
 
             $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
-            $record->stamp = strtotime($legacy_record['updated_at']);
+            $record->stamp = date('Y-m-d H:i:s', strtotime($legacy_record['updated_at']));
 
             $record->article = $this->findByLegacyIdOrDispense('article', $legacy_record['article_id']);
 
@@ -1533,7 +1533,7 @@ class Migrator
 
             $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
-            $record->stamp = strtotime($legacy_record['installed_at']);
+            $record->stamp = date('Y-m-d', strtotime($legacy_record['installed_at']));
 
             $record->article = $this->findByLegacyIdOrDispense('article', $legacy_record['article_id']);
             $record->machine = $this->findByLegacyIdOrDispense('machine', $legacy_record['machine_id']);
