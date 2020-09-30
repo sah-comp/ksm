@@ -27,5 +27,16 @@
             value="<?php echo htmlspecialchars($record->licenseplate) ?>"
             required="required" />
     </div>
+    <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
+        <label
+            for="vehicle-name">
+            <?php echo I18n::__('vehicle_label_name') ?>
+        </label>
+        <input
+            id="vehicle-name"
+            type="text"
+            name="dialog[name]"
+            value="<?php echo htmlspecialchars($record->name) ?>" />
+    </div>
 </fieldset>
 <!-- end of vehicle edit form -->
