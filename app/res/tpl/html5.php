@@ -60,6 +60,7 @@
         <script src="/js/jquery-ui-1.11.1.min.js"></script>
         <script src="/js/jquery.idTabs.min.js"></script>
         <script src="/js/jquery.form.min.js"></script>
+        <script src="/js/jquery-clairvoyant.js"></script>
         <script src="/js/jquery-scrolltofixed-min.js"></script>
         <?php if (isset($javascripts) && is_array($javascripts)): ?>
             <?php foreach ($javascripts as $_n=>$_js): ?>

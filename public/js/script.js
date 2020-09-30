@@ -1,6 +1,8 @@
 /* Ready, Set, Go. */
 $(document).ready(function() {
 
+    initAutocompletes();
+
     /**
      * The notifications section will animate a little to catch atttention by users.
      */
@@ -122,6 +124,7 @@ $(document).ready(function() {
 		var url = $(this).attr("href");
 		$.post(url, function(data) {
 			$("#"+target).append(data);
+            initAutocompletes();
 	    });
 	});
 

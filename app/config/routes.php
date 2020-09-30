@@ -61,6 +61,15 @@ Flight::route('(/[a-z]{2})/admin(/index)', function () {
     $adminController->index();
 });
 
+/**
+ * Route to autocomplete for jquery backed autocomplete form fields.
+ */
+
+Flight::route('(/[a-z]{2})/autocomplete/@type:[a-z]+/@query:[a-z]+', function ($type, $query) {
+    $autocompleteController = new Controller_Autocomplete();
+    $autocompleteController->autocomplete($type, $query);
+});
+
 
 /**
  * Route to the create part of the CURD.
