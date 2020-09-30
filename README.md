@@ -1,6 +1,6 @@
 KSM
 ===
 
-A webbased software to manage selling, buying, lenting and maintaining forklifts.
+A webbased software for selling, buying, lending and maintaining forklifts.
 
 Enjoy.
