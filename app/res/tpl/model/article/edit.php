@@ -15,63 +15,93 @@
 </div>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('article_legend') ?></legend>
-    <div class="row <?php echo ($record->hasError('number')) ? 'error' : ''; ?>">
-        <label
-            for="article-number">
-            <?php echo I18n::__('article_label_number') ?>
-        </label>
-        <input
-            id="article-number"
-            type="text"
-            name="dialog[number]"
-            value="<?php echo htmlspecialchars($record->number) ?>"
-            required="required" />
+    <div class="row nomargins">
+        <div class="span3">
+            &nbsp;
+        </div>
+        <div class="span3">
+            <label
+                for="article-supplier"
+                class="<?php echo ($record->hasError('supplier_id')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('article_label_supplier') ?>
+            </label>
+        </div>
+        <div class="span2">
+            <label
+                for="article-number"
+                class="<?php echo ($record->hasError('number')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('article_label_number') ?>
+            </label>
+        </div>
+        <div class="span2">
+            <label
+                for="article-isoriginal"
+                class="<?php echo ($record->hasError('isoriginal')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('article_label_isoriginal') ?>
+            </label>
+        </div>
+        <div class="span2">
+            <label
+                for="article-isfilter"
+                class="<?php echo ($record->hasError('isfilter')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('article_label_isfilter') ?>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3">
+            &nbsp;
+        </div>
+        <div class="span3">
+            <select
+                id="article-supplier"
+                class="autowidth"
+                name="dialog[supplier_id]">
+                <option value=""><?php echo I18n::__('article_supplier_none') ?></option>
+                <?php foreach (R::findAll('supplier') as $_id => $_supplier): ?>
+                <option
+                    value="<?php echo $_supplier->getId() ?>"
+                    <?php echo ($record->supplier_id == $_supplier->getId()) ? 'selected="selected"' : '' ?>><?php echo $_supplier->name ?>
+                </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+        <div class="span2">
+            <input
+                id="article-number"
+                class="autowidth"
+                type="text"
+                name="dialog[number]"
+                value="<?php echo htmlspecialchars($record->number) ?>"
+                required="required" />
+        </div>
+        <div class="span2">
+            <select
+                id="article-isoriginal"
+                class="autowidth">
+                <option value="0" <?php echo ($record->isoriginal == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isoriginal_false') ?></option>
+                <option value="1" <?php echo ($record->isoriginal == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isoriginal_true') ?></option>
+            </select>
+        </div>
+        <div class="span2">
+            <select
+                id="article-isfilter"
+                class="autowidth">
+                <option value="0" <?php echo ($record->isfilter == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isfilter_false') ?></option>
+                <option value="1" <?php echo ($record->isfilter == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isfilter_true') ?></option>
+            </select>
+        </div>
     </div>
     <div class="row <?php echo ($record->hasError('description')) ? 'error' : ''; ?>">
         <label
             for="article-description">
             <?php echo I18n::__('article_label_description') ?>
         </label>
-        <input
+        <textarea
             id="article-description"
-            type="text"
             name="dialog[description]"
-            value="<?php echo htmlspecialchars($record->description) ?>"
-            required="required" />
-    </div>
-    <div class="row <?php echo ($record->hasError('isfilter')) ? 'error' : ''; ?>">
-        <input
-            type="hidden"
-            name="dialog[isfilter]"
-            value="0" />
-        <input
-            id="article-isfilter"
-            type="checkbox"
-            name="dialog[isfilter]"
-            <?php echo ($record->isfilter) ? 'checked="checked"' : '' ?>
-            value="1" />
-        <label
-            for="article-isfilter"
-            class="cb">
-            <?php echo I18n::__('article_label_isfilter') ?>
-        </label>
-    </div>
-    <div class="row <?php echo ($record->hasError('isoriginal')) ? 'error' : ''; ?>">
-        <input
-            type="hidden"
-            name="dialog[isoriginal]"
-            value="0" />
-        <input
-            id="article-isoriginal"
-            type="checkbox"
-            name="dialog[isoriginal]"
-            <?php echo ($record->isoriginal) ? 'checked="checked"' : '' ?>
-            value="1" />
-        <label
-            for="article-isoriginal"
-            class="cb">
-            <?php echo I18n::__('article_label_isoriginal') ?>
-        </label>
+            rows="3"
+            cols="60"><?php echo htmlspecialchars($record->description) ?></textarea>
     </div>
     <div class="row <?php echo ($record->hasError('purchaseprice')) ? 'error' : ''; ?>">
         <label
@@ -103,29 +133,13 @@
                 <?php echo I18n::__('article_info_salesprice') ?>
             </p>
     </div>
-    <div class="row <?php echo ($record->hasError('supplier_id')) ? 'error' : ''; ?>">
-        <label
-            for="article-supplier">
-            <?php echo I18n::__('article_label_supplier') ?>
-        </label>
-        <select
-            id="article-supplier"
-            name="dialog[supplier_id]">
-            <option value=""><?php echo I18n::__('article_supplier_none') ?></option>
-            <?php foreach (R::findAll('supplier') as $_id => $_supplier): ?>
-            <option
-                value="<?php echo $_supplier->getId() ?>"
-                <?php echo ($record->supplier_id == $_supplier->getId()) ? 'selected="selected"' : '' ?>><?php echo $_supplier->name ?>
-            </option>
-            <?php endforeach ?>
-        </select>
-    </div>
 </fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(
         'tab_id' => 'article-tabs',
         'tabs' => array(
-            'article-machine' => I18n::__('article_machine_tab')
+            'article-machine' => I18n::__('article_machine_tab'),
+            'article-statistic' => I18n::__('article_statistic_tab')
         ),
         'default_tab' => 'article-machine'
     )) ?>
@@ -134,19 +148,53 @@
         class="tab"
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('article_machine_tab_legend') ?></legend>
-            <div
-                id="article-<?php echo $record->getId() ?>-machine-container"
-                class="container attachable detachable sortable">
-                <?php $index = 0 ?>
-                <?php foreach ($record->ownInstalledpart as $_installedpart_id => $_installedpart): ?>
-                <?php $index++ ?>
-                <?php Flight::render('model/article/own/installedpart', array(
-                    'record' => $record,
-                    '_installedpart' => $_installedpart,
-                    'index' => $index
-                )) ?>
-                <?php endforeach ?>
+        <div class="row nomargins">
+            <div class="span3">
+                &nbsp;
             </div>
+            <div class="span3">
+                <label>
+                    <?php echo I18n::__('article_machine_name') ?>
+                </label>
+            </div>
+            <div class="span2">
+                <label>
+                    <?php echo I18n::__('article_machine_stamp') ?>
+                </label>
+            </div>
+            <div class="span2">
+                <label
+                    class="number">
+                    <?php echo I18n::__('article_machine_purchaseprice') ?>
+                </label>
+            </div>
+            <div class="span2">
+                <label
+                    class="number">
+                    <?php echo I18n::__('article_machine_salesprice') ?>
+                </label>
+            </div>
+        </div>
+        <div
+            id="article-<?php echo $record->getId() ?>-machine-container"
+            class="container attachable detachable sortable">
+            <?php $index = 0 ?>
+            <?php foreach ($record->with("ORDER BY stamp")->ownInstalledpart as $_id => $_installedpart): ?>
+            <?php $index++ ?>
+            <?php Flight::render('model/article/own/installedpart', array(
+                'record' => $record,
+                '_installedpart' => $_installedpart,
+                'index' => $index
+            )) ?>
+            <?php endforeach ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="article-statistic"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('article_statistic_tab_legend') ?></legend>
+        <p>Linechart of this article</p>
     </fieldset>
 </div>
 <!-- end of article edit form -->
