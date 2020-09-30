@@ -138,15 +138,15 @@
     <?php Flight::render('shared/navigation/tabs', array(
         'tab_id' => 'article-tabs',
         'tabs' => array(
-            'article-machine' => I18n::__('article_machine_tab'),
             'article-statistic' => I18n::__('article_statistic_tab')
         ),
-        'default_tab' => 'article-machine'
+        'default_tab' => 'article-statistic'
     )) ?>
+<!-- installedpart: currently not in use -->
     <fieldset
         id="article-machine"
         class="tab"
-        style="display: block;">
+        style="display: none;">
         <legend class="verbose"><?php echo I18n::__('article_machine_tab_legend') ?></legend>
         <div class="row nomargins">
             <div class="span3">
@@ -189,10 +189,11 @@
             <?php endforeach ?>
         </div>
     </fieldset>
+<!-- /installedpart -->
     <fieldset
         id="article-statistic"
         class="tab"
-        style="display: none;">
+        style="display: block;">
         <legend class="verbose"><?php echo I18n::__('article_statistic_tab_legend') ?></legend>
         <p>Linechart of this article</p>
     </fieldset>

@@ -75,3 +75,8 @@ a.logo {
     position: absolute;
     left: -999em;
 }
+
+form.panel,
+ul.tab-navigation a.selected {
+    background-color: rgb(252, 252, 252);
+}
