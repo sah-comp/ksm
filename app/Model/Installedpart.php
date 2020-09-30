@@ -22,6 +22,7 @@ class Model_Installedpart extends Model
      */
     public function dispense()
     {
+        $this->stamp = time();
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
     }
@@ -31,6 +32,7 @@ class Model_Installedpart extends Model
      */
     public function update()
     {
+        error_log('Updating Installedpart ' . $this->bean->getId() . ' ' . $this->bean->purchaseprice);
         parent::update();
     }
 }

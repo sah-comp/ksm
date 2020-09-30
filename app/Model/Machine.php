@@ -52,4 +52,13 @@ class Model_Machine extends Model
             new Converter_Mysqldate()
         );
     }
+
+    /**
+     * Update.
+     */
+    public function update()
+    {
+        parent::update();
+        error_log('machine is updated ...' . $this->bean->getId());
+    }
 }
