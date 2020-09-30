@@ -371,22 +371,24 @@ $_personkinds = $record->sharedPersonkind;
         class="tab"
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('person_legend_address_tab') ?></legend>
-            <div
-                id="person-<?php echo $record->getId() ?>-address-container"
-                class="container attachable detachable sortable">
-                <?php if (count($record->ownAddress) == 0) {
-        $record->ownAddress[] = R::dispense('address');
-    } ?>
-                <?php $index = 0 ?>
-                <?php foreach ($record->ownAddress as $_address_id => $_address): ?>
-                <?php $index++ ?>
-                <?php Flight::render('model/person/own/address', array(
-                    'record' => $record,
-                    '_address' => $_address,
-                    'index' => $index
-                )) ?>
-                <?php endforeach ?>
-            </div>
+        <div
+            id="person-<?php echo $record->getId() ?>-address-container"
+            class="container attachable detachable sortable">
+            <?php
+            if (count($record->ownAddress) == 0):
+                $record->ownAddress[] = R::dispense('address');
+            endif;
+            ?>
+            <?php $index = 0 ?>
+            <?php foreach ($record->ownAddress as $_address_id => $_address): ?>
+            <?php $index++ ?>
+            <?php Flight::render('model/person/own/address', array(
+                'record' => $record,
+                '_address' => $_address,
+                'index' => $index
+            )) ?>
+            <?php endforeach ?>
+        </div>
     </fieldset>
 </div>
 <!-- end of person edit form -->
