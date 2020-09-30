@@ -680,7 +680,7 @@ class Controller_Scaffold extends Controller
         ), 'content');
         Flight::render('html5', array(
             'title' => I18n::__("scaffold_head_title_{$this->action}", null, array(
-                I18n::__("domain_{$this->type}")
+                I18n::__("{$this->type}_h1")
             )),
             'language' => Flight::get('language'),
             'javascripts' => $this->javascripts
