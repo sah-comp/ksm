@@ -111,6 +111,37 @@ class Model_Person extends Model
     }
 
     /**
+     * Lookup a searchterm and return the resultset as an array.
+     *
+     * @param string $searchtext
+     * @param string (optional) $query The prepared query or SQL to use for search
+     * @return array
+     */
+    public function clairvoyant($searchtext, $query = 'default')
+    {
+        switch ($query) {
+            default:
+            $sql = <<<SQL
+                SELECT
+                    person.id AS id,
+                    person.name AS label,
+                    person.name AS value
+                FROM
+                    person
+                WHERE
+                    person.nickname LIKE :searchtext OR
+                    person.account LIKE :searchtext OR
+                    person.name LIKE :searchtext OR
+                    person.email LIKE :searchtext
+                ORDER BY
+                    person.name
+    SQL;
+        }
+        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        return $result;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select

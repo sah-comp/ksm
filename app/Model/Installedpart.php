@@ -22,9 +22,10 @@ class Model_Installedpart extends Model
      */
     public function dispense()
     {
-        $this->stamp = time();
+        $this->stamp = date('Y-m-d', time());
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
+        $this->addConverter('stamp', new Converter_Mysqldate());
     }
 
     /**
@@ -32,7 +33,6 @@ class Model_Installedpart extends Model
      */
     public function update()
     {
-        error_log('Updating Installedpart ' . $this->bean->getId() . ' ' . $this->bean->purchaseprice);
         parent::update();
     }
 }

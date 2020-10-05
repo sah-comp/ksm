@@ -29,17 +29,17 @@
             required="required" />
     </div>
 
-    <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->hasError('text')) ? 'error' : ''; ?>">
         <label
-            for="contracttype-note">
-            <?php echo I18n::__('contracttype_label_note') ?>
+            for="contracttype-text">
+            <?php echo I18n::__('contracttype_label_text') ?>
         </label>
         <textarea
-            id="contracttype-note"
-            name="dialog[note]"
+            id="contracttype-text"
+            name="dialog[text]"
             rows="23"
-            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
-        <p class="info"><?php echo I18n::__('contracttype_info_note') ?></p>
+            cols="60"><?php echo htmlspecialchars($record->text) ?></textarea>
+        <p class="info"><?php echo I18n::__('contracttype_info_text') ?></p>
     </div>
 </fieldset>
 <!-- end of contracttype edit form -->

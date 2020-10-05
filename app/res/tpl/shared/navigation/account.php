@@ -27,8 +27,5 @@
             <?php echo I18n::__('account_logout_nav') ?>
         </a>
     </li>
-    <li>
-        <?php Flight::render('shared/navigation/langchooser'); ?>
-    </li>
 </ul>
 <!-- End of account menu -->

@@ -151,7 +151,8 @@
         <div class="tab span3">
             <select
                 id="machine-masterdata"
-                class="autowidth">
+                class="autowidth"
+                name="dialog[masterdata]">
                 <option value="0" <?php echo ($record->masterdata == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('machine_label_option_false') ?></option>
                 <option value="1" <?php echo ($record->masterdata == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('machine_label_option_true') ?></option>
             </select>
@@ -181,16 +182,16 @@
     </div>
 </fieldset>
 <div class="tab-container">
-    <?php Flight::render('shared/navigation/tabs', array(
+    <?php Flight::render('shared/navigation/tabs', [
         'tab_id' => 'machine-tabs',
-        'tabs' => array(
+        'tabs' => [
             'machine-details' => I18n::__('machine_detail_tab'),
             'machine-article' => I18n::__('machine_article_tab'),
             'machine-appointment' => I18n::__('machine_appointment_tab'),
             'machine-contract' => I18n::__('machine_contract_tab')
-        ),
+        ],
         'default_tab' => 'machine-details'
-    )) ?>
+    ]) ?>
     <fieldset
         id="machine-details"
         class="tab"
@@ -643,11 +644,11 @@
             <?php $index = 0 ?>
             <?php foreach ($_installedparts as $_id => $_installedpart): ?>
             <?php $index++ ?>
-            <?php Flight::render('model/machine/own/installedpart', array(
+            <?php Flight::render('model/machine/own/installedpart', [
                 'record' => $record,
                 '_installedpart' => $_installedpart,
                 'index' => $index
-            )) ?>
+            ]); ?>
             <?php endforeach ?>
         </div>
     </fieldset>
@@ -662,11 +663,11 @@
                 <?php $index = 0 ?>
                 <?php foreach ($record->with("ORDER BY date, starttime")->ownAppointment as $_id => $_appointment): ?>
                 <?php $index++ ?>
-                <?php Flight::render('model/machine/own/appointment', array(
+                <?php Flight::render('model/machine/own/appointment', [
                     'record' => $record,
                     '_appointment' => $_appointment,
                     'index' => $index
-                )) ?>
+                ]); ?>
                 <?php endforeach ?>
             </div>
     </fieldset>
@@ -681,11 +682,11 @@
                 <?php $index = 0 ?>
                 <?php foreach ($record->with("ORDER BY startdate")->ownContract as $_id => $_contract): ?>
                 <?php $index++ ?>
-                <?php Flight::render('model/machine/own/contract', array(
+                <?php Flight::render('model/machine/own/contract', [
                     'record' => $record,
                     '_contract' => $_contract,
                     'index' => $index
-                )) ?>
+                ]); ?>
                 <?php endforeach ?>
             </div>
     </fieldset>

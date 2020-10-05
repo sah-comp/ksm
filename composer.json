@@ -3,6 +3,7 @@
 	"description": "Starting point for rapid application development with flight and RedBeanPHP",
 	"version": "0.0.0",
 	"keywords": ["sah-comp", "bienlein", "PHP", "RedBeanPHP", "Flight"],
+    "license": "MIT",
 	"authors": [
 		{
 			"name": "Stephan A. Hombergs",
@@ -11,14 +12,16 @@
 		}
 	],
 	"require": {
-		"php": ">=5.3.3",
+		"php": ">=7.2",
 		"mikecao/flight": "dev-master",
 		"ircmaxell/password-compat": "dev-master",
-		"gabordemooij/redbean": "dev-master",
+        "gabordemooij/redbean": "dev-master",
+        "benmajor/redseed": "dev-master",
         "netcarver/textile": "v3.6.*",
         "phpmailer/phpmailer": "dev-master",
-		"docopt/docopt": "v1.0.4",
-        "goodby/csv": "*"
+		"docopt/docopt": "v1.0.*",
+        "goodby/csv": "*",
+        "mpdf/mpdf": "v6.*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*"
@@ -26,12 +29,11 @@
 	"suggest": {
 	    "swiftmailer/swiftmailer": "Comprehensive mailing tools for PHP",
 	    "phpmailer/phpmailer": "dev-master",
-        "intervention/image": "dev-master",
-        "mpdf/mpdf": "v6.0.0"
+        "intervention/image": "dev-master"
 	},
 	"autoload": {
 		"psr-0": {
-			"": "src/"
+			"Bienlein": "src/"
 		}
 	}
 }

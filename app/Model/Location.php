@@ -9,13 +9,13 @@
  */
 
 /**
- * Machine model.
+ * Location model.
  *
  * @package Cinnebar
  * @subpackage Model
  * @version $Id$
  */
-class Model_Machine extends Model
+class Model_Location extends Model
 {
     /**
      * Returns an array with attributes for lists.
@@ -29,7 +29,7 @@ class Model_Machine extends Model
             [
                 'name' => 'name',
                 'sort' => [
-                    'name' => 'machine.name'
+                    'name' => 'name'
                 ],
                 'filter' => [
                     'tag' => 'text'
@@ -51,16 +51,15 @@ class Model_Machine extends Model
             default:
             $sql = <<<SQL
                 SELECT
-                    machine.id AS id,
-                    CONCAT(machine.name, ' ', machine.serialnumber) AS label,
-                    machine.name AS value
+                    location.id AS id,
+                    location.name AS label,
+                    location.name AS value
                 FROM
-                    machine
+                    location
                 WHERE
-                    machine.name LIKE :searchtext OR
-                    machine.serialnumber LIKE :searchtext
+                    location.name LIKE :searchtext
                 ORDER BY
-                    machine.name
+                    location.name
 SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
@@ -72,14 +71,6 @@ SQL;
      */
     public function dispense()
     {
-        $this->addValidator('name', [
-            new Validator_HasValue(),
-            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
-        ]);
-        $this->addConverter(
-            'lastservice',
-            new Converter_Mysqldate()
-        );
     }
 
     /**

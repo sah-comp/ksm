@@ -78,7 +78,8 @@
         <div class="span2">
             <select
                 id="article-isoriginal"
-                class="autowidth">
+                class="autowidth"
+                name="dialog[isoriginal]">
                 <option value="0" <?php echo ($record->isoriginal == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isoriginal_false') ?></option>
                 <option value="1" <?php echo ($record->isoriginal == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isoriginal_true') ?></option>
             </select>
@@ -86,7 +87,8 @@
         <div class="span2">
             <select
                 id="article-isfilter"
-                class="autowidth">
+                class="autowidth"
+                name="dialog[isfilter]">
                 <option value="0" <?php echo ($record->isfilter == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isfilter_false') ?></option>
                 <option value="1" <?php echo ($record->isfilter == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('article_label_isfilter_true') ?></option>
             </select>

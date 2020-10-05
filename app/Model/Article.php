@@ -163,9 +163,9 @@ SQL;
         parent::update();
         if (! $this->bean->salesprice) {
             if ($this->bean->isfilter) {
-                $this->bean->salesprice = $this->bean->purchaseprice * 5 * 1.15;
+                $this->bean->salesprice = (float)$this->bean->purchaseprice * 5 * 1.15;
             } else {
-                $this->bean->salesprice = $this->bean->purchaseprice * 3 * 1.15;
+                $this->bean->salesprice = (float)$this->bean->purchaseprice * 3 * 1.15;
             }
         }
         // if the price has changed, we record it in our article statistics.
@@ -175,6 +175,5 @@ SQL;
             $artstat->purchaseprice = $this->bean->old('purchaseprice');
             $this->bean->ownArtstat[] = $artstat;
         }
-        error_log('article is updated ...' . $this->bean->getId());
     }
 }

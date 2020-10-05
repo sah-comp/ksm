@@ -1,4 +1,5 @@
 <?php
+use RedBeanPHP\R as R;
 use Goodby\CSV\Import\Standard\Lexer;
 use Goodby\CSV\Import\Standard\Interpreter;
 use Goodby\CSV\Import\Standard\LexerConfig;
@@ -36,6 +37,14 @@ class Migrator
         'user' => 'username',
         'pw' => 'secret'
     ];
+
+    /**
+     * Holds the types that were added a void attribute.
+     * These types are cleaned up after migration run.
+     * @see avoid()
+     * @var array
+     */
+    public $avoid = [];
 
     /**
      * Holds the cli arguments.
@@ -94,6 +103,10 @@ class Migrator
         } else {
             echo "\n";
         }
+
+        $this->dropping();
+        $this->seeding();
+
         // Migration from the backup SQL of the legacy application
         $this->migrateLanguages();
         $this->migrateClients();
@@ -117,11 +130,268 @@ class Migrator
         // Importing from other sources
         //$this->importSuppliers();
 
+        if ($this->args['--verbose']) {
+            // we are being verbose.
+            echo "\nCleaning up after migration.\n";
+        }
+
+        $this->unseed();
+        $this->avoid();
+
         echo "\nDone.\n\n";
 
         foreach ($this->results as $infotext) {
             echo str_replace("\n", "", $infotext)."\n";
         }
+    }
+
+    /**
+     * Drops tables that are supposed to be mirgated from the legacy database.
+     */
+    public function dropping()
+    {
+        if ($this->args['--verbose']) {
+            // we are being verbose.
+            echo "\nTabula rasa before migration.\n";
+        }
+        R::exec("SET FOREIGN_KEY_CHECKS = 0");
+        R::exec("DROP TABLE appointmenttype");
+        R::exec("DROP TABLE location");
+        R::exec("DROP TABLE artifact");
+        R::exec("DROP TABLE artstat");
+        R::exec("DROP TABLE contact");
+        R::exec("DROP TABLE contactinfo");
+        R::exec("DROP TABLE contracttype");
+        R::exec("DROP TABLE contract");
+        R::exec("DROP TABLE appointment");
+        R::exec("DROP TABLE article");
+        R::exec("DROP TABLE machine");
+        R::exec("DROP TABLE installedpart");
+        R::exec("DROP TABLE machinebrand");
+        R::exec("DROP TABLE supplier");
+        R::exec("DROP TABLE vehiclebrand");
+        R::exec("DROP TABLE vehicle");
+        R::exec("SET FOREIGN_KEY_CHECKS = 1");
+    }
+
+    /**
+     * Seed the beans.
+     *
+     * This will make the beans as I wish. RB does not change certain column types
+     * after initial creation which leaves me baffled, because the migrated data
+     * often has inconsistent values.
+     *
+     * @see https://github.com/benmajor/RedSeed
+     *
+     * @return $this
+     */
+    public function seeding()
+    {
+        if ($this->args['--verbose']) {
+            // we are being verbose.
+            echo "\nPrepare essential beans and attributes.\n";
+        }
+
+        R::selectDatabase('default');
+
+        R::seed('appointmenttype', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 5)',
+            'color' => 'string(1, 68)'
+        ]);
+
+        R::seed('artifact', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 5)',
+            'filename' => 'string(1, 256)'
+        ]);
+
+        R::seed('artstat', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'stamp' => 'datetime()',
+            'purchaseprice' => function () {
+                return (float)178.879;
+            },
+            'salesprice' => function () {
+                return (float)345.786666;
+            }
+        ]);
+
+        R::seed('contact', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 10)',
+            'gender' => 'string(1, 68)',
+            'jobdescription' => 'word(1, 5)'
+        ]);
+
+        R::seed('contactinfo', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'label' => 'string(1, 68)',
+            'value' => 'string(1, 68)'
+        ]);
+
+        R::seed('location', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 68)'
+        ]);
+
+        R::seed('contracttype', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'string(1, 68)',
+            'text' => 'word(1, 365)'
+        ]);
+
+        R::seed('contract', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'startdate' => 'date()',
+            'enddate' => 'date()',
+            'terminationdate' => 'date()',
+            'number' => 'string(1, 68)'
+        ]);
+
+        R::seed('appointment', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'date' => 'date()',
+            'starttime' => 'time()',
+            'endtime' => 'time()',
+            'duration' => 'word(1, 5)',
+            'terminationdate' => 'date()',
+            'fix' => function () {
+                return true;
+            },
+            'completed' => function () {
+                return true;
+            },
+            'confirmed' => function () {
+                return true;
+            },
+            'note' => 'word(1, 60)',
+            'interval' => 'integer(1, 365)',
+            'rescheduled' => function () {
+                return true;
+            }
+        ]);
+
+        R::seed('article', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'isfilter' => function () {
+                return true;
+            },
+            'isoriginal' => function () {
+                return true;
+            },
+            'number' => 'string(1, 128)',
+            'purchaseprice' => function () {
+                return (float)123.565;
+            },
+            'salesprice' => function () {
+                return (float)78.123;
+            }
+        ]);
+
+        R::seed('machine', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'type' => 'word(1, 5)',
+            'serialnumber' => 'word(1, 5)',
+            'internalnumber' => 'word(1, 5)',
+            'buildyear' => 'string(1, 68)',
+            'lastservice' => 'date()'
+        ]);
+
+        R::seed('installedpart', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'stamp' => 'date()',
+            'purchaseprice' => function () {
+                return (float)123.565;
+            },
+            'salesprice' => function () {
+                return (float)78.123;
+            }
+        ]);
+
+        R::seed('machinebrand', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 5)'
+        ]);
+
+        R::seed('supplier', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 5)'
+        ]);
+
+        R::seed('vehiclebrand', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 5)'
+        ]);
+
+        R::seed('vehicle', 1, [
+            'legacyid' => 'integer(1, 10000000)',
+            'name' => 'word(1, 5)',
+            'licenseplate' => 'word(1, 10)'
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * Unseed the beans.
+     *
+     * @see https://github.com/benmajor/RedSeed
+     *
+     * @return $this
+     */
+    public function unseed()
+    {
+        if ($this->args['--verbose']) {
+            // we are being verbose.
+            echo "\nGetting rid of seeded beans.\n";
+        }
+
+        R::selectDatabase('default');
+
+        R::unseed('appointmenttype');
+        R::unseed('artifact');
+        R::unseed('artstat');
+        R::unseed('contact');
+        R::unseed('contactinfo');
+        R::unseed('location');
+        R::unseed('contracttype');
+        R::unseed('contract');
+        R::unseed('appointment');
+        R::unseed('article');
+        R::unseed('machine');
+        R::unseed('installedpart');
+        R::unseed('machinebrand');
+        R::unseed('supplier');
+        R::unseed('vehiclebrand');
+        R::unseed('vehicle');
+
+        return $this;
+    }
+
+    /**
+     * This deletes all beans where attribute void is true.
+     * A list of types to avoid is generated whilst migrating.
+     *
+     * @return void
+     */
+    public function avoid()
+    {
+        foreach ($this->avoid as $type => $flag) {
+            if ($flag) {
+                if ($this->args['--verbose']) {
+                    // we are being verbose.
+                    echo "\nGetting rid of void beans of type {$type}.";
+                }
+                $beansToAvoid = R::find($type, "void = ?", [1]);
+                R::trashAll($beansToAvoid);
+            }
+        }
+        if ($this->args['--verbose']) {
+            // we are being verbose.
+            echo "\n";
+        }
+        return null;
     }
 
     /**
@@ -913,12 +1183,6 @@ class Migrator
     public function migrateContacts()
     {
         $legacy_table = 'contacts';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('contact');
-        R::exec("DROP TABLE contact");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -971,12 +1235,6 @@ class Migrator
     public function migrateContactinfo()
     {
         $legacy_table = 'infos';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('contactinfo');
-        R::exec("DROP TABLE contactinfo");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1003,7 +1261,7 @@ class Migrator
 
             if ($this->args['--verbose']) {
                 // we are being verbose.
-                echo($index + 1) . ". Migrated contactinfo of contact \"{$contact['name']}\"\n";
+                echo($index + 1) . ". Migrated contactinfo of contact \"{$record->contact->name}\"\n";
             } else {
                 echo '.';
             }
@@ -1029,12 +1287,6 @@ class Migrator
     public function migrateVehiclesBrands()
     {
         $legacy_table = 'vehicle brands';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('vehiclebrand');
-        R::exec("DROP TABLE vehiclebrand");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1083,12 +1335,6 @@ class Migrator
     public function migrateMachineBrands()
     {
         $legacy_table = 'machine brands';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('machinebrand');
-        R::exec("DROP TABLE machinebrand");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1137,12 +1383,6 @@ class Migrator
     public function migrateVehicles()
     {
         $legacy_table = 'vehicles';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('vehicle');
-        R::exec("DROP TABLE vehicle");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1195,12 +1435,6 @@ class Migrator
     public function migrateMachines()
     {
         $legacy_table = 'machines';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('machine');
-        R::exec("DROP TABLE machine");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1281,12 +1515,6 @@ class Migrator
     public function migrateMachineDocuments()
     {
         $legacy_table = 'files';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('artifact');
-        R::exec("DROP TABLE artifact");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1339,12 +1567,6 @@ class Migrator
     public function migrateSuppliers()
     {
         $legacy_table = 'suppliers';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('supplier');
-        R::exec("DROP TABLE supplier");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1393,12 +1615,6 @@ class Migrator
     public function migrateArticles()
     {
         $legacy_table = 'articles';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('article');
-        R::exec("DROP TABLE article");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1454,12 +1670,6 @@ class Migrator
     public function migrateArtstat()
     {
         $legacy_table = 'article statistics';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('artstat');
-        R::exec("DROP TABLE artstat");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1487,7 +1697,7 @@ class Migrator
 
             if ($this->args['--verbose']) {
                 // we are being verbose.
-                echo($index + 1) . ". Migrated article statistic of article \"{$article->number}\"\n";
+                echo($index + 1) . ". Migrated article statistic of article \"{$record->article->number}\"\n";
             } else {
                 echo '.';
             }
@@ -1512,12 +1722,6 @@ class Migrator
     public function migrateArticleMachine()
     {
         $legacy_table = 'article machine relations';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('installedpart');
-        R::exec("DROP TABLE installedpart");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1546,7 +1750,7 @@ class Migrator
 
             if ($this->args['--verbose']) {
                 // we are being verbose.
-                echo($index + 1) . ". Migrated article \"{$article->number}\" as part of machine {$machine->name}\n";
+                echo($index + 1) . ". Migrated article \"{$record->article->number}\" as part of machine {$record->machine->name}\n";
             } else {
                 echo '.';
             }
@@ -1571,12 +1775,6 @@ class Migrator
     public function migrateAppointmentTypes()
     {
         $legacy_table = 'appointment types';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('appointmenttype');
-        R::exec("DROP TABLE appointmenttype");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1626,12 +1824,6 @@ class Migrator
     public function migrateContractTypes()
     {
         $legacy_table = 'contract types';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('contracttype');
-        R::exec("DROP TABLE contracttype");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1681,12 +1873,6 @@ class Migrator
     public function migrateLocations()
     {
         $legacy_table = 'locations';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('location');
-        R::exec("DROP TABLE location");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1737,12 +1923,6 @@ class Migrator
     public function migrateContracts()
     {
         $legacy_table = 'contracts';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('contract');
-        R::exec("DROP TABLE contract");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1785,7 +1965,7 @@ class Migrator
 
             if ($this->args['--verbose']) {
                 // we are being verbose.
-                echo($index + 1) . ". Migrated contract for client \"{$person->name}\"\n";
+                echo($index + 1) . ". Migrated contract for client \"{$record->person->name}\"\n";
             } else {
                 echo '.';
             }
@@ -1810,12 +1990,6 @@ class Migrator
     public function migrateAppointments()
     {
         $legacy_table = 'appointments';
-        // clean up the new database
-        R::selectDatabase('default');
-        R::exec("SET FOREIGN_KEY_CHECKS = 0");
-        //R::wipe('appointment');
-        R::exec("DROP TABLE appointment");
-        R::exec("SET FOREIGN_KEY_CHECKS = 1");
 
         // load and migrate data from the legacy database
         R::selectDatabase('legacy');
@@ -1832,11 +2006,13 @@ class Migrator
             $record->date = $this->prettyDate($legacy_record['date']);
             $record->starttime = $this->prettyTime($legacy_record['start_time']);
             $record->endtime = $this->prettyTime($legacy_record['end_time']);
-            $record->duration = $this->prettyTime($legacy_record['duration']);//in hours
+            $record->duration = $this->prettyValue($legacy_record['duration']);//in hours
             $record->terminationdate = $this->prettyDate($legacy_record['deleted_at']);
 
             $record->fix = $this->prettyValue($legacy_record['fix']);
             $record->completed = $this->prettyValue($legacy_record['completed']);
+            $record->confirmed = $this->prettyValue($legacy_record['confirmed']);
+
             $record->note = $this->prettyValue($legacy_record['notes']);
             $record->interval = $this->prettyValue($legacy_record['interval']);
             $record->rescheduled = $this->prettyValue($legacy_record['rescheduled']);
@@ -1865,7 +2041,7 @@ class Migrator
 
             if ($this->args['--verbose']) {
                 // we are being verbose.
-                echo($index + 1) . ". Migrated appointment for client \"{$person->name}\" for machine \"{$machine->name}\"\n";
+                echo($index + 1) . ". Migrated appointment for client \"{$record->person->name}\" for machine \"{$record->machine->name}\"\n";
             } else {
                 echo '.';
             }
@@ -1954,6 +2130,7 @@ class Migrator
         if (!$record = R::findOne($type, "legacyid = ? LIMIT 1", [$legacy_id])) {
             $record = R::dispense($type);
             $record->void = true;
+            $this->avoid[$type] = true;
         }
         $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
         return $record;
@@ -1967,7 +2144,7 @@ class Migrator
      */
     public function prettyValue($value)
     {
-        if ($value === null) {
+        if ($value === null || $value == '' || !$value) {
             return '';
         }
         return $value;
@@ -1981,7 +2158,7 @@ class Migrator
      */
     public function prettyDate($value)
     {
-        if ($value === null) {
+        if ($value === null || $value == '' || !$value) {
             return '0000-00-00 00:00:00';
         }
         return $value;
@@ -1995,7 +2172,7 @@ class Migrator
      */
     public function prettyTime($value)
     {
-        if ($value === null) {
+        if ($value === null || $value == '' || !$value) {
             return '00:00:00';
         }
         return $value;
@@ -2003,15 +2180,25 @@ class Migrator
 }
 
 /**
- * RedbeanPHP Version 4.
- */
-require __DIR__ . '/../lib/redbean/rb.php';
-require __DIR__ . '/../lib/redbean/Plugin/Cooker.php';
-
-/**
  * Autoloader.
  */
 require __DIR__ . '/../vendor/autoload.php';
+
+/**
+ * No conversion or validation on migration.
+ */
+define('CINNEBAR_MODEL_CONVERT_AND_VALIDATE', false);
+
+/**
+ * RedbeanPHP Version .
+ */
+require __DIR__ . '/../lib/redbean/rb-5.5.php';
+require __DIR__ . '/../lib/redbean/Plugin/Cooker.php';
+
+/**
+ * Pickup the Seed Plugin for RedBeanPHP.
+ */
+$seeder = new \BenMajor\RedSeed\RedSeed();
 
 /**
  * Configuration.
@@ -2051,7 +2238,7 @@ Options:
 
 DOC;
 
-require __DIR__.'/../vendor/docopt/docopt/src/docopt.php';
+//require __DIR__.'/../vendor/docopt/docopt/src/docopt.php';
 
 $args = Docopt::handle($doc, ['version' => 'Migrator v1.0']);
 

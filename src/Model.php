@@ -151,6 +151,10 @@ class Model extends RedBean_SimpleModel
         if (! Flight::setlocale()) {
             return $this->bean->{$attribute};
         }
+        $value = $this->bean->{$attribute};
+        if ($value == '0000-00-00 00:00:00') {
+            return '';
+        }
         $templates = Flight::get('templates');
         return strftime($templates['datetime'], strtotime($this->bean->{$attribute}));
     }
@@ -165,6 +169,10 @@ class Model extends RedBean_SimpleModel
     {
         if (! Flight::setlocale()) {
             return $this->bean->{$attribute};
+        }
+        $value = $this->bean->{$attribute};
+        if ($value == '0000-00-00') {
+            return '';
         }
         $templates = Flight::get('templates');
         return strftime($templates['date'], strtotime($this->bean->{$attribute}));
@@ -181,6 +189,10 @@ class Model extends RedBean_SimpleModel
         if (! Flight::setlocale()) {
             return $this->bean->{$attribute};
         }
+        $value = $this->bean->{$attribute};
+        if ($value == '00:00:00') {
+            return '';
+        }
         $templates = Flight::get('templates');
         return strftime($templates['time'], strtotime($this->bean->{$attribute}));
     }
@@ -194,7 +206,7 @@ class Model extends RedBean_SimpleModel
      * @param string $thousands_separator defaults to ','
      * @return string
      */
-    public function decimal($attribute, $decimals = 3, $decimal_point = ',', $thousands_separator = '.')
+    public function decimal($attribute, $decimals = CINNEBAR_DECIMAL_PLACES, $decimal_point = ',', $thousands_separator = '.')
     {
         if (! $this->bean->{$attribute}) {
             return '';
@@ -405,8 +417,10 @@ SQL;
      */
     public function update()
     {
-        $this->convert();
-        $this->validate();
+        if (CINNEBAR_MODEL_CONVERT_AND_VALIDATE) {
+            $this->convert();
+            $this->validate();
+        }
     }
 
     /**
