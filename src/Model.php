@@ -413,6 +413,16 @@ SQL;
     }
 
     /**
+     * Returns wether the model has a toolbar menu extension or not.
+     *
+     * @return bool
+     */
+    public function hasMenu()
+    {
+        return false;
+    }
+
+    /**
      * Update.
      */
     public function update()

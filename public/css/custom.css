@@ -80,3 +80,5 @@ form.panel,
 ul.tab-navigation a.selected {
     background-color: rgb(252, 252, 252);
 }
+
+.autocomplete {}

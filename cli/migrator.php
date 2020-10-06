@@ -245,6 +245,7 @@ class Migrator
             'legacyid' => 'integer(1, 10000000)',
             'startdate' => 'date()',
             'enddate' => 'date()',
+            'signdate' => 'date()',
             'terminationdate' => 'date()',
             'number' => 'string(1, 68)'
         ]);
@@ -286,12 +287,13 @@ class Migrator
             },
             'salesprice' => function () {
                 return (float)78.123;
-            }
+            },
+            'lastchange' => 'date()'
         ]);
 
         R::seed('machine', 1, [
             'legacyid' => 'integer(1, 10000000)',
-            'type' => 'word(1, 5)',
+            'name' => 'word(1, 5)',
             'serialnumber' => 'word(1, 5)',
             'internalnumber' => 'word(1, 5)',
             'buildyear' => 'string(1, 68)',

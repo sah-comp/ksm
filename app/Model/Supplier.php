@@ -39,6 +39,34 @@ class Model_Supplier extends Model
     }
 
     /**
+     * Lookup a searchterm and return the resultset as an array.
+     *
+     * @param string $searchtext
+     * @param string (optional) $query The prepared query or SQL to use for search
+     * @return array
+     */
+    public function clairvoyant($searchtext, $query = 'default')
+    {
+        switch ($query) {
+            default:
+            $sql = <<<SQL
+                SELECT
+                    supplier.id AS id,
+                    supplier.name AS label,
+                    supplier.name AS value
+                FROM
+                    supplier
+                WHERE
+                    supplier.name LIKE :searchtext
+                ORDER BY
+                    supplier.name
+    SQL;
+        }
+        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        return $result;
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()

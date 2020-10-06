@@ -153,6 +153,14 @@ Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) 
 });
 
 /**
+ * Routes to the contract controller to download a contract as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
+    $ccontractController = new Controller_Contract($id);
+    $ccontractController->pdf();
+});
+
+/**
  * Display the CMS index page.
  */
 Flight::route('(/[a-z]{2})/cms(/index)', function () {

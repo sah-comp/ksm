@@ -72,6 +72,17 @@ class Model_Company extends Model
     }
 
     /**
+     * Return the formatted address.
+     *
+     * @param string $void
+     * @return string
+     */
+    public function formattedAddress($option)
+    {
+        return sprintf("%s\n%s %s", $this->bean->street, $this->bean->zip, $this->bean->city);
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout

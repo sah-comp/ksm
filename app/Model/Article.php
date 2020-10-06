@@ -37,7 +37,7 @@ class Model_Article extends Model
                 'filter' => [
                     'tag' => 'bool'
                 ],
-                'width' => '8rem'
+                'width' => '5rem'
             ],
             [
                 'name' => 'isoriginal',
@@ -50,31 +50,55 @@ class Model_Article extends Model
                 'filter' => [
                     'tag' => 'bool'
                 ],
-                'width' => '8rem'
+                'width' => '5rem'
             ],
             [
                 'name' => 'number',
                 'sort' => [
-                    'name' => 'number'
+                    'name' => 'article.number'
                 ],
                 'filter' => [
                     'tag' => 'text'
+                ],
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'supplier.name',
+                'sort' => [
+                    'name' => 'supplier.name'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'callback' => [
+                    'name' => 'supplierName'
                 ],
                 'width' => '8rem'
             ],
             [
                 'name' => 'description',
                 'sort' => [
-                    'name' => 'description'
+                    'name' => 'article.description'
                 ],
                 'filter' => [
                     'tag' => 'text'
                 ]
             ],
             [
+                'name' => 'lastchange',
+                'sort' => [
+                    'name' => 'article.lastchange'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'class' => 'date',
+                'width' => '8rem'
+            ],
+            [
                 'name' => 'purchaseprice',
                 'sort' => [
-                    'name' => 'purchaseprice'
+                    'name' => 'article.purchaseprice'
                 ],
                 'class' => 'number',
                 'callback' => [
@@ -88,7 +112,7 @@ class Model_Article extends Model
             [
                 'name' => 'salesprice',
                 'sort' => [
-                    'name' => 'salesprice'
+                    'name' => 'article.salesprice'
                 ],
                 'class' => 'number',
                 'callback' => [
@@ -100,6 +124,29 @@ class Model_Article extends Model
                 'width' => '8rem'
             ]
         ];
+    }
+
+    /**
+     * Return the supplier bean.
+     *
+     * @return object
+     */
+    public function getSupplier()
+    {
+        if (! $this->bean->supplier) {
+            $this->bean->supplier = R::dispense('supplier');
+        }
+        return $this->bean->supplier;
+    }
+
+    /**
+     * Returns the name of the supplier.
+     *
+     * @return string
+     */
+    public function supplierName()
+    {
+        return $this->bean->getSupplier()->name;
     }
 
     /**
@@ -147,6 +194,39 @@ SQL;
     }
 
     /**
+     * Returns SQL string.
+     *
+     * @param string (optional) $fields to select
+     * @param string (optional) $where
+     * @param string (optional) $order
+     * @param int (optional) $offset
+     * @param int (optional) $limit
+     * @return string $sql
+     */
+    public function getSql($fields = 'id', $where = '1', $order = null, $offset = null, $limit = null)
+    {
+        $sql = <<<SQL
+        SELECT
+            {$fields}
+        FROM
+            {$this->bean->getMeta('type')}
+        LEFT JOIN
+            supplier ON supplier.id = article.supplier_id
+        WHERE
+            {$where}
+    SQL;
+        //add optional order by
+        if ($order) {
+            $sql .= " ORDER BY {$order}";
+        }
+        //add optional limit
+        if ($offset || $limit) {
+            $sql .= " LIMIT {$offset}, {$limit}";
+        }
+        return $sql;
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
@@ -174,6 +254,7 @@ SQL;
             $artstat->salesprice = $this->bean->old('salesprice');
             $artstat->purchaseprice = $this->bean->old('purchaseprice');
             $this->bean->ownArtstat[] = $artstat;
+            $this->bean->lastchange = date('Y-m-d');
         }
     }
 }

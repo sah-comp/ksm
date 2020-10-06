@@ -22,12 +22,16 @@
 			<?php echo I18n::__('action_add_nav') ?>
 		</a>
 	</li>
-	<?php if (isset($record) && is_a($record, 'RedBeanPHP\OODBBean') && $record->getId()): ?>
-	<li>
-	    <a
-			href="<?php echo Url::build("{$base_url}/{$type}/add/{$record->getId()}/{$layout}/") ?>">
-			<?php echo I18n::__('action_copy_nav') ?>
-		</a>
-	</li>
-	<?php endif ?>
+	<?php
+    if (isset($record) && $record->getId() && $record->hasMenu()):
+        Flight::render("model/{$type}/toolbar/items.php", [
+            'record' => $record,
+            'type' => $type,
+            'base_url' => $base_url,
+            'layout' => $layout,
+            'order' => $order,
+            'dir' => $dir
+        ]);
+    endif;
+    ?>
 </ul>

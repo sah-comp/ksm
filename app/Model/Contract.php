@@ -106,6 +106,27 @@ class Model_Contract extends Model
     }
 
     /**
+     * Returns wether the model has a toolbar menu extension or not.
+     *
+     * @return bool
+     */
+    public function hasMenu()
+    {
+        return true;
+    }
+
+    /**
+     * Return localized unit.
+     *
+     * @param string $void
+     * @return string
+     */
+    public function localizedUnit($option)
+    {
+        return I18n::__('contract_unit_' . $this->bean->unit);
+    }
+
+    /**
      * Return the location bean.
      *
      * @return $location
@@ -220,6 +241,7 @@ class Model_Contract extends Model
     {
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
+        $this->addConverter('signedon', new Converter_Mysqldate());
     }
 
     /**

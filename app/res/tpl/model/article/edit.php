@@ -53,18 +53,29 @@
             &nbsp;
         </div>
         <div class="span3">
-            <select
-                id="article-supplier"
-                class="autowidth"
-                name="dialog[supplier_id]">
-                <option value=""><?php echo I18n::__('article_supplier_none') ?></option>
-                <?php foreach (R::findAll('supplier') as $_id => $_supplier): ?>
-                <option
-                    value="<?php echo $_supplier->getId() ?>"
-                    <?php echo ($record->supplier_id == $_supplier->getId()) ? 'selected="selected"' : '' ?>><?php echo $_supplier->name ?>
-                </option>
-                <?php endforeach ?>
-            </select>
+            <div class="row <?php echo ($record->hasError('supplier_id')) ? 'error' : ''; ?>">
+                <input
+                    type="hidden"
+                    name="dialog[supplier][type]"
+                    value="supplier" />
+                <input
+                    id="article-supplier-id"
+                    type="hidden"
+                    name="dialog[supplier][id]"
+                    value="<?php echo $record->getSupplier()->getId() ?>" />
+                <input
+                    type="text"
+                    id="article-supplier-name"
+                    name="dialog[supplier][name]"
+                    class="autowidth autocomplete"
+                    data-source="<?php echo Url::build('/autocomplete/supplier/name/?callback=?') ?>"
+                    data-spread='<?php
+                        echo json_encode([
+                            'article-supplier-name' => 'value',
+                            'article-supplier-id' => 'id'
+                        ]); ?>'
+                    value="<?php echo htmlspecialchars($record->getSupplier()->name) ?>" />
+            </div>
         </div>
         <div class="span2">
             <input

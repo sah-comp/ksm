@@ -173,6 +173,18 @@ SQL;
     }
 
     /**
+     * Returns a formatted address.
+     *
+     * @param string void
+     * @return string
+     */
+    public function formattedAddress($option)
+    {
+        $address = $this->bean->getAddress('billing');
+        return $address->getFormattedAddress();
+    }
+
+    /**
      * Returns the billings address city name.
      * @return string
      */
@@ -190,7 +202,10 @@ SQL;
      */
     public function getAddress($label = 'default')
     {
-        return R::findOne('address', 'label = ? AND person_id = ?', array($label, $this->bean->getId()));
+        if (!$address = R::findOne('address', '(label = ? AND person_id = ?) LIMIT 1', array($label, $this->bean->getId()))) {
+            $address = R::dispense('address');
+        }
+        return $address;
     }
 
     /**

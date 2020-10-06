@@ -19,7 +19,7 @@
         <div class="span3">&nbsp;</div>
         <div class="span3">
             <label
-                for="contract_contracttype"
+                for="contract-contracttype"
                 class="<?php echo ($record->hasError('contracttype_id')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('contract_label_contracttype') ?>
             </label>
@@ -93,7 +93,7 @@
 
     <div class="row <?php echo ($record->hasError('machine_id')) ? 'error' : ''; ?>">
         <label
-            for="contract-machine">
+            for="contract-machine-name">
             <?php echo I18n::__('contract_label_machine') ?>
         </label>
         <input
@@ -121,7 +121,7 @@
 
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
-            for="contract-person">
+            for="contract-person-name">
             <?php echo I18n::__('contract_label_person') ?>
         </label>
         <input
@@ -149,7 +149,7 @@
 
     <div class="row <?php echo ($record->hasError('location_id')) ? 'error' : ''; ?>">
         <label
-            for="contract-location">
+            for="contract-location-name">
             <?php echo I18n::__('contract_label_location') ?>
         </label>
         <input
@@ -181,7 +181,7 @@
         <div class="span3">&nbsp;</div>
         <div class="span5">
             <label
-                for="contract_priceperunit"
+                for="contract-priceperunit"
                 class="<?php echo ($record->hasError('priceperunit')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('contract_label_priceperunit') ?>
             </label>
@@ -224,7 +224,7 @@
         <div class="span3">&nbsp;</div>
         <div class="span5">
             <label
-                for="contract_currentprice"
+                for="contract-currentprice"
                 class="<?php echo ($record->hasError('currentprice')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('contract_label_currentprice') ?>
             </label>
