@@ -1,8 +1,8 @@
 <?php
 /**
- * Domaato.
+ * KSM.
  *
- * @package Domaato
+ * @package KSM
  * @subpackage Controller
  * @author $Author$
  * @version $Id$
@@ -13,7 +13,7 @@
  *
  * This controller is a co-worker to jquery autocompelete.
  *
- * @package Domaato
+ * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
@@ -28,6 +28,8 @@ class Controller_Autocomplete extends Controller
      */
     public function autocomplete($type, $query = 'default')
     {
+        session_start();
+        Auth::check();
         $bean = R::dispense($type);
         $result = $bean->clairvoyant(Flight::request()->query->term, $query);
         Flight::jsonp($result, 'callback');

@@ -17,6 +17,14 @@ a.logo {
     background-size: 48px 16px;
 }
 
+.appointment-incomplete {
+    color: red;
+}
+
+.appointment-completed {
+    color: green;
+}
+
 /* Autocomplete
 ----------------------------------*/
 .ui-autocomplete {
@@ -82,3 +90,15 @@ ul.tab-navigation a.selected {
 }
 
 .autocomplete {}
+
+input[readonly=readonly],
+textarea[readonly=readonly] {
+    padding-right: 0;
+    background: white;
+    color: gray;
+}
+
+input[disabled=disabled],
+textarea[disabled=disabled] {
+    color: gray;
+}

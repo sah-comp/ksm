@@ -86,6 +86,59 @@
             </select>
         </div>
     </div>
+
+    <div class="row nomargins">
+        <div class="span3">&nbsp;</div>
+        <div class="span3">
+            <label
+                for="appointment-starttime"
+                class="<?php echo ($record->hasError('starttime')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('appointment_label_starttime') ?>
+            </label>
+        </div>
+        <div class="span3">
+            <label
+                for="appointment-endtime"
+                class="<?php echo ($record->hasError('endtime')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('appointment_label_endtime') ?>
+            </label>
+        </div>
+        <div class="span3 number">
+            <label
+                for="appointment-duration"
+                class="<?php echo ($record->hasError('duration')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('appointment_label_duration') ?>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span3">&nbsp;</div>
+        <div class="span3">
+            <input
+                id="appointment-starttime"
+                class="autowidth"
+                type="time"
+                name="dialog[starttime]"
+                value="<?php echo htmlspecialchars($record->localizedTime('starttime')) ?>" />
+        </div>
+        <div class="span3">
+            <input
+                id="appointment-endtime"
+                class="autowidth"
+                type="time"
+                name="dialog[endtime]"
+                value="<?php echo htmlspecialchars($record->localizedTime('endtime')) ?>" />
+        </div>
+        <div class="span3">
+            <input
+                id="appointment-duration"
+                class="autowidth number"
+                type="text"
+                name="dialog[duration]"
+                readonly="readonly"
+                value="<?php echo htmlspecialchars($record->decimal('duration', 2)) ?>" />
+        </div>
+    </div>
 </fieldset>
 
 <fieldset>
@@ -108,7 +161,124 @@
             <?php endforeach ?>
         </select>
     </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('appointment_legend_customer') ?></legend>
 
+    <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-person-name">
+            <?php echo I18n::__('appointment_label_person') ?>
+        </label>
+        <input
+            type="hidden"
+            name="dialog[person][type]"
+            value="person" />
+        <input
+            id="appointment-person-id"
+            type="hidden"
+            name="dialog[person][id]"
+            value="<?php echo $record->getPerson()->getId() ?>" />
+        <input
+            type="text"
+            id="appointment-person-name"
+            name="dialog[person][name]"
+            class="autocomplete"
+            data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
+            data-spread='<?php
+                echo json_encode([
+                    'appointment-person-name' => 'value',
+                    'appointment-person-id' => 'id'
+                ]); ?>'
+            value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+    </div>
+
+    <div class="row <?php echo ($record->hasError('machine_id')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-machine-name">
+            <?php echo I18n::__('appointment_label_machine') ?>
+        </label>
+        <input
+            type="hidden"
+            name="dialog[machine][type]"
+            value="machine" />
+        <input
+            id="appointment-machine-id"
+            type="hidden"
+            name="dialog[machine][id]"
+            value="<?php echo $record->getMachine()->getId() ?>" />
+        <input
+            type="text"
+            id="appointment-machine-name"
+            name="dialog[machine][name]"
+            class="autocomplete"
+            data-source="<?php echo Url::build('/autocomplete/machine/name/?callback=?') ?>"
+            data-spread='<?php
+                echo json_encode([
+                    'appointment-machine-name' => 'value',
+                    'appointment-machine-id' => 'id'
+                ]); ?>'
+            value="<?php echo htmlspecialchars($record->getMachine()->name) ?>" />
+    </div>
+
+    <div class="row <?php echo ($record->hasError('contact_id')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-contact-name">
+            <?php echo I18n::__('appointment_label_contact') ?>
+        </label>
+        <input
+            type="hidden"
+            name="dialog[contact][type]"
+            value="contact" />
+        <input
+            id="appointment-contact-id"
+            type="hidden"
+            name="dialog[contact][id]"
+            value="<?php echo $record->getContact()->getId() ?>" />
+        <input
+            type="text"
+            id="appointment-contact-name"
+            name="dialog[contact][name]"
+            class="autocomplete"
+            data-source="<?php echo Url::build('/autocomplete/contact/name/?callback=?') ?>"
+            data-spread='<?php
+                echo json_encode([
+                    'appointment-contact-name' => 'value',
+                    'appointment-contact-id' => 'id'
+                ]); ?>'
+            value="<?php echo htmlspecialchars($record->getContact()->name) ?>" />
+    </div>
+
+    <div class="row <?php echo ($record->hasError('location_id')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-location-name">
+            <?php echo I18n::__('appointment_label_location') ?>
+        </label>
+        <input
+            type="hidden"
+            name="dialog[location][type]"
+            value="location" />
+        <input
+            id="appointment-location-id"
+            type="hidden"
+            name="dialog[location][id]"
+            value="<?php echo $record->getLocation()->getId() ?>" />
+        <input
+            type="text"
+            id="appointment-location-name"
+            name="dialog[location][name]"
+            class="autocomplete"
+            data-source="<?php echo Url::build('/autocomplete/location/name/?callback=?') ?>"
+            data-spread='<?php
+                echo json_encode([
+                    'appointment-location-name' => 'value',
+                    'appointment-location-id' => 'id'
+                ]); ?>'
+            value="<?php echo htmlspecialchars($record->getLocation()->name) ?>" />
+    </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('appointment_legend_note') ?></legend>
     <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
         <label
             for="appointment-note">

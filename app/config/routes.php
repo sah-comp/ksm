@@ -156,8 +156,16 @@ Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) 
  * Routes to the contract controller to download a contract as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
-    $ccontractController = new Controller_Contract($id);
-    $ccontractController->pdf();
+    $contractController = new Controller_Contract($id);
+    $contractController->pdf();
+});
+
+/**
+ * Routes to the appointment controller to complete it (store as finished).
+ */
+Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {
+    $appointmentController = new Controller_Appointment($id);
+    $appointmentController->completed();
 });
 
 /**

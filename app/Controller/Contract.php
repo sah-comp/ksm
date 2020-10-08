@@ -1,8 +1,8 @@
 <?php
 /**
- * Domaato.
+ * KSM.
  *
- * @package Domaato
+ * @package KSM
  * @subpackage Controller
  * @author $Author$
  * @version $Id$
@@ -11,7 +11,7 @@
 /**
  * Contract controller.
  *
- * @package Domaato
+ * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
@@ -86,6 +86,8 @@ class Controller_Contract extends Controller
      */
     public function __construct($id)
     {
+        session_start();
+        Auth::check();
         $this->contract = R::load('contract', $id);
         $this->contract->signdate = date('Y-m-d');
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
@@ -98,8 +100,6 @@ class Controller_Contract extends Controller
 
     /*
      * Generate a PDF with data deriving from the addressed contract bean.
-     *
-     * @param int $id
      */
     public function pdf()
     {
