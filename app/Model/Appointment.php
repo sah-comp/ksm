@@ -40,16 +40,17 @@ class Model_Appointment extends Model
                 'width' => '8rem'
             ],
             [
-                'name' => 'appointmenttype.name',
+                'name' => 'starttime',
                 'sort' => [
-                    'name' => 'appointmenttype.name'
+                    'name' => 'appointment.starttime'
                 ],
                 'callback' => [
-                    'name' => 'appointmenttypeName'
+                    'name' => 'localizedTime'
                 ],
                 'filter' => [
-                    'tag' => 'text'
-                ]
+                    'tag' => 'time'
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'fix',
@@ -65,17 +66,16 @@ class Model_Appointment extends Model
                 'width' => '4rem'
             ],
             [
-                'name' => 'starttime',
+                'name' => 'appointmenttype.name',
                 'sort' => [
-                    'name' => 'appointment.starttime'
+                    'name' => 'appointmenttype.name'
                 ],
                 'callback' => [
-                    'name' => 'localizedTime'
+                    'name' => 'appointmenttypeName'
                 ],
                 'filter' => [
-                    'tag' => 'time'
-                ],
-                'width' => '8rem'
+                    'tag' => 'text'
+                ]
             ],
             [
                 'name' => 'person.name',
