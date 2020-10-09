@@ -26,4 +26,12 @@ class Model_Artstat extends Model
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
     }
+    
+    /**
+     * Update.
+     */
+    public function update()
+    {
+        parent::update();
+    }
 }
