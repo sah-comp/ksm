@@ -124,6 +124,15 @@ Flight::map('textile', function ($text, $restricted = false, $mode = 'html5') {
 });
 
 /**
+ * Appointmenttype "Service".
+ *
+ * Service appointments are handle special.
+ */
+Flight::map('appointmenttypeservice', function () {
+    return R::load('appointmenttype', Flight::setting()->appointmenttypeservice);
+});
+
+/**
  * Blessed folder.
  *
  * The blessed folder is the system folder (domain bean).

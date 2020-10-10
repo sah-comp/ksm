@@ -169,6 +169,22 @@ Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Display the servie index page.
+ */
+Flight::route('(/[a-z]{2})/service(/index)', function () {
+    $serviceController = new Controller_Service();
+    $serviceController->index();
+});
+
+/**
+ * Display the cockpit index page.
+ */
+Flight::route('(/[a-z]{2})/cockpit(/index)', function () {
+    $cockpitController = new Controller_Cockpit();
+    $cockpitController->index();
+});
+
+/**
  * Display the CMS index page.
  */
 Flight::route('(/[a-z]{2})/cms(/index)', function () {

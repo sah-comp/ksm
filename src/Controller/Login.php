@@ -49,7 +49,11 @@ class Controller_Login extends Controller
                     $_SESSION['backend']['language'] = Flight::get('language');
                     $login->user->sid = session_id();
                     R::store($login);
-                    $this->redirect(Flight::request()->data->goto, $raw = true);
+                    if ($login->user->startpage) {
+                        $this->redirect('/' . $login->user->startpage);
+                    } else {
+                        $this->redirect(Flight::request()->data->goto, $raw = true);
+                    }
                 }
                 $this->message = I18n::__('login_failed');
                 R::store($login);
@@ -60,7 +64,7 @@ class Controller_Login extends Controller
         }
         // either no yet submitted or the credentials given failed
         if (Flight::request()->query->goto == '' || Flight::request()->query->goto == '/login') {
-            $goto = '/cms';
+            $goto = '/';
         } else {
             $goto = Flight::request()->query->goto;
         }

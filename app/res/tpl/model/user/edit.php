@@ -104,6 +104,23 @@ $_roles = $record->sharedRole;
             <?php echo ($record->isadmin) ? 'checked="checked"' : '' ?>
             value="1" />
     </div>
+
+    <div class="row <?php echo ($record->hasError('startpage')) ? 'error' : ''; ?>">
+        <label
+            for="domain-parent">
+            <?php echo I18n::__('user_label_startpage') ?>
+        </label>
+        <select
+            id="user-startpage"
+            name="dialog[startpage]">
+            <?php foreach (R::findAll('domain') as $_id => $_domain): ?>
+            <option
+                value="<?php echo $_domain->url ?>"
+                <?php echo ($record->startpage == $_domain->url) ? 'selected="selected"' : '' ?>><?php echo $_domain->i18n(Flight::get('language'))->name ?></option>
+            <?php endforeach ?>
+        </select>
+    </div>
+
 </fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(

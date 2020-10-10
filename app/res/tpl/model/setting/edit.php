@@ -11,6 +11,7 @@
 <!-- setting form -->
 <?php
 $domains = R::findAll('domain');
+$appointmenttypes = R::findAll('appointmenttype');
 ?>
 <div>
     <input type="hidden" name="dialog[type]" value="<?php echo $record->getMeta('type') ?>" />
@@ -31,6 +32,24 @@ $domains = R::findAll('domain');
             name="dialog[fiscalyear]"
             value="<?php echo htmlspecialchars($record->fiscalyear) ?>"
             required="required" />
+    </div>
+
+    <div class="row">
+        <label
+            for="setting-appointmenttypeservice"
+            class="<?php echo ($record->hasError('appointmenttypeservice')) ? 'error' : ''; ?>">
+            <?php echo I18n::__('setting_label_appointmenttypeservice') ?>
+        </label>
+        <select
+            id="setting-appointmenttypeservice"
+            name="dialog[appointmenttypeservice]">
+            <?php foreach ($appointmenttypes as $_id => $_appointmenttype): ?>
+            <option
+                value="<?php echo $_appointmenttype->getId() ?>"
+                <?php echo ($record->appointmenttypeservice == $_appointmenttype->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_appointmenttype->name) ?></option>
+            <?php endforeach ?>
+        </select>
+        <p class="info"><?php echo I18n::__('setting_info_appointmenttypeservice') ?></p>
     </div>
 </fieldset>
 <div
@@ -59,7 +78,7 @@ $domains = R::findAll('domain');
                 <?php foreach ($domains as $_id => $_domain): ?>
                 <option
                     value="<?php echo $_domain->getId() ?>"
-                    <?php echo ($record->blessedfolder == $_domain->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_domain->i18n(Flight::get('language'))->name) ?></option>   
+                    <?php echo ($record->blessedfolder == $_domain->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_domain->i18n(Flight::get('language'))->name) ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -74,7 +93,7 @@ $domains = R::findAll('domain');
                 <?php foreach ($domains as $_id => $_domain): ?>
                 <option
                     value="<?php echo $_domain->getId() ?>"
-                    <?php echo ($record->sitesfolder == $_domain->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_domain->i18n(Flight::get('language'))->name) ?></option>   
+                    <?php echo ($record->sitesfolder == $_domain->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_domain->i18n(Flight::get('language'))->name) ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -90,7 +109,7 @@ $domains = R::findAll('domain');
                 <?php foreach ($domains as $_id => $_domain): ?>
                 <option
                     value="<?php echo $_domain->getId() ?>"
-                    <?php echo ($record->homepage == $_domain->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_domain->i18n(Flight::get('language'))->name) ?></option>   
+                    <?php echo ($record->homepage == $_domain->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_domain->i18n(Flight::get('language'))->name) ?></option>
                 <?php endforeach ?>
             </select>
             <p class="info"><?php echo I18n::__('setting_homepage_info') ?></p>
@@ -112,7 +131,7 @@ $domains = R::findAll('domain');
                 <?php foreach (R::findAll('currency') as $_id => $_currency): ?>
                 <option
                     value="<?php echo $_currency->getId() ?>"
-                    <?php echo ($record->basecurrency == $_currency->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_currency->name) ?></option>   
+                    <?php echo ($record->basecurrency == $_currency->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_currency->name) ?></option>
                 <?php endforeach ?>
             </select>
         </div>
