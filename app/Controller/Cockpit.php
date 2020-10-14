@@ -20,6 +20,13 @@
 class Controller_Cockpit extends Controller
 {
     /**
+     * Holds the default template.
+     *
+     * @var string
+     */
+    public $template = 'cockpit/index';
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -33,8 +40,28 @@ class Controller_Cockpit extends Controller
      */
     public function index()
     {
-        Flight::render('cockpit/index', [
-            'title' => 'Hello. Welcome to KSM solution.'
+        $this->render();
+    }
+
+    /**
+     * Renders the account page.
+     */
+    protected function render()
+    {
+        Flight::render('shared/notification', [], 'notification');
+        //
+        Flight::render('shared/navigation/account', [], 'navigation_account');
+        Flight::render('shared/navigation/main', [], 'navigation_main');
+        Flight::render('shared/navigation', [], 'navigation');
+        Flight::render('account/toolbar', [], 'toolbar');
+        Flight::render('shared/header', [], 'header');
+        Flight::render('shared/footer', [], 'footer');
+        Flight::render($this->template, [
+            'title' => 'Cockpit'
+        ], 'content');
+        Flight::render('html5', [
+            'title' => I18n::__("cockpit_head_title"),
+            'language' => Flight::get('language')
         ]);
     }
 }

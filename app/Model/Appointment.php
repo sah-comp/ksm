@@ -288,6 +288,10 @@ class Model_Appointment extends Model
      */
     public function dispense()
     {
+        $this->bean->date = date('Y-m-d');
+        $this->bean->starttime = date('H:i:s', strtotime('06:00:00'));
+        $this->bean->endtime = date('H:i:s', strtotime('12:00:00'));
+        $this->bean->appointmenttype_id = Flight::setting()->appointmenttypeservice;
         $this->addConverter(
             'date',
             new Converter_Mysqldate()

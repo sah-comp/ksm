@@ -21,6 +21,7 @@
         class="panel panel-<?php echo $record->getMeta('type') ?> action-<?php echo $current_action ?>"
         method="POST"
         accept-charset="utf-8"
+        autocomplete="off"
         enctype="multipart/form-data">
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />

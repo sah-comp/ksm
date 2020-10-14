@@ -18,6 +18,13 @@
 class Controller_Service extends Controller
 {
     /**
+     * Holds the default template.
+     *
+     * @var string
+     */
+    public $template = 'service/index';
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -31,8 +38,28 @@ class Controller_Service extends Controller
      */
     public function index()
     {
-        Flight::render('service/index', [
-            'title' => 'Hello. I am the page where you will handle service appointments.'
+        $this->render();
+    }
+
+    /**
+     * Renders the account page.
+     */
+    protected function render()
+    {
+        Flight::render('shared/notification', [], 'notification');
+        //
+        Flight::render('shared/navigation/account', [], 'navigation_account');
+        Flight::render('shared/navigation/main', [], 'navigation_main');
+        Flight::render('shared/navigation', [], 'navigation');
+        Flight::render('account/toolbar', [], 'toolbar');
+        Flight::render('shared/header', [], 'header');
+        Flight::render('shared/footer', [], 'footer');
+        Flight::render($this->template, [
+            'title' => 'Manage service appointments'
+        ], 'content');
+        Flight::render('html5', [
+            'title' => I18n::__("service_head_title"),
+            'language' => Flight::get('language')
         ]);
     }
 }
