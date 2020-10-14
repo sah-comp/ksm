@@ -43,7 +43,7 @@ class Controller_Appointment extends Controller
     {
         R::begin();
         try {
-            $this->appointment->completed = true;
+            $this->appointment->complete();
             R::store($this->appointment);
             R::commit();
             Flight::get('user')->notify(I18n::__("appointment_completion_done"), 'success');

@@ -12,6 +12,9 @@
 <div>
     <input type="hidden" name="dialog[type]" value="<?php echo $record->getMeta('type') ?>" />
     <input type="hidden" name="dialog[id]" value="<?php echo $record->getId() ?>" />
+
+    <input type="hidden" name="dialog[receipt]" value="<?php echo $record->localizedDate('receipt') ?>" />
+    <input type="hidden" name="dialog[terminationdate]" value="<?php echo $record->localizedDate('terminationdate') ?>" />
 </div>
 
 <fieldset>
@@ -160,6 +163,24 @@
             </option>
             <?php endforeach ?>
         </select>
+    </div>
+</fieldset>
+<fieldset
+    id="machine-failure"
+    class="only-on-service"
+    style="display: <?php echo ($record->appointmenttype_id == Flight::setting()->appointmenttypeservice) ? 'block' : 'none'; ?>">
+    <legend class="verbose"><?php echo I18n::__('appointment_legend_failure') ?></legend>
+    <div class="row <?php echo ($record->hasError('failure')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-failure">
+            <?php echo I18n::__('appointment_label_failure') ?>
+        </label>
+        <textarea
+            id="appointment-failure"
+            name="dialog[failure]"
+            rows="5"
+            cols="60"><?php echo htmlspecialchars($record->failure) ?></textarea>
+        <p class="info"><?php echo I18n::__('appointment_info_failure') ?></p>
     </div>
 </fieldset>
 <fieldset>

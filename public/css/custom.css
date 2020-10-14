@@ -102,3 +102,38 @@ input[disabled=disabled],
 textarea[disabled=disabled] {
     color: gray;
 }
+
+/**
+ * Service appointment table width settings.
+ */
+th.date {
+    width: 8rem;
+}
+
+th.time {
+    width: 6rem;
+}
+
+th.week {
+    width: 4rem;
+}
+
+th.fix {
+    width: 3rem;
+}
+
+/* Textarea failure is initally not visible, only when the appointment type is "service". */
+fieldset.only-on-service {
+    display: none;
+}
+
+/* Hilite the target, the element identified by the hash part of the URL */
+:target {
+    animation: highlight 7000ms ease-out;
+}
+
+@keyframes highlight {
+    from {
+        background-color: #feffbc;
+    }
+}

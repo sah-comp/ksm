@@ -18,6 +18,20 @@
 class Controller_Service extends Controller
 {
     /**
+     * Holds the records.
+     *
+     * @var array
+     */
+    public $records = [];
+
+    /**
+     * Holds the current record.
+     *
+     * @var RedBeanPHP\OODBBean
+     */
+    public $record = null;
+
+    /**
      * Holds the default template.
      *
      * @var string
@@ -38,6 +52,16 @@ class Controller_Service extends Controller
      */
     public function index()
     {
+        $this->records = R::find(
+            'appointment',
+            "appointmenttype_id = :servicetype
+             AND completed != :yes
+             ORDER BY date, starttime, fix",
+            [
+                 ':servicetype' => Flight::setting()->appointmenttypeservice,
+                 ':yes' => 1
+            ]
+        );
         $this->render();
     }
 
@@ -51,11 +75,14 @@ class Controller_Service extends Controller
         Flight::render('shared/navigation/account', [], 'navigation_account');
         Flight::render('shared/navigation/main', [], 'navigation_main');
         Flight::render('shared/navigation', [], 'navigation');
-        Flight::render('account/toolbar', [], 'toolbar');
+        Flight::render('service/toolbar', [
+            'record' => $this->record
+        ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => 'Manage service appointments'
+            'title' => 'Manage service appointments',
+            'records' => $this->records
         ], 'content');
         Flight::render('html5', [
             'title' => I18n::__("service_head_title"),

@@ -25,6 +25,7 @@
         enctype="multipart/form-data">
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
+        <input type="hidden" name="goto" value="<?php echo $goto ?>" />
 
         <!-- form details -->
         <?php echo $form_details ?>

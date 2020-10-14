@@ -114,6 +114,18 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Set this appointment to completed.
+     *
+     * A completed appointment of type service will no longer appear in the
+     * dedicated serice list under /service.
+     */
+    public function complete()
+    {
+        $this->bean->completed = true;
+        $this->bean->terminationdate = date('Y-m-d');
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @return bool
@@ -289,11 +301,16 @@ class Model_Appointment extends Model
     public function dispense()
     {
         $this->bean->date = date('Y-m-d');
+        $this->bean->receipt = date('Y-m-d'); // Date when the appointment was arranged
         $this->bean->starttime = date('H:i:s', strtotime('06:00:00'));
         $this->bean->endtime = date('H:i:s', strtotime('12:00:00'));
         $this->bean->appointmenttype_id = Flight::setting()->appointmenttypeservice;
         $this->addConverter(
             'date',
+            new Converter_Mysqldate()
+        );
+        $this->addConverter(
+            'receipt',
             new Converter_Mysqldate()
         );
         $this->addConverter(

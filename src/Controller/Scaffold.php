@@ -166,6 +166,16 @@ class Controller_Scaffold extends Controller
     public $pagination;
 
     /**
+     * Holds the return URL.
+     *
+     * A return URL can be given to the scaffold controller via a GET parameter
+     * named 'goto'.
+     *
+     * @var string
+     */
+    public $goto = '';
+
+    /**
      * Constructs a new Scaffold controller.
      *
      * @todo get rid of eval and develop gestalt more
@@ -182,6 +192,7 @@ class Controller_Scaffold extends Controller
             $this->javascripts[] = '/js/table-edits.min';
             $this->javascripts[] = '/js/foxylisteditor';
         }
+        $this->goto = Flight::request()->query->goto;
         $this->limit = Flight::get('user')->getRecordsPerPage($type);
         $this->base_url = $base_url;
         $this->type = $type;
@@ -567,6 +578,11 @@ class Controller_Scaffold extends Controller
             $this->record = R::graph(Flight::request()->data->dialog, true);
             $this->setNextAction(Flight::request()->data->next_action);
             if ($this->doRedbeanAction()) {
+                // Was the scaffold action called with a return URL?
+                if (Flight::request()->data->goto) {
+                    // Yes, then we want to return where we came from.
+                    $this->redirect(Flight::request()->data->goto . '#bean-' . $this->record->getId());
+                }
                 if ($this->getNextAction() == 'add') {
                     $this->redirect("{$this->base_url}/{$this->type}/add/{$this->layout}/");
                 } elseif ($this->getNextAction() == 'edit') {
@@ -617,6 +633,11 @@ class Controller_Scaffold extends Controller
             $this->record = R::graph(Flight::request()->data->dialog, true);
             $this->setNextAction(Flight::request()->data->next_action);
             if ($this->doRedbeanAction()) {
+                // Was the scaffold action called with a return URL?
+                if (Flight::request()->data->goto) {
+                    // Yes, then we want to return where we came from.
+                    $this->redirect(Flight::request()->data->goto . '#bean-' . $this->record->getId());
+                }
                 if ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/{$this->page}/{$this->order}/{$this->dir}/{$this->layout}/");
                 } elseif ($this->getNextAction() == 'next_edit' &&
@@ -675,7 +696,8 @@ class Controller_Scaffold extends Controller
             'current_action' => $this->action,
             'next_action' => $this->getNextAction(),
             'record' => $this->record,
-            'records' => $this->records
+            'records' => $this->records,
+            'goto' => $this->goto
         ), 'content');
         Flight::render('html5', array(
             'title' => I18n::__("scaffold_head_title_{$this->action}", null, array(

@@ -253,6 +253,7 @@ class Migrator
         R::seed('appointment', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'date' => 'date()',
+            'receipt' => 'date()',
             'starttime' => 'time()',
             'endtime' => 'time()',
             'duration' => 'word(1, 5)',
@@ -267,6 +268,7 @@ class Migrator
                 return true;
             },
             'note' => 'word(1, 60)',
+            'failure' => 'word(1, 60)',
             'interval' => 'integer(1, 365)',
             'rescheduled' => function () {
                 return true;

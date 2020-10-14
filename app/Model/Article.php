@@ -89,6 +89,9 @@ class Model_Article extends Model
                 'sort' => [
                     'name' => 'article.lastchange'
                 ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
                 'filter' => [
                     'tag' => 'date'
                 ],

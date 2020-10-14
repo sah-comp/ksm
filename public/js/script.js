@@ -1,5 +1,5 @@
 /* Ready, Set, Go. */
-$(document).ready(function() {
+$('body').ready(function() {
 
     initAutocompletes();
 
@@ -8,7 +8,7 @@ $(document).ready(function() {
      */
     $(".notification").slideDown("slow");
 
-    $(document).bind("ajaxSend", function(){
+    $('body').bind("ajaxSend", function(){
        $("body").addClass("loading");
      }).bind("ajaxComplete", function(){
        $("body").removeClass("loading");
@@ -20,6 +20,19 @@ $(document).ready(function() {
     if ($(".tabs").length) {
         $(".tabs").each(function() {
             $("#"+$(this).attr("id")+" ul").idTabs($(this).attr("data-default"));
+        });
+    }
+
+    /**
+     * Show textarea "failure" only if appointment type is "service"-appointment.
+     */
+    if ($("#appointment-appointmenttype").length) {
+        $("#appointment-appointmenttype").on("change", function() {
+            if ($(this).val() == 10) {
+                $("#machine-failure").show('slow');
+            } else {
+                $("#machine-failure").hide('slow');
+            }
         });
     }
 
@@ -45,7 +58,7 @@ $(document).ready(function() {
     /**
      * Click on a sitemap link will load the domain and fill the content-container.
      */
-    $(document).on("click", '#sitemap a', function(event) {
+    $('body').on("click", '#sitemap a', function(event) {
         event.preventDefault();
         $.get($(this).attr("href"), function(data) {
             $("#content-container").empty();
@@ -58,7 +71,7 @@ $(document).ready(function() {
     /**
      * Click on a pages-container link will load the page and fill the page-container.
      */
-    $(document).on("click", '#pages-container a', function(event) {
+    $('body').on("click", '#pages-container a', function(event) {
         event.preventDefault();
         $.get($(this).attr("href"), function(data) {
             $("#page-container").empty();
@@ -71,7 +84,7 @@ $(document).ready(function() {
     /**
      * Click on a element with class slice-container loads editable slice.
      */
-    $(document).on("click", ".slice-container:not('.active')", function(event) {
+    $('body').on("click", ".slice-container:not('.active')", function(event) {
         event.preventDefault();
         var container = $(this).attr("data-container");
         $.get($(this).attr("data-href"), function(data) {
@@ -86,7 +99,7 @@ $(document).ready(function() {
 	 * Form with class inplace will be ajaxified by jQuery form plugin and
 	 * the response is placed into the element given in data-container.
 	 */
-    $(document).on("submit", ".inline, .inline-add", function(event) {
+    $('body').on("submit", ".inline, .inline-add", function(event) {
         var form = $(this);
         var container = form.attr("data-container");
         if ($("#"+container).hasClass("active")) $("#"+container).removeClass("active");
@@ -103,7 +116,7 @@ $(document).ready(function() {
 	 * all and future detach links send a post request and then
 	 * fade out and finally detach the element.
 	 */
-	$(document).on("click", ".detach", function(event) {
+	$('body').on("click", ".detach", function(event) {
 	    event.preventDefault();
 		var target = $(this).attr("data-target");
 		var url = $(this).attr("href");
@@ -118,7 +131,7 @@ $(document).ready(function() {
 	 * all and future attach links post request a url and
 	 * insert a new element into the *-additional zone.
 	 */
-	$(document).on("click", ".attach", function(event) {
+	$('body').on("click", ".attach", function(event) {
 	    event.preventDefault();
 		var target = $(this).attr("data-target");
 		var url = $(this).attr("href");
@@ -127,6 +140,28 @@ $(document).ready(function() {
             initAutocompletes();
 	    });
 	});
+
+    /**
+     * All and future input fields with css class enpassant will make a ajax
+     * call on update.
+     * This is mostly used on the service page.
+     */
+    $('body').on("change", ".enpassant", function(event) {
+        var value = null;
+        //event.preventDefault();
+        // What I need to know:
+        //  bean type
+        //  id
+        //  name of attribute
+        //  value
+        //  URL to call giving the above information
+        if ($(this).prop("type") == "checkbox") {
+            value = $(this).prop("checked");
+        } else {
+            value = $(this).val();
+        }
+        alert("Type " + $(this).prop("type") + " Value " + value);
+    });
 
     /**
      * A input element of type checkbox with class name all will toggle all checkboxes
