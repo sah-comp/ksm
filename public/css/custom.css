@@ -107,19 +107,28 @@ textarea[disabled=disabled] {
  * Service appointment table width settings.
  */
 th.date {
-    width: 8rem;
+    width: 9rem;
 }
 
 th.time {
-    width: 6rem;
+    width: 8rem;
 }
 
 th.week {
-    width: 4rem;
+    width: 2rem;
 }
 
 th.fix {
-    width: 3rem;
+    width: 2rem;
+}
+
+.panel a.in-table {
+    display: block;
+    background: url(/img/glyphicons/glyphicons_211_right_arrow.png);
+    background-position: center left;
+    background-repeat: no-repeat;
+    background-size: 8px 8px;
+    padding-left: 12px;
 }
 
 /* Textarea failure is initally not visible, only when the appointment type is "service". */

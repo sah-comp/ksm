@@ -8,7 +8,7 @@
     <div class="panel">
         <table class="scaffold service">
             <caption>
-                <?php echo I18n::__('scaffold_caption_index', null, array(count($records))) ?>
+                <?php echo I18n::__('scaffold_caption_index', null, [count($records)]) ?>
             </caption>
             <thead>
                 <tr>
@@ -29,12 +29,17 @@
             <tbody>
         <?php foreach ($records as $_id => $_record):
             $_type = $_record->getMeta('type');
+            $_person = $_record->getPerson();
+            $_machine = $_record->getMachine();
+            $_location = $_record->getLocation();
         ?>
-                <tr id="bean-<?php echo $_record->getId() ?>">
+                <tr
+                    id="bean-<?php echo $_record->getId() ?>"
+                    data-sort="<?php echo $_record->sortorder() ?>">
                     <td>
                         <a
                             class="ir action action-edit"
-                        	href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', array($_record->getMeta('type'), $_record->getId(), '/service')) ?>">
+                        	href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/service/#bean-' . $_record->getId()]) ?>">
                             <?php echo I18n::__('scaffold_action_edit') ?>
                         </a>
                     </td>
@@ -42,17 +47,19 @@
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-date"
                             name="date"
+                            placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                             type="date"
                             class="enpassant"
-                            value="<?php echo htmlspecialchars($_record->localizedDate('date')) ?>" />
+                            value="<?php echo htmlspecialchars($_record->date) ?>" />
                     </td>
                     <td>
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-time"
                             name="time"
+                            placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
                             type="time"
                             class="enpassant"
-                            value="<?php echo htmlspecialchars($_record->localizedTime('starttime', '%H:%M')) ?>" />
+                            value="<?php echo htmlspecialchars($_record->starttime) ?>" />
                     </td>
                     <td class="number">
                         <?php echo htmlspecialchars($_record->localizedDate('date', '%V')) ?>
@@ -67,25 +74,43 @@
                             <?php echo ($_record->fix) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->getPerson()->name) ?>
+                        <a
+                            href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
+                            class="in-table">
+                            <?php echo htmlspecialchars($_person->name) ?>
+                        </a>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->getLocation()->name) ?>
+                        <?php echo htmlspecialchars($_location->name) ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->getMachine()->name) ?>
+                        <a
+                            href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_machine->getMeta('type'), $_machine->getId(), '/service/#bean-' . $_record->getId()]) ?>"
+                            class="in-table">
+                            <?php echo htmlspecialchars($_machine->name) ?>
+                        </a>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->getMachine()->serialnumber) ?>
+                        <?php echo htmlspecialchars($_machine->serialnumber) ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->getMachine()->internalnumber) ?>
+                        <?php echo htmlspecialchars($_machine->internalnumber) ?>
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->failure) ?>
+                        <input
+                            id="<?php echo $_type ?>-<?php echo $_id ?>-failure"
+                            name="failure"
+                            type="text"
+                            class="enpassant"
+                            value="<?php echo htmlspecialchars($_record->failure) ?>" />
                     </td>
                     <td>
-                        <?php echo htmlspecialchars($_record->note) ?>
+                        <input
+                            id="<?php echo $_type ?>-<?php echo $_id ?>-note"
+                            name="note"
+                            type="text"
+                            class="enpassant"
+                            value="<?php echo htmlspecialchars($_record->note) ?>" />
                     </td>
                 </tr>
         <?php endforeach; ?>

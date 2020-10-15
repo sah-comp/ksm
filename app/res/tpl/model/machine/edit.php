@@ -146,7 +146,8 @@
                 class="autowidth"
                 type="date"
                 name="dialog[lastservice]"
-                value="<?php echo htmlspecialchars($record->localizedDate('lastservice')) ?>" />
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($record->lastservice) ?>" />
         </div>
         <div class="tab span3">
             <select

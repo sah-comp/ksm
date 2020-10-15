@@ -114,6 +114,16 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Returns a string which allows ordering in a frontend table view.
+     *
+     * @return string
+     */
+    public function sortorder()
+    {
+        return trim(strtotime($this->bean->date . ' ' . $this->bean->starttime) . '-' . $this->bean->fix);
+    }
+
+    /**
      * Set this appointment to completed.
      *
      * A completed appointment of type service will no longer appear in the

@@ -76,7 +76,8 @@
                 class="autowidth"
                 type="date"
                 name="dialog[startdate]"
-                value="<?php echo htmlspecialchars($record->localizedDate('startdate')) ?>" />
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($record->startdate) ?>" />
         </div>
         <div class="span2">
             <input
@@ -84,7 +85,8 @@
                 class="autowidth"
                 type="date"
                 name="dialog[enddate]"
-                value="<?php echo htmlspecialchars($record->localizedDate('enddate')) ?>"/>
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($record->enddate) ?>"/>
         </div>
     </div>
 </fieldset>

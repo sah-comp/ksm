@@ -58,7 +58,8 @@
                 class="autowidth"
                 type="date"
                 name="dialog[date]"
-                value="<?php echo htmlspecialchars($record->localizedDate('date')) ?>"
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($record->date) ?>"
                 required="required" />
         </div>
         <div class="span2">
@@ -122,7 +123,8 @@
                 class="autowidth"
                 type="time"
                 name="dialog[starttime]"
-                value="<?php echo htmlspecialchars($record->localizedTime('starttime')) ?>" />
+                placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
+                value="<?php echo htmlspecialchars($record->starttime) ?>" />
         </div>
         <div class="span3">
             <input
@@ -130,7 +132,8 @@
                 class="autowidth"
                 type="time"
                 name="dialog[endtime]"
-                value="<?php echo htmlspecialchars($record->localizedTime('endtime')) ?>" />
+                placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
+                value="<?php echo htmlspecialchars($record->endtime) ?>" />
         </div>
         <div class="span3">
             <input

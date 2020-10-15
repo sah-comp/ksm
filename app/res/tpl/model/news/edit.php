@@ -27,7 +27,7 @@
             <?php foreach (R::findAll('newscat') as $_id => $_newscat): ?>
             <option
                 value="<?php echo $_newscat->getId() ?>"
-                <?php echo ($record->newscat_id == $_newscat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_newscat->i18n(Flight::get('user')->getLanguage())->name) ?></option>   
+                <?php echo ($record->newscat_id == $_newscat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_newscat->i18n(Flight::get('user')->getLanguage())->name) ?></option>
             <?php endforeach ?>
         </select>
     </div>
@@ -74,7 +74,8 @@
             id="news-pubdatetime"
             type="datetime"
             name="dialog[pubdatetime]"
-            value="<?php echo htmlspecialchars($record->localizedDateTime('pubdatetime')) ?>"
+            placeholder="<?php echo I18n::__('placeholder_intl_datetime') ?>"
+            value="<?php echo htmlspecialchars($record->pubdatetime) ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">

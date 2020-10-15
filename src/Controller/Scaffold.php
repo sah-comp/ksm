@@ -581,7 +581,7 @@ class Controller_Scaffold extends Controller
                 // Was the scaffold action called with a return URL?
                 if (Flight::request()->data->goto) {
                     // Yes, then we want to return where we came from.
-                    $this->redirect(Flight::request()->data->goto . '#bean-' . $this->record->getId());
+                    $this->redirect(Flight::request()->data->goto);
                 }
                 if ($this->getNextAction() == 'add') {
                     $this->redirect("{$this->base_url}/{$this->type}/add/{$this->layout}/");
@@ -636,7 +636,7 @@ class Controller_Scaffold extends Controller
                 // Was the scaffold action called with a return URL?
                 if (Flight::request()->data->goto) {
                     // Yes, then we want to return where we came from.
-                    $this->redirect(Flight::request()->data->goto . '#bean-' . $this->record->getId());
+                    $this->redirect(Flight::request()->data->goto);
                 }
                 if ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/{$this->page}/{$this->order}/{$this->dir}/{$this->layout}/");

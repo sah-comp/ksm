@@ -1295,7 +1295,8 @@ table.scaffold tr.invalid {
 }
 
 .panel th,
-.panel td {
+.panel td,
+.panel td a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
