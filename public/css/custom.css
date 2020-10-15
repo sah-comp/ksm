@@ -25,6 +25,37 @@ a.logo {
     color: green;
 }
 
+/* Cockpit stuff */
+div.domain {
+    width: calc(25% - 2px - 2rem);
+    height: 200px;
+    margin: 0 1rem 1rem 1rem;
+    float: left;
+    position: relative;
+    border: 1px solid gray;
+}
+
+div.domain h1 {
+    color: gray;
+    font-size: 1.13rem;
+    padding: 0.25rem;
+    border-bottom: 1px solid gray;
+}
+
+div.domain h1 a {
+    text-decoration: none;
+}
+
+div.domain p.the-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 1rem;
+    font-size: small;
+    color: gray;
+    line-height: 1.13rem;
+}
+
 /* Autocomplete
 ----------------------------------*/
 .ui-autocomplete {

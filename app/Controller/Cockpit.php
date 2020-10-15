@@ -11,14 +11,26 @@
 /**
  * Cockpit controller.
  *
- * This is the home- or start page of the KSM solution.
- *
  * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
 class Controller_Cockpit extends Controller
 {
+    /**
+     * Holds the records.
+     *
+     * @var array
+     */
+    public $records = [];
+
+    /**
+     * Holds the current record.
+     *
+     * @var RedBeanPHP\OODBBean
+     */
+    public $record = null;
+
     /**
      * Holds the default template.
      *
@@ -40,6 +52,14 @@ class Controller_Cockpit extends Controller
      */
     public function index()
     {
+        $this->records = R::find(
+            'domain',
+            "invisible = :no AND url like :url ORDER BY name, sequence",
+            [
+                ':no' => 0,
+                ':url' => 'admin/%'
+            ]
+        );
         $this->render();
     }
 
@@ -53,11 +73,14 @@ class Controller_Cockpit extends Controller
         Flight::render('shared/navigation/account', [], 'navigation_account');
         Flight::render('shared/navigation/main', [], 'navigation_main');
         Flight::render('shared/navigation', [], 'navigation');
-        Flight::render('account/toolbar', [], 'toolbar');
+        Flight::render('cockpit/toolbar', [
+            'record' => $this->record
+        ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => 'Cockpit'
+            'title' => I18n::__("cockpit_head_title"),
+            'records' => $this->records
         ], 'content');
         Flight::render('html5', [
             'title' => I18n::__("cockpit_head_title"),

@@ -81,7 +81,7 @@ class Controller_Service extends Controller
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => 'Manage service appointments',
+            'title' => I18n::__("service_head_title"),
             'records' => $this->records
         ], 'content');
         Flight::render('html5', [

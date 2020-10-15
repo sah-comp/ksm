@@ -53,6 +53,14 @@ Flight::route('(/[a-z]{2})/logout', function () {
      $lostpasswordController->index();
  });
 
+ /**
+  * Routes to the backup controller.
+  */
+ Flight::route('(/[a-z]{2})/backup', function () {
+     $backupController = new Controller_Backup();
+     $backupController->run();
+ });
+
 /**
  * Routes to the admin controller.
  */
