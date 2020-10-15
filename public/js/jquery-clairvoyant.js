@@ -5,11 +5,12 @@
  * You should add parameter callback=? to your source urls to allow JSONP result.
  *
  * @todo refactor code so that later added .autocomplete elements will also profit
+ * @todo to achieve the thing wanted in the above to do, call initAutocompletes again when ajaxin
  * @uses dispatchValues()
  */
 function initAutocompletes() {
     $('.autocomplete').each(function(index, element) {
-        console.log('Init autocomplete');
+        //console.log('Init autocomplete');
         var spread = $(this).attr('data-spread'); // holds key/value array with ids and item attrs
         $(this).autocomplete({
             'minLength': 2,

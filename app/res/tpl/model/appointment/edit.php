@@ -217,7 +217,7 @@
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
     </div>
 
-    <div class="row <?php echo ($record->hasError('machine_id')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->getMachine()->hasError('name')) ? 'error' : ''; ?>">
         <label
             for="appointment-machine-name">
             <?php echo I18n::__('appointment_label_machine') ?>

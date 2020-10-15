@@ -148,7 +148,6 @@ $('body').ready(function() {
      */
     $('body').on("change", ".enpassant", function(event) {
         var value = null;
-        //event.preventDefault();
         // What I need to know:
         //  bean type
         //  id
@@ -160,7 +159,38 @@ $('body').ready(function() {
         } else {
             value = $(this).val();
         }
-        alert("Type " + $(this).prop("type") + " Value " + value);
+        //alert("Type " + $(this).prop("type") + " Value " + value);
+        //event.preventDefault();
+		var url = $(this).attr("data-url");
+		$.post(url, { value: value }, function(data) {
+			//console.log(data.sortorder);
+            //console.log(data.okay);
+            //console.log(data.bean);
+            if (data.okay) {
+                $("#" + data.bean).attr('data-sort', data.sortorder);
+                $('#week-' + data.bean).html(data.woy);
+
+                // reorder the table: this works, but looses the focus on the line and element
+                /*
+                var $tbody = $('table.service tbody');
+                $tbody.find('tr').sort(function(a, b) {
+                    var tda = $(a).attr('data-sort'); // target order attribute
+                    var tdb = $(b).attr('data-sort'); // target order attribute
+                    // if a < b return 1
+                    return tda > tdb ? 1
+                    // else if a > b return -1
+                    : tda < tdb ? -1
+                    // else they are equal - return 0
+                    : 0;
+                }).appendTo($tbody);
+                */
+
+            } else {
+                // there was an error updating the bean. Tell the user somehow.
+                console.log('Tell user there was a problem');
+            }
+            //alert('back from the USSR');
+	    }, 'json');
     });
 
     /**

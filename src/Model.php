@@ -604,7 +604,7 @@ SQL;
         switch (self::$validation_mode) {
             case self::VALIDATION_MODE_EXCEPTION:
                 $validators_with_errors_flat = implode(', ', $validators_with_errors);
-                throw new Exception_Validation("Invalid {$this->bean->getMeta('type')}#{$this->bean->getId()} because {$validators_with_errors_flat}");
+                throw new Exception_Validation("Invalid {$this->bean->getMeta('type')}#{$this->bean->getId()} because {$validators_with_errors_flat} on {$attribute}");
                 break;
             case self::VALIDATION_MODE_IMPLICIT:
                 $this->bean->invalid = true;

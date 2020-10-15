@@ -50,6 +50,8 @@
                             placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                             type="date"
                             class="enpassant"
+                            required="required"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'date']) ?>"
                             value="<?php echo htmlspecialchars($_record->date) ?>" />
                     </td>
                     <td>
@@ -59,9 +61,10 @@
                             placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
                             type="time"
                             class="enpassant"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'starttime']) ?>"
                             value="<?php echo htmlspecialchars($_record->starttime) ?>" />
                     </td>
-                    <td class="number">
+                    <td class="number" id="week-bean-<?php echo $_record->getId() ?>">
                         <?php echo htmlspecialchars($_record->localizedDate('date', '%V')) ?>
                     </td>
                     <td>
@@ -70,6 +73,7 @@
                             name="fix"
                             type="checkbox"
                             class="enpassant"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'fix']) ?>"
                             value="1"
                             <?php echo ($_record->fix) ? 'checked="checked"' : '' ?> />
                     </td>
@@ -102,6 +106,7 @@
                             name="failure"
                             type="text"
                             class="enpassant"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'failure']) ?>"
                             value="<?php echo htmlspecialchars($_record->failure) ?>" />
                     </td>
                     <td>
@@ -110,6 +115,7 @@
                             name="note"
                             type="text"
                             class="enpassant"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'note']) ?>"
                             value="<?php echo htmlspecialchars($_record->note) ?>" />
                     </td>
                 </tr>
