@@ -682,6 +682,7 @@ article.main>p {
 /* Main navigation */
 body>header,
 header#header-toolbar {
+    width: 100%;
     background-color: rgb(254, 254, 254);
 }
 
