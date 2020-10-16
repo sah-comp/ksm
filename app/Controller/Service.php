@@ -62,7 +62,35 @@ class Controller_Service extends Controller
                  ':yes' => 1
             ]
         );
+        $_SESSION['service']['appointments'] = count($this->records);
         $this->render();
+    }
+
+    /*
+     * Recheck.
+     *
+     * @return void
+     */
+    public function recheck()
+    {
+        $count = R::count(
+            'appointment',
+            "appointmenttype_id = :servicetype
+             AND completed != :yes
+             ORDER BY date, starttime, fix",
+            [
+                 ':servicetype' => Flight::setting()->appointmenttypeservice,
+                 ':yes' => 1
+            ]
+        );
+        if ($count != $_SESSION['service']['appointments']) {
+            $new_count = $count - $_SESSION['service']['appointments'];
+            //$_SESSION['service']['appointments'] = $count;
+            echo '<span class="badge">' . $new_count . '</span>';
+        } else {
+            echo '';
+        }
+        return null;
     }
 
     /**

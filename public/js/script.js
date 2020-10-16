@@ -1,7 +1,29 @@
+// container for intervals
+var heartbeats = new Array();
+var counter = 0;
+
 /* Ready, Set, Go. */
 $('body').ready(function() {
 
     initAutocompletes();
+
+    $('.heartbeat').each(function() {
+        counter++; // count one up
+        var delay = $(this).attr('data-delay');
+        var url = $(this).attr('data-href');
+        var container = $(this).attr('data-container');
+        console.log('Heartbeat ' + url + ' is beating');
+        heartbeats[counter] = setInterval(function() {
+            if ($('#' + container).length > 0) {
+                $.get(url, function(data) {
+                    $('#' + container).empty();
+                    $('#' + container).append(data);
+                }, 'html');
+            } else {
+                clearInterval(heartbeats[counter]);
+            }
+        }, delay);
+    });
 
     /**
      * The notifications section will animate a little to catch atttention by users.

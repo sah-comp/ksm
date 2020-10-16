@@ -191,6 +191,24 @@ fieldset.only-on-service {
     display: none;
 }
 
+/* Service headline can have a badge with number of changed bean counts */
+.badge-container {
+    position: relative;
+}
+
+span.badge {
+    position: absolute;
+    min-width: 1em;
+    top: -1em;
+    right: -0.777em;
+    border-radius: 0.666em;
+    color: white;
+    background-color: red;
+    padding: 0.333em;
+    font-size: 0.666em;
+    text-align: center;
+}
+
 /* Hilite the target, the element identified by the hash part of the URL */
 :target {
     animation: highlight 7000ms ease-out;

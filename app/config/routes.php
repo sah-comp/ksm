@@ -61,6 +61,14 @@ Flight::route('(/[a-z]{2})/logout', function () {
      $backupController->run();
  });
 
+ /**
+  * Routes to the heartbeat controller.
+  */
+ Flight::route('GET (/[a-z]{2})/heartbeat', function () {
+     $heartbeatController = new Controller_Heartbeat();
+     $heartbeatController->beat();
+ });
+
 /**
  * Routes to the admin controller.
  */
@@ -191,6 +199,16 @@ Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {
 Flight::route('(/[a-z]{2})/service(/index)', function () {
     $serviceController = new Controller_Service();
     $serviceController->index();
+});
+
+/**
+ * Checks for current number of service appointments.
+ *
+ * The service page toolbar template initiates a interval via js.
+ */
+Flight::route('(/[a-z]{2})/service/recheck', function () {
+    $serviceController = new Controller_Service();
+    $serviceController->recheck();
 });
 
 /**
