@@ -196,6 +196,7 @@ fieldset.only-on-service {
     position: relative;
 }
 
+/*
 span.badge {
     position: absolute;
     min-width: 1em;
@@ -207,6 +208,26 @@ span.badge {
     padding: 0.333em;
     font-size: 0.666em;
     text-align: center;
+}
+*/
+span.badge {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    line-height: 20px;
+    display: table-cell;
+    overflow: hidden;
+    min-width: 24px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 100%;
+    border: 3px solid #fff;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #ff001f;
+    color: #fff;
+    background-clip: padding-box;
 }
 
 /* Hilite the target, the element identified by the hash part of the URL */
