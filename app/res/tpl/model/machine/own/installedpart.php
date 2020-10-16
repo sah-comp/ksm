@@ -77,7 +77,8 @@ if (! $_installedpart->article) {
                 type="text"
                 id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $index ?>-stamp"
                 name="dialog[ownInstalledpart][<?php echo $index ?>][stamp]"
-                value="<?php echo htmlspecialchars($_installedpart->localizedDate('stamp')) ?>" />
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($_installedpart->stamp) ?>" />
         </div>
         <div class="span2">
             <input

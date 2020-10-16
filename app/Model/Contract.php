@@ -186,6 +186,29 @@ class Model_Contract extends Model
     }
 
     /**
+     * Return the contracttype bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getContracttype()
+    {
+        if (! $this->bean->contracttype) {
+            $this->bean->contracttype = R::dispense('contracttype');
+        }
+        return $this->bean->contracttype;
+    }
+
+    /**
+     * Returns the name of the contracttype.
+     *
+     * @return string
+     */
+    public function contracttypeName()
+    {
+        return $this->bean->getContracttype()->name;
+    }
+
+    /**
      * Returns a string with styling information of a scaffold table row.
      *
      * @return string

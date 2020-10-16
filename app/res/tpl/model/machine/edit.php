@@ -658,11 +658,31 @@
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('machine_appointment_legend_tab') ?></legend>
+            <div class="row">
+                <div class="span3">
+                    &nbsp;
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('appointment_label_date') ?></label>
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('appointment_label_appointmenttype') ?></label>
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('appointment_label_person') ?></label>
+                </div>
+                <div class="span1">
+                    <label><?php echo I18n::__('appointment_label_location') ?></label>
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('appointment_label_note') ?></label>
+                </div>
+            </div>
             <div
                 id="machine-<?php echo $record->getId() ?>-appointment-container"
                 class="container attachable detachable sortable">
                 <?php $index = 0 ?>
-                <?php foreach ($record->with("ORDER BY date, starttime")->ownAppointment as $_id => $_appointment): ?>
+                <?php foreach ($record->with("ORDER BY date ASC")->ownAppointment as $_id => $_appointment): ?>
                 <?php $index++ ?>
                 <?php Flight::render('model/machine/own/appointment', [
                     'record' => $record,
@@ -677,11 +697,28 @@
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('machine_contract_legend_tab') ?></legend>
+            <div class="row">
+                <div class="span3">
+                    &nbsp;
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('contract_label_contracttype') ?></label>
+                </div>
+                <div class="span3">
+                    <label><?php echo I18n::__('contract_label_person') ?></label>
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('contract_label_startdate') ?></label>
+                </div>
+                <div class="span2">
+                    <label><?php echo I18n::__('contract_label_enddate') ?></label>
+                </div>
+            </div>
             <div
                 id="machine-<?php echo $record->getId() ?>-contract-container"
                 class="container attachable detachable sortable">
                 <?php $index = 0 ?>
-                <?php foreach ($record->with("ORDER BY startdate")->ownContract as $_id => $_contract): ?>
+                <?php foreach ($record->with("ORDER BY startdate ASC")->ownContract as $_id => $_contract): ?>
                 <?php $index++ ?>
                 <?php Flight::render('model/machine/own/contract', [
                     'record' => $record,

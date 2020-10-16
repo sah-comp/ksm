@@ -37,7 +37,7 @@ class Model_Appointment extends Model
                 'filter' => [
                     'tag' => 'date'
                 ],
-                'width' => '8rem'
+                'width' => '7rem'
             ],
             [
                 'name' => 'starttime',
@@ -50,7 +50,7 @@ class Model_Appointment extends Model
                 'filter' => [
                     'tag' => 'time'
                 ],
-                'width' => '8rem'
+                'width' => '5rem'
             ],
             [
                 'name' => 'fix',
@@ -75,7 +75,8 @@ class Model_Appointment extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '7rem'
             ],
             [
                 'name' => 'person.name',
@@ -90,6 +91,19 @@ class Model_Appointment extends Model
                 ]
             ],
             [
+                'name' => 'location.name',
+                'sort' => [
+                    'name' => 'location.name'
+                ],
+                'callback' => [
+                    'name' => 'locationName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '6rem'
+            ],
+            [
                 'name' => 'machine.name',
                 'sort' => [
                     'name' => 'machine.name'
@@ -100,6 +114,31 @@ class Model_Appointment extends Model
                 'filter' => [
                     'tag' => 'text'
                 ]
+            ],
+            [
+                'name' => 'machine.serialnumber',
+                'sort' => [
+                    'name' => 'machine.serialnumber'
+                ],
+                'callback' => [
+                    'name' => 'machineSerialnumber'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
+            ],
+            [
+                'name' => 'machine.internalnumber',
+                'sort' => [
+                    'name' => 'machine.internalnumber'
+                ],
+                'callback' => [
+                    'name' => 'machineInternalnumber'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '4rem'
             ],
             [
                 'name' => 'note',
@@ -166,6 +205,16 @@ class Model_Appointment extends Model
             $this->bean->location = R::dispense('location');
         }
         return $this->bean->location;
+    }
+
+    /**
+     * Returns the name of the location.
+     *
+     * @return string
+     */
+    public function locationName()
+    {
+        return $this->bean->getLocation()->name;
     }
 
     /**
@@ -248,6 +297,26 @@ class Model_Appointment extends Model
     public function machineName()
     {
         return $this->bean->getMachine()->name;
+    }
+
+    /**
+     * Returns the serialnumber of the machine.
+     *
+     * @return string
+     */
+    public function machineSerialnumber()
+    {
+        return $this->bean->getMachine()->serialnumber;
+    }
+
+    /**
+     * Returns the internalnumber of the machine.
+     *
+     * @return string
+     */
+    public function machineInternalnumber()
+    {
+        return $this->bean->getMachine()->internalnumber;
     }
 
     /**
