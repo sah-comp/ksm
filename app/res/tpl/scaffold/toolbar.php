@@ -9,6 +9,15 @@
  */
 ?>
 <ul class="panel-navigation">
+    <?php if (isset($goto) && $goto): ?>
+    <li>
+        <a
+            href="<?php echo Url::build($goto) ?>"
+            class="volver">
+            <?php echo I18n::__('action_return_to_where_you_came_from') ?>
+        </a>
+    </li>
+    <?php endif; ?>
 	<li>
 		<a
 			href="<?php echo Url::build("{$base_url}/{$type}/{$layout}/1/{$order}/{$dir}") ?>">

@@ -677,7 +677,8 @@ class Controller_Scaffold extends Controller
             'layout' => $this->layout,
             'page' => $this->page,
             'order' => $this->order,
-            'dir' => $this->dir
+            'dir' => $this->dir,
+            'goto' => $this->goto
         ), 'toolbar');
         Flight::render('shared/header', array(), 'header');
         Flight::render('shared/footer', array(
