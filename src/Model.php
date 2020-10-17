@@ -88,6 +88,17 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Returns an array of path to js files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectJS()
+    {
+        return [];
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout

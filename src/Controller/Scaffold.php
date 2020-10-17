@@ -204,6 +204,7 @@ class Controller_Scaffold extends Controller
             error_log("Scaffold::__construct() tried to load a bean, but failed. Check if your database is not frozen and a table for the bean type exists. If not unfreeze and try again.\n".$e);
             exit('No bean type could be created. Unfreeze your database.');
         }
+        $this->javascripts = array_merge($this->javascripts, $this->record->injectJS());
         $this->actions = $this->record->getActions();
         if (! isset($_SESSION['scaffold'][$this->type])) {
             $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;

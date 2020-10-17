@@ -186,6 +186,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Routes to the article controller to get json encoded chart data.
+ */
+Flight::route('(/[a-z]{2})/article/chartdata/@id:[0-9]+', function ($id) {
+    $articleController = new Controller_Article($id);
+    $articleController->chartdata();
+});
+
+/**
  * Routes to the appointment controller to complete it (store as finished).
  */
 Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {

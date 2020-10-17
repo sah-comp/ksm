@@ -9,6 +9,10 @@ select {
     font-size: inherit;
 }
 
+.panel label.salesprice {
+    color: #009933;
+}
+
 .btn {
     font-size: 0.8em;
     color: silver;

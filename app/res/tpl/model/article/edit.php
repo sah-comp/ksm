@@ -133,7 +133,8 @@
     </div>
     <div class="row <?php echo ($record->hasError('salesprice')) ? 'error' : ''; ?>">
         <label
-            for="article-salesprice">
+            for="article-salesprice"
+            class="salesprice">
             <?php echo I18n::__('article_label_salesprice') ?>
         </label>
         <input
@@ -155,60 +156,16 @@
         ),
         'default_tab' => 'article-statistic'
     )) ?>
-<!-- installedpart: currently not in use -->
-    <fieldset
-        id="article-machine"
-        class="tab"
-        style="display: none;">
-        <legend class="verbose"><?php echo I18n::__('article_machine_tab_legend') ?></legend>
-        <div class="row nomargins">
-            <div class="span3">
-                &nbsp;
-            </div>
-            <div class="span3">
-                <label>
-                    <?php echo I18n::__('article_machine_name') ?>
-                </label>
-            </div>
-            <div class="span2">
-                <label>
-                    <?php echo I18n::__('article_machine_stamp') ?>
-                </label>
-            </div>
-            <div class="span2">
-                <label
-                    class="number">
-                    <?php echo I18n::__('article_machine_purchaseprice') ?>
-                </label>
-            </div>
-            <div class="span2">
-                <label
-                    class="number">
-                    <?php echo I18n::__('article_machine_salesprice') ?>
-                </label>
-            </div>
-        </div>
-        <div
-            id="article-<?php echo $record->getId() ?>-machine-container"
-            class="container attachable detachable sortable">
-            <?php $index = 0 ?>
-            <?php foreach ($record->with("ORDER BY stamp")->ownInstalledpart as $_id => $_installedpart): ?>
-            <?php $index++ ?>
-            <?php Flight::render('model/article/own/installedpart', array(
-                'record' => $record,
-                '_installedpart' => $_installedpart,
-                'index' => $index
-            )) ?>
-            <?php endforeach ?>
-        </div>
-    </fieldset>
-<!-- /installedpart -->
     <fieldset
         id="article-statistic"
         class="tab"
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('article_statistic_tab_legend') ?></legend>
-        <p>Linechart of this article</p>
+        <canvas
+            id="chart"
+            data-url="<?php echo Url::build('/article/chartdata/%d', [$record->getId()]) ?>"
+            width="100%"
+            height="400"></canvas>
     </fieldset>
 </div>
 <!-- end of article edit form -->

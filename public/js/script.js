@@ -226,4 +226,18 @@ $('body').ready(function() {
         });
     });
 
+    /**
+     * If there is a element with id chart we'll assume it is a article linechart for now.
+     */
+    if ($('#chart').length) {
+        var url = $('#chart').attr('data-url');
+        $.ajax({
+            url : url,
+            dataType : 'json'
+        }).done(function(data, statusText, resObject) {
+            var jsonData = resObject.responseJSON;
+            var chart = new Chart($('#chart'), jsonData);
+        });
+    }
+
 });

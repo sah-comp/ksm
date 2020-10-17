@@ -22,11 +22,11 @@ class Model_Artstat extends Model
      */
     public function dispense()
     {
-        $this->stamp = time();
+        $this->stamp = date('Y-m-d H:i:s');
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
     }
-    
+
     /**
      * Update.
      */

@@ -130,6 +130,17 @@ class Model_Article extends Model
     }
 
     /**
+     * Returns an array of path to js files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectJS()
+    {
+        return ['/js/Chart.bundle.min'];
+    }
+
+    /**
      * Return the supplier bean.
      *
      * @return object
