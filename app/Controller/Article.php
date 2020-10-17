@@ -80,7 +80,7 @@ class Controller_Article extends Controller
                 ],
                 'tooltips' => [
                     'mode' => 'index',
-                    'interset' => false,
+                    'intersect' => false,
                     'backgroundColor' => '#666666'
                 ],
                 'hover' => [
