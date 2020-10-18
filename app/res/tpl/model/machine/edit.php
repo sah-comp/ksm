@@ -308,8 +308,8 @@
             <div class="span3">
                 <input
                     id="machine-forkmaxheight"
-                    class="autowidth"
-                    type="number"
+                    class="autowidth number"
+                    type="text"
                     name="dialog[forkmaxheight]"
                     value="<?php echo htmlspecialchars($record->forkmaxheight) ?>"/>
             </div>
