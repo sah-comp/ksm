@@ -146,6 +146,25 @@ textarea[disabled=disabled] {
 /**
  * Service appointment table width settings.
  */
+table.service tbody tr {
+    border-left: 3px solid transparent;
+}
+
+/**
+ * These classes are indicating if an appointment is overdue or due today or later.
+ */
+table.service tbody tr.overdue {
+    border-left-color: red;
+}
+
+table.service tbody tr.today {
+    border-left-color: orange;
+}
+
+table.service tbody tr.coming-up {
+    border-left-color: green;
+}
+
 th.date {
     width: 9rem;
 }

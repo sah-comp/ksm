@@ -34,10 +34,12 @@
             $_person = $_record->getPerson();
             $_machine = $_record->getMachine();
             $_location = $_record->getLocation();
+            $_timecheck = $_record->isOverdue();
         ?>
                 <tr
                     id="bean-<?php echo $_record->getId() ?>"
-                    data-sort="<?php echo $_record->sortorder() ?>">
+                    data-sort="<?php echo $_record->sortorder() ?>"
+                    class="<?php echo $_timecheck ?>">
                     <td>
                         <a
                             class="ir action action-edit"

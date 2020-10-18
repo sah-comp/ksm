@@ -42,7 +42,8 @@ class Controller_Enpassant extends Controller
                 'okay' => true,
                 'bean' => 'bean-' . $bean->getId(),
                 'sortorder' => $bean->sortorder(),
-                'woy' => htmlspecialchars($bean->localizedDate('date', '%V'))
+                'woy' => $bean->weekofyear(),
+                'trclass' => $bean->isOverdue()
             ];
         } catch (Exception $e) {
             error_log($e);

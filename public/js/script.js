@@ -190,6 +190,7 @@ $('body').ready(function() {
             //console.log(data.bean);
             if (data.okay) {
                 $("#" + data.bean).attr('data-sort', data.sortorder);
+                $('#' + data.bean).attr('class', data.trclass);
                 $('#week-' + data.bean).html(data.woy);
 
                 // reorder the table: this works, but looses the focus on the line and element

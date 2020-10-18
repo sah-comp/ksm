@@ -176,6 +176,36 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Return wether the appointment date is overdue or not.
+     *
+     * @return bool
+     */
+    public function isOverdue()
+    {
+        if (!$this->bean->getId()) {
+            return '';
+        }
+        if ($this->bean->getId() && (strtotime($this->bean->date . ' ' . $this->bean->starttime) < time())) {
+            return 'overdue';
+        }
+        if ($this->bean->getId() && (date('Y-m-d', strtotime($this->bean->date)) == date('Y-m-d', time()))) {
+            return 'today';
+        }
+        return 'coming-up';
+    }
+
+    /**
+     * Return a html fragement with the week of year for the service list.
+     *
+     * @return string
+     */
+    public function weekofyear()
+    {
+        //$class = $this->bean->isOverdue();
+        return htmlspecialchars($this->bean->localizedDate('date', '%V'));
+    }
+
+    /**
      * Returns a string which allows ordering in a frontend table view.
      *
      * @return string
