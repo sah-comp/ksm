@@ -21,14 +21,15 @@
 <!-- End of notifications -->
 <?php endif ?>
 <article class="main">
-    <header>
-		<h1><?php echo I18n::__('login_h1') ?></h1>
-    </header>
     <form
         id="form-login"
         class="panel login"
         method="POST"
         accept-charset="utf-8">
+
+        <header>
+            <h1><a class="ir" href="/"><?php echo I18n::__('ksm_logo') ?></a></h1>
+        </header>
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
 

@@ -1,3 +1,54 @@
 /**
  * Default stlyes
  */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+body {
+    background-image: url(/img/ksm_home.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.ir {
+    display: block;
+    border: 0;
+    text-indent: -999em;
+    overflow: hidden;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    text-align: left;
+    direction: ltr;
+    *line-height: 0;
+}
+
+.ir br {
+    display: none;
+}
+
+/* Hide only visually, but have it available for screenreaders: h5bp.com/v */
+.visuallyhidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+header h1 a {
+    display: block;
+    width: 100%;
+    height: 120px;
+    background-repeat: no-repeat;
+    background-image: url(/img/logo-ksm.png);
+    background-size: 363px 120px;
+    background-position: center;
+}

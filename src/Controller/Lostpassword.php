@@ -71,7 +71,7 @@ class Controller_Lostpassword extends Controller
         Flight::render('html5', array(
             'title' => I18n::__("lostpassword_head_title"),
             'language' => Flight::get('language'),
-            'stylesheets' => array('custom', 'default')
+            'stylesheets' => array('default')
         ));
     }
 }

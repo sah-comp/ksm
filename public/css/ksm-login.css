@@ -1,0 +1,9 @@
+/* Nicer login form */
+form.panel.login {
+    margin-top: 10em;
+    margin-left: calc(50% - 240px);
+    height: 320px;
+    width: 480px;
+    padding-top: 2em;
+    background-color: rgba(244, 244, 244, 0.95);
+}
