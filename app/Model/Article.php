@@ -263,7 +263,7 @@ SQL;
             }
         }
         // if the price has changed, we record it in our article statistics.
-        if ($this->bean->purchaseprice != $this->bean->old('purchaseprice')) {
+        if ($this->bean->getId() && ($this->bean->purchaseprice != $this->bean->old('purchaseprice'))) {
             $artstat = R::dispense('artstat');
             $artstat->salesprice = $this->bean->old('salesprice');
             $artstat->purchaseprice = $this->bean->old('purchaseprice');
