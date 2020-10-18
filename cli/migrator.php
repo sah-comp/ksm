@@ -108,6 +108,7 @@ class Migrator
         $this->seeding();
 
         // Migration from the backup SQL of the legacy application
+
         $this->migrateLanguages();
         $this->migrateMachineBrands();
         $this->migrateMachines();
@@ -305,6 +306,9 @@ class Migrator
                 return true;
             },
             'appointmenttype' => function () {
+                return null;
+            },
+            'location' => function () {
                 return null;
             }
         ]);
@@ -2099,12 +2103,14 @@ class Migrator
             $record->confirmed = $this->prettyBool($legacy_record['confirmed']);
 
             $record->note = $this->prettyValue($legacy_record['notes']);
-            $record->interval = $this->prettyValue($legacy_record['interval']);
+            $record->interval = $this->prettyInt($legacy_record['interval']);
             $record->rescheduled = $this->prettyBool($legacy_record['rescheduled']);
 
             $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
             $record->contact = $this->findByLegacyIdOrDispense('contact', $legacy_record['contact_id']);
+
+            $record->location = $this->findByLegacyIdOrDispense('location', $legacy_record['location_id']);
 
             // gather the name of the user from the legacy db and store the name, if given
             R::selectDatabase('legacy');
@@ -2239,6 +2245,17 @@ class Migrator
             return '';
         }
         return $value;
+    }
+
+    /**
+     * Returns a integer
+     *
+     * @param mixed
+     * @return int
+     */
+    public function prettyInt($value)
+    {
+        return (int)$value;
     }
 
     /**
