@@ -273,6 +273,7 @@ class Migrator
             'startdate' => 'date()',
             'enddate' => 'date()',
             'signdate' => 'date()',
+            'signedon' => 'date()',
             'terminationdate' => 'date()',
             'number' => 'string(1, 68)'
         ]);

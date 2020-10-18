@@ -76,7 +76,8 @@ class Controller_Contract extends Controller
         'contract.enddate' => 'localizedDate',
         'location.name' => '',
         'company.city' => '',
-        'contract.signdate' => 'localizedDate'
+        'contract.signdate' => 'localizedDate',
+        'contract.signedon' => 'localizedDate'
     ];
 
     /**
