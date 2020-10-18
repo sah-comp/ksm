@@ -162,12 +162,21 @@ th.fix {
     width: 2rem;
 }
 
+th.receipt {
+    width: 5rem;
+}
+
 th.location {
     width: 6rem;
 }
 
 th.machine-internalnumber {
     width: 4rem;
+}
+
+.panel td.minor {
+    font-size: smaller;
+    color: gray;
 }
 
 .panel a.in-table {

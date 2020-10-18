@@ -66,6 +66,19 @@ class Model_Appointment extends Model
                 'width' => '4rem'
             ],
             [
+                'name' => 'receipt',
+                'sort' => [
+                    'name' => 'appointment.receipt'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'width' => '7rem'
+            ],
+            [
                 'name' => 'appointmenttype.name',
                 'sort' => [
                     'name' => 'appointmenttype.name'
@@ -77,6 +90,16 @@ class Model_Appointment extends Model
                     'tag' => 'text'
                 ],
                 'width' => '7rem'
+            ],
+            [
+                'name' => 'worker',
+                'sort' => [
+                    'name' => 'appointment.worker'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '4rem'
             ],
             [
                 'name' => 'person.name',

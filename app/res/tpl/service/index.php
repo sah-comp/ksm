@@ -17,6 +17,8 @@
                     <th class="time"><?php echo I18n::__('appointment_label_starttime') ?></th>
                     <th class="week number"><?php echo I18n::__('appointment_label_woy') ?></th>
                     <th class="fix"><?php echo I18n::__('appointment_label_fix') ?></th>
+                    <th class="receipt"><?php echo I18n::__('appointment_label_receipt') ?></th>
+                    <th class="worker"><?php echo I18n::__('appointment_label_worker') ?></th>
                     <th class="person"><?php echo I18n::__('appointment_label_person') ?></th>
                     <th class="location"><?php echo I18n::__('appointment_label_location') ?></th>
                     <th class="machine"><?php echo I18n::__('appointment_label_machine') ?></th>
@@ -77,6 +79,18 @@
                             value="1"
                             <?php echo ($_record->fix) ? 'checked="checked"' : '' ?> />
                     </td>
+                    <td class="minor">
+                        <?php echo htmlspecialchars($_record->receipt) ?>
+                    </td>
+                    <td>
+                        <input
+                            id="<?php echo $_type ?>-<?php echo $_id ?>-worker"
+                            name="worker"
+                            type="text"
+                            class="enpassant"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'worker']) ?>"
+                            value="<?php echo htmlspecialchars($_record->worker) ?>" />
+                    </td>
                     <td>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
@@ -84,7 +98,7 @@
                             <?php echo htmlspecialchars($_person->name) ?>
                         </a>
                     </td>
-                    <td>
+                    <td class="minor">
                         <?php echo htmlspecialchars($_location->name) ?>
                     </td>
                     <td>
@@ -94,10 +108,10 @@
                             <?php echo htmlspecialchars($_machine->name) ?>
                         </a>
                     </td>
-                    <td>
+                    <td class="minor">
                         <?php echo htmlspecialchars($_machine->serialnumber) ?>
                     </td>
-                    <td>
+                    <td class="minor">
                         <?php echo htmlspecialchars($_machine->internalnumber) ?>
                     </td>
                     <td>

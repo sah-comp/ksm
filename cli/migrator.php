@@ -257,6 +257,8 @@ class Migrator
             'starttime' => 'time()',
             'endtime' => 'time()',
             'duration' => 'word(1, 5)',
+            'worker' => 'string(1, 32)',
+            'invoice' => 'string(1, 32)',
             'terminationdate' => 'date()',
             'fix' => function () {
                 return true;
@@ -2008,6 +2010,7 @@ class Migrator
             $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
 
             $record->date = $this->prettyDate($legacy_record['date']);
+            $record->receipt = $this->prettyDate($legacy_record['created_at']);
             $record->starttime = $this->prettyTime($legacy_record['start_time']);
             $record->endtime = $this->prettyTime($legacy_record['end_time']);
             $record->duration = $this->prettyValue($legacy_record['duration']);//in hours
@@ -2024,6 +2027,12 @@ class Migrator
             $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
             $record->contact = $this->findByLegacyIdOrDispense('contact', $legacy_record['contact_id']);
+
+            // gather the name of the user from the legacy db and store the name, if given
+            R::selectDatabase('legacy');
+            $user_name = R::getCell("SELECT name FROM user WHERE user_id = ? LIMIT 1", [$legacy_record['user_id']]);
+            R::selectDatabase('legacy');
+            $record->worker = $this->prettyValue($user_name);
 
             // gather the machine_id from contract_machine from legacy database
             R::selectDatabase('legacy');

@@ -21,7 +21,7 @@
     <legend class="verbose"><?php echo I18n::__('appointment_legend_date') ?></legend>
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
-        <div class="span3">
+        <div class="span2">
             <label
                 for="appointment-date"
                 class="<?php echo ($record->hasError('date')) ? 'error' : ''; ?>">
@@ -42,17 +42,24 @@
                 <?php echo I18n::__('appointment_label_confirmed') ?>
             </label>
         </div>
-        <div class="span2">
+        <div class="span1">
             <label
                 for="appointment-completed"
                 class="<?php echo ($record->hasError('completed')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('appointment_label_completed') ?>
             </label>
         </div>
+        <div class="span2">
+            <label
+                for="appointment-invoice"
+                class="<?php echo ($record->hasError('invoice')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('appointment_label_invoice') ?>
+            </label>
+        </div>
     </div>
     <div class="row">
         <div class="span3">&nbsp;</div>
-        <div class="span3">
+        <div class="span2">
             <input
                 id="appointment-date"
                 class="autowidth"
@@ -61,6 +68,7 @@
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->date) ?>"
                 required="required" />
+                <p class="info"><?php echo I18n::__('appointment_info_date', null, [$record->localizedDate('receipt')]) ?></p>
         </div>
         <div class="span2">
             <select
@@ -80,7 +88,7 @@
                 <option value="1" <?php echo ($record->confirmed == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('appointment_label_option_true') ?></option>
             </select>
         </div>
-        <div class="span2">
+        <div class="span1">
             <select
                 id="appointment-completed"
                 class="autowidth"
@@ -88,6 +96,14 @@
                 <option value="0" <?php echo ($record->completed == 0) ? 'selected="selected"' : '' ?>><?php echo I18n::__('appointment_label_option_false') ?></option>
                 <option value="1" <?php echo ($record->completed == 1) ? 'selected="selected"' : '' ?>><?php echo I18n::__('appointment_label_option_true') ?></option>
             </select>
+        </div>
+        <div class="span2">
+            <input
+                id="appointment-invoice"
+                class="autowidth"
+                type="text"
+                name="dialog[invoice]"
+                value="<?php echo htmlspecialchars($record->invoice) ?>">
         </div>
     </div>
 
@@ -188,6 +204,18 @@
 </fieldset>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('appointment_legend_customer') ?></legend>
+
+    <div class="row <?php echo ($record->hasError('worker')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-worker">
+            <?php echo I18n::__('appointment_label_worker') ?>
+        </label>
+        <input
+            id="appointment-worker"
+            type="text"
+            name="dialog[worker]"
+            value="<?php echo htmlspecialchars($record->worker) ?>" />
+    </div>
 
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
