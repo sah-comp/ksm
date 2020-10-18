@@ -90,7 +90,7 @@
             <input
                 id="machine-buildyear"
                 class="number autowidth"
-                type="number"
+                type="text"
                 name="dialog[buildyear]"
                 value="<?php echo htmlspecialchars($record->buildyear) ?>" />
         </div>
@@ -98,7 +98,7 @@
             <input
                 id="machine-workinghours"
                 class="number autowidth"
-                type="number"
+                type="text"
                 name="dialog[workinghours]"
                 value="<?php echo htmlspecialchars($record->workinghours) ?>" />
         </div>
