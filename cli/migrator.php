@@ -109,13 +109,13 @@ class Migrator
 
         // Migration from the backup SQL of the legacy application
         $this->migrateLanguages();
+        $this->migrateMachineBrands();
+        $this->migrateMachines();
         $this->migrateClients();
         $this->migrateContacts();
         $this->migrateContactinfo();
         $this->migrateVehiclesBrands();
         $this->migrateVehicles();
-        $this->migrateMachineBrands();
-        $this->migrateMachines();
         $this->migrateMachineDocuments();
         $this->migrateSuppliers();
         $this->migrateArticles();
@@ -187,25 +187,36 @@ class Migrator
      */
     public function seeding()
     {
+        $v = false;
         if ($this->args['--verbose']) {
+            $v = true;
             // we are being verbose.
             echo "\nPrepare essential beans and attributes.\n";
         }
 
         R::selectDatabase('default');
 
+        if ($v) {
+            echo "\nPrepare appointmenttype.\n";
+        }
         R::seed('appointmenttype', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)',
             'color' => 'string(1, 68)'
         ]);
 
+        if ($v) {
+            echo "Prepare artifact.\n";
+        }
         R::seed('artifact', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)',
             'filename' => 'string(1, 256)'
         ]);
 
+        if ($v) {
+            echo "Prepare art(icle)stat(istic).\n";
+        }
         R::seed('artstat', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'stamp' => 'datetime()',
@@ -217,6 +228,9 @@ class Migrator
             }
         ]);
 
+        if ($v) {
+            echo "Prepare contract.\n";
+        }
         R::seed('contact', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 10)',
@@ -224,23 +238,35 @@ class Migrator
             'jobdescription' => 'word(1, 5)'
         ]);
 
+        if ($v) {
+            echo "Prepare contactinfo.\n";
+        }
         R::seed('contactinfo', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'label' => 'string(1, 68)',
             'value' => 'string(1, 68)'
         ]);
 
+        if ($v) {
+            echo "Prepare location.\n";
+        }
         R::seed('location', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 68)'
         ]);
 
+        if ($v) {
+            echo "Prepare contracttype.\n";
+        }
         R::seed('contracttype', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'string(1, 68)',
             'text' => 'word(1, 365)'
         ]);
 
+        if ($v) {
+            echo "Prepare contract.\n";
+        }
         R::seed('contract', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'startdate' => 'date()',
@@ -250,6 +276,9 @@ class Migrator
             'number' => 'string(1, 68)'
         ]);
 
+        if ($v) {
+            echo "Prepare appointment.\n";
+        }
         R::seed('appointment', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'date' => 'date()',
@@ -274,9 +303,15 @@ class Migrator
             'interval' => 'integer(1, 365)',
             'rescheduled' => function () {
                 return true;
+            },
+            'appointmenttype' => function () {
+                return null;
             }
         ]);
 
+        if ($v) {
+            echo "Prepare article.\n";
+        }
         R::seed('article', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'isfilter' => function () {
@@ -295,15 +330,46 @@ class Migrator
             'lastchange' => 'date()'
         ]);
 
+        if ($v) {
+            echo "Prepare machine.\n";
+        }
         R::seed('machine', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)',
             'serialnumber' => 'word(1, 5)',
             'internalnumber' => 'word(1, 5)',
             'buildyear' => 'string(1, 68)',
-            'lastservice' => 'date()'
+            'lastservice' => 'date()',
+            'forkmaxheight' => 'word(1, 3)',
+            'drivingcost' => 'word(1, 3)',
+            'hourlyrate' => 'word(1, 3)',
+            'specialagreement' => 'word(1, 15)',
+            'note' => 'word(1, 15)',
+            'battery' => 'word(1, 3)',
+            'controltype' => 'word(1, 3)',
+            'backtires' => 'word(1, 3)',
+            'fronttires' => 'word(1, 3)',
+            'keynumber' => 'word(1, 3)',
+            'mixer' => 'word(1, 3)',
+            'shutdownvalve' => 'word(1, 3)',
+            'controlvalve' => 'word(1, 3)',
+            'motorserialnumber' => 'word(1, 3)',
+            'motor' => 'word(1, 3)',
+            'attachmentserialnumber' => 'word(1, 3)',
+            'attachmenttype' => 'word(1, 3)',
+            'attachment' => 'word(1, 3)',
+            'mastserialnumber' => 'word(1, 3)',
+            'masttype' => 'word(1, 3)',
+            'maxload' => 'word(1, 3)',
+            'height' => 'word(1, 3)',
+            'weight' => 'word(1, 3)',
+            'forks' => 'word(1, 3)',
+            'workinghours' => 'word(1, 3)'
         ]);
 
+        if ($v) {
+            echo "Prepare installedpart.\n";
+        }
         R::seed('installedpart', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'stamp' => 'date()',
@@ -315,21 +381,33 @@ class Migrator
             }
         ]);
 
+        if ($v) {
+            echo "Prepare machinebrand.\n";
+        }
         R::seed('machinebrand', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)'
         ]);
 
+        if ($v) {
+            echo "Prepare supplier.\n";
+        }
         R::seed('supplier', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)'
         ]);
 
+        if ($v) {
+            echo "Prepare vehiclebrand.\n";
+        }
         R::seed('vehiclebrand', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)'
         ]);
 
+        if ($v) {
+            echo "Prepare vehicle.\n";
+        }
         R::seed('vehicle', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'word(1, 5)',
@@ -1481,12 +1559,12 @@ class Migrator
             $record->backtires = $this->prettyValue($legacy_record['back_tires']);
             $record->controltype = $this->prettyValue($legacy_record['control_type']);
             $record->battery = $this->prettyValue($legacy_record['battery']);
-            $record->lastservice = $this->prettyValue($legacy_record['last_served_at']);
+            $record->lastservice = $this->prettyDate($legacy_record['last_served_at']);
             $record->note = $this->prettyValue($legacy_record['notes']);
             $record->specialagreement = $this->prettyValue($legacy_record['special_agreement']);
             $record->hourlyrate = $this->prettyValue($legacy_record['hourly_rates']);
             $record->drivingcost = $this->prettyValue($legacy_record['driving_costs']);
-            $record->masterdata = $this->prettyValue($legacy_record['master_data']);
+            $record->masterdata = $this->prettyBool($legacy_record['master_data']);
 
             $record->legacyid = $legacy_record['id'];
             R::store($record);
@@ -1634,8 +1712,8 @@ class Migrator
             $record = R::dispense('article');
             $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
 
-            $record->isfilter = $this->prettyValue($legacy_record['is_filter']);
-            $record->isoriginal = $this->prettyValue($legacy_record['is_original']);
+            $record->isfilter = $this->prettyBool($legacy_record['is_filter']);
+            $record->isoriginal = $this->prettyBool($legacy_record['is_original']);
             $record->number = $this->prettyValue($legacy_record['number']);
             $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
@@ -1691,7 +1769,7 @@ class Migrator
 
             $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
-            $record->stamp = date('Y-m-d H:i:s', strtotime($legacy_record['updated_at']));
+            $record->stamp = $this->prettyDatetime($legacy_record['updated_at']);
 
             $record->article = $this->findByLegacyIdOrDispense('article', $legacy_record['article_id']);
 
@@ -1743,7 +1821,7 @@ class Migrator
 
             $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
-            $record->stamp = date('Y-m-d', strtotime($legacy_record['installed_at']));
+            $record->stamp = $this->prettyDate($legacy_record['installed_at']);
 
             $record->article = $this->findByLegacyIdOrDispense('article', $legacy_record['article_id']);
             $record->machine = $this->findByLegacyIdOrDispense('machine', $legacy_record['machine_id']);
@@ -1756,7 +1834,7 @@ class Migrator
 
             if ($this->args['--verbose']) {
                 // we are being verbose.
-                echo($index + 1) . ". Migrated article \"{$record->article->number}\" as part of machine {$record->machine->name}\n";
+                echo($index + 1) . ". Migrated article \"{$record->article->number}\" as part of machine \"{$record->machine->name}\"\n";
             } else {
                 echo '.';
             }
@@ -2164,6 +2242,20 @@ class Migrator
     }
 
     /**
+     * Returns either true or false
+     *
+     * @param mixed
+     * @return bool
+     */
+    public function prettyBool($value)
+    {
+        if ($value === null || $value == '' || !$value) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Return empty date instead of NULL. If not NULL it returns the original value.
      *
      * @param mixed
@@ -2172,9 +2264,23 @@ class Migrator
     public function prettyDate($value)
     {
         if ($value === null || $value == '' || !$value) {
-            return '0000-00-00 00:00:00';
+            return null;
         }
-        return $value;
+        return date('Y-m-d', strtotime($value));
+    }
+
+    /**
+     * Return empty date instead of NULL. If not NULL it returns the original value.
+     *
+     * @param mixed
+     * @return string
+     */
+    public function prettyDatetime($value)
+    {
+        if ($value === null || $value == '' || !$value) {
+            return null;
+        }
+        return date('Y-m-d H:i:s', strtotime($value));
     }
 
     /**
@@ -2186,9 +2292,9 @@ class Migrator
     public function prettyTime($value)
     {
         if ($value === null || $value == '' || !$value) {
-            return '00:00:00';
+            return null;
         }
-        return $value;
+        return date('H:i:s', strtotime($value));
     }
 }
 
