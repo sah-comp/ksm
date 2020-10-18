@@ -239,24 +239,24 @@
             <div class="span3">
                 <input
                     id="machine-weight"
-                    class="autowidth"
-                    type="number"
+                    class="autowidth number"
+                    type="text"
                     name="dialog[weight]"
                     value="<?php echo htmlspecialchars($record->weight) ?>"/>
             </div>
             <div class="span3">
                 <input
                     id="machine-height"
-                    class="autowidth"
-                    type="number"
+                    class="autowidth number"
+                    type="text"
                     name="dialog[height]"
                     value="<?php echo htmlspecialchars($record->height) ?>"/>
             </div>
             <div class="span3">
                 <input
                     id="machine-maxload"
-                    class="autowidth"
-                    type="number"
+                    class="autowidth number"
+                    type="text"
                     name="dialog[maxload]"
                     value="<?php echo htmlspecialchars($record->maxload) ?>"/>
             </div>
