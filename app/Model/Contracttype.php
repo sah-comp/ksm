@@ -53,7 +53,6 @@ class Model_Contracttype extends Model
     public function dispense()
     {
         $this->addValidator('name', [
-            new Validator_HasValue(),
             new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
         ]);
     }
