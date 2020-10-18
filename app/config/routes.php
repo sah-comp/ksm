@@ -22,14 +22,20 @@ Flight::route('(/@language:[a-z]{2})/*', function ($language) {
 
 /**
  * Top level url routes to either '/' domain or the welcome controller jumps in.
+ *
+ * For KSM application the homepage is set to "none". That is the reason why
+ * the welcome controller kicks in an instead of showing the default welcome
+ * page it will redirect to /admin/appointment. When the user is not logged in
+ * the login page is called. Voila, why do it easy?
  */
 Flight::route('(/[a-z]{2})/', function () {
     if (Flight::setting()->homepage) {
         $cmsController = new Controller_Cms();
         $cmsController->frontend(R::load('domain', Flight::setting()->homepage));
     } else {
-        $welcomeController = new Controller_Welcome();
-        $welcomeController->index();
+        // This is what will run if you are not logged in a open the top level page.
+        $ksmController = new Controller_Welcome();
+        $ksmController->redirect('/admin/appointment');
     }
 });
 
