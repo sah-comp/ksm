@@ -25,7 +25,9 @@ class Converter_Mysqltime extends Converter
      */
     public function convert($value)
     {
-        if ( ! $value || empty($value) || $value == '00:00:00') return NULL;
+        if (! $value || empty($value) || $value == '00:00:00') {
+            return null;
+        }
         return date('H:i:s', strtotime($value));
     }
 }

@@ -25,7 +25,9 @@ class Converter_Mysqldatetime extends Converter
      */
     public function convert($value)
     {
-        if ( ! $value || empty($value) || $value == '0000-00-00 00:00:00') return NULL;
+        if (! $value || empty($value) || $value == '0000-00-00 00:00:00') {
+            return null;
+        }
         return date('Y-m-d H:i:s', strtotime($value));
     }
 }
