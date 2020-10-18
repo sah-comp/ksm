@@ -2094,13 +2094,13 @@ class Migrator
             $record->duration = $this->prettyValue($legacy_record['duration']);//in hours
             $record->terminationdate = $this->prettyDate($legacy_record['deleted_at']);
 
-            $record->fix = $this->prettyValue($legacy_record['fix']);
-            $record->completed = $this->prettyValue($legacy_record['completed']);
-            $record->confirmed = $this->prettyValue($legacy_record['confirmed']);
+            $record->fix = $this->prettyBool($legacy_record['fix']);
+            $record->completed = $this->prettyBool($legacy_record['completed']);
+            $record->confirmed = $this->prettyBool($legacy_record['confirmed']);
 
             $record->note = $this->prettyValue($legacy_record['notes']);
             $record->interval = $this->prettyValue($legacy_record['interval']);
-            $record->rescheduled = $this->prettyValue($legacy_record['rescheduled']);
+            $record->rescheduled = $this->prettyBool($legacy_record['rescheduled']);
 
             $record->person = $this->findByLegacyIdOrDispense('person', $legacy_record['client_id']);
 
