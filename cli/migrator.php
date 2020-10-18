@@ -383,7 +383,8 @@ class Migrator
             },
             'salesprice' => function () {
                 return (float)78.123;
-            }
+            },
+            'clairvoyant' => 'word(1, 10)'
         ]);
 
         if ($v) {
