@@ -183,7 +183,7 @@ class Model_Article extends Model
      * @param string (optional) $query The prepared query or SQL to use for search
      * @return array
      */
-    public function clairvoyant($searchtext, $query = 'default')
+    public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
         switch ($query) {
             default:
@@ -201,6 +201,7 @@ class Model_Article extends Model
                     article.description LIKE :searchtext
                 ORDER BY
                     article.number
+                LIMIT {$limit}
 SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));

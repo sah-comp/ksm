@@ -11,11 +11,12 @@
 function initAutocompletes() {
     $('.autocomplete').each(function(index, element) {
         //console.log('Init autocomplete');
-        var spread = $(this).attr('data-spread'); // holds key/value array with ids and item attrs
+        var spread = $(this).attr('data-spread'); // The URL to perform the search
+        //var extra = $(this).attr('data-extra'); // An extra parameter to give to the search url (optional)
         $(this).autocomplete({
-            'minLength': 2,
+            'minLength': 1,
             'autoFocus': false,
-            'delay': 500,
+            'delay': 300,
             'source': $(this).attr('data-source'),
             focus: function( event, ui) {
                 dispatchValues(spread, ui);
@@ -24,6 +25,13 @@ function initAutocompletes() {
             select: function( event, ui ) {
                 dispatchValues(spread, ui);
                 return false;
+            },
+            search: function( event, ui ) {
+                /*
+                if (extra) {
+                    console.log('Extra parameter ' + extra + ' = ' + $('#' + extra).val());
+                }
+                */
             }
         });
     });

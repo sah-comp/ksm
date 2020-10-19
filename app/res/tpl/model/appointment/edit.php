@@ -265,6 +265,7 @@
             name="dialog[machine][name]"
             class="autocomplete"
             data-source="<?php echo Url::build('/autocomplete/machine/name/?callback=?') ?>"
+            data-extra="appointment-person-id"
             data-spread='<?php
                 echo json_encode([
                     'appointment-machine-name' => 'value',

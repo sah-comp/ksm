@@ -45,7 +45,7 @@ class Model_Contact extends Model
      * @param string (optional) $query The prepared query or SQL to use for search
      * @return array
      */
-    public function clairvoyant($searchtext, $query = 'default')
+    public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
         switch ($query) {
             default:
@@ -60,6 +60,7 @@ class Model_Contact extends Model
                     contact.name LIKE :searchtext
                 ORDER BY
                     contact.name
+                LIMIT {$limit}
 SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));

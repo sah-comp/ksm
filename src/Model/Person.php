@@ -117,7 +117,7 @@ class Model_Person extends Model
      * @param string (optional) $query The prepared query or SQL to use for search
      * @return array
      */
-    public function clairvoyant($searchtext, $query = 'default')
+    public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
         switch ($query) {
             default:
@@ -135,6 +135,7 @@ class Model_Person extends Model
                     person.email LIKE :searchtext
                 ORDER BY
                     person.name
+                LIMIT {$limit}
     SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
