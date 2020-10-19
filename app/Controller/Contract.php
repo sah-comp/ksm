@@ -76,8 +76,7 @@ class Controller_Contract extends Controller
         'contract.enddate' => 'localizedDate',
         'location.name' => '',
         'company.city' => '',
-        'contract.signdate' => 'localizedDate',
-        'contract.signedon' => 'localizedDate'
+        'contract.signdate' => 'localizedDate'
     ];
 
     /**
@@ -138,6 +137,9 @@ class Controller_Contract extends Controller
                 $replacetext = $this->{$bean}->{$callback}($attribute);
             } else {
                 $replacetext = $this->{$bean}->{$attribute};
+            }
+            if (empty($replacetext)) {
+                $replacetext = I18n::__('contract_replacetext_empty');
             }
             $this->text = str_replace("{{".$searchtext."}}", $replacetext, $this->text);
         }

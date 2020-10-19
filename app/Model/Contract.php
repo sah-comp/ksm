@@ -171,6 +171,9 @@ class Model_Contract extends Model
      */
     public function localizedUnit($option)
     {
+        if (empty($this->bean->unit)) {
+            return '';
+        }
         return I18n::__('contract_unit_' . $this->bean->unit);
     }
 
@@ -324,7 +327,7 @@ class Model_Contract extends Model
     {
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
-        $this->addConverter('signedon', new Converter_Mysqldate());
+        $this->addConverter('signdate', new Converter_Mysqldate());
     }
 
     /**

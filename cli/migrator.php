@@ -262,7 +262,7 @@ class Migrator
         R::seed('contracttype', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'string(1, 68)',
-            'text' => 'word(1, 365)'
+            'text' => 'word(1, 4000)'
         ]);
 
         if ($v) {
@@ -273,7 +273,6 @@ class Migrator
             'startdate' => 'date()',
             'enddate' => 'date()',
             'signdate' => 'date()',
-            'signedon' => 'date()',
             'terminationdate' => 'date()',
             'number' => 'string(1, 68)'
         ]);
@@ -2112,7 +2111,7 @@ class Migrator
 
             $record->contact = $this->findByLegacyIdOrDispense('contact', $legacy_record['contact_id']);
 
-            $record->location = $this->findByLegacyIdOrDispense('location', $legacy_record['location_id']);
+            //$record->location = $this->findByLegacyIdOrDispense('location', $legacy_record['location_id']);
 
             // gather the name of the user from the legacy db and store the name, if given
             R::selectDatabase('legacy');

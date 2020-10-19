@@ -230,9 +230,20 @@ SQL;
 
     /**
      * Update.
+     *
+     * @todo When a machine entry is edited in the frontend a blank installedpart is
+     * added when there are not any installedparts yet. Because RB tries to relate
+     * the installedpart beans it will fail, if no article was selected as installedpart.
+     * For this reason we check if there art empty article records and if there are any, we
+     * unset them.
      */
     public function update()
     {
+        foreach ($this->bean->ownInstalledpart as $id => $installedpart) {
+            if (!$installedpart->getId() && !$installedpart->clairvoyant) {
+                unset($this->bean->ownInstalledpart[$id]); // this is most likely a blank article, just nill
+            }
+        }
         parent::update();
     }
 }
