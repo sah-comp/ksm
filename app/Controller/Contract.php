@@ -104,10 +104,12 @@ class Controller_Contract extends Controller
      */
     public function pdf()
     {
+        $filename = I18n::__('contract_pdf_filename', null, [$this->contract->getFilename()]);
+        $docname = I18n::__('contract_pdf_docname', null, [$this->contract->getDocname()]);
         $this->text = $this->substitute();
         $mpdf = new mPDF('c', 'A4');
-        $mpdf->SetTitle('Contract');
-        $mpdf->SetAuthor('KSM');
+        $mpdf->SetTitle($docname);
+        $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
         ob_start();
         Flight::render('model/contract/contract/contract', [
@@ -117,7 +119,7 @@ class Controller_Contract extends Controller
         $html = ob_get_contents();
         ob_end_clean();
         $mpdf->WriteHTML($html);
-        $mpdf->Output('ksm-contract.pdf', 'D');
+        $mpdf->Output($filename, 'D');
         exit;
     }
 

@@ -53,6 +53,18 @@ class Model_Contract extends Model
                 'width' => '10rem'
             ],
             [
+                'name' => 'contracttype.name',
+                'sort' => [
+                    'name' => 'contracttype.name'
+                ],
+                'callback' => [
+                    'name' => 'contracttypeName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
+            ],
+            [
                 'name' => 'person.name',
                 'sort' => [
                     'name' => 'person.name'
@@ -71,6 +83,18 @@ class Model_Contract extends Model
                 ],
                 'callback' => [
                     'name' => 'machineName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
+            ],
+            [
+                'name' => 'machine.serialnumber',
+                'sort' => [
+                    'name' => 'machine.serialnumber'
+                ],
+                'callback' => [
+                    'name' => 'machineSerialnumber'
                 ],
                 'filter' => [
                     'tag' => 'text'
@@ -103,6 +127,30 @@ class Model_Contract extends Model
                 'width' => '8rem'
             ]
         ];
+    }
+
+    /**
+     * Returns a string that will work as a filename for contract as PDF.
+     *
+     * @return string
+     */
+    public function getFilename()
+    {
+        $stack = [];
+        $stack[] = $this->bean->contracttypeName();
+        $stack[] = $this->bean->number;
+        $stack[] = $this->bean->person->nickname;
+        return trim(implode('-', $stack));
+    }
+
+    /**
+     * Returns a string that will work as a title of contract.
+     *
+     * @return string
+     */
+    public function getDocname()
+    {
+        return $this->bean->getFilename();
     }
 
     /**
@@ -186,6 +234,16 @@ class Model_Contract extends Model
     }
 
     /**
+     * Returns the serialnumber of the machine.
+     *
+     * @return string
+     */
+    public function machineSerialnumber()
+    {
+        return $this->bean->getMachine()->serialnumber;
+    }
+
+    /**
      * Return the contracttype bean.
      *
      * @return RedbeanPHP\OODBBean
@@ -239,6 +297,8 @@ class Model_Contract extends Model
             {$fields}
         FROM
             {$this->bean->getMeta('type')}
+        LEFT JOIN
+            contracttype ON contracttype.id = contract.contracttype_id
         LEFT JOIN
             person ON person.id = contract.person_id
         LEFT JOIN
