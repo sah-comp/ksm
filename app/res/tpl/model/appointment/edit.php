@@ -345,4 +345,20 @@
         <p class="info"><?php echo I18n::__('appointment_info_note') ?></p>
     </div>
 </fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('appointment_legend_interval') ?></legend>
+    <div class="row <?php echo ($record->hasError('interval')) ? 'error' : ''; ?>">
+        <label
+            for="appointment-interval">
+            <?php echo I18n::__('appointment_label_interval') ?>
+        </label>
+        <input
+            id="appointment-interval"
+            class="number"
+            type="text"
+            name="dialog[interval]"
+            value="<?php echo htmlspecialchars($record->decimal('interval', 0)) ?>" />
+        <p class="info"><?php echo I18n::__('appointment_info_interval') ?></p>
+    </div>
+</fieldset>
 <!-- end of appointment edit form -->
