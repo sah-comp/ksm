@@ -14,10 +14,15 @@
  * Define database settings.
  */
 define('CINNEBAR_DB_HOST', 'localhost');
-define('CINNEBAR_DB_NAME', 'db0815');
+define('CINNEBAR_DB_NAME', 'database');
 define('CINNEBAR_DB_USER', 'root');
 define('CINNEBAR_DB_PASSWORD', 'secret');
-define('CINNEBAR_DB_FREEZE_FLAG', true); // or false if you want to modify the schema
+define('CINNEBAR_DB_FREEZE_FLAG', true);
+
+/**
+ * Define the ID of the company, app owner. See table company.
+ */
+define('CINNEBAR_COMPANY_ID', 1);
 
 /**
  * Define if our Models will do conversion andn validation.
@@ -61,7 +66,7 @@ define('CINNEBAR_RECORDS_PER_PAGE', 17);
 /**
  * Define install password.
  */
-define('CINNEBAR_INSTALL_PASSWORD', 'secret');
+define('CINNEBAR_INSTALL_PASSWORD', 'gabby');
 
 /**
  * Define the setting bean ID.
@@ -87,4 +92,4 @@ define('CINNEBAR_MAX_SESSION_LIFETIME', 14400);
  * If you have changed session parameter or handling in a new release change
  * the session name to ensure that older sessions are no longer used.
  */
-define('CINNEBAR_SESSION_COOKIE_NAME', 'BienleinV1');
+define('CINNEBAR_SESSION_COOKIE_NAME', 'KSMv1');
