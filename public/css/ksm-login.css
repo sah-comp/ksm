@@ -1,5 +1,6 @@
 /* Nicer login form */
-form.panel.login {
+form.panel.login,
+form.panel.lostpassword {
     margin-top: 10em;
     margin-left: calc(50% - 240px);
     height: 320px;

@@ -21,9 +21,6 @@
 <!-- End of notifications -->
 <?php endif ?>
 <article class="main">
-    <header>
-		<h1><?php echo I18n::__('lostpassword_h1') ?></h1>
-    </header>
     <form
         id="form-lostpassword"
         class="panel lostpassword"
@@ -31,6 +28,10 @@
         accept-charset="utf-8">
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
+
+        <header>
+            <h1><a class="ir" href="/"><?php echo I18n::__('ksm_logo') ?></a></h1>
+        </header>
 
         <fieldset>
             <legend><?php echo I18n::__('lostpassword_legend') ?></legend>
