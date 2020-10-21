@@ -255,6 +255,7 @@ SQL;
      */
     public function update()
     {
+        $this->bean->lastchange = date('Y-m-d');
         parent::update();
         if (! $this->bean->salesprice) {
             if ($this->bean->isfilter) {
