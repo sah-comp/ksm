@@ -48,6 +48,7 @@ class Controller_Appointment extends Controller
             R::commit();
             Flight::get('user')->notify(I18n::__("appointment_completion_done"), 'success');
         } catch (Exception $e) {
+            error_log($e);
             R::rollback();
             Flight::get('user')->notify(I18n::__("appointment_completion_failed"), 'error');
         }

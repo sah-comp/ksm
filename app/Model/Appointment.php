@@ -66,6 +66,32 @@ class Model_Appointment extends Model
                 'width' => '4rem'
             ],
             [
+                'name' => 'completed',
+                'sort' => [
+                    'name' => 'appointment.completed'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '4rem'
+            ],
+            [
+                'name' => 'confirmed',
+                'sort' => [
+                    'name' => 'appointment.confirmed'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '4rem'
+            ],
+            [
                 'name' => 'receipt',
                 'sort' => [
                     'name' => 'appointment.receipt'
@@ -468,6 +494,16 @@ class Model_Appointment extends Model
      */
     public function update()
     {
+        if ((int)$this->bean->interval > 0 && $this->bean->date && !$this->bean->old('completed') && $this->bean->completed && $this->bean->getId()) {
+            // Exisiting appointment with interval set to completed will be re-newed with a new date.
+            $dup = R::duplicate($this->bean);
+            $dup->date = date('Y-m-d', strtotime($this->bean->date . " + " . (int)$this->bean->interval . " days"));
+            $dup->completed = false;
+            $dup_id = R::store($dup);
+            $this->bean->ownAppointment[] = $dup;
+            Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
+            //error_log('Duplicate #' . $dup_id . ' of #' . $this->bean->getId());
+        }
         $this->bean->duration = abs(strtotime($this->bean->date . ' ' . $this->bean->endtime) - strtotime($this->bean->date . ' ' . $this->bean->starttime)) / 3600;
         parent::update();
     }

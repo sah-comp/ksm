@@ -109,31 +109,38 @@
 
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
-        <div class="span3">
+        <div class="span2">
             <label
                 for="appointment-starttime"
                 class="<?php echo ($record->hasError('starttime')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('appointment_label_starttime') ?>
             </label>
         </div>
-        <div class="span3">
+        <div class="span2">
             <label
                 for="appointment-endtime"
                 class="<?php echo ($record->hasError('endtime')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('appointment_label_endtime') ?>
             </label>
         </div>
-        <div class="span3 number">
+        <div class="span2 number">
             <label
                 for="appointment-duration"
                 class="<?php echo ($record->hasError('duration')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('appointment_label_duration') ?>
             </label>
         </div>
+        <div class="span2 number">
+            <label
+                for="appointment-interval"
+                class="<?php echo ($record->hasError('interval')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('appointment_label_interval') ?>
+            </label>
+        </div>
     </div>
     <div class="row">
         <div class="span3">&nbsp;</div>
-        <div class="span3">
+        <div class="span2">
             <input
                 id="appointment-starttime"
                 class="autowidth"
@@ -142,7 +149,7 @@
                 placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
                 value="<?php echo htmlspecialchars($record->starttime) ?>" />
         </div>
-        <div class="span3">
+        <div class="span2">
             <input
                 id="appointment-endtime"
                 class="autowidth"
@@ -151,7 +158,7 @@
                 placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
                 value="<?php echo htmlspecialchars($record->endtime) ?>" />
         </div>
-        <div class="span3">
+        <div class="span2">
             <input
                 id="appointment-duration"
                 class="autowidth number"
@@ -159,6 +166,15 @@
                 name="dialog[duration]"
                 readonly="readonly"
                 value="<?php echo htmlspecialchars($record->decimal('duration', 2)) ?>" />
+        </div>
+        <div class="span3">
+            <input
+                id="appointment-interval"
+                class="autowidth number"
+                type="text"
+                name="dialog[interval]"
+                value="<?php echo htmlspecialchars($record->decimal('interval', 0)) ?>" />
+            <p class="info"><?php echo I18n::__('appointment_info_interval') ?></p>
         </div>
     </div>
 </fieldset>
@@ -343,22 +359,6 @@
             rows="5"
             cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
         <p class="info"><?php echo I18n::__('appointment_info_note') ?></p>
-    </div>
-</fieldset>
-<fieldset>
-    <legend class="verbose"><?php echo I18n::__('appointment_legend_interval') ?></legend>
-    <div class="row <?php echo ($record->hasError('interval')) ? 'error' : ''; ?>">
-        <label
-            for="appointment-interval">
-            <?php echo I18n::__('appointment_label_interval') ?>
-        </label>
-        <input
-            id="appointment-interval"
-            class="number"
-            type="text"
-            name="dialog[interval]"
-            value="<?php echo htmlspecialchars($record->decimal('interval', 0)) ?>" />
-        <p class="info"><?php echo I18n::__('appointment_info_interval') ?></p>
     </div>
 </fieldset>
 <!-- end of appointment edit form -->
