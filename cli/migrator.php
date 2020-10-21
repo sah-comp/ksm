@@ -310,6 +310,11 @@ class Migrator
             },
             'location' => function () {
                 return null;
+            },
+            'appointment' => function () {
+                return R::seed('appointment', 2, [
+                    'nonce' => 'integer(1, 100)'
+                ]);
             }
         ]);
 
@@ -1723,6 +1728,7 @@ class Migrator
             $record->purchaseprice = $this->prettyValue($legacy_record['buy_price']);
             $record->salesprice = $this->prettyValue($legacy_record['sell_price']);
             $record->description = $this->prettyValue($legacy_record['description']);
+            $record->lastchange = $this->prettyDate($legacy_record['updated_at']);
 
             $record->supplier = $this->findByLegacyIdOrDispense('supplier', $legacy_record['supplier_id']);
 
