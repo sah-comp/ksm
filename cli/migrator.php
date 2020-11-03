@@ -535,9 +535,10 @@ class Migrator
 
             $record->name = $this->prettyValue($legacy_record['name']);
             $record->shortname = $this->prettyValue($legacy_record['name']);
-            $record->screenname = $this->prettyValue($legacy_record['name']);
+            $record->screenname = 'shortname';
             $record->email = $this->prettyValue($legacy_record['email']);
             $record->pw = 'GABBY';
+            $record->startpage = 'cockpit';
 
             $record->legacyid = $legacy_record['id'];
             R::store($record);
