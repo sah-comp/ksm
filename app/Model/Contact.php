@@ -18,6 +18,26 @@
 class Model_Contact extends Model
 {
     /**
+     * Returns an array with gender names.
+     *
+     * @return array
+     */
+    public function getGenders()
+    {
+        return array(
+            'female',
+            'male',
+            'nonbinary',
+            'transgender',
+            'intersex',
+            'twospirit',
+            'nonconforming',
+            'dontsay',
+            'unknown'
+        );
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout

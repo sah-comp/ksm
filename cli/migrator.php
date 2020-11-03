@@ -109,6 +109,7 @@ class Migrator
 
         // Migration from the backup SQL of the legacy application
 
+        $this->migrateUsers();
         $this->migrateLanguages();
         $this->migrateMachineBrands();
         $this->migrateMachines();
@@ -173,6 +174,7 @@ class Migrator
         R::exec("DROP TABLE vehiclebrand");
         R::exec("DROP TABLE vehicle");
         R::exec("SET FOREIGN_KEY_CHECKS = 1");
+        R::exec("DELETE FROM user WHERE id > 2");
     }
 
     /**
@@ -300,8 +302,8 @@ class Migrator
                 return true;
             },
             'note' => 'word(1, 60)',
-            'failure' => 'word(1, 60)',
             'interval' => 'integer(1, 365)',
+            'adjourned' => 'integer(1, 1024)',
             'rescheduled' => function () {
                 return true;
             },
@@ -311,10 +313,8 @@ class Migrator
             'location' => function () {
                 return null;
             },
-            'appointment' => function () {
-                return R::seed('appointment', 2, [
-                    'nonce' => 'integer(1, 100)'
-                ]);
+            'user' => function () {
+                return null;
             }
         ]);
 
@@ -510,6 +510,58 @@ class Migrator
             }
         });
         $lexer->parse(__DIR__.'/../public/upload/ksm-suppliers.csv', $interpreter);
+    }
+
+    /**
+     * Migrate users.
+     *
+     * @return bool
+     */
+    public function migrateUsers()
+    {
+        $legacy_table = 'users';
+
+        // load and migrate data from the legacy database
+        R::selectDatabase('legacy');
+        $count_legacy = R::getCell("SELECT count(*) AS count FROM users WHERE id > 2");
+        echo "Migrate {$count_legacy} {$legacy_table}\n";
+        $legacy_records = R::getAll("SELECT * FROM users WHERE id > 2 ORDER BY id DESC");
+        // store the migrated records into our database
+        R::selectDatabase('default');
+        $invalid_counter = 0;
+        foreach ($legacy_records as $index => $legacy_record) {
+            $record = R::dispense('user');
+            $record->setValidationMode(Model::VALIDATION_MODE_IMPLICIT);
+
+            $record->name = $this->prettyValue($legacy_record['name']);
+            $record->shortname = $this->prettyValue($legacy_record['name']);
+            $record->screenname = $this->prettyValue($legacy_record['name']);
+            $record->email = $this->prettyValue($legacy_record['email']);
+            $record->pw = 'GABBY';
+
+            $record->legacyid = $legacy_record['id'];
+            R::store($record);
+            if ($record->invalid) {
+                $invalid_counter++;
+            }
+
+            if ($this->args['--verbose']) {
+                // we are being verbose.
+                echo($index + 1) . ". Migrated user \"{$record->getName()}\"\n";
+            } else {
+                echo '.';
+            }
+        }
+
+        // tidy up
+        if ($invalid_counter > 0) {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
+        } else {
+            $res = "\nMigrated {$count_legacy} {$legacy_table}.\n";
+        }
+        echo $res;
+        $this->results[] = $res;
+        return true;
     }
 
     /**
@@ -2090,7 +2142,8 @@ class Migrator
         R::selectDatabase('legacy');
         $count_legacy = R::getCell("SELECT count(*) AS count FROM appointments");
         echo "Migrate {$count_legacy} {$legacy_table}\n";
-        $legacy_records = R::getAll("SELECT * FROM appointments ORDER BY id DESC");
+        $legacy_records = R::getAll("SELECT * FROM appointments WHERE deleted_at IS NULL ORDER BY id DESC");
+        //$legacy_records = R::getAll("SELECT * FROM appointments ORDER BY id DESC");
         // store the migrated records into our database
         R::selectDatabase('default');
         $invalid_counter = 0;
@@ -2117,13 +2170,14 @@ class Migrator
 
             $record->contact = $this->findByLegacyIdOrDispense('contact', $legacy_record['contact_id']);
 
-            //$record->location = $this->findByLegacyIdOrDispense('location', $legacy_record['location_id']);
-
             // gather the name of the user from the legacy db and store the name, if given
+            /*
             R::selectDatabase('legacy');
             $user_name = R::getCell("SELECT name FROM user WHERE user_id = ? LIMIT 1", [$legacy_record['user_id']]);
             R::selectDatabase('legacy');
             $record->worker = $this->prettyValue($user_name);
+            */
+            $record->user = $this->findByLegacyIdOrDispense('user', $legacy_record['user_id']);
 
             // gather the machine_id from contract_machine from legacy database
             R::selectDatabase('legacy');
@@ -2131,7 +2185,13 @@ class Migrator
             R::selectDatabase('default');
             $record->machine = $this->findByLegacyIdOrDispense('machine', $machine_id);
 
-            // gather the machine_id from contract_machine from legacy database
+            // find the location for this appointment from contract which is found by person and machine.
+            R::selectDatabase('legacy');
+            $legacy_location_id = R::getCell("SELECT c.location_id FROM contracts AS c LEFT JOIN contract_machine AS cm ON cm.contract_id = c.id WHERE client_id = ? and cm.machine_id = ? LIMIT 1", [$legacy_record['client_id'], $machine_id]);
+            R::selectDatabase('default');
+            $record->location = $this->findByLegacyIdOrDispense('location', $legacy_location_id);
+
+            // gather the appointmenttype
             R::selectDatabase('legacy');
             $appointment_type_id = R::getCell("SELECT appointment_type_id AS apptype FROM appointment_appointment_type WHERE appointment_id = ? LIMIT 1", [$legacy_record['id']]);
             R::selectDatabase('default');
@@ -2331,6 +2391,11 @@ require __DIR__ . '/../vendor/autoload.php';
  * No conversion or validation on migration.
  */
 define('CINNEBAR_MODEL_CONVERT_AND_VALIDATE', false);
+
+/**
+ * Migration in Process.
+ */
+define('CINNEBAR_MIP', true);
 
 /**
  * RedbeanPHP Version .

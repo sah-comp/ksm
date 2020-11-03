@@ -362,7 +362,11 @@ $_personkinds = $record->sharedPersonkind;
     <?php Flight::render('shared/navigation/tabs', array(
         'tab_id' => 'person-tabs',
         'tabs' => array(
-            'person-address' => I18n::__('person_address_tab')
+            'person-address' => I18n::__('person_address_tab'),
+            'person-location' => I18n::__('person_location_tab'),
+            'person-contact' => I18n::__('person_contact_tab'),
+            'person-machine' => I18n::__('person_machine_tab'),
+            'person-contract' => I18n::__('person_contract_tab'),
         ),
         'default_tab' => 'person-address'
     )) ?>
@@ -388,6 +392,90 @@ $_personkinds = $record->sharedPersonkind;
                 'index' => $index
             )) ?>
             <?php endforeach ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-location"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_location_tab') ?></legend>
+        <div class="row nomargins">
+            <div class="span3">
+                &nbsp;
+            </div>
+            <div class="span9">
+                <label>
+                    <?php echo I18n::__('person_label_location_name') ?>
+                </label>
+            </div>
+        </div>
+        <div
+            id="person-<?php echo $record->getId() ?>-location-container"
+            class="container attachable detachable sortable">
+            <?php
+            if (count($record->ownLocation) == 0):
+                $record->ownLocation[] = R::dispense('location');
+            endif;
+            ?>
+            <?php $index = 0 ?>
+            <?php foreach ($record->ownLocation as $_location_id => $_location): ?>
+            <?php $index++ ?>
+            <?php Flight::render('model/person/own/location', array(
+                'record' => $record,
+                '_location' => $_location,
+                'index' => $index
+            )) ?>
+            <?php endforeach ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-contact"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_contact_tab') ?></legend>
+        <div
+            id="person-<?php echo $record->getId() ?>-contact-container"
+            class="container attachable detachable sortable">
+            <?php
+            if (count($record->ownContact) == 0):
+                $record->ownContact[] = R::dispense('contact');
+            endif;
+            ?>
+            <?php $index = 0 ?>
+            <?php foreach ($record->ownContact as $_contact_id => $_contact): ?>
+            <?php $index++ ?>
+            <?php Flight::render('model/person/own/contact', array(
+                'record' => $record,
+                '_contact' => $_contact,
+                'index' => $index
+            )) ?>
+            <?php endforeach ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-machine"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_machine_tab') ?></legend>
+        <div
+            id="person-<?php echo $record->getId() ?>-machine-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/person/tables/machine', array(
+                'record' => $record
+            )) ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-contract"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_contract_tab') ?></legend>
+        <div
+            id="person-<?php echo $record->getId() ?>-contract-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/person/tables/contract', array(
+                'record' => $record
+            )) ?>
         </div>
     </fieldset>
 </div>

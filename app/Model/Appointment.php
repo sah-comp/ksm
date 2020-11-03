@@ -18,6 +18,14 @@
 class Model_Appointment extends Model
 {
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->setAction('index', ['idle', 'complete', 'adjourn', 'adjournweekday']);
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -118,9 +126,12 @@ class Model_Appointment extends Model
                 'width' => '7rem'
             ],
             [
-                'name' => 'worker',
+                'name' => 'user.name',
                 'sort' => [
-                    'name' => 'appointment.worker'
+                    'name' => 'user.name'
+                ],
+                'callback' => [
+                    'name' => 'userName'
                 ],
                 'filter' => [
                     'tag' => 'text'
@@ -202,6 +213,34 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Adjourn the appointment for the time period given.
+     *
+     * @param string $period
+     * @return string The new date string
+     */
+    public function adjourn($period = '+ 1 days')
+    {
+        $this->bean->date = date('Y-m-d', strtotime($this->bean->date . ' ' . $period));
+        $this->bean->adjourned++;
+        R::store($this->bean);
+        return $this->bean->date;
+    }
+
+    /**
+     * Adjourn the appointment for the weekdays given.
+     *
+     * @param string $period
+     * @return string The new date string
+     */
+    public function adjournweekday($period = '+ 1 weekdays')
+    {
+        $this->bean->date = date('Y-m-d', strtotime($this->bean->date . ' ' . $period));
+        $this->bean->adjourned++;
+        R::store($this->bean);
+        return $this->bean->date;
+    }
+
+    /**
      * Return wether the appointment date is overdue or not.
      *
      * @return bool
@@ -251,16 +290,31 @@ class Model_Appointment extends Model
     {
         $this->bean->completed = true;
         $this->bean->terminationdate = date('Y-m-d');
+        R::store($this->bean);
     }
 
     /**
      * Returns wether the model has a toolbar menu extension or not.
+     *
+     * @todo Really check for an existing template.
      *
      * @return bool
      */
     public function hasMenu()
     {
         return true;
+    }
+
+    /**
+     * Returns wether the model has a scaffold buttons template or not.
+     *
+     * @todo Really check for an existing template.
+     *
+     * @return bool
+     */
+    public function hasScaffoldButtons()
+    {
+        return false;
     }
 
     /**
@@ -379,6 +433,29 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Return the user bean.
+     *
+     * @return $user
+     */
+    public function getUser()
+    {
+        if (! $this->bean->user) {
+            $this->bean->user = R::dispense('user');
+        }
+        return $this->bean->user;
+    }
+
+    /**
+     * Returns the name of the user.
+     *
+     * @return string
+     */
+    public function userName()
+    {
+        return $this->bean->getUser()->getName();
+    }
+
+    /**
      * Returns the serialnumber of the machine.
      *
      * @return string
@@ -459,6 +536,7 @@ class Model_Appointment extends Model
     public function dispense()
     {
         $this->bean->date = date('Y-m-d');
+        $this->bean->adjourned = 0; // Counts how many times the appointment was adjournded
         $this->bean->receipt = date('Y-m-d'); // Date when the appointment was arranged
         $this->bean->starttime = date('H:i:s', strtotime('06:00:00'));
         $this->bean->endtime = date('H:i:s', strtotime('12:00:00'));
@@ -495,16 +573,23 @@ class Model_Appointment extends Model
     public function update()
     {
         if ((int)$this->bean->interval > 0 && $this->bean->date && !$this->bean->old('completed') && $this->bean->completed && $this->bean->getId()) {
-            // Exisiting appointment with interval set to completed will be re-newed with a new date.
+            // Existing appointment with interval set to completed will be re-newed with a new date.
             $dup = R::duplicate($this->bean);
             $dup->date = date('Y-m-d', strtotime($this->bean->date . " + " . (int)$this->bean->interval . " days"));
             $dup->completed = false;
             $dup_id = R::store($dup);
             $this->bean->ownAppointment[] = $dup;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
-            //error_log('Duplicate #' . $dup_id . ' of #' . $this->bean->getId());
         }
-        $this->bean->duration = abs(strtotime($this->bean->date . ' ' . $this->bean->endtime) - strtotime($this->bean->date . ' ' . $this->bean->starttime)) / 3600;
+
+        if (!CINNEBAR_MIP) {
+            if (!$this->bean->machine_id) {
+                unset($this->bean->machine);
+            }
+            if (!$this->bean->user_id) {
+                unset($this->bean->user);
+            }
+        }
         parent::update();
     }
 }

@@ -5,7 +5,16 @@
             <?php echo $toolbar ?>
         </nav>
     </header>
-    <div class="panel">
+    <form
+        id="form-service"
+        class="panel"
+        method="POST"
+        accept-charset="utf-8"
+        autocomplete="off"
+        enctype="multipart/form-data">
+
+        <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
+
         <table class="scaffold service">
             <caption>
                 <?php echo I18n::__('scaffold_caption_index', null, [count($records)]) ?>
@@ -13,19 +22,29 @@
             <thead>
                 <tr>
                     <th class="edit">&nbsp;</th>
+                    <th class="edit">&nbsp;</th>
+                    <th class="switch">
+                        <input
+                            class="all"
+                            type="checkbox"
+                            name="void"
+                            value="1"
+                            title="<?php echo I18n::__('scaffold_select_all') ?>" />
+                    </th>
                     <th class="date"><?php echo I18n::__('appointment_label_date') ?></th>
                     <th class="time"><?php echo I18n::__('appointment_label_starttime') ?></th>
                     <th class="week number"><?php echo I18n::__('appointment_label_woy') ?></th>
                     <th class="fix"><?php echo I18n::__('appointment_label_fix') ?></th>
                     <th class="receipt"><?php echo I18n::__('appointment_label_receipt') ?></th>
                     <th class="worker"><?php echo I18n::__('appointment_label_worker') ?></th>
+                    <th class="duration number"><?php echo I18n::__('appointment_label_duration') ?></th>
                     <th class="person"><?php echo I18n::__('appointment_label_person') ?></th>
                     <th class="location"><?php echo I18n::__('appointment_label_location') ?></th>
+                    <th class="machinebrand"><?php echo I18n::__('appointment_label_machinebrand') ?></th>
                     <th class="machine"><?php echo I18n::__('appointment_label_machine') ?></th>
                     <th class="machine-serialnumber"><?php echo I18n::__('appointment_label_machine_serialnumber') ?></th>
                     <th class="machine-internalnumber"><?php echo I18n::__('appointment_label_machine_internalnumber') ?></th>
-                    <th class="failure"><?php echo I18n::__('appointment_label_failure') ?></th>
-                    <th class="note"><?php echo I18n::__('appointment_label_note') ?></th>
+                    <th id="my-notes" class="note"><?php echo I18n::__('appointment_label_note') ?></th>
                 </tr>
             </thead>
             <tbody>
@@ -46,6 +65,23 @@
                         	href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/service/#bean-' . $_record->getId()]) ?>">
                             <?php echo I18n::__('scaffold_action_edit') ?>
                         </a>
+                    </td>
+                    <td>
+                        <a
+                        	href="<?php echo Url::build(sprintf('/appointment/completed/%d', $_record->getId())) ?>"
+                        	class="ir action action-finish finish"
+                        	title="<?php echo I18n::__('scaffold_action_finish') ?>"
+                        	data-target="bean-<?php echo $_record->getId() ?>">
+                        	<?php echo I18n::__('scaffold_action_finish') ?>
+                        </a>
+                    </td>
+                    <td>
+                        <input
+                            type="checkbox"
+                            class="selector"
+                            name="selection[<?php echo $_record->getMeta('type') ?>][<?php echo $_record->getId() ?>]"
+                            value="1"
+                            <?php echo (isset($selection[$_record->getMeta('type')][$_record->getId()]) && $selection[$_record->getMeta('type')][$_record->getId()]) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td>
                         <input
@@ -85,13 +121,25 @@
                         <?php echo htmlspecialchars($_record->receipt) ?>
                     </td>
                     <td>
-                        <input
+                        <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-worker"
                             name="worker"
+                            class="enpassant autowidth"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'user_id']) ?>">
+                            <option value=""><?php echo I18n::__('appointment_worker_select') ?></option>
+                            <?php foreach ($users as $_user_id => $_user): ?>
+                            <option value="<?php echo $_user_id ?>" <?php echo ($_record->user_id == $_user_id) ? 'selected="selected"' : '' ?>><?php echo $_user->getName() ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
+                    <td>
+                        <input
+                            id="<?php echo $_type ?>-<?php echo $_id ?>-duration"
+                            name="duration"
                             type="text"
                             class="enpassant"
-                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'worker']) ?>"
-                            value="<?php echo htmlspecialchars($_record->worker) ?>" />
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'duration']) ?>"
+                            value="<?php echo htmlspecialchars($_record->duration) ?>" />
                     </td>
                     <td>
                         <a
@@ -102,6 +150,9 @@
                     </td>
                     <td class="minor">
                         <?php echo htmlspecialchars($_location->name) ?>
+                    </td>
+                    <td class="minor">
+                        <?php echo htmlspecialchars($_machine->machinebrandName()) ?>
                     </td>
                     <td>
                         <a
@@ -118,19 +169,10 @@
                     </td>
                     <td>
                         <input
-                            id="<?php echo $_type ?>-<?php echo $_id ?>-failure"
-                            name="failure"
-                            type="text"
-                            class="enpassant"
-                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'failure']) ?>"
-                            value="<?php echo htmlspecialchars($_record->failure) ?>" />
-                    </td>
-                    <td>
-                        <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-note"
                             name="note"
                             type="text"
-                            class="enpassant"
+                            class="enpassant blow-me-up"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'note']) ?>"
                             value="<?php echo htmlspecialchars($_record->note) ?>" />
                     </td>
@@ -138,5 +180,18 @@
         <?php endforeach; ?>
             </tbody>
         </table>
-    </div>
+        <div class="buttons">
+            <select name="next_action">
+                <?php foreach ($actions[$current_action] as $action): ?>
+                <option
+                    value="<?php echo $action ?>"><?php echo I18n::__("action_{$action}_select") ?></option>
+                <?php endforeach ?>
+            </select>
+            <input
+                type="submit"
+                name="submit"
+                accesskey="s"
+                value="<?php echo I18n::__('scaffold_submit_apply_action') ?>" />
+        </div>
+    </form>
 </article>

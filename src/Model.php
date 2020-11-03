@@ -71,6 +71,7 @@ class Model extends RedBean_SimpleModel
     /**
      * Holds the default actions.
      *
+     * @see Scaffold_Controller
      * @var array
      */
     protected $actions =  array(
@@ -94,6 +95,17 @@ class Model extends RedBean_SimpleModel
      * @return array
      */
     public function injectJS()
+    {
+        return [];
+    }
+
+    /**
+     * Returns an array of path to css files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectCSS()
     {
         return [];
     }

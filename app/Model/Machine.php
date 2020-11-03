@@ -87,6 +87,17 @@ class Model_Machine extends Model
     }
 
     /**
+     * Returns an array of path to js files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectJS()
+    {
+        return ['/js/datatables.min'];
+    }
+
+    /**
      * Return the machinebrand bean.
      *
      * @return object

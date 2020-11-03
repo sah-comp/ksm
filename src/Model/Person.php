@@ -28,6 +28,29 @@ class Model_Person extends Model
     }
 
     /**
+     * Returns an array of path to js files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectJS()
+    {
+        return ['/js/datatables.min'];
+    }
+
+    /**
+     * Returns an array of path to css files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectCSS()
+    {
+        return [];
+        //return ['datatables.min'];
+    }
+
+    /**
      * Toggle the enabled attribute and store the bean.
      *
      * @return void
@@ -124,8 +147,9 @@ class Model_Person extends Model
             $sql = <<<SQL
                 SELECT
                     person.id AS id,
-                    person.name AS label,
-                    person.name AS value
+                    CONCAT(person.name, ' (', person.nickname, ', ', person.account, ')') AS label,
+                    person.name AS value,
+                    person.note AS note
                 FROM
                     person
                 WHERE
@@ -140,6 +164,16 @@ class Model_Person extends Model
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
         return $result;
+    }
+
+    /**
+     * Returns a string with the note stored to this person.
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->bean->note;
     }
 
     /**

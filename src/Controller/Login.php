@@ -76,7 +76,7 @@ class Controller_Login extends Controller
         Flight::render('html5', array(
             'title' => I18n::__('login_head_title'),
             'language' => Flight::get('language'),
-            'stylesheets' => array('default', 'ksm-login')
+            'stylesheets' => ['default', 'ksm-login']
         ));
     }
 }

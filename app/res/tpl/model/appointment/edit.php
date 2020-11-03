@@ -164,7 +164,6 @@
                 class="autowidth number"
                 type="text"
                 name="dialog[duration]"
-                readonly="readonly"
                 value="<?php echo htmlspecialchars($record->decimal('duration', 2)) ?>" />
         </div>
         <div class="span3">
@@ -200,42 +199,42 @@
         </select>
     </div>
 </fieldset>
-<fieldset
-    id="machine-failure"
-    class="only-on-service"
-    style="display: <?php echo ($record->appointmenttype_id == Flight::setting()->appointmenttypeservice) ? 'block' : 'none'; ?>">
-    <legend class="verbose"><?php echo I18n::__('appointment_legend_failure') ?></legend>
-    <div class="row <?php echo ($record->hasError('failure')) ? 'error' : ''; ?>">
-        <label
-            for="appointment-failure">
-            <?php echo I18n::__('appointment_label_failure') ?>
-        </label>
-        <textarea
-            id="appointment-failure"
-            name="dialog[failure]"
-            rows="5"
-            cols="60"><?php echo htmlspecialchars($record->failure) ?></textarea>
-        <p class="info"><?php echo I18n::__('appointment_info_failure') ?></p>
-    </div>
-</fieldset>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('appointment_legend_customer') ?></legend>
 
-    <div class="row <?php echo ($record->hasError('worker')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->getUser()->hasError()) ? 'error' : ''; ?>">
         <label
-            for="appointment-worker">
-            <?php echo I18n::__('appointment_label_worker') ?>
+            for="appointment-user-name">
+            <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getUser()->getMeta('type'), $record->getUser()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
+            <?php echo I18n::__('appointment_label_user') ?>
         </label>
         <input
-            id="appointment-worker"
+            type="hidden"
+            name="dialog[user][type]"
+            value="user" />
+        <input
+            id="appointment-user-id"
+            type="hidden"
+            name="dialog[user][id]"
+            value="<?php echo $record->getUser()->getId() ?>" />
+        <input
             type="text"
-            name="dialog[worker]"
-            value="<?php echo htmlspecialchars($record->worker) ?>" />
+            id="appointment-user-name"
+            name="dialog[user][name]"
+            class="autocomplete"
+            data-source="<?php echo Url::build('/autocomplete/user/name/?callback=?') ?>"
+            data-spread='<?php
+                echo json_encode([
+                    'appointment-user-name' => 'value',
+                    'appointment-user-id' => 'id'
+                ]); ?>'
+            value="<?php echo htmlspecialchars($record->getUser()->getName()) ?>" />
     </div>
 
-    <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->getPerson()->hasError()) ? 'error' : ''; ?>">
         <label
             for="appointment-person-name">
+            <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getPerson()->getMeta('type'), $record->getPerson()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
             <?php echo I18n::__('appointment_label_person') ?>
         </label>
         <input
@@ -256,14 +255,16 @@
             data-spread='<?php
                 echo json_encode([
                     'appointment-person-name' => 'value',
-                    'appointment-person-id' => 'id'
+                    'appointment-person-id' => 'id',
+                    'appointment-person-note' => 'note'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
     </div>
 
-    <div class="row <?php echo ($record->getMachine()->hasError('name')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->getMachine()->hasError()) ? 'error' : ''; ?>">
         <label
             for="appointment-machine-name">
+            <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getMachine()->getMeta('type'), $record->getMachine()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
             <?php echo I18n::__('appointment_label_machine') ?>
         </label>
         <input

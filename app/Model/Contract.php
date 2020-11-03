@@ -101,6 +101,19 @@ class Model_Contract extends Model
                 ]
             ],
             [
+                'name' => 'location.name',
+                'sort' => [
+                    'name' => 'location.name'
+                ],
+                'callback' => [
+                    'name' => 'locationName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '6rem'
+            ],
+            [
                 'name' => 'startdate',
                 'sort' => [
                     'name' => 'contract.startdate'
@@ -188,6 +201,16 @@ class Model_Contract extends Model
             $this->bean->location = R::dispense('location');
         }
         return $this->bean->location;
+    }
+
+    /**
+     * Returns the name of the location.
+     *
+     * @return string
+     */
+    public function locationName()
+    {
+        return $this->bean->getLocation()->name;
     }
 
     /**
@@ -306,6 +329,8 @@ class Model_Contract extends Model
             person ON person.id = contract.person_id
         LEFT JOIN
             machine ON machine.id = contract.machine_id
+        LEFT JOIN
+            location ON location.id = contract.location_id
         WHERE
             {$where}
     SQL;
@@ -335,6 +360,11 @@ class Model_Contract extends Model
      */
     public function update()
     {
+        if (!CINNEBAR_MIP) {
+            if (!$this->bean->contracttype_id) {
+                $this->bean->contracttype = null;
+            }
+        }
         parent::update();
     }
 }

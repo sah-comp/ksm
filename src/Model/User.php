@@ -291,6 +291,38 @@ class Model_User extends Model
     }
 
     /**
+     * Lookup a searchterm and return the resultset as an array.
+     *
+     * @param string $searchtext
+     * @param string (optional) $query The prepared query or SQL to use for search
+     * @return array
+     */
+    public function clairvoyant($searchtext, $query = 'default', $limit = 10)
+    {
+        switch ($query) {
+            default:
+            $sql = <<<SQL
+                SELECT
+                    user.id AS id,
+                    CONCAT(user.name, ' (', user.shortname, ')') AS label,
+                    user.shortname AS value
+                FROM
+                    user
+                WHERE
+                    user.name LIKE :searchtext OR
+                    user.email LIKE :searchtext OR
+                    user.shortname LIKE :searchtext OR
+                    user.screenname LIKE :searchtext
+                ORDER BY
+                    user.name
+                LIMIT {$limit}
+    SQL;
+        }
+        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        return $result;
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()

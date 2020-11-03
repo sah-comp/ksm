@@ -20,6 +20,21 @@ select {
     margin-right: 2em;
 }
 
+.panel a.action.action-finish {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: url(/img/glyphicons/glyphicons_193_circle_ok.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+}
+
+/* scratch out the record count */
+.panel table caption.scratched {
+    text-decoration: line-through;
+}
+
 a.logo {
     width: 4em;
     background-image: url(/img/logo-ksm.png);
@@ -143,6 +158,16 @@ textarea[disabled=disabled] {
     color: gray;
 }
 
+/* form table stuff */
+.panel table {
+    overflow: hidden;
+}
+
+/*
+th, td {
+    animation: widerthanyou 7000ms ease-out;
+}
+*/
 /**
  * Service appointment table width settings.
  */
@@ -165,6 +190,10 @@ table.service tbody tr.coming-up {
     border-left-color: green;
 }
 
+table.service tbody tr:hover {
+    /*background-color: #defdf0;*/
+}
+
 th.date {
     width: 9rem;
 }
@@ -181,8 +210,16 @@ th.fix {
     width: 2rem;
 }
 
-th.receipt {
+th.duration {
+    width: 4rem;
+}
+
+th.worker {
     width: 5rem;
+}
+
+th.receipt {
+    width: 5.5rem;
 }
 
 th.location {
@@ -193,18 +230,32 @@ th.machine-internalnumber {
     width: 4rem;
 }
 
+th.note {
+    width: 8rem;
+}
+
+th.wider {
+    transition: all 666ms;
+    width: 42rem;
+}
+
 .panel td.minor {
     font-size: smaller;
     color: gray;
 }
 
-.panel a.in-table {
+.panel a.in-table,
+.panel a.in-form {
     display: block;
     background: url(/img/glyphicons/glyphicons_211_right_arrow.png);
     background-position: center left;
     background-repeat: no-repeat;
     background-size: 8px 8px;
     padding-left: 12px;
+}
+
+.panel a.in-form {
+    display: inline-block;
 }
 
 ul.panel-navigation a.volver {
@@ -260,6 +311,66 @@ span.badge {
     background-color: #ff001f;
     color: #fff;
     background-clip: padding-box;
+}
+
+.panel input.lesswidth {
+    width: auto;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+/**
+ * Datatables stuff. From scratch.
+ */
+.datatable td a {
+    text-decoration: none;
+}
+
+.dataTables_info {
+    font-size: small;
+    color: gray;
+    text-align: center;
+}
+
+.panel .dataTables_filter label {
+    float: right;
+    width: 100%;
+}
+
+.panel .dataTables_filter input[type=search] {
+    font-size: 1em;
+}
+
+th.sorting {
+    color: white;
+    text-decoration: none;
+}
+
+th.sorting:hover {
+    cursor: pointer;
+}
+
+th.sorting_asc {
+    background-color: rgb(33, 33, 33);
+    background-repeat: no-repeat;
+    background-position: calc(100% - 16px) center;
+    padding-right: 1em;
+    background-image: url(/img/asc.png);
+}
+
+th.sorting_desc {
+    background-color: rgb(33, 33, 33);
+    background-repeat: no-repeat;
+    background-position: calc(100% - 16px) center;
+    padding-right: 1em;
+    background-image: url(/img/desc.png);
+}
+
+td.dataTables_empty {
+    font-size: small;
+    color: gray;
+    text-align: center;
+    padding: 2em;
 }
 
 /* Hilite the target, the element identified by the hash part of the URL */

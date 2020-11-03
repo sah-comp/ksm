@@ -1,12 +1,59 @@
-// container for intervals
+/**
+ * Holds the heartbeat intervals.
+ *
+ * @see .heartbeat
+ * @var array
+ */
 var heartbeats = new Array();
+
+/**
+ * Holds the count of .heartbeat intervals found.
+ *
+ * @var int
+ */
 var counter = 0;
+
+/**
+ * The offset of the header element for scrolling to hashes.
+ *
+ * @var int
+ */
+var headeroffset = 120;
 
 /* Ready, Set, Go. */
 $('body').ready(function() {
 
+    /**
+     * If the page that was loaded has a hash scroll there, while respecting the offset of our header.
+     *
+     * @see https://theme.co/forum/t/scroll-to-anchor-with-offset-when-coming-from-another-page/26622/5
+     */
+    if (location.hash){
+        var pagehash = $(location.hash);
+        $('html,body').animate({scrollTop: pagehash.offset().top - headeroffset}, 'linear')
+	}
+
     initAutocompletes();
 
+    /**
+     * Activate datatables.
+     *
+     * @see https://datatables.net
+     */
+    if ($('.datatable').length) {
+        $('.datatable').DataTable({
+            "paging": false,
+            "stateSave": true,
+            "language": dtlang
+        });
+    }
+
+    /**
+     * Bleep, bleep. Bleep.
+     *
+     * This will install interval for heartbeats. We use this currently
+     * on @see tpl/service/index.php
+     */
     $('.heartbeat').each(function() {
         counter++; // count one up
         var delay = $(this).attr('data-delay');
@@ -48,6 +95,7 @@ $('body').ready(function() {
     /**
      * Show textarea "failure" only if appointment type is "service"-appointment.
      */
+    /*
     if ($("#appointment-appointmenttype").length) {
         $("#appointment-appointmenttype").on("change", function() {
             if ($(this).val() == 10) {
@@ -57,6 +105,7 @@ $('body').ready(function() {
             }
         });
     }
+    */
 
     /**
      * Fixes the header with account and main navigation
@@ -164,35 +213,66 @@ $('body').ready(function() {
 	});
 
     /**
+	 * all and future finish links send a get request and then
+	 * fade out and finally detach the element.
+	 */
+	$('body').on("click", ".finish", function(event) {
+	    event.preventDefault();
+		var target = $(this).attr("data-target");
+		var url = $(this).attr("href");
+		$.get(url, function(data) {
+	        $('#'+target).fadeOut('fast', function() {
+				$('#'+target).detach();
+                $('table caption').addClass('scratched');
+			});
+	    });
+	});
+
+    /**
+     * (Re)-Size an input field when it gets the focus.
+     *
+     * @return void
+     */
+    $('body').on('focusin', '.blow-me-up', function(event) {
+        $('#my-notes').addClass('wider');
+        return null;
+    });
+
+    /**
+     * (Re)-Size an input field when it gets out of the focus.
+     *
+     * @return void
+     */
+    $('body').on('focusout', '.blow-me-up', function(event) {
+        $('#my-notes').removeClass('wider');
+        return null;
+    });
+
+    /**
      * All and future input fields with css class enpassant will make a ajax
      * call on update.
      * This is mostly used on the service page.
      */
     $('body').on("change", ".enpassant", function(event) {
         var value = null;
-        // What I need to know:
-        //  bean type
-        //  id
-        //  name of attribute
-        //  value
-        //  URL to call giving the above information
         if ($(this).prop("type") == "checkbox") {
+            // change booleans to 1 or 0 because PHP will get strings.
             value = $(this).prop("checked");
+            if (value === true) {
+                value = 1;
+            } else {
+                value = 0;
+            }
         } else {
             value = $(this).val();
         }
-        //alert("Type " + $(this).prop("type") + " Value " + value);
-        //event.preventDefault();
 		var url = $(this).attr("data-url");
 		$.post(url, { value: value }, function(data) {
-			//console.log(data.sortorder);
-            //console.log(data.okay);
-            //console.log(data.bean);
             if (data.okay) {
                 $("#" + data.bean).attr('data-sort', data.sortorder);
                 $('#' + data.bean).attr('class', data.trclass);
                 $('#week-' + data.bean).html(data.woy);
-
+                //console.log('Enpassant upd was successfull');
                 // reorder the table: this works, but looses the focus on the line and element
                 /*
                 var $tbody = $('table.service tbody');
@@ -207,12 +287,10 @@ $('body').ready(function() {
                     : 0;
                 }).appendTo($tbody);
                 */
-
             } else {
                 // there was an error updating the bean. Tell the user somehow.
-                console.log('Tell user there was a problem');
+                console.log('Enpassant: Bean was not updated.');
             }
-            //alert('back from the USSR');
 	    }, 'json');
     });
 
@@ -223,7 +301,7 @@ $('body').ready(function() {
     $("input.all[type=checkbox]").click(function() {
         var state = $(this).is(":checked");
         $("input.selector[type=checkbox]").each(function() {
-            $(this).attr("checked", state);
+            $(this).prop("checked", state);
         });
     });
 

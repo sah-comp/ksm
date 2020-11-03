@@ -96,7 +96,7 @@ Flight::route('(/[a-z]{2})/autocomplete/@type:[a-z]+/@query:[a-z]+', function ($
  * Route to enpassant for updating single attributes of a bean after ajax post requests.
  */
 
-Flight::route('POST (/[a-z]{2})/enpassant/@type:[a-z]+/@id:[0-9]+/@attr:[a-z]+', function ($type, $id, $attr) {
+Flight::route('POST (/[a-z]{2})/enpassant/@type:[a-z]+/@id:[0-9]+/@attr:[a-z_]+', function ($type, $id, $attr) {
     $enpassantController = new Controller_Enpassant();
     $enpassantController->update($type, $id, $attr);
 });
@@ -176,6 +176,20 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/attach/@prefix:[a-z]+/@subtype:[a-
 });
 
 /**
+ * Route to attach a sub related bean to another bean which is related to another bean.
+ *
+ * This is quite a special case and currently only needed in person template to attach
+ * contactinfo to a contact of a person
+ */
+Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/attach/@prefix:[a-z]+/@subtype:[a-z]+/@id:[0-9]+/@main:[a-z]+/@mainid:[0-9]+/@sindex:[0-9]+/@index:[0-9]+', function ($type, $prefix, $subtype, $id, $main, $mainid, $sindex, $index) {
+    if ($id === null) {
+        $id = 0;
+    }
+    $scaffoldController = new Controller_Scaffold('/admin', $type, $id);
+    $scaffoldController->attachattach($prefix, $subtype, $id, $main, $mainid, $sindex, $index);
+});
+
+/**
  * Update a bean from a table editor.
  */
 Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) {
@@ -189,6 +203,14 @@ Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) 
 Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $contractController = new Controller_Contract($id);
     $contractController->pdf();
+});
+
+/**
+ * Routes to the contract controller to download a contract as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/appointment/pdf', function () {
+    $appointmentController = new Controller_Appointment(null);
+    $appointmentController->pdf();
 });
 
 /**

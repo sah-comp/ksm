@@ -1147,7 +1147,12 @@ select.filter-select {
 .ir.attach {
     background-image: url(/img/glyphicons/glyphicons_190_circle_plus.png);
     left: 36px;
-    display: none;
+    /*display: none;*/
+}
+
+.detach.small,
+.attach.small {
+    background-size: 70%;
 }
 
 fieldset.tab fieldset:last-child .attach {

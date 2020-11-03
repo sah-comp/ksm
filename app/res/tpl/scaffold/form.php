@@ -33,6 +33,20 @@
 
         <!-- Scaffold buttons -->
         <div class="buttons">
+            <?php
+            if (isset($type) && $record->hasScaffoldButtons()):
+                Flight::render("model/{$type}/scaffold/buttons.php", [
+                    'record' => $record,
+                    'type' => $type,
+                    'base_url' => $base_url,
+                    'layout' => $layout,
+                    'order' => $order,
+                    'dir' => $dir,
+                    'actions' => $actions,
+                    'next_action' => $next_action
+                ]);
+            else:
+            ?>
             <select name="next_action">
                 <?php foreach ($actions[$current_action] as $action): ?>
                 <option
@@ -45,6 +59,9 @@
                 name="submit"
                 accesskey="s"
                 value="<?php echo I18n::__('scaffold_submit_apply_action') ?>" />
+            <?php
+            endif;
+            ?>
         </div>
         <!-- End of Scaffold buttons -->
     </form>

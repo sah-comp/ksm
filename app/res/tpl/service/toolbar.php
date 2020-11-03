@@ -28,16 +28,10 @@
 			<?php echo I18n::__('action_add_nav') ?>
 		</a>
 	</li>
-	<?php
-    if (isset($record) && $record->getId() && $record->hasMenu()):
-        Flight::render("model/{$type}/toolbar/items.php", [
-            'record' => $record,
-            'type' => $type,
-            'base_url' => $base_url,
-            'layout' => $layout,
-            'order' => $order,
-            'dir' => $dir
-        ]);
-    endif;
-    ?>
+    <li>
+		<a
+			href="<?php echo Url::build("/appointment/pdf") ?>">
+			<?php echo I18n::__('appointment_action_pdf') ?>
+		</a>
+	</li>
 </ul>

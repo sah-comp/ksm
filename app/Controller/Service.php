@@ -15,22 +15,8 @@
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Service extends Controller
+class Controller_Service extends Controller_Scaffold
 {
-    /**
-     * Holds the records.
-     *
-     * @var array
-     */
-    public $records = [];
-
-    /**
-     * Holds the current record.
-     *
-     * @var RedBeanPHP\OODBBean
-     */
-    public $record = null;
-
     /**
      * Holds the default template.
      *
@@ -39,31 +25,90 @@ class Controller_Service extends Controller
     public $template = 'service/index';
 
     /**
+     * Holds the users.
+     *
+     * @var array
+     */
+    public $users = [];
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         session_start();
         Auth::check();
+        $this->record = R::dispense('appointment');
+        $this->actions = $this->record->getActions();
+        $this->users = R::findAll('user');
     }
 
     /*
      * Index.
+     *
+     * @param string $layout
+     * @param int $page
+     * @param int $order
+     * @param int $dir
      */
-    public function index()
+    public function index($layout = null, $page = null, $order = null, $dir = null)
     {
+        $this->action = 'index';
+        if (Flight::request()->method == 'POST') {
+            if (! Security::validateCSRFToken(Flight::request()->data->token)) {
+                $this->redirect("/logout");
+            }
+            //handle a selection
+            $this->selection = Flight::request()->data->selection;
+            if ($this->applyToSelection(
+                $this->selection['appointment'],
+                Flight::request()->data->next_action
+            )) {
+                $this->redirect("/service");
+            }
+        }
         $this->records = R::find(
             'appointment',
-            "appointmenttype_id = :servicetype
-             AND completed != :yes
-             ORDER BY date, starttime, fix",
+            "confirmed = :yes AND
+             completed != :yes
+             ORDER BY date, starttime, fix, @joined.person.name, @joined.machine.name, @joined.machine.serialnumber",
             [
-                 ':servicetype' => Flight::setting()->appointmenttypeservice,
                  ':yes' => 1
             ]
         );
         $_SESSION['service']['appointments'] = count($this->records);
         $this->render();
+    }
+
+    /**
+     * Apply a given action to a selection of beans.
+     *
+     * @param mixed $selection of beans on which the given action should be applied
+     * @param string $action to apply
+     */
+    protected function applyToSelection($selection = null, $action = 'idle')
+    {
+        if (empty($selection)) {
+            return false;
+        }
+        if (! is_array($selection)) {
+            return false;
+        }
+        Permission::check(Flight::get('user'), 'appointment', 'edit');
+        R::begin();
+        try {
+            foreach ($selection as $id => $switch) {
+                $record = R::load('appointment', $id);
+                $record->$action();
+            }
+            R::commit();
+            $this->notifyAbout('success', count($selection));
+            return true;
+        } catch (Exception $e) {
+            R::rollback();
+            $this->notifyAbout('error', count($selection));
+            return false;
+        }
     }
 
     /*
@@ -75,11 +120,9 @@ class Controller_Service extends Controller
     {
         $count = R::count(
             'appointment',
-            "appointmenttype_id = :servicetype
-             AND completed != :yes
-             ORDER BY date, starttime, fix",
+            "confirmed = :yes AND
+             completed != :yes",
             [
-                 ':servicetype' => Flight::setting()->appointmenttypeservice,
                  ':yes' => 1
             ]
         );
@@ -110,7 +153,10 @@ class Controller_Service extends Controller
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
             'title' => I18n::__("service_head_title"),
-            'records' => $this->records
+            'actions' => $this->actions,
+            'current_action' => $this->action,
+            'records' => $this->records,
+            'users' => $this->users
         ], 'content');
         Flight::render('html5', [
             'title' => I18n::__("service_head_title"),

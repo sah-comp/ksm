@@ -33,7 +33,8 @@ class Controller_Enpassant extends Controller
         session_start();
         Auth::check();
         $bean = R::load($type, $id);
-        $bean->{$attribute} = Flight::request()->data->value;
+        $value = Flight::request()->data->value;
+        $bean->{$attribute} = $value;
         R::begin();
         try {
             R::store($bean);

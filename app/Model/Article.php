@@ -27,19 +27,6 @@ class Model_Article extends Model
     {
         return [
             [
-                'name' => 'isfilter',
-                'sort' => [
-                    'name' => 'article.isfilter'
-                ],
-                'callback' => [
-                    'name' => 'boolean'
-                ],
-                'filter' => [
-                    'tag' => 'bool'
-                ],
-                'width' => '5rem'
-            ],
-            [
                 'name' => 'isoriginal',
                 'sort' => [
                     'name' => 'article.isoriginal'
@@ -190,10 +177,11 @@ class Model_Article extends Model
             $sql = <<<SQL
                 SELECT
                     article.id AS id,
-                    CONCAT(article.number, ' ', article.description) AS label,
+                    CONCAT(article.number, ' ', article.description, ' ', IF(article.isoriginal, 'Original', '')) AS label,
                     CONCAT(article.number, ' ', article.description) AS value,
                     FORMAT(article.purchaseprice, 2, 'de_DE') AS purchaseprice,
-                    FORMAT(article.salesprice, 2, 'de_DE') AS salesprice
+                    FORMAT(article.salesprice, 2, 'de_DE') AS salesprice,
+                    IF(article.isoriginal, 'Original', '') AS original
                 FROM
                     article
                 WHERE

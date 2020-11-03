@@ -602,131 +602,40 @@
         id="machine-article"
         class="tab"
         style="display: none;">
-        <legend class="verbose"><?php echo I18n::__('machine_article_legend_tab') ?></legend>
-        <div class="row nomargins">
-            <div class="span3">
-                &nbsp;
-            </div>
-            <div class="span3">
-                <label>
-                    <?php echo I18n::__('machine_installedpart_article_name') ?>
-                </label>
-            </div>
-            <div class="span2">
-                <label>
-                    <?php echo I18n::__('machine_installedpart_stamp') ?>
-                </label>
-            </div>
-            <div class="span2">
-                <label
-                    class="number">
-                    <?php echo I18n::__('machine_installedpart_purchaseprice') ?>
-                </label>
-            </div>
-            <div class="span2">
-                <label
-                    class="number">
-                    <?php echo I18n::__('machine_installedpart_salesprice') ?>
-                </label>
-            </div>
-        </div>
+        <legend class="verbose"><?php echo I18n::__('machine_legend_installedpart_tab') ?></legend>
         <div
             id="machine-<?php echo $record->getId() ?>-installedpart-container"
             class="container attachable detachable sortable">
-            <?php
-            $_installedparts = $record->with("ORDER BY stamp")->ownInstalledpart;
-            if (count($_installedparts) == 0):
-                $_installedpart = R::dispense('installedpart');
-                $_installedpart->machine = $record;
-                $_installedpart->article = R::dispense('article');
-                $_installedparts[] = $_installedpart;
-            endif;
-            ?>
-            <?php $index = 0 ?>
-            <?php foreach ($_installedparts as $_id => $_installedpart): ?>
-            <?php $index++ ?>
-            <?php Flight::render('model/machine/own/installedpart', [
-                'record' => $record,
-                '_installedpart' => $_installedpart,
-                'index' => $index
-            ]); ?>
-            <?php endforeach ?>
+            <?php Flight::render('model/machine/tables/installedpart', array(
+                'record' => $record
+            )) ?>
         </div>
     </fieldset>
     <fieldset
         id="machine-appointment"
         class="tab"
         style="display: none;">
-        <legend class="verbose"><?php echo I18n::__('machine_appointment_legend_tab') ?></legend>
-            <div class="row">
-                <div class="span3">
-                    &nbsp;
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('appointment_label_date') ?></label>
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('appointment_label_appointmenttype') ?></label>
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('appointment_label_person') ?></label>
-                </div>
-                <div class="span1">
-                    <label><?php echo I18n::__('appointment_label_location') ?></label>
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('appointment_label_note') ?></label>
-                </div>
-            </div>
-            <div
-                id="machine-<?php echo $record->getId() ?>-appointment-container"
-                class="container attachable detachable sortable">
-                <?php $index = 0 ?>
-                <?php foreach ($record->with("ORDER BY date ASC")->ownAppointment as $_id => $_appointment): ?>
-                <?php $index++ ?>
-                <?php Flight::render('model/machine/own/appointment', [
-                    'record' => $record,
-                    '_appointment' => $_appointment,
-                    'index' => $index
-                ]); ?>
-                <?php endforeach ?>
-            </div>
+        <legend class="verbose"><?php echo I18n::__('machine_legend_appointment_tab') ?></legend>
+        <div
+            id="machine-<?php echo $record->getId() ?>-appointment-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/machine/tables/appointment', array(
+                'record' => $record
+            )) ?>
+        </div>
     </fieldset>
     <fieldset
         id="machine-contract"
         class="tab"
         style="display: none;">
-        <legend class="verbose"><?php echo I18n::__('machine_contract_legend_tab') ?></legend>
-            <div class="row">
-                <div class="span3">
-                    &nbsp;
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('contract_label_contracttype') ?></label>
-                </div>
-                <div class="span3">
-                    <label><?php echo I18n::__('contract_label_person') ?></label>
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('contract_label_startdate') ?></label>
-                </div>
-                <div class="span2">
-                    <label><?php echo I18n::__('contract_label_enddate') ?></label>
-                </div>
-            </div>
-            <div
-                id="machine-<?php echo $record->getId() ?>-contract-container"
-                class="container attachable detachable sortable">
-                <?php $index = 0 ?>
-                <?php foreach ($record->with("ORDER BY startdate ASC")->ownContract as $_id => $_contract): ?>
-                <?php $index++ ?>
-                <?php Flight::render('model/machine/own/contract', [
-                    'record' => $record,
-                    '_contract' => $_contract,
-                    'index' => $index
-                ]); ?>
-                <?php endforeach ?>
-            </div>
+        <legend class="verbose"><?php echo I18n::__('machine_legend_contract_tab') ?></legend>
+        <div
+            id="machine-<?php echo $record->getId() ?>-contract-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/machine/tables/contract', array(
+                'record' => $record
+            )) ?>
+        </div>
     </fieldset>
 </div>
 <!-- end of machine edit form -->

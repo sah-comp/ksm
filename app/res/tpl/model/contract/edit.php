@@ -20,7 +20,7 @@
         <div class="span3">
             <label
                 for="contract-contracttype"
-                class="<?php echo ($record->hasError('contracttype_id')) ? 'error' : ''; ?>">
+                class="<?php echo ($record->getContracttype()->hasError()) ? 'error' : ''; ?>">
                 <?php echo I18n::__('contract_label_contracttype') ?>
             </label>
         </div>
@@ -93,9 +93,10 @@
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('contract_legend_customer') ?></legend>
 
-    <div class="row <?php echo ($record->hasError('machine_id')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->getMachine()->hasError()) ? 'error' : ''; ?>">
         <label
             for="contract-machine-name">
+            <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getMachine()->getMeta('type'), $record->getMachine()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
             <?php echo I18n::__('contract_label_machine') ?>
         </label>
         <input
@@ -124,6 +125,7 @@
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
             for="contract-person-name">
+            <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getPerson()->getMeta('type'), $record->getPerson()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
             <?php echo I18n::__('contract_label_person') ?>
         </label>
         <input

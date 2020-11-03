@@ -25,9 +25,16 @@ class Controller_Scaffold extends Controller
      *
      * @var array
      */
-    public $javascripts = array(
+    public $javascripts = [
         '/js/jquery.mjs.nestedSortable'
-    );
+    ];
+
+    /**
+     * Container for stylesheets to load.
+     *
+     * @var array
+     */
+    public $stylesheets = [];
 
     /**
      * Holds the base url.
@@ -204,7 +211,10 @@ class Controller_Scaffold extends Controller
             error_log("Scaffold::__construct() tried to load a bean, but failed. Check if your database is not frozen and a table for the bean type exists. If not unfreeze and try again.\n".$e);
             exit('No bean type could be created. Unfreeze your database.');
         }
+
         $this->javascripts = array_merge($this->javascripts, $this->record->injectJS());
+        $this->stylesheets = array_merge($this->stylesheets, $this->record->injectCSS());
+
         $this->actions = $this->record->getActions();
         if (! isset($_SESSION['scaffold'][$this->type])) {
             $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
@@ -258,6 +268,36 @@ class Controller_Scaffold extends Controller
             'record' => $this->record,
             '_'.$subtype => $_subrecord,
             'index' => $index
+        ));
+        return true;
+    }
+
+    /**
+     * Attach a record of a subrecord.
+     *
+     * This is mostly the same as the usual attach function. It is only used once currently
+     * in the template @see model/person/own/contact/.
+     *
+     * @param string $prefix either own or shared
+     * @param string $subtype the type of bean to handle
+     * @param int (optional) id of the bean to detach
+     * @param string $main the main record, eg. person bean
+     * @param int $mainid the main records id
+     * @param int $sindex the sub index
+     * @param int $index of the subsub record, eg. contact
+     * @return void
+     */
+    public function attachattach($prefix, $subtype, $id = 0, $main, $mainid, $sindex, $index)
+    {
+        $_index = md5(microtime(true));
+        $_subrecord = R::dispense($subtype);
+        $main = R::load($main, $mainid);
+        Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
+            'record' => $main,
+            '_contact' => $this->record,
+            '_'.$subtype => $_subrecord,
+            'index' => $index,
+            '_index' => $_index
         ));
         return true;
     }
@@ -460,7 +500,7 @@ class Controller_Scaffold extends Controller
         if (! is_array($selection)) {
             return false;
         }
-        Permission::check(Flight::get('user'), $this->type, $action);
+        Permission::check(Flight::get('user'), $this->type, 'edit');
         R::begin();
         try {
             foreach ($selection as $id => $switch) {
@@ -471,6 +511,7 @@ class Controller_Scaffold extends Controller
             $this->notifyAbout('success', count($selection));
             return true;
         } catch (Exception $e) {
+            error_log($e);
             R::rollback();
             $this->notifyAbout('error', count($selection));
             return false;
@@ -686,6 +727,7 @@ class Controller_Scaffold extends Controller
             'pagination' => $this->pagination
         ), 'footer');
         Flight::render($this->template, array(
+            'type' => $this->type,
             'filter' => $this->filter,
             'record' => $this->record,
             'records' => $this->records,
@@ -706,7 +748,8 @@ class Controller_Scaffold extends Controller
                 I18n::__("{$this->type}_h1")
             )),
             'language' => Flight::get('language'),
-            'javascripts' => $this->javascripts
+            'javascripts' => $this->javascripts,
+            'stylesheets' => $this->stylesheets
         ));
     }
 }

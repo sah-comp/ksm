@@ -70,7 +70,7 @@ if (! $_installedpart->article) {
                             'machine-' . $record->getId() . '-installedpart-' . $index . '-salesprice' => 'salesprice'
                         ]
 ) ?>'
-                value="<?php echo htmlspecialchars(trim($_installedpart->article->number . ' ' . $_installedpart->article->description)) ?>" />
+                value="<?php echo htmlspecialchars($_installedpart->getConclusion()) ?>" />
         </div>
         <div class="span2">
             <input
