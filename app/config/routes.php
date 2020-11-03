@@ -134,6 +134,14 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/edit/@id:[0-9]+(/@page:[0-9]+)(/@o
 });
 
 /**
+ * Route to the delete part of the CURD.
+ */
+Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/kill/@id:[0-9]+', function ($type, $id) {
+    $scaffoldController = new Controller_Scaffold('/admin', $type, $id);
+    $scaffoldController->kill();
+});
+
+/**
  * Route to display, filter, sort and manipulate beans.
  */
 Flight::route('(/[a-z]{2})/admin/@type:[a-z]+(/@layout:[a-z]+)(/@page:[0-9]+)(/@order:[0-9]+)(/@dir:[0-1]{1})', function ($type, $layout, $page, $order, $dir) {

@@ -228,6 +228,24 @@ class Controller_Scaffold extends Controller
     }
 
     /**
+     * Delete the current bean and.
+     *
+     * @return void
+     */
+    public function kill()
+    {
+        R::begin();
+        try {
+            R::trash($this->record);
+            R::commit();
+        } catch (\Exception $e) {
+            error_log($e);
+            R::rollback();
+        }
+        return null;
+    }
+
+    /**
      * Detach a record.
      *
      * @param string $subtype the type of bean to handle

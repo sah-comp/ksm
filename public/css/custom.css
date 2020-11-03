@@ -171,6 +171,10 @@ th, td {
 /**
  * Service appointment table width settings.
  */
+table.service {
+    font-size: 80%;
+}
+
 table.service tbody tr {
     border-left: 3px solid transparent;
 }
@@ -195,11 +199,11 @@ table.service tbody tr:hover {
 }
 
 th.date {
-    width: 9rem;
+    width: 7rem;
 }
 
 th.time {
-    width: 8rem;
+    width: 6rem;
 }
 
 th.week {
@@ -279,20 +283,6 @@ fieldset.only-on-service {
     position: relative;
 }
 
-/*
-span.badge {
-    position: absolute;
-    min-width: 1em;
-    top: -1em;
-    right: -0.777em;
-    border-radius: 0.666em;
-    color: white;
-    background-color: red;
-    padding: 0.333em;
-    font-size: 0.666em;
-    text-align: center;
-}
-*/
 span.badge {
     position: absolute;
     top: -12px;
@@ -371,6 +361,17 @@ td.dataTables_empty {
     color: gray;
     text-align: center;
     padding: 2em;
+}
+
+a.action.action-delete {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background: url(/img/glyphicons/glyphicons_191_circle_minus.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+    float: right;
 }
 
 /* Hilite the target, the element identified by the hash part of the URL */

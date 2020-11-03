@@ -39,6 +39,7 @@
                     <th class="worker"><?php echo I18n::__('appointment_label_worker') ?></th>
                     <th class="duration number"><?php echo I18n::__('appointment_label_duration') ?></th>
                     <th class="person"><?php echo I18n::__('appointment_label_person') ?></th>
+                    <th class="contact"><?php echo I18n::__('appointment_label_contact') ?></th>
                     <th class="location"><?php echo I18n::__('appointment_label_location') ?></th>
                     <th class="machinebrand"><?php echo I18n::__('appointment_label_machinebrand') ?></th>
                     <th class="machine"><?php echo I18n::__('appointment_label_machine') ?></th>
@@ -51,6 +52,7 @@
         <?php foreach ($records as $_id => $_record):
             $_type = $_record->getMeta('type');
             $_person = $_record->getPerson();
+            $_contact = $_record->getContact();
             $_machine = $_record->getMachine();
             $_location = $_record->getLocation();
             $_timecheck = $_record->isOverdue();
@@ -144,12 +146,21 @@
                     <td>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
+                            title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
                             class="in-table">
                             <?php echo htmlspecialchars($_person->name) ?>
                         </a>
                     </td>
+                    <td>
+                        <a
+                            href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
+                            title="<?php echo htmlspecialchars($_contact->getContactinfo()) ?>"
+                            class="in-table">
+                            <?php echo htmlspecialchars($_contact->name) ?>
+                        </a>
+                    </td>
                     <td class="minor">
-                        <?php echo htmlspecialchars($_location->name) ?>
+                        <span title="<?php echo htmlspecialchars($_location->name) ?>"><?php echo htmlspecialchars($_location->name) ?></span>
                     </td>
                     <td class="minor">
                         <?php echo htmlspecialchars($_machine->machinebrandName()) ?>
@@ -157,6 +168,7 @@
                     <td>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_machine->getMeta('type'), $_machine->getId(), '/service/#bean-' . $_record->getId()]) ?>"
+                            title="<?php echo htmlspecialchars($_machine->name) ?>"
                             class="in-table">
                             <?php echo htmlspecialchars($_machine->name) ?>
                         </a>

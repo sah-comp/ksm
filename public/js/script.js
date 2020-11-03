@@ -229,6 +229,21 @@ $('body').ready(function() {
 	});
 
     /**
+     * all and future delete links send a get request and then
+     * fade out and finally detach the element.
+     */
+    $('body').on("click", ".action-delete", function(event) {
+        event.preventDefault();
+        var target = $(this).attr("data-target");
+        var url = $(this).attr("href");
+        $.get(url, function(data) {
+            $('#'+target).fadeOut('fast', function() {
+                $('#'+target).detach();
+            });
+        });
+    });
+
+    /**
      * (Re)-Size an input field when it gets the focus.
      *
      * @return void

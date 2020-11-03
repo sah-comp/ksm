@@ -4,7 +4,7 @@
  */
 Flight::render('script/datatable_config');
 // load our contracts from which the machines are taken
-$_appointments = R::find('appointment', "machine_id = ? ORDER BY date", [$record->getId()]);
+$_appointments = R::find('appointment', "machine_id = ? ORDER BY date DESC", [$record->getId()]);
 ?>
 <table class="datatable">
     <thead>
@@ -24,32 +24,36 @@ $_appointments = R::find('appointment', "machine_id = ? ORDER BY date", [$record
         $_location = $_appointment->getLocation();
     ?>
         <tr>
-            <td>
+            <td
+                data-order="<?php echo $_appointment->date ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_appointment->getMeta('type'), $_appointment->getId()]) ?>"
                     class="in-table">
-                    <?php echo $_appointment->localizedDate('date') ?>
+                    <?php echo htmlspecialchars($_appointment->localizedDate('date')) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_appointmenttype->name ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_appointmenttype->getMeta('type'), $_appointmenttype->getId()]) ?>"
                     class="in-table">
-                    <?php echo $_appointmenttype->name ?>
+                    <?php echo htmlspecialchars($_appointmenttype->name) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_person->name ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_person->getMeta('type'), $_person->getId()]) ?>"
                     class="in-table">
-                    <?php echo $_person->name ?>
+                    <?php echo htmlspecialchars($_person->name) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_location->name ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_location->getMeta('type'), $_location->getId()]) ?>"
                     class="in-table">
-                    <?php echo $_location->name ?>
+                    <?php echo htmlspecialchars($_location->name) ?>
                 </a>
             </td>
             <td>

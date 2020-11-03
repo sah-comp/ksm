@@ -59,6 +59,24 @@ class Model_Contact extends Model
     }
 
     /**
+     * Returns a concated string of all contactinfo beans.
+     *
+     * @return string
+     */
+    public function getContactinfo()
+    {
+        $infos = $this->bean->ownContactinfo;
+        if (empty($infos)) {
+            return I18n::__('contactinfo_empty');
+        }
+        $stack = [];
+        foreach ($infos as $id => $info) {
+            $stack[] = I18n::__('contactinfo_label_'.$info->label) . ' ' . $info->value;
+        }
+        return implode(', ', $stack);
+    }
+
+    /**
      * Lookup a searchterm and return the resultset as an array.
      *
      * @param string $searchtext

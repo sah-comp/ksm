@@ -24,29 +24,38 @@ $_contracts = R::find('contract', "machine_id = ? ORDER BY @joined.person.name",
         $_location = $_contract->getLocation();
     ?>
         <tr>
-            <td>
+            <td
+                data-order="<?php echo $_contracttype->name ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_contracttype->getMeta('type'), $_contracttype->getId()]) ?>"
                     class="in-table">
-                    <?php echo $_contracttype->name ?>
+                    <?php echo htmlspecialchars($_contracttype->name) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_contract->number ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_contract->getMeta('type'), $_contract->getId()]) ?>"
                     class="in-table">
                     <?php echo htmlspecialchars($_contract->number) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_person->name ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_person->getMeta('type'), $_person->getId()]) ?>"
                     class="in-table">
-                    <?php echo $_person->name ?>
+                    <?php echo htmlspecialchars($_person->name) ?>
                 </a>
             </td>
-            <td><?php echo $_contract->localizedDate('startdate') ?></td>
-            <td><?php echo $_contract->localizedDate('enddate') ?></td>
+            <td
+                data-order="<?php echo $_contract->startdate ?>">
+                <?php echo $_contract->localizedDate('startdate') ?>
+            </td>
+            <td
+                data-order="<?php echo $_contract->enddate ?>">
+                <?php echo $_contract->localizedDate('enddate') ?>
+            </td>
         </tr>
     <?php endforeach; ?>
     </tbody>

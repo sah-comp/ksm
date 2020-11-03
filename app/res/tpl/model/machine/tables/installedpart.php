@@ -4,7 +4,7 @@
  */
 Flight::render('script/datatable_config');
 // load our contracts from which the machines are taken
-$_ip = R::find('installedpart', "machine_id = ? ORDER BY @joined.article.description", [$record->getId()]);
+$_ip = R::find('installedpart', "machine_id = ? ORDER BY stamp DESC, @joined.article.description", [$record->getId()]);
 ?>
 <table class="datatable">
     <thead>
@@ -22,31 +22,48 @@ $_ip = R::find('installedpart', "machine_id = ? ORDER BY @joined.article.descrip
     foreach ($_ip as $_ip_id => $_installedpart):
         $_article = $_installedpart->getArticle();
     ?>
-        <tr>
-            <td>
+        <tr id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $_installedpart->getId() ?>">
+            <td
+                data-order="<?php echo $_article->number ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_article->getMeta('type'), $_article->getId()]) ?>"
                     class="in-table">
                     <?php echo htmlspecialchars($_article->number) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_article->description ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_article->getMeta('type'), $_article->getId()]) ?>"
                     class="in-table">
                     <?php echo htmlspecialchars($_article->description) ?>
                 </a>
             </td>
-            <td>
+            <td
+                data-order="<?php echo $_article->isoriginal ?>">
                 <?php echo htmlspecialchars($_article->boolean('isoriginal')) ?>
             </td>
-            <td class="number">
+            <td
+                class="number"
+                data-order="<?php echo $_installedpart->purchaseprice ?>">
                 <?php echo htmlspecialchars($_installedpart->decimal('purchaseprice')) ?>
             </td>
-            <td class="number">
+            <td
+                class="number"
+                data-order="<?php echo $_installedpart->salesprice ?>">
                 <?php echo htmlspecialchars($_installedpart->decimal('salesprice')) ?>
             </td>
-            <td><?php echo htmlspecialchars($_installedpart->localizedDate('stamp')) ?></td>
+            <td
+                data-order="<?php echo $_installedpart->stamp ?>">
+                <?php echo htmlspecialchars($_installedpart->localizedDate('stamp')) ?>
+                <a
+                    class="ir action action-delete"
+                    href="<?php echo Url::build('/admin/installedpart/kill/%d', [$_installedpart->getId()]) ?>"
+                    title="<?php echo I18n::__('action_tooltip_delete') ?>"
+                    data-target="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $_installedpart->getId() ?>">
+                    <?php echo I18n::__('action_installedpart_delete') ?>
+                </a>
+            </td>
         </tr>
     <?php endforeach; ?>
     </tbody>
