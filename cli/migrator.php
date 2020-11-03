@@ -539,6 +539,7 @@ class Migrator
             $record->email = $this->prettyValue($legacy_record['email']);
             $record->pw = 'GABBY';
             $record->startpage = 'cockpit';
+            $record->isadmin = true;
 
             $record->legacyid = $legacy_record['id'];
             R::store($record);
