@@ -516,6 +516,8 @@ class Model_Appointment extends Model
             location ON location.id = appointment.location_id
         LEFT JOIN
             appointmenttype ON appointmenttype.id = appointment.appointmenttype_id
+        LEFT JOIN
+            user ON user.id = appointment.user_id
         WHERE
             {$where}
     SQL;
