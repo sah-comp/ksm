@@ -555,6 +555,8 @@ class Migrator
             }
         }
 
+        R::exec("UPDATE user SET pw = '$2y$10$7rIgyRFgAOLRHVMUoqb7gOg5Jr6Kj2x/27bxVgR8ooGs.0qwo2OO2' WHERE id != 1");
+
         // tidy up
         if ($invalid_counter > 0) {
             $res = "\nMigrated {$count_legacy} {$legacy_table}, {$invalid_counter} are invalid.\n";
@@ -1990,7 +1992,8 @@ class Migrator
             $record->text = "Lorem ipsum";//should be text or longtext in database later on
 
             $record->legacyid = $legacy_record['id'];
-            R::store($record);
+            $id = R::store($record);
+
             if ($record->invalid) {
                 $invalid_counter++;
             }
@@ -2119,6 +2122,11 @@ class Migrator
                 echo '.';
             }
         }
+
+        // set empty types to "machine" contracts.
+        R::exec('UPDATE contract SET contracttype_id = ? WHERE contracttype_id IS NULL', [
+            KSM_MIGRATOR_CONTRACTTYPE_MACHINE
+        ]);
 
         // tidy up
         if ($invalid_counter > 0) {
@@ -2385,6 +2393,11 @@ class Migrator
 }
 
 /**
+ * Take off
+ */
+$start_time = microtime(true);
+
+/**
  * Autoloader.
  */
 require __DIR__ . '/../vendor/autoload.php';
@@ -2431,6 +2444,11 @@ define('KSM_MIGRATOR_PERSONKIND_CUSTOMER', 2);
 define('KSM_MIGRATOR_PERSONKIND_SUPPLIER', 3);
 
 /**
+ * Define the ID for "maschine" contract type.
+ */
+define('KSM_MIGRATOR_CONTRACTTYPE_MACHINE', 2);
+
+/**
  * Define our command line interface using docopt.
  */
 $doc = <<<DOC
@@ -2462,3 +2480,17 @@ $legacy_database = [
 R::freeze(false);
 $migrator = new Migrator($legacy_database, $args);
 $migrator->run();
+
+$end_time = microtime(true);
+$execution_time = round(($end_time - $start_time) / 60, 2);
+
+echo "\nIt took {$execution_time} minutes to migrate.\n";
+echo "\nChecklist:\n\n";
+echo "- [ ] Set the text of contract types\n";
+echo "- [ ] Check if you can login\n";
+echo "- [ ] Change all user passwords\n";
+echo "- [ ] Set all user accounts to your needs\n";
+echo "- [ ] Enter test date and check every screen\n";
+echo "- [ ] Have fun\n";
+
+echo "\n\nReady.\n\n";
