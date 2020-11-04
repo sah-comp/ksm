@@ -374,6 +374,40 @@ a.action.action-delete {
     float: right;
 }
 
+.mini-container {
+    width: 100%;
+}
+
+.mini-container p.buttons {
+    text-align: center;
+}
+
+button {
+    font-size: .77em;
+}
+
+a.venetianblinds {
+    display: inline-block;
+    text-align: center;
+    border: 1px solid rgb(0, 128, 212);
+    color: rgb(0, 128, 212);
+    background-color: white;
+    padding: 0.5em 1em;
+    margin: 0.5em;
+    font-size: 77%;
+    text-decoration: none;
+    transition: 666ms;
+}
+
+a.venetianblinds.active {
+    color: white;
+    background-color: rgb(0, 128, 212);
+}
+
+.center {
+    text-align: center;
+}
+
 /* Hilite the target, the element identified by the hash part of the URL */
 :target {
     animation: highlight 7000ms ease-out;

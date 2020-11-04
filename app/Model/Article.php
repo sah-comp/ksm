@@ -181,6 +181,7 @@ class Model_Article extends Model
                     CONCAT(article.number, ' ', article.description) AS value,
                     FORMAT(article.purchaseprice, 2, 'de_DE') AS purchaseprice,
                     FORMAT(article.salesprice, 2, 'de_DE') AS salesprice,
+                    article.isoriginal AS isoriginal,
                     IF(article.isoriginal, 'Original', '') AS original
                 FROM
                     article

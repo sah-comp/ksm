@@ -8,7 +8,7 @@
  * @version $Id$
  */
 ?>
-<?php if ( ! $page->getId()): ?>
+<?php if (! $page->getId()): ?>
 <p class="page-choose"><?php echo I18n::__('cms_add_page') ?></p>
 <?php return; ?>
 <?php endif ?>
@@ -19,7 +19,9 @@ foreach ($regions = $page->template->ownRegion as $_region_id => $_region) {
 }
 $firstRegion = reset($regions);
 $default_tab = 'page-region-'.$firstRegion->getId();
-if (isset($trigger_meta) && $trigger_meta) $default_tab = 'page-meta';
+if (isset($trigger_meta) && $trigger_meta) {
+    $default_tab = 'page-meta';
+}
 ?>
 <div
     class="tab-container">
@@ -111,7 +113,7 @@ if (isset($trigger_meta) && $trigger_meta) $default_tab = 'page-meta';
                 var container = $(this).attr("data-container");
                 var sequence = $("#"+container).sortable("serialize");
                 $.get(url + "?" + sequence);
-            } 
+            }
         });
     </script>
     <?php endforeach; ?>

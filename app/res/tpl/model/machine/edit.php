@@ -191,12 +191,12 @@
             'machine-appointment' => I18n::__('machine_appointment_tab'),
             'machine-contract' => I18n::__('machine_contract_tab')
         ],
-        'default_tab' => 'machine-details'
+        'default_tab' => 'machine-article'
     ]) ?>
     <fieldset
         id="machine-details"
         class="tab"
-        style="display: block;">
+        style="display: none;">
         <legend><?php echo I18n::__('machine_legend_techincal_specifications') ?></legend>
         <div class="row <?php echo ($record->hasError('forks')) ? 'error' : ''; ?>">
             <label
@@ -601,7 +601,7 @@
     <fieldset
         id="machine-article"
         class="tab"
-        style="display: none;">
+        style="display: block;">
         <legend class="verbose"><?php echo I18n::__('machine_legend_installedpart_tab') ?></legend>
         <div
             id="machine-<?php echo $record->getId() ?>-installedpart-container"

@@ -287,26 +287,67 @@ $('body').ready(function() {
                 $("#" + data.bean).attr('data-sort', data.sortorder);
                 $('#' + data.bean).attr('class', data.trclass);
                 $('#week-' + data.bean).html(data.woy);
-                //console.log('Enpassant upd was successfull');
-                // reorder the table: this works, but looses the focus on the line and element
-                /*
-                var $tbody = $('table.service tbody');
-                $tbody.find('tr').sort(function(a, b) {
-                    var tda = $(a).attr('data-sort'); // target order attribute
-                    var tdb = $(b).attr('data-sort'); // target order attribute
-                    // if a < b return 1
-                    return tda > tdb ? 1
-                    // else if a > b return -1
-                    : tda < tdb ? -1
-                    // else they are equal - return 0
-                    : 0;
-                }).appendTo($tbody);
-                */
+                console.log('Enpassant upd was successfull');
             } else {
                 // there was an error updating the bean. Tell the user somehow.
                 console.log('Enpassant: Bean was not updated.');
             }
 	    }, 'json');
+    });
+
+    /**
+     * Within is a mini form within a server-side form that does not hold data
+     * that will be processed by the server en bloc. Instead the "within" sends
+     * only some field data via aja.
+     *
+     * @todo unify this or get this ugly very specific code outta town
+     */
+    $('body').on('click', '.within', function(event) {
+        var url = $(this).attr("data-url");
+        var target = $(this).attr("data-target");
+        var zeros = [
+            'ip-article-id',
+            'ip-article-isoriginal',
+            'ip-article-adopt'
+        ];
+        var nils = [
+            'ip-article-clairvoyant',
+            'ip-article-stamp',
+            'ip-article-purchaseprice',
+            'ip-article-salesprice'
+        ];
+        $.post(url, {
+                article_id: $("#ip-article-id").val(),
+                stamp: $("#ip-article-stamp").val(),
+                purchaseprice: $("#ip-article-purchaseprice").val(),
+                salesprice: $("#ip-article-salesprice").val(),
+                adopt: $("#ip-article-adopt").val()
+            }, function(data) {
+                if (data.okay) {
+                    console.log('Installing article was successfull');
+                    // clear the form. sorry for this, I am a JS dummy.
+                    nils.forEach(function(item, index, array) {
+                      $('#' + item).val('');
+                    });
+                    zeros.forEach(function(item, index, array) {
+                      $('#' + item).val('0');
+                    });
+                    $("#" + target).prepend(data.html); // add a tr at the bgining of tbody
+                } else {
+                    // there was an error updating the bean. Tell the user somehow.
+                    console.log('Installing article failed');
+                }
+        }, 'json');
+    });
+
+    /**
+     * Toogle a div display state.
+     */
+    $('body').on('click', '.venetianblinds', function(event) {
+        event.preventDefault();
+        var target = $(this).attr('data-target');
+        $(this).toggleClass('active');
+        $('#' + target).toggle('slow')
     });
 
     /**
