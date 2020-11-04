@@ -89,13 +89,6 @@ class Controller_Contract extends Controller
         session_start();
         Auth::check();
         $this->contract = R::load('contract', $id);
-        $this->contract->signdate = date('Y-m-d');
-        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $this->person = $this->contract->getPerson();
-        $this->machine = $this->contract->getMachine();
-        $this->location = $this->contract->getLocation();
-        $this->text = $this->contract->contracttype->text;
-        R::store($this->contract);
     }
 
     /*
@@ -103,6 +96,13 @@ class Controller_Contract extends Controller
      */
     public function pdf()
     {
+        $this->contract->signdate = date('Y-m-d');
+        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $this->person = $this->contract->getPerson();
+        $this->machine = $this->contract->getMachine();
+        $this->location = $this->contract->getLocation();
+        $this->text = $this->contract->contracttype->text;
+        R::store($this->contract);
         $filename = I18n::__('contract_pdf_filename', null, [$this->contract->getFilename()]);
         $docname = I18n::__('contract_pdf_docname', null, [$this->contract->getDocname()]);
         $this->text = $this->substitute();
@@ -144,5 +144,30 @@ class Controller_Contract extends Controller
             $this->text = str_replace("{{".$searchtext."}}", $replacetext, $this->text);
         }
         return $this->text;
+    }
+
+    /**
+     * Rerenders the "person-dependent" part of an appointment form.
+     *
+     * @return string
+     */
+    public function dependent()
+    {
+        $person = R::load('person', Flight::request()->data->person_id);
+        $dependents = $this->contract->getDependents($person);
+        ob_start();
+        Flight::render('model/contract/location', [
+            'record' => $this->contract,
+            'locations' => $dependents['locations']
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        $result = [
+            'okay' => true,
+            'html' => $html
+        ];
+
+        Flight::jsonp($result, 'callback');
     }
 }

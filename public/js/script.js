@@ -341,6 +341,26 @@ $('body').ready(function() {
     });
 
     /**
+     * All and future input fields with css class enpassant will make a ajax
+     * call on update.
+     * This is mostly used on the service page.
+     */
+    $('body').on("change", ".set-location-on-change", function(event) {
+        var url = $(this).attr("data-url");
+        var target = $(this).attr("data-target");
+        var extra = $(this).attr("data-extra");
+        //console.log('url ' + url + ' ' + extra + ' ' + target);
+        $.post(url, { machine_id: $('#' + extra).val() }, function(data) {
+            if (data.okay) {
+                $('#' + target).val(data.location_id);
+                console.log('Select the correct location ' + data.location_id);
+            } else {
+                console.log('Something went wrong on selecting the location');
+            }
+        }, 'json');
+    });
+
+    /**
      * Toogle a div display state.
      */
     $('body').on('click', '.venetianblinds', function(event) {

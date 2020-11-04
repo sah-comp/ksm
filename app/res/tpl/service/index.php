@@ -1,3 +1,6 @@
+<?php
+Flight::render('script/datatable_config');
+?>
 <article class="main">
     <header id="header-toolbar" class="fixable">
         <h1><?php echo $title ?></h1>
@@ -15,7 +18,9 @@
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
 
-        <table class="scaffold service">
+        <table
+            class="scaffold service x-datatable"
+            data-ordering="false">
             <caption>
                 <?php echo I18n::__('scaffold_caption_index', null, [count($records)]) ?>
             </caption>
@@ -122,7 +127,8 @@
                     <td class="minor">
                         <?php echo htmlspecialchars($_record->receipt) ?>
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_record->getUser()->screenname()) ?>">
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-worker"
                             name="worker"
@@ -143,7 +149,8 @@
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'duration']) ?>"
                             value="<?php echo htmlspecialchars($_record->duration) ?>" />
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_person->name) ?>">
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
@@ -151,7 +158,8 @@
                             <?php echo htmlspecialchars($_person->name) ?>
                         </a>
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_contact->name) ?>">
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_contact->getContactinfo()) ?>"
@@ -159,13 +167,18 @@
                             <?php echo htmlspecialchars($_contact->name) ?>
                         </a>
                     </td>
-                    <td class="minor">
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_location->name) ?>"
+                        class="minor">
                         <span title="<?php echo htmlspecialchars($_location->name) ?>"><?php echo htmlspecialchars($_location->name) ?></span>
                     </td>
-                    <td class="minor">
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_machine->machinebrandName()) ?>"
+                        class="minor">
                         <?php echo htmlspecialchars($_machine->machinebrandName()) ?>
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_machine->name) ?>">
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_machine->getMeta('type'), $_machine->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_machine->name) ?>"
@@ -173,13 +186,18 @@
                             <?php echo htmlspecialchars($_machine->name) ?>
                         </a>
                     </td>
-                    <td class="minor">
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_machine->serialnumber) ?>"
+                        class="minor">
                         <?php echo htmlspecialchars($_machine->serialnumber) ?>
                     </td>
-                    <td class="minor">
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_machine->internalnumber) ?>"
+                        class="minor">
                         <?php echo htmlspecialchars($_machine->internalnumber) ?>
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_record->note) ?>">
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-note"
                             name="note"

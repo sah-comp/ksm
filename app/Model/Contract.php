@@ -307,6 +307,20 @@ class Model_Contract extends Model
     }
 
     /**
+     * Returns an array with dependent data. Depending on person given.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return array
+     */
+    public function getDependents($person)
+    {
+        $result = [
+            'locations' => $person->with("ORDER BY name")->ownLocation
+        ];
+        return $result;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
@@ -362,7 +376,12 @@ SQL;
     {
         if (!CINNEBAR_MIP) {
             if (!$this->bean->contracttype_id) {
-                $this->bean->contracttype = null;
+                $this->bean->contracttype_id = null;
+                unset($this->bean->contracttype);
+            }
+            if (!$this->bean->location_id) {
+                $this->bean->location_id = null;
+                unset($this->bean->location);
             }
         }
         parent::update();

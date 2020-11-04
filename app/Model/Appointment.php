@@ -540,8 +540,8 @@ SQL;
         $this->bean->date = date('Y-m-d');
         $this->bean->adjourned = 0; // Counts how many times the appointment was adjournded
         $this->bean->receipt = date('Y-m-d'); // Date when the appointment was arranged
-        $this->bean->starttime = date('H:i:s', strtotime('06:00:00'));
-        $this->bean->endtime = date('H:i:s', strtotime('12:00:00'));
+        $this->bean->starttime = date('H:i:s', strtotime('00:00:00'));
+        $this->bean->endtime = date('H:i:s', strtotime('00:00:00'));
         $this->bean->appointmenttype_id = Flight::setting()->appointmenttypeservice;
         $this->addConverter(
             'date',
@@ -570,6 +570,22 @@ SQL;
     }
 
     /**
+     * Returns an array with dependent data. Depending on person given.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return array
+     */
+    public function getDependents($person)
+    {
+        $result = [
+            'machines' => R::findFromSQL('machine', " SELECT machine.* FROM machine LEFT JOIN contract ON contract.machine_id = machine.id WHERE contract.person_id = ? ORDER BY machine.name, machine.serialnumber", [$person->getId()]),
+            'contacts' => $person->with("ORDER BY name")->ownContact,
+            'locations' => $person->with("ORDER BY name")->ownLocation
+        ];
+        return $result;
+    }
+
+    /**
      * Update.
      */
     public function update()
@@ -586,10 +602,20 @@ SQL;
 
         if (!CINNEBAR_MIP) {
             if (!$this->bean->machine_id) {
+                $this->bean->machine_id = null;
                 unset($this->bean->machine);
             }
             if (!$this->bean->user_id) {
+                $this->bean->user_id = null;
                 unset($this->bean->user);
+            }
+            if (!$this->bean->contact_id) {
+                $this->bean->contact_id = null;
+                unset($this->bean->contact);
+            }
+            if (!$this->bean->location_id) {
+                $this->bean->location_id = null;
+                unset($this->bean->location);
             }
         }
         parent::update();

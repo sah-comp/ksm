@@ -12,7 +12,12 @@ function initAutocompletes() {
     $('.autocomplete').each(function(index, element) {
         //console.log('Init autocomplete');
         var spread = $(this).attr('data-spread'); // The URL to perform the search
-        //var extra = $(this).attr('data-extra'); // An extra parameter to give to the search url (optional)
+        var dynamic = $(this).attr('data-dynamic'); // Is there an ooption dynamic URL?
+        if (dynamic) {
+            // there is a area which has to be updated by the HTML returned through an ajax call.
+            var extra = $(this).attr('data-extra'); // the element which val has to be passed dynamically
+            var target = $(this).attr('data-target'); // where to append the HTML loaded
+        }
         $(this).autocomplete({
             'minLength': 1,
             'autoFocus': false,
@@ -24,15 +29,20 @@ function initAutocompletes() {
             },
             select: function( event, ui ) {
                 dispatchValues(spread, ui);
+                if (dynamic) {
+                    $.post(dynamic, { person_id: $('#' + extra).val() }, function(data) {
+                        if (data.okay) {
+                            $('#' + target).empty().append(data.html);
+                            console.log('Autodafe went well');
+                        } else {
+                            console.log('Autodafe failed');
+                        }
+            	    }, 'json');
+                }
                 return false;
             },
             search: function( event, ui ) {
-                //console.log('I am searching');
-                /*
-                if (extra) {
-                    console.log('Extra parameter ' + extra + ' = ' + $('#' + extra).val());
-                }
-                */
+                console.log('I am searching');
             }
         });
     });

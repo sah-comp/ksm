@@ -408,6 +408,14 @@ a.venetianblinds.active {
     text-align: center;
 }
 
+.heretic {
+    text-align: center;
+    font-size: small;
+    color: gray;
+    min-height: 4em;
+    padding-left: 23.404255317%;
+}
+
 /* Hilite the target, the element identified by the hash part of the URL */
 :target {
     animation: highlight 7000ms ease-out;

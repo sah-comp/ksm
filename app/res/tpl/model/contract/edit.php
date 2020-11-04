@@ -142,6 +142,9 @@
             id="contract-person-name"
             name="dialog[person][name]"
             class="autocomplete"
+            data-target="person-dependent"
+            data-extra="contract-person-id"
+            data-dynamic="<?php echo Url::build('/contract/%d/person/changed/?callback=?', [$record->getId()]) ?>"
             data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
             data-spread='<?php
                 echo json_encode([
@@ -150,33 +153,27 @@
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
     </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('contract_legend_location') ?></legend>
+    <div
+        id="person-dependent"
+        class="autodafe">
 
-    <div class="row <?php echo ($record->hasError('location_id')) ? 'error' : ''; ?>">
-        <label
-            for="contract-location-name">
-            <?php echo I18n::__('contract_label_location') ?>
-        </label>
-        <input
-            type="hidden"
-            name="dialog[location][type]"
-            value="location" />
-        <input
-            id="contract-location-id"
-            type="hidden"
-            name="dialog[location][id]"
-            value="<?php echo $record->getLocation()->getId() ?>" />
-        <input
-            type="text"
-            id="contract-location-name"
-            name="dialog[location][name]"
-            class="autocomplete"
-            data-source="<?php echo Url::build('/autocomplete/location/name/?callback=?') ?>"
-            data-spread='<?php
-                echo json_encode([
-                    'contract-location-name' => 'value',
-                    'contract-location-id' => 'id'
-                ]); ?>'
-            value="<?php echo htmlspecialchars($record->getLocation()->name) ?>" />
+        <?php
+        if ($record->getPerson()->getId()):
+            // The customer of this appointment is already set. No autodafe needed.
+            $_dependents = $record->getDependents($record->getPerson());
+            Flight::render('model/contract/location', [
+                'record' => $record,
+                'locations' => $_dependents['locations']
+            ]);
+        else:
+            // lazy load, after hunting that heretic.
+        ?>
+        <div class="heretic"><?php echo I18n::__('contract_person_select_before_me') ?></div>
+        <?php endif; ?>
+
     </div>
 </fieldset>
 <fieldset>

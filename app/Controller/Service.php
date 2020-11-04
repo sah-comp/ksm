@@ -160,7 +160,8 @@ class Controller_Service extends Controller_Scaffold
         ], 'content');
         Flight::render('html5', [
             'title' => I18n::__("service_head_title"),
-            'language' => Flight::get('language')
+            'language' => Flight::get('language'),
+            'javascripts' => ['/js/datatables.min']
         ]);
     }
 }

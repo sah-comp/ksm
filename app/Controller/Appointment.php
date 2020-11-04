@@ -29,7 +29,7 @@ class Controller_Appointment extends Controller
      *
      * @param int $id ID of the contract to output as PDF
      */
-    public function __construct($id)
+    public function __construct($id = null)
     {
         session_start();
         Auth::check();
@@ -93,5 +93,49 @@ class Controller_Appointment extends Controller
             Flight::get('user')->notify(I18n::__("appointment_completion_failed"), 'error');
         }
         $this->redirect("/admin/appointment/edit/{$this->appointment->getId()}");
+    }
+
+    /**
+     * Rerenders the "person-dependent" part of an appointment form.
+     *
+     * @return JSONP
+     */
+    public function dependent()
+    {
+        $person = R::load('person', Flight::request()->data->person_id);
+        $dependents = $this->appointment->getDependents($person);
+        ob_start();
+        Flight::render('model/appointment/machinecontactlocation', [
+            'person' => $person,
+            'record' => $this->appointment,
+            'machines' => $dependents['machines'],
+            'contacts' => $dependents['contacts'],
+            'locations' => $dependents['locations']
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        $result = [
+            'okay' => true,
+            'html' => $html
+        ];
+
+        Flight::jsonp($result, 'callback');
+    }
+
+    /**
+     * Rerenders the "person-dependent" part of an appointment form.
+     *
+     * @param int $person_id
+     * @return JSONP
+     */
+    public function contractLocationByMachineWith($person_id)
+    {
+        $location_id = R::getCell("SELECT location_id FROM contract WHERE person_id = ? AND machine_id = ? LIMIT 1", [$person_id, Flight::request()->data->machine_id]);
+        $result = [
+            'okay' => true,
+            'location_id' => $location_id
+        ];
+        Flight::jsonp($result, 'callback');
     }
 }

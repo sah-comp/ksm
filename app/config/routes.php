@@ -246,6 +246,25 @@ Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Routes to the appointment controller to find the location of a contract of the person
+ * given in the URL and the machine_id given in the POST request.
+ */
+Flight::route('POST (/[a-z]{2})/appointment/set/location/person/@person_id:[0-9]+(/)', function ($person_id) {
+    $appointmentController = new Controller_Appointment(null);
+    $appointmentController->contractLocationByMachineWith($person_id);
+});
+
+/**
+ * Routes to the appointment controller to re-render a part of the appointment edit form,
+ * depending on the person selected in the autocomplete field.
+ */
+Flight::route('POST (/[a-z]{2})/@type:[a-z]+/@id:[0-9]+/person/changed(/)', function ($type, $id) {
+    $ctrl = 'Controller_'.ucfirst($type);
+    $controller = new $ctrl($id);
+    $controller->dependent();
+});
+
+/**
  * Display the servie index page.
  */
 Flight::route('(/[a-z]{2})/service(/index)', function () {
