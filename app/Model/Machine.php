@@ -158,6 +158,16 @@ class Model_Machine extends Model
     }
 
     /**
+     * Return wether the model has a menu toolbar scaffold or not.
+     *
+     * @return bool
+     */
+    public function hasMenu()
+    {
+        return true;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
