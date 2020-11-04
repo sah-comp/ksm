@@ -270,27 +270,17 @@
             <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getUser()->getMeta('type'), $record->getUser()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
             <?php echo I18n::__('appointment_label_user') ?>
         </label>
-        <input
-            type="hidden"
-            name="dialog[user][type]"
-            value="user" />
-        <input
-            id="appointment-user-id"
-            type="hidden"
-            name="dialog[user][id]"
-            value="<?php echo $record->getUser()->getId() ?>" />
-        <input
-            type="text"
+        <select
             id="appointment-user-name"
-            name="dialog[user][name]"
-            class="autocomplete"
-            data-source="<?php echo Url::build('/autocomplete/user/name/?callback=?') ?>"
-            data-spread='<?php
-                echo json_encode([
-                    'appointment-user-name' => 'value',
-                    'appointment-user-id' => 'id'
-                ]); ?>'
-            value="<?php echo htmlspecialchars($record->getUser()->getName()) ?>" />
+            name="dialog[user_id]">
+            <option value=""><?php echo I18n::__('appointment_user_select') ?></option>
+            <?php foreach (R::findAll('user', "ORDER BY name") as $_id => $_user): ?>
+            <option
+                value="<?php echo $_user->getId() ?>"
+                <?php echo ($record->user_id == $_user->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_user->getName() . ' ' . $_user->getContactinfo()) ?>
+            </option>
+            <?php endforeach ?>
+        </select>
     </div>
 
 </fieldset>
