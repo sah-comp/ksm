@@ -264,7 +264,7 @@ class Migrator
         R::seed('contracttype', 1, [
             'legacyid' => 'integer(1, 10000000)',
             'name' => 'string(1, 68)',
-            'text' => 'word(1, 4000)'
+            'text' => 'word(1, 20000)'
         ]);
 
         if ($v) {
