@@ -170,19 +170,19 @@ class Model_Machine extends Model
     public function getSql($fields = 'id', $where = '1', $order = null, $offset = null, $limit = null)
     {
         $sql = <<<SQL
-        SELECT
-            {$fields}
-        FROM
-            {$this->bean->getMeta('type')}
-        LEFT JOIN
-            machinebrand ON machinebrand.id = machine.machinebrand_id
-        LEFT JOIN
-            contract ON contract.machine_id = machine.id
-        LEFT JOIN
-            person ON person.id = contract.person_id
-        WHERE
-            {$where}
-    SQL;
+            SELECT
+                {$fields}
+            FROM
+                {$this->bean->getMeta('type')}
+            LEFT JOIN
+                machinebrand ON machinebrand.id = machine.machinebrand_id
+            LEFT JOIN
+                contract ON contract.machine_id = machine.id
+            LEFT JOIN
+                person ON person.id = contract.person_id
+            WHERE
+                {$where}
+SQL;
         //add optional order by
         if ($order) {
             $sql .= " ORDER BY {$order}";

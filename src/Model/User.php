@@ -311,12 +311,11 @@ class Model_User extends Model
                 WHERE
                     user.name LIKE :searchtext OR
                     user.email LIKE :searchtext OR
-                    user.shortname LIKE :searchtext OR
-                    user.screenname LIKE :searchtext
+                    user.shortname LIKE :searchtext
                 ORDER BY
                     user.name
                 LIMIT {$limit}
-    SQL;
+SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
         return $result;

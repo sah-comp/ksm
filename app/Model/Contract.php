@@ -319,21 +319,21 @@ class Model_Contract extends Model
     public function getSql($fields = 'id', $where = '1', $order = null, $offset = null, $limit = null)
     {
         $sql = <<<SQL
-        SELECT
-            {$fields}
-        FROM
-            {$this->bean->getMeta('type')}
-        LEFT JOIN
-            contracttype ON contracttype.id = contract.contracttype_id
-        LEFT JOIN
-            person ON person.id = contract.person_id
-        LEFT JOIN
-            machine ON machine.id = contract.machine_id
-        LEFT JOIN
-            location ON location.id = contract.location_id
-        WHERE
-            {$where}
-    SQL;
+            SELECT
+                {$fields}
+            FROM
+                {$this->bean->getMeta('type')}
+            LEFT JOIN
+                contracttype ON contracttype.id = contract.contracttype_id
+            LEFT JOIN
+                person ON person.id = contract.person_id
+            LEFT JOIN
+                machine ON machine.id = contract.machine_id
+            LEFT JOIN
+                location ON location.id = contract.location_id
+            WHERE
+                {$where}
+SQL;
         //add optional order by
         if ($order) {
             $sql .= " ORDER BY {$order}";

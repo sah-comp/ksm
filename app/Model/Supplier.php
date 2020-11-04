@@ -61,7 +61,7 @@ class Model_Supplier extends Model
                 ORDER BY
                     supplier.name
                 LIMIT {$limit}
-    SQL;
+SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
         return $result;

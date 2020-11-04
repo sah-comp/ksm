@@ -210,15 +210,15 @@ SQL;
     public function getSql($fields = 'id', $where = '1', $order = null, $offset = null, $limit = null)
     {
         $sql = <<<SQL
-        SELECT
-            {$fields}
-        FROM
-            {$this->bean->getMeta('type')}
-        LEFT JOIN
-            supplier ON supplier.id = article.supplier_id
-        WHERE
-            {$where}
-    SQL;
+            SELECT
+                {$fields}
+            FROM
+                {$this->bean->getMeta('type')}
+            LEFT JOIN
+                supplier ON supplier.id = article.supplier_id
+            WHERE
+                {$where}
+SQL;
         //add optional order by
         if ($order) {
             $sql .= " ORDER BY {$order}";

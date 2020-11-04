@@ -27,6 +27,7 @@ function initAutocompletes() {
                 return false;
             },
             search: function( event, ui ) {
+                //console.log('I am searching');
                 /*
                 if (extra) {
                     console.log('Extra parameter ' + extra + ' = ' + $('#' + extra).val());

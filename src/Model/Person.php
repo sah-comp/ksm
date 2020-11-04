@@ -160,7 +160,7 @@ class Model_Person extends Model
                 ORDER BY
                     person.name
                 LIMIT {$limit}
-    SQL;
+SQL;
         }
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
         return $result;

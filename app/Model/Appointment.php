@@ -502,25 +502,25 @@ class Model_Appointment extends Model
     public function getSql($fields = 'id', $where = '1', $order = null, $offset = null, $limit = null)
     {
         $sql = <<<SQL
-        SELECT
-            {$fields}
-        FROM
-            {$this->bean->getMeta('type')}
-        LEFT JOIN
-            person ON person.id = appointment.person_id
-        LEFT JOIN
-            machine ON machine.id = appointment.machine_id
-        LEFT JOIN
-            contact ON contact.id = appointment.contact_id
-        LEFT JOIN
-            location ON location.id = appointment.location_id
-        LEFT JOIN
-            appointmenttype ON appointmenttype.id = appointment.appointmenttype_id
-        LEFT JOIN
-            user ON user.id = appointment.user_id
-        WHERE
-            {$where}
-    SQL;
+            SELECT
+                {$fields}
+            FROM
+                {$this->bean->getMeta('type')}
+            LEFT JOIN
+                person ON person.id = appointment.person_id
+            LEFT JOIN
+                machine ON machine.id = appointment.machine_id
+            LEFT JOIN
+                contact ON contact.id = appointment.contact_id
+            LEFT JOIN
+                location ON location.id = appointment.location_id
+            LEFT JOIN
+                appointmenttype ON appointmenttype.id = appointment.appointmenttype_id
+            LEFT JOIN
+                user ON user.id = appointment.user_id
+            WHERE
+                {$where}
+SQL;
         //add optional order by
         if ($order) {
             $sql .= " ORDER BY {$order}";
