@@ -38,6 +38,18 @@ class Model_Criteria extends Model
     );
 
     /**
+     * How to dates are divided to let users search for a date range.
+     *
+     * e.g. 2020-03-01...2020-09-01
+     */
+    public $daterangedelimiter = '...';
+
+    /**
+     * Holds the template for date range criterias
+     */
+    public $daterangetemplate = '(%1$s >= ? AND %1$s <= ?)';
+
+    /**
      * Holds possible search operators depending on the filter tag type.
      *
      * A simple scaffold filter criteria will always use the first operator. E.g. if you
@@ -197,9 +209,19 @@ class Model_Criteria extends Model
         if (! isset($this->map[$this->bean->op])) {
             throw new Exception('Filter operator has no template');
         }
-        $template = $this->map[$this->bean->op];
-        $value = $this->mask_filter_value($filter);
-        return sprintf($template, $this->bean->attribute, $value);
+        if ($this->bean->tag == 'date' && strpos($this->bean->value, $this->daterangedelimiter)) {
+            $dates = explode($this->daterangedelimiter, $this->bean->value);
+            $date_from = $this->convertToDate($dates[0]);
+            $date_to = $this->convertToDate($dates[1]);
+            $result = sprintf($this->daterangetemplate, $this->bean->attribute, $date_from, $date_to);
+            $filter->filter_values[] = $date_from;
+            $filter->filter_values[] = $date_to;
+        } else {
+            $template = $this->map[$this->bean->op];
+            $value = $this->mask_filter_value($filter);
+            $result = sprintf($template, $this->bean->attribute, $value);
+        }
+        return $result;
     }
 
     /**
