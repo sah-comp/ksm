@@ -56,7 +56,7 @@ class Controller_Appointment extends Controller
         $sqlCollection = $this->appointment->getSql(
             "DISTINCT(appointment.id) AS id",
             $where,
-            'date'
+            'person.name, machine.serialnumber'
         );
         $rows = R::getAssoc($sqlCollection, $filter->getFilterValues());
         $records = R::batch('appointment', array_keys($rows));

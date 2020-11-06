@@ -37,7 +37,7 @@
         }
         table {
             border-collapse: collapse;
-            font-size: 9pt;
+            font-size: 8pt;
         }
         th {
             text-align: left;
@@ -102,17 +102,18 @@
     <table width="100%">
         <thead>
             <tr>
-                <th width="6%"><?php echo I18n::__('appointment_plabel_date') ?></th>
-                <th width="5%"><?php echo I18n::__('appointment_plabel_starttime') ?></th>
-                <th width="2%" class="number"><?php echo I18n::__('appointment_plabel_woy') ?></th>
-                <th width="2%"><?php echo I18n::__('appointment_plabel_fix') ?></th>
+                <th width="7%"><?php echo I18n::__('appointment_plabel_date') ?></th>
+                <th width="3%"><?php echo I18n::__('appointment_plabel_starttime') ?></th>
+                <th width="3%" class="number"><?php echo I18n::__('appointment_plabel_woy') ?></th>
+                <th width="3%"><?php echo I18n::__('appointment_plabel_fix') ?></th>
                 <th width="5%"><?php echo I18n::__('appointment_plabel_receipt') ?></th>
+                <th width="5%"><?php echo I18n::__('appointment_plabel_appointmenttype') ?></th>
                 <th width="5%"><?php echo I18n::__('appointment_plabel_worker') ?></th>
                 <th width="5%" class="number"><?php echo I18n::__('appointment_plabel_duration') ?></th>
-                <th width="8%"><?php echo I18n::__('appointment_plabel_person') ?></th>
+                <th width="10%"><?php echo I18n::__('appointment_plabel_person') ?></th>
                 <th width="8%"><?php echo I18n::__('appointment_plabel_location') ?></th>
                 <th width="8%"><?php echo I18n::__('appointment_plabel_machinebrand') ?></th>
-                <th width="16%"><?php echo I18n::__('appointment_plabel_machine') ?></th>
+                <th width="8%"><?php echo I18n::__('appointment_plabel_machine') ?></th>
                 <th width="5%"><?php echo I18n::__('appointment_plabel_machine_serialnumber') ?></th>
                 <th width="5%"><?php echo I18n::__('appointment_plabel_machine_internalnumber') ?></th>
                 <th width="20%"><?php echo I18n::__('appointment_plabel_note') ?></th>
@@ -124,6 +125,7 @@
             $_person = $_record->getPerson();
             $_machine = $_record->getMachine();
             $_user = $_record->getUser();
+            $_appointmenttype = $_record->getAppointmenttype();
             $_location = $_record->getLocation();
             if ($_location->getId()):
                 $_loca_name = $_location->name;
@@ -138,6 +140,7 @@
             <td class="number"><?php echo htmlspecialchars($_record->localizedDate('date', '%V')) ?></td>
             <td><?php echo ($_record->fix) ? I18n::__('bool_true') : '' ?></td>
             <td><?php echo htmlspecialchars($_record->localizedDate('receipt')) ?></td>
+            <td><?php echo htmlspecialchars($_appointmenttype->name) ?></td>
             <td><?php echo htmlspecialchars($_user->getName()) ?></td>
             <td class="number"><?php echo htmlspecialchars($_record->decimal('duration', 2)) ?></td>
             <td><?php echo htmlspecialchars($_person->name) ?></td>
