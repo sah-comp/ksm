@@ -247,10 +247,14 @@ class Model_Criteria extends Model
             case 'ew':
                 $value = '%'.str_replace($this->pat, $this->rep, $this->bean->value);
                 break;
-            case 'in':
+            case 'shared':
                 $_sharedSubName = 'shared'.ucfirst(strtolower($this->bean->substitute));
                 $ids = array_keys($this->bean->{$_sharedSubName});
                 $value = implode(', ', $ids);
+                $add_to_filter_values = false;
+                break;
+            case 'in':
+                $value = $this->bean->value; // has to look like this "1, 6, 12, 8978"
                 $add_to_filter_values = false;
                 break;
             default:
@@ -281,6 +285,22 @@ class Model_Criteria extends Model
      */
     public function dispense()
     {
+        //$this->bean->postvar = 'none';
         $this->addValidator('attribute', new Validator_HasValue());
+    }
+
+    /**
+     * Update.
+     */
+    public function update()
+    {
+        if ($this->bean->tag == 'in' && $this->bean->postvar) {
+            // Beware, only works on POST requests.
+            $multiple = Flight::request()->data->{$this->bean->postvar};
+            if (is_array($multiple)) {
+                $this->bean->value = implode(", ", $multiple);
+            }
+        }
+        parent::update();
     }
 }

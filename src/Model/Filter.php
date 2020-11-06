@@ -74,7 +74,7 @@ class Model_Filter extends Model
     }
 
     /**
-     * Returns a criteria bean for a certain filter attribute.
+     * Returns a criteria bean for a certain filter attribute or presets it from $attribute.
      *
      * @param array $attribute
      * @return RedBean_OODBBean
@@ -84,6 +84,9 @@ class Model_Filter extends Model
         if (! $criteria = R::findOne('criteria', ' filter_id = ? AND attribute = ?', array($this->bean->getId(), $attribute['sort']['name']))) {
             $criteria = R::dispense('criteria');
             $criteria->tag = $attribute['filter']['tag'];
+            if ($attribute['filter']['tag'] == 'in') {
+                $criteria->postvar = $attribute['filter']['postvar'];
+            }
             $criteria->attribute = $attribute['sort']['name'];
             $operators = $criteria->operators();
             $criteria->op = $operators[0];
@@ -97,5 +100,13 @@ class Model_Filter extends Model
     public function dispense()
     {
         $this->addValidator('model', new Validator_HasValue());
+    }
+
+    /**
+     * Update.
+     */
+    public function update()
+    {
+        parent::update();
     }
 }
