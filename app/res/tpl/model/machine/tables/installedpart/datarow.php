@@ -2,10 +2,12 @@
 /**
  * One table row of an installedpart bean within machine/installedpart
  */
+$_type = $_installedpart->getMeta('type');
+$_id = $_installedpart->getId();
 ?>
 <tr id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $_installedpart->getId() ?>">
     <td
-        data-order="<?php echo $_article->number ?>">
+        data-sort="<?php echo $_article->number ?>">
         <a
             href="<?php echo Url::build('/admin/%s/edit/%d/', [$_article->getMeta('type'), $_article->getId()]) ?>"
             class="in-table">
@@ -13,7 +15,7 @@
         </a>
     </td>
     <td
-        data-order="<?php echo $_article->description ?>">
+        data-sort="<?php echo $_article->description ?>">
         <a
             href="<?php echo Url::build('/admin/%s/edit/%d/', [$_article->getMeta('type'), $_article->getId()]) ?>"
             class="in-table">
@@ -21,22 +23,46 @@
         </a>
     </td>
     <td
-        data-order="<?php echo $_article->isoriginal ?>">
+        data-sort="<?php echo $_article->isoriginal ?>">
         <?php echo htmlspecialchars($_article->boolean('isoriginal')) ?>
     </td>
     <td
         class="number"
-        data-order="<?php echo $_installedpart->purchaseprice ?>">
-        <?php echo htmlspecialchars($_installedpart->decimal('purchaseprice')) ?>
+        data-sort="<?php echo $_installedpart->decimal('purchaseprice') ?>">
+
+        <input
+            id="<?php echo $_type ?>-<?php echo $_id ?>-date"
+            name="installedpart[purchaseprice]"
+            type="text"
+            class="enpassant num"
+            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'purchaseprice']) ?>"
+            value="<?php echo htmlspecialchars($_installedpart->decimal('purchaseprice')) ?>" />
+
     </td>
     <td
         class="number"
-        data-order="<?php echo $_installedpart->salesprice ?>">
-        <?php echo htmlspecialchars($_installedpart->decimal('salesprice')) ?>
+        data-sort="<?php echo $_installedpart->decimal('salesprice') ?>">
+
+        <input
+            id="<?php echo $_type ?>-<?php echo $_id ?>-date"
+            name="installedpart[salesprice]"
+            type="text"
+            class="enpassant num"
+            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'salesprice']) ?>"
+            value="<?php echo htmlspecialchars($_installedpart->decimal('salesprice')) ?>" />
+
     </td>
     <td
-        data-order="<?php echo $_installedpart->stamp ?>">
-        <?php echo htmlspecialchars($_installedpart->localizedDate('stamp')) ?>
+        data-sort="<?php echo $_installedpart->stamp ?>">
+
+        <input
+            id="<?php echo $_type ?>-<?php echo $_id ?>-date"
+            name="installedpart[stamp]"
+            type="date"
+            class="enpassant"
+            placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'stamp']) ?>"
+            value="<?php echo htmlspecialchars($_installedpart->stamp) ?>" />
         <a
             class="ir action action-delete"
             href="<?php echo Url::build('/admin/installedpart/kill/%d', [$_installedpart->getId()]) ?>"

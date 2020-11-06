@@ -102,7 +102,7 @@
     <table width="100%">
         <thead>
             <tr>
-                <th width="5%"><?php echo I18n::__('appointment_plabel_date') ?></th>
+                <th width="6%"><?php echo I18n::__('appointment_plabel_date') ?></th>
                 <th width="5%"><?php echo I18n::__('appointment_plabel_starttime') ?></th>
                 <th width="2%" class="number"><?php echo I18n::__('appointment_plabel_woy') ?></th>
                 <th width="2%"><?php echo I18n::__('appointment_plabel_fix') ?></th>
@@ -125,6 +125,11 @@
             $_machine = $_record->getMachine();
             $_user = $_record->getUser();
             $_location = $_record->getLocation();
+            if ($_location->getId()):
+                $_loca_name = $_location->name;
+            else:
+                $_loca_name = $_person->postalAddress();
+            endif;
             $_timecheck = $_record->isOverdue();
         ?>
         <tr>
@@ -136,7 +141,7 @@
             <td><?php echo htmlspecialchars($_user->getName()) ?></td>
             <td class="number"><?php echo htmlspecialchars($_record->decimal('duration', 2)) ?></td>
             <td><?php echo htmlspecialchars($_person->name) ?></td>
-            <td><?php echo htmlspecialchars($_location->name) ?></td>
+            <td><?php echo htmlspecialchars($_loca_name) ?></td>
             <td><?php echo htmlspecialchars($_machine->machinebrandName()) ?></td>
             <td><?php echo htmlspecialchars($_machine->name) ?></td>
             <td><?php echo htmlspecialchars($_machine->serialnumber) ?></td>

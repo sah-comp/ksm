@@ -10,7 +10,7 @@ Flight::render('model/machine/loose/installedpart', [
     'record' => $record
 ]);
 ?>
-<table class="datatable">
+<table class="datatable" id="dtinstalledparts">
     <thead>
         <tr>
             <th><?php echo I18n::__('article_label_number') ?></th>

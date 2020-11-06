@@ -19,7 +19,7 @@ Flight::render('script/datatable_config');
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
 
         <table
-            class="scaffold service x-datatable"
+            class="scaffold service _datatable"
             data-ordering="false">
             <caption>
                 <?php echo I18n::__('scaffold_caption_index', null, [count($records)]) ?>
@@ -145,7 +145,7 @@ Flight::render('script/datatable_config');
                             id="<?php echo $_type ?>-<?php echo $_id ?>-duration"
                             name="duration"
                             type="text"
-                            class="enpassant"
+                            class="enpassant num"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'duration']) ?>"
                             value="<?php echo htmlspecialchars($_record->duration) ?>" />
                     </td>
@@ -170,7 +170,11 @@ Flight::render('script/datatable_config');
                     <td
                         data-filter="<?php echo htmlspecialchars($_location->name) ?>"
                         class="minor">
+                        <?php if ($_location->getId()): ?>
                         <span title="<?php echo htmlspecialchars($_location->name) ?>"><?php echo htmlspecialchars($_location->name) ?></span>
+                        <?php else: ?>
+                        <?php echo htmlspecialchars($_person->postalAddress()) ?>
+                        <?php endif; ?>
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_machine->machinebrandName()) ?>"
@@ -202,7 +206,7 @@ Flight::render('script/datatable_config');
                             id="<?php echo $_type ?>-<?php echo $_id ?>-note"
                             name="note"
                             type="text"
-                            class="enpassant blow-me-up"
+                            class="enpassant _blow-me-up"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'note']) ?>"
                             value="<?php echo htmlspecialchars($_record->note) ?>" />
                     </td>

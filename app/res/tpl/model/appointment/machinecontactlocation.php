@@ -1,7 +1,7 @@
 <div class="row <?php echo ($record->getContact()->hasError()) ? 'error' : ''; ?>">
     <label
         for="appointment-contact-name">
-        <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getContact()->getMeta('type'), $record->getContact()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
+        <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getPerson()->getMeta('type'), $record->getPerson()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
         <?php echo I18n::__('appointment_label_contact') ?>
     </label>
     <select

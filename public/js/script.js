@@ -33,6 +33,21 @@ $('body').ready(function() {
         $('html,body').animate({scrollTop: pagehash.offset().top - headeroffset}, 'linear')
 	}
 
+    /**
+     * Tooltips. Tippsy.
+     */
+    $('body').on('click', '.tooltip-open', function(event) {
+        event.preventDefault();
+        var tippsy = $(this).attr("data-tooltip");
+        $('#' + tippsy).show('slow');
+    });
+
+    $('body').on('click', '.tooltip-close', function(event) {
+        event.preventDefault();
+        var tippsy = $(this).attr("data-tooltip");
+        $('#' + tippsy).hide();
+    });
+
     initAutocompletes();
 
     /**
@@ -41,7 +56,7 @@ $('body').ready(function() {
      * @see https://datatables.net
      */
     if ($('.datatable').length) {
-        $('.datatable').DataTable({
+        dttables = $('.datatable').DataTable({
             "paging": false,
             "stateSave": true,
             "language": dtlang
@@ -231,14 +246,24 @@ $('body').ready(function() {
     /**
      * all and future delete links send a get request and then
      * fade out and finally detach the element.
+     *
+     * ATTENTION! Works only with table#dtinstalledparts
+     *
+     * @todo make this work for any .action-delete
      */
     $('body').on("click", ".action-delete", function(event) {
         event.preventDefault();
         var target = $(this).attr("data-target");
         var url = $(this).attr("href");
         $.get(url, function(data) {
+            $('#dtinstalledparts').DataTable().destroy(); // destroy the DataTable
             $('#'+target).fadeOut('fast', function() {
                 $('#'+target).detach();
+            });
+            $('#dtinstalledparts').DataTable({
+                "paging": false,
+                "stateSave": true,
+                "language": dtlang
             });
         });
     });
@@ -332,7 +357,16 @@ $('body').ready(function() {
                     zeros.forEach(function(item, index, array) {
                       $('#' + item).val('0');
                     });
+
+                    $('#dt' + target).DataTable().destroy(); // destroy the DataTable
                     $("#" + target).prepend(data.html); // add a tr at the bgining of tbody
+
+                    $('#dt' + target).DataTable({
+                        "paging": false,
+                        "stateSave": true,
+                        "language": dtlang
+                    });
+                    console.log('After adding newly installed part');
                 } else {
                     // there was an error updating the bean. Tell the user somehow.
                     console.log('Installing article failed');

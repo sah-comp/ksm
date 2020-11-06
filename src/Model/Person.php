@@ -88,7 +88,7 @@ class Model_Person extends Model
                 'filter' => array(
                     'tag' => 'text'
                 ),
-                'width' => '8rem'
+                'width' => '5rem'
             ),
             array(
                 'name' => 'nickname',
@@ -98,7 +98,7 @@ class Model_Person extends Model
                 'filter' => array(
                     'tag' => 'text'
                 ),
-                'width' => '8rem'
+                'width' => '5rem'
             ),
             array(
                 'name' => 'organization',
@@ -109,6 +109,18 @@ class Model_Person extends Model
                     'tag' => 'text'
                 )
             ),
+            [
+                'name' => 'address.*',
+                'sort' => [
+                    'name' => 'address.zip, address.city, address.street'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'callback' => [
+                    'name' => 'postalAddress'
+                ]
+            ],
             array(
                 'name' => 'email',
                 'sort' => array(
@@ -157,11 +169,13 @@ class Model_Person extends Model
             $sql = <<<SQL
                 SELECT
                     person.id AS id,
-                    CONCAT(person.name, ' (', person.nickname, ', ', person.account, ')') AS label,
+                    CONCAT(person.name, ' (', person.nickname, ', ', CONCAT(address.street, ' ', address.zip, ' ', address.city), ')') AS label,
                     person.name AS value,
                     person.note AS note
                 FROM
                     person
+                LEFT JOIN
+                    address ON address.person_id = person.id AND address.label = 'billing'
                 WHERE
                     person.nickname LIKE :searchtext OR
                     person.account LIKE :searchtext OR
@@ -203,6 +217,8 @@ SQL;
 		    {$fields}
 		FROM
 		    {$this->bean->getMeta('type')}
+        LEFT JOIN
+            address ON address.person_id = person.id AND address.label = 'billing'
 		WHERE
 		    {$where}
 SQL;
@@ -230,13 +246,43 @@ SQL;
     }
 
     /**
-     * Returns the billings address city name.
+     * Returns the flattended billing address.
+     *
+     * @param string $label defaults to billing
      * @return string
      */
-    public function billingAddressCity()
+    public function postalAddress()
     {
         $address = $this->getAddress('billing');
-        return $address->city;
+        $stack = [];
+        $stack[] = $address->street;
+        $stack[] = $address->zip;
+        $stack[] = $address->city;
+        return implode(" ", $stack);
+    }
+
+    /**
+     * Returns the billing street.
+     *
+     * @param string $label defaults to billing
+     * @return string
+     */
+    public function postalAddressStreet($label = 'billing')
+    {
+        $address = $this->getAddress($label);
+        return $address->street;
+    }
+
+    /**
+     * Returns the billing street.
+     *
+     * @param string $label defaults to billing
+     * @return string
+     */
+    public function postalAddressCity($label = 'billing')
+    {
+        $address = $this->getAddress($label);
+        return trim($address->zip . ' ' . $address->street);
     }
 
     /**

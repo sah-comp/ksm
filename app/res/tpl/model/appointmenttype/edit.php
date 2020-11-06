@@ -33,6 +33,7 @@
             <?php echo I18n::__('appointmenttype_label_color') ?>
         </label>
         <input
+            style="<?php echo ($record->color) ? 'color: ' . $record->color : '' ?>"
             id="appointmenttype-color"
             type="text"
             name="dialog[color]"

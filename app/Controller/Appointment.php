@@ -44,23 +44,27 @@ class Controller_Appointment extends Controller
     public function pdf()
     {
         $company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('appointment_servicelist_filename', null, [date('Y-m-d-H-i-s')]);
-        $title = I18n::__('appointment_servicelist_docname', null, [date('Y-m-d H:i:s')]);
+        $filename = I18n::__('appointment_list_filename', null, [date('Y-m-d-H-i-s')]);
+        $title = I18n::__('appointment_list_docname', null, [date('Y-m-d H:i:s')]);
         $mpdf = new mPDF('c', 'A4-L');
         $mpdf->SetTitle($title);
         $mpdf->SetAuthor($company->legalname);
         $mpdf->SetDisplayMode('fullpage');
 
-
-        $records = R::find(
-            'appointment',
-            "confirmed = :yes AND
-             completed != :yes
-             ORDER BY date, starttime, fix, @joined.person.name, @joined.machine.name, @joined.machine.serialnumber",
-            [
-                 ':yes' => 1
-            ]
+        $filter = R::load('filter', $_SESSION['scaffold']['appointment']['filter']['id']);
+        $where = $filter->buildWhereClause();
+        $sqlCollection = $this->appointment->getSql(
+            "DISTINCT(appointment.id) AS id",
+            $where,
+            'date'
         );
+        $rows = R::getAssoc($sqlCollection, $filter->getFilterValues());
+        $records = R::batch('appointment', array_keys($rows));
+
+        if (count($records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
+            Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
+            $this->redirect('/admin/appointment');
+        }
 
         ob_start();
         Flight::render('model/appointment/print', [

@@ -158,11 +158,6 @@ textarea[disabled=disabled] {
     color: gray;
 }
 
-/* form table stuff */
-.panel table {
-    overflow: hidden;
-}
-
 /*
 th, td {
     animation: widerthanyou 7000ms ease-out;
@@ -172,7 +167,7 @@ th, td {
  * Service appointment table width settings.
  */
 table.service {
-    font-size: 80%;
+    font-size: 70%;
 }
 
 table.service tbody tr {
@@ -198,67 +193,97 @@ table.service tbody tr:hover {
     /*background-color: #defdf0;*/
 }
 
-th.date {
-    width: 7rem;
+table.service thead th.edit,
+table.service thead th.switch {
+    width: 10px;
 }
 
-th.time {
-    width: 6rem;
-}
-
-th.week {
-    width: 2rem;
-}
-
-th.fix {
-    width: 2rem;
-}
-
-th.duration {
+table.service th.date {
     width: 4rem;
 }
 
-th.worker {
+table.service th.time {
+    width: 3rem;
+}
+
+table.service th.week {
+    width: 1rem;
+}
+
+table.service th.fix {
+    width: 1rem;
+}
+
+table.service th.receipt {
+    width: 3rem;
+}
+
+table.service th.worker {
+    width: 3rem;
+}
+
+table.service th.duration {
+    width: 3rem;
+}
+
+table.service th.person {
     width: 5rem;
 }
 
-th.receipt {
-    width: 5.5rem;
-}
-
-th.location {
-    width: 6rem;
-}
-
-th.machine-internalnumber {
+table.service th.contact {
     width: 4rem;
 }
 
-th.note {
-    width: 8rem;
+table.service th.location {
+    width: 6rem;
 }
 
-th.wider {
+table.service th.machinebrand {
+    width: 2.5rem;
+}
+
+table.service th.machine {
+    width: 3rem;
+}
+
+table.service th.machine-serialnumber {
+    width: 3rem;
+}
+
+table.service th.machine-internalnumber {
+    width: 4rem;
+}
+
+table.service th.note {
+    width: 23.3rem;
+}
+
+table.service th.wider {
     transition: all 666ms;
     width: 42rem;
 }
 
-.panel td.minor {
+.panel table.service td.minor {
     font-size: smaller;
     color: gray;
 }
 
-.panel a.in-table,
-.panel a.in-form {
+input.num {
+    text-align: right;
+}
+
+a.in-table,
+a.in-form {
     display: block;
     background: url(/img/glyphicons/glyphicons_211_right_arrow.png);
     background-position: center left;
     background-repeat: no-repeat;
     background-size: 8px 8px;
     padding-left: 12px;
+    text-decoration: none;
 }
 
-.panel a.in-form {
+a.in-form {
     display: inline-block;
 }
 
@@ -336,7 +361,9 @@ th.sorting {
     text-decoration: none;
 }
 
-th.sorting:hover {
+th.sorting:hover,
+th.sorting_asc:hover,
+th.sorting_desc:hover {
     cursor: pointer;
 }
 
@@ -414,6 +441,88 @@ a.venetianblinds.active {
     color: gray;
     min-height: 4em;
     padding-left: 23.404255317%;
+}
+
+/**
+ * Tooltip stuff.
+ *
+ * @see http://jsfiddle.net/Xotic750/9kBVu/
+ */
+.tooltip {
+    width: 50%;
+    min-height: 10em;
+    padding: 1em;
+    border: 1px solid gray;
+    border-top: 0;
+    position: absolute;
+    background-color: white;
+    top: -1px;
+    left: 25%;
+    display: none;
+}
+
+.tooltip {
+    z-index: 10000;
+}
+
+table.scaffold a.tooltip-open {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background: url(/img/glyphicons/glyphicons_088_adress_book.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+}
+
+a.tooltip-close {
+    color: orange;
+}
+
+/*
+.tooltip-link:hover+.tooltip {
+    display: inline-block;
+}
+
+.tooltip:hover {
+    display: block;
+}
+*/
+.tooltip table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.tooltip table td {
+    vertical-align: top;
+    padding: 0;
+}
+
+.spacer {
+    font-size: small;
+    text-align: center;
+    padding-bottom: 2em;
+}
+
+/**
+ * Service print form
+ */
+form.pform {
+    margin-right: 1em;
+    padding-right: 1em;
+    border-right: 1px solid orange;
+}
+
+form.pform input.pday {
+    padding: 0.25em;
+    font-size: small;
+    width: 6rem;
+}
+
+select[multiple] {
+    font-size: 60%;
+    height: 3.2em;
 }
 
 /* Hilite the target, the element identified by the hash part of the URL */

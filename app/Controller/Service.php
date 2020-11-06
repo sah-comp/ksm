@@ -25,6 +25,20 @@ class Controller_Service extends Controller_Scaffold
     public $template = 'service/index';
 
     /**
+     * Holds the javascripts to load on this page.
+     *
+     * @var array
+     */
+    public $javascripts = [];
+    /*
+    [
+        '/js/datatables.min',
+        '/js/dataTables.buttons.min',
+        '/js/buttons.print.min'
+    ];
+    */
+
+    /**
      * Holds the users.
      *
      * @var array
@@ -41,6 +55,9 @@ class Controller_Service extends Controller_Scaffold
         $this->record = R::dispense('appointment');
         $this->actions = $this->record->getActions();
         $this->users = R::findAll('user');
+        if (!isset($_SESSION['service']['pday'])) {
+            $_SESSION['service']['pday'] = date('Y-m-d');
+        }
     }
 
     /*
@@ -55,6 +72,11 @@ class Controller_Service extends Controller_Scaffold
     {
         $this->action = 'index';
         if (Flight::request()->method == 'POST') {
+            if (Flight::request()->data->submit == I18n::__('service_action_print_day')) {
+                $_SESSION['service']['pday'] = Flight::request()->data->pday;
+                $this->pdf($_SESSION['service']['pday']);
+                $this->redirect("/service"); // I never get there, PDF download needs exit
+            }
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
             }
@@ -67,17 +89,42 @@ class Controller_Service extends Controller_Scaffold
                 $this->redirect("/service");
             }
         }
-        $this->records = R::find(
-            'appointment',
-            "confirmed = :yes AND
-             completed != :yes
-             ORDER BY date, starttime, fix, @joined.person.name, @joined.machine.name, @joined.machine.serialnumber",
-            [
-                 ':yes' => 1
-            ]
-        );
+        $this->records = $this->record->getConfirmedUndone();
         $_SESSION['service']['appointments'] = count($this->records);
         $this->render();
+    }
+
+    /**
+     * Generates an PDF using mPDF library and downloads it to the client.
+     *
+     * @param string $pday the date to filter
+     * @return void
+     */
+    public function pdf($pday = '')
+    {
+        $company = R::load('company', CINNEBAR_COMPANY_ID);
+        $filename = I18n::__('appointment_servicelist_filename', null, [date('Y-m-d-H-i-s')]);
+        $title = I18n::__('appointment_servicelist_docname', null, [date('Y-m-d H:i:s')]);
+        $mpdf = new mPDF('c', 'A4-L');
+        $mpdf->SetTitle($title);
+        $mpdf->SetAuthor($company->legalname);
+        $mpdf->SetDisplayMode('fullpage');
+
+        //
+        $records = $this->record->getConfirmedUndone($pday);
+
+        ob_start();
+        Flight::render('model/appointment/print', [
+            'language' => 'de',
+            'records' => $records,
+            'company_name' => $company->legalname,
+            'pdf_headline' => $title
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($filename, 'D');
+        exit;
     }
 
     /**
@@ -147,7 +194,8 @@ class Controller_Service extends Controller_Scaffold
         Flight::render('shared/navigation/main', [], 'navigation_main');
         Flight::render('shared/navigation', [], 'navigation');
         Flight::render('service/toolbar', [
-            'record' => $this->record
+            'record' => $this->record,
+            'pdate' => $_SESSION['service']['pday']
         ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
@@ -161,7 +209,7 @@ class Controller_Service extends Controller_Scaffold
         Flight::render('html5', [
             'title' => I18n::__("service_head_title"),
             'language' => Flight::get('language'),
-            'javascripts' => ['/js/datatables.min']
+            'javascripts' => $this->javascripts
         ]);
     }
 }

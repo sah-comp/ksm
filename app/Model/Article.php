@@ -47,7 +47,7 @@ class Model_Article extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '8rem'
+                'width' => '12rem'
             ],
             [
                 'name' => 'supplier.name',
@@ -60,7 +60,7 @@ class Model_Article extends Model
                 'callback' => [
                     'name' => 'supplierName'
                 ],
-                'width' => '8rem'
+                'width' => '12rem'
             ],
             [
                 'name' => 'description',
@@ -69,7 +69,8 @@ class Model_Article extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => 'auto'
             ],
             [
                 'name' => 'lastchange',

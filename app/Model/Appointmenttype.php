@@ -48,6 +48,16 @@ class Model_Appointmenttype extends Model
     }
 
     /**
+     * Returns a string with styling information of a scaffold table row.
+     *
+     * @return string
+     */
+    public function scaffoldStyle()
+    {
+        return "style=\"border-left: 3px solid {$this->bean->color};\"";
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()

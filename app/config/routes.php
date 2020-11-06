@@ -214,7 +214,7 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
 });
 
 /**
- * Routes to the contract controller to download a contract as PDF to the client.
+ * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
     $appointmentController = new Controller_Appointment(null);

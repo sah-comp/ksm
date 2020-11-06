@@ -33,7 +33,8 @@ class Model_Vehicle extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '13rem'
             ],
             [
                 'name' => 'name',
@@ -42,7 +43,8 @@ class Model_Vehicle extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => 'auto'
             ]
         ];
     }

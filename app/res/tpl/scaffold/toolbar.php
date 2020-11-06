@@ -32,7 +32,7 @@
 		</a>
 	</li>
 	<?php
-    if (isset($record) && $record->getId() && $record->hasMenu()):
+    if (isset($record) && $record->hasMenu()):
         Flight::render("model/{$type}/toolbar/items.php", [
             'record' => $record,
             'type' => $type,

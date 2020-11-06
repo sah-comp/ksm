@@ -9,6 +9,30 @@
  */
 ?>
 <ul class="panel-navigation">
+    <li class="pday">
+		<form
+            id="pform"
+            name="pform"
+            class="pform"
+            method="POST"
+            accept-charset="utf-8"
+            autocomplete="off"
+            enctype="multipart/form-data">
+            <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
+            <input
+                id="pday"
+                type="date"
+                name="pday"
+                class="pday"
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                required="required"
+                value="<?php echo $pdate ?>" />
+            <input
+                name="submit"
+                type="submit"
+                value="<?php echo I18n::__('service_action_print_day') ?>" />
+        </form>
+	</li>
     <li>
 		<a
 			href="<?php echo Url::build("/service") ?>">
@@ -26,12 +50,6 @@
 			href="<?php echo Url::build("/admin/appointment/add/table/?goto=" . urlencode('/service')) ?>"
 			accesskey="+">
 			<?php echo I18n::__('action_add_nav') ?>
-		</a>
-	</li>
-    <li>
-		<a
-			href="<?php echo Url::build("/appointment/pdf") ?>">
-			<?php echo I18n::__('appointment_action_pdf') ?>
 		</a>
 	</li>
 </ul>

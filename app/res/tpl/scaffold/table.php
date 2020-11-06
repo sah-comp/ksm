@@ -140,6 +140,25 @@
                     </option>
                     <?php endforeach ?>
                 </select>
+                <?php elseif ($_criteria->tag == 'in'): ?>
+
+                <input
+                    type="hidden"
+                    name="filter[ownCriteria][<?php echo $_i ?>][postvar]"
+                    value="<?php echo htmlspecialchars($_criteria->postvar) ?>">
+                <input
+                    type="hidden"
+                    name="filter[ownCriteria][<?php echo $_i ?>][value]"
+                    value="<?php echo htmlspecialchars($_criteria->value) ?>">
+                <select
+                    name="<?php echo $_attribute['filter']['postvar'] ?>[]"
+                    class="autowidth"
+                    size="2"
+                    multiple="multiple">
+                    <?php foreach (R::find($_attribute['filter']['options']['bean']) as $_in_id => $_in_opt): ?>
+                    <option value="<?php echo $_in_opt->{$_attribute['filter']['options']['id']} ?>" <?php echo (strpos($_criteria->value, $_in_opt->getId()) !== false) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_in_opt->{$_attribute['filter']['options']['label']}) ?></option>
+                    <?php endforeach; ?>
+                </select>
                 <?php else: ?>
                 <input
                     type="text"
@@ -148,6 +167,7 @@
                     value="<?php echo htmlspecialchars($_criteria->value) ?>"
                     placeholder="<?php echo I18n::__('filter_placeholder_any') ?>" />
                 <?php endif ?>
+
                 <?php else: ?>
                     &nbsp;
                 <?php endif ?>

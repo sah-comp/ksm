@@ -33,7 +33,8 @@ class Model_Contracttype extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '10rem'
             ],
             [
                 'name' => 'text',
@@ -42,7 +43,8 @@ class Model_Contracttype extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => 'auto'
             ]
         ];
     }

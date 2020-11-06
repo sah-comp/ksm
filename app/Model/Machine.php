@@ -34,7 +34,7 @@ class Model_Machine extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '12rem'
+                'width' => '14rem'
             ],
             [
                 'name' => 'machinebrand.name',
@@ -56,7 +56,8 @@ class Model_Machine extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '12rem'
             ],
             [
                 'name' => 'person.name',
@@ -68,7 +69,8 @@ class Model_Machine extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => 'auto'
             ],
             [
                 'name' => 'lastservice',

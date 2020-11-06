@@ -113,15 +113,21 @@ class Model_Appointment extends Model
                 'width' => '7rem'
             ],
             [
-                'name' => 'appointmenttype.name',
+                'name' => 'appointmenttype.id',
                 'sort' => [
-                    'name' => 'appointmenttype.name'
+                    'name' => 'appointmenttype.id'
                 ],
                 'callback' => [
                     'name' => 'appointmenttypeName'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'in',
+                    'postvar' => 'appointmenttype',
+                    'options' => [
+                        'bean' => 'appointmenttype',
+                        'id' => 'id',
+                        'label' => 'name'
+                    ]
                 ],
                 'width' => '7rem'
             ],
@@ -148,7 +154,13 @@ class Model_Appointment extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'prefix' => [
+                    'callback' => [
+                        'name' => 'prefixContact'
+                    ]
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'location.name',
@@ -210,6 +222,37 @@ class Model_Appointment extends Model
                 ]
             ]
         ];
+    }
+
+    /**
+     * Returns string that is output before the attribute value (callback value) in a scaffold
+     * list view column.
+     *
+     * @return string
+     */
+    public function prefixContact()
+    {
+        Flight::render('model/person/tooltip/contactinfo', [
+            'record' => $this->bean->getPerson()
+        ]);
+    }
+
+    /**
+     * Returns an array with "service" appointment beans.
+     *
+     * @param string $date
+     * @return array
+     */
+    public function getConfirmedUndone($date = '')
+    {
+        $filter = [':yes' => 1];
+        $add_date = '';
+        if ($date) {
+            $add_date = ' AND date = :pday ';
+            $filter[':pday'] = $date;
+        }
+        $sql = "confirmed = :yes AND completed != :yes {$add_date} ORDER BY date, starttime, fix DESC, @joined.person.name, @joined.machine.name, @joined.machine.serialnumber";
+        return R::find('appointment', $sql, $filter);
     }
 
     /**
@@ -347,7 +390,11 @@ class Model_Appointment extends Model
      */
     public function locationName()
     {
-        return $this->bean->getLocation()->name;
+        $loca = $this->bean->getLocation();
+        if ($loca->getId()) {
+            return $this->bean->getLocation()->name;
+        }
+        return $this->bean->getPerson()->postalAddress();
     }
 
     /**
@@ -486,7 +533,6 @@ class Model_Appointment extends Model
             return "style=\"border-left: 3px solid inherit;\"";
         }
         return "style=\"border-left: 3px solid {$this->bean->appointmenttype->color};\"";
-        //return "style=\"box-shadow: inset 0 0 0 4px coral;;\"";
     }
 
     /**
