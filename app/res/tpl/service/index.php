@@ -19,7 +19,7 @@ Flight::render('script/datatable_config');
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
 
         <table
-            class="scaffold service _datatable"
+            class="scaffold service datatable"
             data-ordering="false">
             <caption>
                 <?php echo I18n::__('scaffold_caption_index', null, [count($records)]) ?>
@@ -90,18 +90,19 @@ Flight::render('script/datatable_config');
                             value="1"
                             <?php echo (isset($selection[$_record->getMeta('type')][$_record->getId()]) && $selection[$_record->getMeta('type')][$_record->getId()]) ? 'checked="checked"' : '' ?> />
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_record->localizedDate('date')) ?>">
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-date"
                             name="date"
                             placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                             type="date"
                             class="enpassant"
-                            required="required"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'date']) ?>"
                             value="<?php echo htmlspecialchars($_record->date) ?>" />
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_record->localizedTime('starttime')) ?>">
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-time"
                             name="time"
@@ -111,10 +112,14 @@ Flight::render('script/datatable_config');
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'starttime']) ?>"
                             value="<?php echo htmlspecialchars($_record->starttime) ?>" />
                     </td>
-                    <td class="number" id="week-bean-<?php echo $_record->getId() ?>">
+                    <td
+                        class="number"
+                        id="week-bean-<?php echo $_record->getId() ?>"
+                        data-filter="<?php echo htmlspecialchars($_record->localizedDate('date', '%V')) ?>">
                         <?php echo htmlspecialchars($_record->localizedDate('date', '%V')) ?>
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo ($_record->fix) ? 'fix' : '' ?>">
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-fix"
                             name="fix"
@@ -124,11 +129,13 @@ Flight::render('script/datatable_config');
                             value="1"
                             <?php echo ($_record->fix) ? 'checked="checked"' : '' ?> />
                     </td>
-                    <td class="minor">
-                        <?php echo htmlspecialchars($_record->receipt) ?>
+                    <td
+                        class="minor"
+                        data-filter="<?php echo htmlspecialchars($_record->localizedDate('receipt')) ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('receipt', '%d.%m.%y')) ?>
                     </td>
                     <td
-                        data-filter="<?php echo htmlspecialchars($_record->getUser()->screenname()) ?>">
+                        data-filter="<?php echo htmlspecialchars($_record->getUser()->getName()) ?>">
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-worker"
                             name="worker"
@@ -140,17 +147,23 @@ Flight::render('script/datatable_config');
                             <?php endforeach; ?>
                         </select>
                     </td>
-                    <td>
+                    <td
+                        data-filter="<?php echo htmlspecialchars($_record->decimal('duration')) ?>">
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-duration"
                             name="duration"
                             type="text"
                             class="enpassant num"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'duration']) ?>"
-                            value="<?php echo htmlspecialchars($_record->duration) ?>" />
+                            value="<?php echo htmlspecialchars($_record->decimal('duration')) ?>" />
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_person->name) ?>">
+                        <?php
+                        Flight::render('model/person/tooltip/contactinfo', [
+                            'record' => $_person
+                        ]);
+                        ?>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
@@ -173,13 +186,13 @@ Flight::render('script/datatable_config');
                         <?php if ($_location->getId()): ?>
                         <span title="<?php echo htmlspecialchars($_location->name) ?>"><?php echo htmlspecialchars($_location->name) ?></span>
                         <?php else: ?>
-                        <?php echo htmlspecialchars($_person->postalAddress()) ?>
+                        <span title="<?php echo htmlspecialchars($_person->postalAddressService()) ?>"><?php echo htmlspecialchars($_person->postalAddressService()) ?></span>
                         <?php endif; ?>
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_machine->machinebrandName()) ?>"
                         class="minor">
-                        <?php echo htmlspecialchars($_machine->machinebrandName()) ?>
+                        <span title="<?php echo htmlspecialchars($_machine->machinebrandName()) ?>"><?php echo htmlspecialchars($_machine->machinebrandName()) ?></span>
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_machine->name) ?>">
@@ -193,17 +206,18 @@ Flight::render('script/datatable_config');
                     <td
                         data-filter="<?php echo htmlspecialchars($_machine->serialnumber) ?>"
                         class="minor">
-                        <?php echo htmlspecialchars($_machine->serialnumber) ?>
+                        <span title="<?php echo htmlspecialchars($_machine->serialnumber) ?>"><?php echo htmlspecialchars($_machine->serialnumber) ?></span>
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_machine->internalnumber) ?>"
                         class="minor">
-                        <?php echo htmlspecialchars($_machine->internalnumber) ?>
+                        <span title="<?php echo htmlspecialchars($_machine->internalnumber) ?>"><?php echo htmlspecialchars($_machine->internalnumber) ?></span>
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_record->note) ?>">
                         <input
                             id="<?php echo $_type ?>-<?php echo $_id ?>-note"
+                            title="<?php echo htmlspecialchars($_record->note) ?>"
                             name="note"
                             type="text"
                             class="enpassant _blow-me-up"

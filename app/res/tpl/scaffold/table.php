@@ -140,7 +140,10 @@
                     </option>
                     <?php endforeach ?>
                 </select>
-                <?php elseif ($_criteria->tag == 'in'): ?>
+                <?php
+                elseif ($_criteria->tag == 'in'):
+                    $_values = explode(', ', $_criteria->value);
+                ?>
 
                 <input
                     type="hidden"
@@ -153,10 +156,10 @@
                 <select
                     name="<?php echo $_attribute['filter']['postvar'] ?>[]"
                     class="autowidth"
-                    size="2"
+                    size="4"
                     multiple="multiple">
                     <?php foreach (R::find($_attribute['filter']['options']['bean']) as $_in_id => $_in_opt): ?>
-                    <option value="<?php echo $_in_opt->{$_attribute['filter']['options']['id']} ?>" <?php echo (strpos($_criteria->value, $_in_opt->getId()) !== false) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_in_opt->{$_attribute['filter']['options']['label']}) ?></option>
+                    <option value="<?php echo $_in_opt->{$_attribute['filter']['options']['id']} ?>" <?php echo (in_array($_in_opt->getId(), $_values)) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_in_opt->{$_attribute['filter']['options']['label']}) ?></option>
                     <?php endforeach; ?>
                 </select>
                 <?php else: ?>
@@ -194,6 +197,7 @@
             id="<?php echo $_record->getMeta('type') ?>-<?php echo $_record->getId() ?>"
             data-type="<?php echo $_record->getMeta('type') ?>"
             data-id="<?php echo $_record->getId() ?>"
+            data-href="<?php echo Url::build('/admin/%s/edit/%d/%d/%d/%d/%s/', array($_record->getMeta('type'), $_record->getId(), $offset, $order, $dir, $layout)) ?>"
             <?php echo $_record->scaffoldStyle() ?>
             class="bean bean-<?php echo $_record->getMeta('type') ?> <?php echo (isset($_record->invalid) && $_record->invalid) ? 'invalid' : '' ?>">
             <!-- table cells of the real bean -->

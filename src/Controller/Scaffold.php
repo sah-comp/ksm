@@ -418,7 +418,6 @@ class Controller_Scaffold extends Controller
             $this->offset($this->page, $this->limit),
             $this->limit
         );
-        error_log('Scaffold WHERE ' . $where); // DELETE ERROR_LOG
         $sqlTotal = $this->record->getSql(
             "COUNT(DISTINCT({$this->type}.id)) AS total",
             $where

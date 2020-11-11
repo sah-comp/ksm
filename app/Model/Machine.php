@@ -60,6 +60,16 @@ class Model_Machine extends Model
                 'width' => '12rem'
             ],
             [
+                'name' => 'internalnumber',
+                'sort' => [
+                    'name' => 'machine.internalnumber'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '12rem'
+            ],
+            [
                 'name' => 'person.name',
                 'sort' => [
                     'name' => 'person.name'
@@ -220,10 +230,12 @@ SQL;
             $sql = <<<SQL
                 SELECT
                     machine.id AS id,
-                    CONCAT(machine.name, ' ', machine.serialnumber) AS label,
+                    CONCAT(mb.name, ' ', machine.name, ' ', machine.serialnumber, ' ', machine.internalnumber) AS label,
                     machine.name AS value
                 FROM
                     machine
+                LEFT JOIN
+                    machinebrand AS mb ON mb.id = machine.machinebrand_id
                 WHERE
                     machine.name LIKE :searchtext OR
                     machine.serialnumber LIKE :searchtext

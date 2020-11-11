@@ -21,7 +21,7 @@
             <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
             <input
                 id="pday"
-                type="date"
+                type="text"
                 name="pday"
                 class="pday"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"

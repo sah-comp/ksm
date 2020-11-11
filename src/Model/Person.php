@@ -107,7 +107,12 @@ class Model_Person extends Model
                 ),
                 'filter' => array(
                     'tag' => 'text'
-                )
+                ),
+                'prefix' => [
+                    'callback' => [
+                        'name' => 'prefixContact'
+                    ]
+                ],
             ),
             [
                 'name' => 'address.*',
@@ -153,6 +158,19 @@ class Model_Person extends Model
                 'width' => '5rem'
             )
         );
+    }
+
+    /**
+     * Returns string that is output before the attribute value (callback value) in a scaffold
+     * list view column.
+     *
+     * @return string
+     */
+    public function prefixContact()
+    {
+        Flight::render('model/person/tooltip/contactinfo', [
+            'record' => $this->bean
+        ]);
     }
 
     /**
@@ -258,6 +276,22 @@ SQL;
         $stack[] = $address->street;
         $stack[] = $address->zip;
         $stack[] = $address->city;
+        return implode(" ", $stack);
+    }
+
+    /**
+     * Returns the flattended billing address in other order.
+     *
+     * @param string $label defaults to billing
+     * @return string
+     */
+    public function postalAddressService()
+    {
+        $address = $this->getAddress('billing');
+        $stack = [];
+        $stack[] = $address->city;
+        $stack[] = $address->zip;
+        $stack[] = $address->street;
         return implode(" ", $stack);
     }
 

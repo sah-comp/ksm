@@ -18,11 +18,18 @@
 class Model_Appointment extends Model
 {
     /**
+     * How to dates are divided to let users search for a date range.
+     *
+     * e.g. 2020-03-01...2020-09-01
+     */
+    public $daterangedelimiter = '...';
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->setAction('index', ['idle', 'complete', 'adjourn', 'adjournweekday']);
+        $this->setAction('index', ['idle', 'expunge', 'complete', 'adjourn', 'adjournweekday']);
     }
 
     /**
@@ -248,11 +255,31 @@ class Model_Appointment extends Model
         $filter = [':yes' => 1];
         $add_date = '';
         if ($date) {
-            $add_date = ' AND date = :pday ';
-            $filter[':pday'] = $date;
+            if (strpos($date, $this->daterangedelimiter)) {
+                $dates = explode($this->daterangedelimiter, $date);
+                $date_from = $this->convertToDate($dates[0]);
+                $date_to = $this->convertToDate($dates[1]);
+                $add_date = ' AND (date >= :pday_from AND date <= :pday_to)';
+                $filter[':pday_from'] = $date_from;
+                $filter[':pday_to'] = $date_to;
+            } else {
+                $add_date = ' AND date = :pday ';
+                $filter[':pday'] = $date;
+            }
         }
-        $sql = "confirmed = :yes AND completed != :yes {$add_date} ORDER BY date, starttime, fix DESC, @joined.person.name, @joined.machine.name, @joined.machine.serialnumber";
+        $sql = "confirmed = :yes AND completed != :yes {$add_date} ORDER BY date, fix DESC, starttime, @joined.person.name, @joined.machine.name, @joined.machine.serialnumber";
         return R::find('appointment', $sql, $filter);
+    }
+
+    /**
+     * Returns a mysql date string.
+     *
+     * @param string the value to convert
+     * @return string
+     */
+    public function convertToDate($value)
+    {
+        return date('Y-m-d', strtotime($value));
     }
 
     /**
@@ -584,6 +611,7 @@ SQL;
     public function dispense()
     {
         $this->bean->date = date('Y-m-d');
+        $this->bean->interval = 0;
         $this->bean->adjourned = 0; // Counts how many times the appointment was adjournded
         $this->bean->receipt = date('Y-m-d'); // Date when the appointment was arranged
         $this->bean->starttime = date('H:i:s', strtotime('00:00:00'));
@@ -611,6 +639,10 @@ SQL;
         );
         $this->addConverter(
             'duration',
+            new Converter_Decimal()
+        );
+        $this->addConverter(
+            'interval',
             new Converter_Decimal()
         );
     }
@@ -641,6 +673,7 @@ SQL;
             $dup = R::duplicate($this->bean);
             $dup->date = date('Y-m-d', strtotime($this->bean->date . " + " . (int)$this->bean->interval . " days"));
             $dup->completed = false;
+            $dup->confirmed = false;
             $dup_id = R::store($dup);
             $this->bean->ownAppointment[] = $dup;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');

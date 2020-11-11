@@ -29,14 +29,9 @@ class Controller_Service extends Controller_Scaffold
      *
      * @var array
      */
-    public $javascripts = [];
-    /*
-    [
-        '/js/datatables.min',
-        '/js/dataTables.buttons.min',
-        '/js/buttons.print.min'
+    public $javascripts = [
+        '/js/datatables.min'
     ];
-    */
 
     /**
      * Holds the users.
@@ -102,29 +97,35 @@ class Controller_Service extends Controller_Scaffold
      */
     public function pdf($pday = '')
     {
-        $company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('appointment_servicelist_filename', null, [date('Y-m-d-H-i-s')]);
-        $title = I18n::__('appointment_servicelist_docname', null, [date('Y-m-d H:i:s')]);
-        $mpdf = new mPDF('c', 'A4-L');
-        $mpdf->SetTitle($title);
-        $mpdf->SetAuthor($company->legalname);
-        $mpdf->SetDisplayMode('fullpage');
+        try {
+            $company = R::load('company', CINNEBAR_COMPANY_ID);
+            $filename = I18n::__('appointment_servicelist_filename', null, [date('Y-m-d-H-i-s')]);
+            $title = I18n::__('appointment_servicelist_docname', null, [date('Y-m-d H:i:s')]);
+            $mpdf = new mPDF('c', 'A4-L');
+            $mpdf->SetTitle($title);
+            $mpdf->SetAuthor($company->legalname);
+            $mpdf->SetDisplayMode('fullpage');
 
-        //
-        $records = $this->record->getConfirmedUndone($pday);
+            //
+            $records = $this->record->getConfirmedUndone($pday);
 
-        ob_start();
-        Flight::render('model/appointment/print', [
-            'language' => 'de',
-            'records' => $records,
-            'company_name' => $company->legalname,
-            'pdf_headline' => $title
-        ]);
-        $html = ob_get_contents();
-        ob_end_clean();
-        $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, 'D');
-        exit;
+            ob_start();
+            Flight::render('model/appointment/print', [
+                'language' => 'de',
+                'records' => $records,
+                'company_name' => $company->legalname,
+                'pdf_headline' => $title
+            ]);
+            $html = ob_get_contents();
+            ob_end_clean();
+            $mpdf->WriteHTML($html);
+            $mpdf->Output($filename, 'D');
+            exit;
+        } catch (\Exception $e) {
+            error_log($e);
+            $this->notifyAbout('error');
+            $this->redirect('/service');
+        }
     }
 
     /**

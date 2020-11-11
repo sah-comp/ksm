@@ -199,11 +199,11 @@ table.service thead th.switch {
 }
 
 table.service th.date {
-    width: 4rem;
+    width: 6rem;
 }
 
 table.service th.time {
-    width: 3rem;
+    width: 4rem;
 }
 
 table.service th.week {
@@ -215,7 +215,7 @@ table.service th.fix {
 }
 
 table.service th.receipt {
-    width: 3rem;
+    width: 2rem;
 }
 
 table.service th.worker {
@@ -223,19 +223,19 @@ table.service th.worker {
 }
 
 table.service th.duration {
-    width: 3rem;
+    width: 2rem;
 }
 
 table.service th.person {
-    width: 5rem;
+    width: 4.5rem;
 }
 
 table.service th.contact {
-    width: 4rem;
+    width: 3.5rem;
 }
 
 table.service th.location {
-    width: 6rem;
+    width: 4rem;
 }
 
 table.service th.machinebrand {
@@ -251,11 +251,11 @@ table.service th.machine-serialnumber {
 }
 
 table.service th.machine-internalnumber {
-    width: 4rem;
+    width: 3rem;
 }
 
 table.service th.note {
-    width: 23.3rem;
+    width: 30rem;
 }
 
 table.service th.wider {
@@ -265,7 +265,42 @@ table.service th.wider {
 
 .panel table.service td.minor {
     font-size: smaller;
-    color: gray;
+    /*color: gray;*/
+}
+
+/* customer */
+table.service tr td:nth-child(11) {
+    background-color: #FF9AA2;
+}
+
+/* contact */
+table.service tr td:nth-child(12) {
+    background-color: #FFB7B2;
+}
+
+/* location */
+table.service tr td:nth-child(13) {
+    background-color: #FFDAC1;
+}
+
+/* machine brand */
+table.service tr td:nth-child(14) {
+    background-color: #E2F0CB;
+}
+
+/* machine */
+table.service tr td:nth-child(15) {
+    background-color: #B5EAD7;
+}
+
+/* machine s/n */
+table.service tr td:nth-child(16) {
+    background-color: #C7CEEA;
+}
+
+/* machine internal number */
+table.service tr td:nth-child(17) {
+    background-color: #FFCEE7;
 }
 
 input.num {
@@ -475,6 +510,10 @@ table.scaffold a.tooltip-open {
     background-size: 12px 12px;
 }
 
+table.service a.tooltip-open {
+    float: left;
+}
+
 a.tooltip-close {
     color: orange;
 }
@@ -517,12 +556,12 @@ form.pform {
 form.pform input.pday {
     padding: 0.25em;
     font-size: small;
-    width: 6rem;
+    width: auto;
 }
 
 select[multiple] {
-    font-size: 60%;
-    height: 3.2em;
+    font-size: 70%;
+    height: auto;
 }
 
 /* Hilite the target, the element identified by the hash part of the URL */

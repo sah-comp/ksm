@@ -142,6 +142,16 @@ $('body').ready(function() {
     }
 
     /**
+     * Open a URL on double clicking a table row.
+     */
+    $('body').on('dblclick', 'table.scaffold tbody tr', function(event) {
+        event.preventDefault();
+        var url = $(this).attr('data-href');
+        window.location = url;
+        return false;
+    });
+
+    /**
      * Click on a sitemap link will load the domain and fill the content-container.
      */
     $('body').on("click", '#sitemap a', function(event) {

@@ -34,7 +34,7 @@
         <?php foreach ($machines as $_id => $_machine): ?>
         <option
             value="<?php echo $_machine->getId() ?>"
-            <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ')') ?>
+            <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_machine->getMachinebrand()->name . ' ' . $_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ')') ?>
         </option>
         <?php endforeach ?>
     </select>

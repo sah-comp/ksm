@@ -27,7 +27,7 @@ $_contracts = R::find('contract', "machine_id = ? ORDER BY @joined.person.name",
             <td
                 data-order="<?php echo $_contracttype->name ?>">
                 <a
-                    href="<?php echo Url::build('/admin/%s/edit/%d/', [$_contracttype->getMeta('type'), $_contracttype->getId()]) ?>"
+                    href="<?php echo Url::build('/admin/%s/edit/%d/', [$_contract->getMeta('type'), $_contract->getId()]) ?>"
                     class="in-table">
                     <?php echo htmlspecialchars($_contracttype->name) ?>
                 </a>
