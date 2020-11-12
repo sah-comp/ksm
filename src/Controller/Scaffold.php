@@ -573,7 +573,7 @@ class Controller_Scaffold extends Controller
                 try {
                     R::store($this->filter);
                     $_SESSION['scaffold'][$this->type]['filter']['id'] = $this->filter->getId();
-                    //$this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+                    $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
                 } catch (Exception $e) {
                     error_log($e);
                     Flight::get('user')->notify(I18n::__('action_filter_error', null, array(), 'error'));
