@@ -237,7 +237,7 @@ SQL;
     public function dispense()
     {
         $this->bean->lastchange = date('Y-m-d');
-        $this->addConverter('lastchange', new Converter_MysqlDate());
+        $this->addConverter('lastchange', new Converter_Mysqldate());
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
     }
