@@ -304,7 +304,7 @@ SQL;
             $orgname = $file['name'];
             $extension = strtolower($file_parts['extension']);
             $sanename = $this->sanitizeFilename($file_parts['filename']);
-            $filename = md5($this->bean->getId()) . $sanename . '.' . $extension;
+            $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
             if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
                 $this->addError('move_upload_file_failed', 'file');
                 throw new Exception('move_upload_file_failed');
