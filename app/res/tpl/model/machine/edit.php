@@ -181,12 +181,14 @@
             rows="3"
             cols="60"><?php echo htmlspecialchars($record->specialagreement) ?></textarea>
     </div>
+
 </fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', [
         'tab_id' => 'machine-tabs',
         'tabs' => [
             'machine-details' => I18n::__('machine_detail_tab'),
+            'machine-artifact' => I18n::__('machine_artifact_tab'),
             'machine-article' => I18n::__('machine_article_tab'),
             'machine-appointment' => I18n::__('machine_appointment_tab'),
             'machine-contract' => I18n::__('machine_contract_tab')
@@ -372,14 +374,14 @@
         <!-- first block -->
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-motor"
                     class="<?php echo ($record->hasError('motor')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_motor') ?>
                 </label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-motorserialnumber"
                     class="<?php echo ($record->hasError('motorserialnumber')) ? 'error' : ''; ?>">
@@ -389,7 +391,7 @@
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-motor"
                     class="autowidth"
@@ -397,7 +399,7 @@
                     name="dialog[motor]"
                     value="<?php echo htmlspecialchars($record->motor) ?>"/>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-motorserialnumber"
                     class="autowidth"
@@ -410,14 +412,14 @@
         <!-- second block -->
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-controlvalve"
                     class="<?php echo ($record->hasError('controlvalve')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_controlvalve') ?>
                 </label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-shutdownvalve"
                     class="<?php echo ($record->hasError('shutdownvalve')) ? 'error' : ''; ?>">
@@ -427,7 +429,7 @@
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-controlvalve"
                     class="autowidth"
@@ -435,7 +437,7 @@
                     name="dialog[controlvalve]"
                     value="<?php echo htmlspecialchars($record->controlvalve) ?>"/>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-shutdownvalve"
                     class="autowidth"
@@ -448,14 +450,14 @@
         <!-- third block -->
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-mixer"
                     class="<?php echo ($record->hasError('mixer')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_mixer') ?>
                 </label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-keynumber"
                     class="<?php echo ($record->hasError('keynumber')) ? 'error' : ''; ?>">
@@ -465,7 +467,7 @@
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-mixer"
                     class="autowidth"
@@ -473,7 +475,7 @@
                     name="dialog[mixer]"
                     value="<?php echo htmlspecialchars($record->mixer) ?>"/>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-keynumber"
                     class="autowidth"
@@ -486,14 +488,14 @@
         <!-- fifth block -->
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-fronttires"
                     class="<?php echo ($record->hasError('fronttires')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_fronttires') ?>
                 </label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-backtires"
                     class="<?php echo ($record->hasError('backtires')) ? 'error' : ''; ?>">
@@ -503,7 +505,7 @@
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-fronttires"
                     class="autowidth"
@@ -511,7 +513,7 @@
                     name="dialog[fronttires]"
                     value="<?php echo htmlspecialchars($record->fronttires) ?>"/>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-backtires"
                     class="autowidth"
@@ -524,14 +526,14 @@
         <!-- sixth block -->
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-controltype"
                     class="<?php echo ($record->hasError('controltype')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_controltype') ?>
                 </label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-battery"
                     class="<?php echo ($record->hasError('battery')) ? 'error' : ''; ?>">
@@ -541,7 +543,7 @@
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-controltype"
                     class="autowidth"
@@ -549,7 +551,7 @@
                     name="dialog[controltype]"
                     value="<?php echo htmlspecialchars($record->controltype) ?>"/>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-battery"
                     class="autowidth"
@@ -562,14 +564,14 @@
         <!-- seventh block -->
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-hourlyrate"
                     class="<?php echo ($record->hasError('hourlyrate')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_hourlyrate') ?>
                 </label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label
                     for="machine-drivingcost"
                     class="<?php echo ($record->hasError('drivingcost')) ? 'error' : ''; ?>">
@@ -579,7 +581,7 @@
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-hourlyrate"
                     class="autowidth"
@@ -587,7 +589,7 @@
                     name="dialog[hourlyrate]"
                     value="<?php echo htmlspecialchars($record->hourlyrate) ?>"/>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <input
                     id="machine-drivingcost"
                     class="autowidth"
@@ -633,6 +635,19 @@
             id="machine-<?php echo $record->getId() ?>-contract-container"
             class="container attachable detachable sortable">
             <?php Flight::render('model/machine/tables/contract', array(
+                'record' => $record
+            )) ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="machine-artifact"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('machine_legend_artifact_tab') ?></legend>
+        <div
+            id="machine-<?php echo $record->getId() ?>-contract-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/machine/tables/artifact', array(
                 'record' => $record
             )) ?>
         </div>
