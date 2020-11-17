@@ -2486,7 +2486,8 @@ $execution_time = round(($end_time - $start_time) / 60, 2);
 
 echo "\nIt took {$execution_time} minutes to migrate.\n";
 echo "\nChecklist:\n\n";
-echo "- [ ] Set the text of contract types\n";
+echo "- [ ] Set text of all contract types\n";
+echo "- [ ] Delete contracts where terminationdate is not null\n";
 echo "- [ ] Check if you can login\n";
 echo "- [ ] Change all user passwords\n";
 echo "- [ ] Set all user accounts to your needs\n";

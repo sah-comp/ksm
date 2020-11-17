@@ -295,9 +295,7 @@ SQL;
     {
         $files = reset(Flight::request()->files);
         $file = reset($files);
-        if ($this->bean->getId() && (empty($file) || $file['error'] == 4)) {
-            //do nothing
-        } else {
+        if (!empty($file)) {
             if ($file['error']) {
                 $this->addError($file['error'], 'file');
                 throw new Exception('fileupload error ' . $file['error']);
