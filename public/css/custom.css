@@ -189,8 +189,8 @@ table.service tbody tr.coming-up {
     border-left-color: green;
 }
 
-table.service tbody tr:hover {
-    /*background-color: #defdf0;*/
+.panel tbody tr:hover {
+    background-color: #defdf0;
 }
 
 table.service thead th.edit,
@@ -199,11 +199,11 @@ table.service thead th.switch {
 }
 
 table.service th.date {
-    width: 6rem;
+    width: 5.5rem;
 }
 
 table.service th.time {
-    width: 4rem;
+    width: 3.8rem;
 }
 
 table.service th.week {
@@ -564,6 +564,33 @@ select[multiple] {
     height: auto;
 }
 
+div.contact-info:last-child {
+    border-bottom: none;
+}
+
+hr.person-contact-divider {
+    /*border-top: 1px dashed #8c8b8b;*/
+    border: none;
+    padding: 1em 0;
+}
+
+hr.person-contact-divider:last-child {
+    display: none;
+}
+
+/*
+hr.person-contact-divider:after {
+    content: '\002702';
+    display: inline-block;
+    position: relative;
+    top: -12px;
+    left: 40px;
+    padding: 0 3px;
+    background: #f0f0f0;
+    color: #8c8b8b;
+    font-size: 18px;
+}
+*/
 /* Hilite the target, the element identified by the hash part of the URL */
 :target {
     animation: highlight 7000ms ease-out;

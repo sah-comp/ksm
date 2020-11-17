@@ -108,6 +108,7 @@ class Controller_Appointment extends Controller
     {
         $person = R::load('person', Flight::request()->data->person_id);
         $dependents = $this->appointment->getDependents($person);
+        $this->appointment->person = $person;
         ob_start();
         Flight::render('model/appointment/machinecontactlocation', [
             'person' => $person,

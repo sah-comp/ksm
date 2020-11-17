@@ -147,6 +147,20 @@
                 <?php echo I18n::__('article_info_salesprice') ?>
             </p>
     </div>
+    <div class="row <?php echo ($record->hasError('lastchange')) ? 'error' : '' ?>">
+        <label
+            for="article-lastchange">
+            <?php echo I18n::__('article_label_lastchange') ?>
+        </label>
+        <input
+            id="article-lastchange"
+            type="date"
+            class="date"
+            name="dialog[lastchange]"
+            placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+            value="<?php echo htmlspecialchars($record->lastchange) ?>"
+            required="required" />
+    </div>
 </fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(

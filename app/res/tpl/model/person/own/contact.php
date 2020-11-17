@@ -26,56 +26,56 @@
     	data-target="person-<?php echo $record->getId() ?>-contact-container">
     		<?php echo I18n::__('scaffold_attach') ?>
     </a>
-<div>
-    <input
-        type="hidden"
-        name="dialog[ownContact][<?php echo $index ?>][type]"
-        value="<?php echo $_contact->getMeta('type') ?>" />
-    <input
-        type="hidden"
-        name="dialog[ownContact][<?php echo $index ?>][id]"
-        value="<?php echo $_contact->getId() ?>" />
-</div>
-<div class="row <?php echo ($_contact->hasError('gender')) ? 'error' : ''; ?>">
-    <label
-        for="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-gender">
-        <?php echo I18n::__('contact_label_gender') ?>
-    </label>
-    <select
-        id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-gender"
-        name="dialog[ownContact][<?php echo $index ?>][gender]">
-        <option value=""><?php echo I18n::__('contact_gender_select') ?></option>
-        <?php foreach ($_contact->getGenders() as $_gender): ?>
-        <option
-            value="<?php echo $_gender ?>"
-            <?php echo ($_contact->gender == $_gender) ? 'selected="selected"' : '' ?>>
-            <?php echo I18n::__('contact_gender_'.$_gender) ?>
-        </option>
-        <?php endforeach ?>
-    </select>
-</div>
-<div class="row <?php echo ($_contact->hasError('name')) ? 'error' : ''; ?>">
-    <label
-        for="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-name">
-        <?php echo I18n::__('contact_label_name') ?>
-    </label>
-    <input
-        type="text"
-        id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-name"
-        name="dialog[ownContact][<?php echo $index ?>][name]"
-        value="<?php echo htmlspecialchars($_contact->name) ?>" />
-</div>
-<div class="row <?php echo ($_contact->hasError('jobdescription')) ? 'error' : ''; ?>">
-    <label
-        for="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-jobdescription">
-        <?php echo I18n::__('contact_label_jobdescription') ?>
-    </label>
-    <input
-        type="text"
-        id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-jobdescription"
-        name="dialog[ownContact][<?php echo $index ?>][jobdescription]"
-        value="<?php echo htmlspecialchars($_contact->jobdescription) ?>" />
-</div>
+    <div>
+        <input
+            type="hidden"
+            name="dialog[ownContact][<?php echo $index ?>][type]"
+            value="<?php echo $_contact->getMeta('type') ?>" />
+        <input
+            type="hidden"
+            name="dialog[ownContact][<?php echo $index ?>][id]"
+            value="<?php echo $_contact->getId() ?>" />
+    </div>
+    <div class="row <?php echo ($_contact->hasError('gender')) ? 'error' : ''; ?>">
+        <label
+            for="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-gender">
+            <?php echo I18n::__('contact_label_gender') ?>
+        </label>
+        <select
+            id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-gender"
+            name="dialog[ownContact][<?php echo $index ?>][gender]">
+            <option value=""><?php echo I18n::__('contact_gender_select') ?></option>
+            <?php foreach ($_contact->getGenders() as $_gender): ?>
+            <option
+                value="<?php echo $_gender ?>"
+                <?php echo ($_contact->gender == $_gender) ? 'selected="selected"' : '' ?>>
+                <?php echo I18n::__('contact_gender_'.$_gender) ?>
+            </option>
+            <?php endforeach ?>
+        </select>
+    </div>
+    <div class="row <?php echo ($_contact->hasError('name')) ? 'error' : ''; ?>">
+        <label
+            for="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-name">
+            <?php echo I18n::__('contact_label_name') ?>
+        </label>
+        <input
+            type="text"
+            id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-name"
+            name="dialog[ownContact][<?php echo $index ?>][name]"
+            value="<?php echo htmlspecialchars($_contact->name) ?>" />
+    </div>
+    <div class="row <?php echo ($_contact->hasError('jobdescription')) ? 'error' : ''; ?>">
+        <label
+            for="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-jobdescription">
+            <?php echo I18n::__('contact_label_jobdescription') ?>
+        </label>
+        <input
+            type="text"
+            id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-jobdescription"
+            name="dialog[ownContact][<?php echo $index ?>][jobdescription]"
+            value="<?php echo htmlspecialchars($_contact->jobdescription) ?>" />
+    </div>
 </fieldset>
 <fieldset
     id="person-contact-contactinfo"
@@ -99,7 +99,7 @@
     </div>
     <div
         id="person-<?php echo $record->getId() ?>-contact-<?php echo $_contact->getId() ?>-container"
-        class="container attachable detachable sortable">
+        class="contact-info container attachable detachable sortable">
         <?php
         if (count($_contact->ownContactinfo) == 0):
             $_contact->ownContactinfo[] = R::dispense('contactinfo');
@@ -118,4 +118,5 @@
         <?php endforeach ?>
     </div>
 </fieldset>
+<hr class="person-contact-divider" />
 <!-- /contact edit subform -->

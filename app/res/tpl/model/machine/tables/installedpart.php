@@ -15,7 +15,7 @@ Flight::render('model/machine/loose/installedpart', [
         <tr>
             <th><?php echo I18n::__('article_label_number') ?></th>
             <th><?php echo I18n::__('article_label_description') ?></th>
-            <th><?php echo I18n::__('article_label_isoriginal') ?></th>
+            <th><?php echo I18n::__('article_label_supplier') ?></th>
             <th class="number"><?php echo I18n::__('article_label_purchaseprice') ?></th>
             <th class="number"><?php echo I18n::__('article_label_salesprice') ?></th>
             <th><?php echo I18n::__('article_label_stamp') ?></th>

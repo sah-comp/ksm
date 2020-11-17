@@ -175,7 +175,7 @@ Flight::render('script/datatable_config');
                         data-filter="<?php echo htmlspecialchars($_contact->name) ?>">
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
-                            title="<?php echo htmlspecialchars($_contact->getContactinfo()) ?>"
+                            title="<?php echo htmlspecialchars(trim($_contact->name . ' ' . $_contact->getContactinfo())) ?>"
                             class="in-table">
                             <?php echo htmlspecialchars($_contact->name) ?>
                         </a>

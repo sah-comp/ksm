@@ -236,6 +236,8 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->lastchange = date('Y-m-d');
+        $this->addConverter('lastchange', new Converter_MysqlDate());
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
     }
@@ -245,7 +247,6 @@ SQL;
      */
     public function update()
     {
-        $this->bean->lastchange = date('Y-m-d');
         parent::update();
         if (! $this->bean->salesprice) {
             if ($this->bean->isfilter) {
@@ -260,7 +261,7 @@ SQL;
             $artstat->salesprice = $this->bean->old('salesprice');
             $artstat->purchaseprice = $this->bean->old('purchaseprice');
             $this->bean->ownArtstat[] = $artstat;
-            $this->bean->lastchange = date('Y-m-d');
+            //$this->bean->lastchange = date('Y-m-d');
         }
     }
 }

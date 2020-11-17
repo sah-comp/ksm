@@ -24,7 +24,7 @@ $_id = $_installedpart->getId();
     </td>
     <td
         data-sort="<?php echo $_article->isoriginal ?>">
-        <?php echo htmlspecialchars($_article->boolean('isoriginal')) ?>
+        <?php echo htmlspecialchars($_article->getSupplier()->name) ?>
     </td>
     <td
         class="number"
@@ -35,6 +35,7 @@ $_id = $_installedpart->getId();
             name="installedpart[purchaseprice]"
             type="text"
             class="enpassant num"
+            readonly="readonly"
             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'purchaseprice']) ?>"
             value="<?php echo htmlspecialchars($_installedpart->decimal('purchaseprice')) ?>" />
 
@@ -48,6 +49,7 @@ $_id = $_installedpart->getId();
             name="installedpart[salesprice]"
             type="text"
             class="enpassant num"
+            readonly="readonly"
             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'salesprice']) ?>"
             value="<?php echo htmlspecialchars($_installedpart->decimal('salesprice')) ?>" />
 
@@ -60,6 +62,7 @@ $_id = $_installedpart->getId();
             name="installedpart[stamp]"
             type="date"
             class="enpassant"
+            readonly="readonly"
             placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'stamp']) ?>"
             value="<?php echo htmlspecialchars($_installedpart->stamp) ?>" />
