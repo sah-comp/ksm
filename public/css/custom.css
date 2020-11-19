@@ -190,7 +190,7 @@ table.service tbody tr.coming-up {
 }
 
 .panel tbody tr:hover {
-    background-color: #defdf0;
+    background-color: #c2eddb;
 }
 
 table.service thead th.edit,
@@ -199,7 +199,7 @@ table.service thead th.switch {
 }
 
 table.service th.date {
-    width: 5.5rem;
+    width: 6rem;
 }
 
 table.service th.time {
@@ -301,6 +301,10 @@ table.service tr td:nth-child(16) {
 /* machine internal number */
 table.service tr td:nth-child(17) {
     background-color: #FFCEE7;
+}
+
+table.service tbody tr {
+    border-bottom: 1px solid gray;
 }
 
 input.num {

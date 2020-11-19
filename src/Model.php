@@ -111,6 +111,19 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 0;
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout

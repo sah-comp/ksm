@@ -47,10 +47,16 @@
             <?php foreach ($_attributes as $_i => $_attribute): ?>
                 <?php
                     $_class = $record->getMeta('type').' fn-'.$_attribute['name'].' order';
-                    $_dir = 0;
+                    //$_dir = 0;
                     if ($order == $_i):
-                        $_dir = ! $dir;
+                        if ($dir == 1) {
+                            $_dir = 0;
+                        } else {
+                            $_dir = 1;
+                        }
                         $_class .= ' active dir-'.$dir_map[$_dir];
+                    else:
+                        $_dir = $record->getDefaultSortDir();
                     endif;
                     if (isset($_attribute['class'])) {
                         $_class .= ' '.$_attribute['class'];

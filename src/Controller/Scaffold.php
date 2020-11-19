@@ -554,6 +554,9 @@ class Controller_Scaffold extends Controller
         $this->layout = $layout;
         $this->page = $page;
         $this->order = $order;
+        if ($dir === null) {
+            $dir = $this->record->getDefaultSortDir();
+        }
         $this->dir = $dir;
         //$this->template = "model/{$this->type}/{$this->layout}";
         $this->template = "scaffold/{$this->layout}";
@@ -684,6 +687,9 @@ class Controller_Scaffold extends Controller
         $this->action = 'edit';
         $this->page = $page;
         $this->order = $order;
+        if ($dir === null) {
+            $dir = $this->record->getDefaultSortDir();
+        }
         $this->dir = $dir;
         $this->layout = $layout;
         $this->template = "model/{$this->type}/edit";

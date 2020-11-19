@@ -127,7 +127,7 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/edit/@id:[0-9]+(/@page:[0-9]+)(/@o
         $order = 0;
     }
     if ($dir === null) {
-        $dir = 0;
+        //$dir = 0;
     }
     $scaffoldController = new Controller_Scaffold('/admin', $type, $id);
     $scaffoldController->edit($page, $order, $dir, $layout);
@@ -155,7 +155,7 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+(/@layout:[a-z]+)(/@page:[0-9]+)(/@
         $order = 0;
     }
     if ($dir === null) {
-        $dir = 0;
+        //$dir = 0;
     }
     $scaffoldController = new Controller_Scaffold('/admin', $type);
     $scaffoldController->index($layout, $page, $order, $dir);

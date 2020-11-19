@@ -76,12 +76,6 @@
             name="dialog[ownContact][<?php echo $index ?>][jobdescription]"
             value="<?php echo htmlspecialchars($_contact->jobdescription) ?>" />
     </div>
-</fieldset>
-<fieldset
-    id="person-contact-contactinfo"
-    class="tab"
-    style="display: block;">
-    <legend class="verbose"><?php echo I18n::__('person_legend_contact_contactinfo') ?></legend>
     <div class="row nomargins">
         <div class="span3">
             &nbsp;
@@ -105,8 +99,11 @@
             $_contact->ownContactinfo[] = R::dispense('contactinfo');
         endif;
         ?>
-        <?php $_index = 0 ?>
-        <?php foreach ($_contact->ownContactinfo as $_contactinfo_id => $_contactinfo): ?>
+        <?php
+            $_index = 0;
+            //$_labels = [];
+        ?>
+        <?php foreach ($_contact->with("ORDER BY label DESC")->ownContactinfo as $_contactinfo_id => $_contactinfo): ?>
         <?php $_index++ ?>
         <?php Flight::render('model/contact/own/contactinfo', array(
             'record' => $record,
@@ -118,5 +115,4 @@
         <?php endforeach ?>
     </div>
 </fieldset>
-<hr class="person-contact-divider" />
 <!-- /contact edit subform -->

@@ -118,6 +118,19 @@ class Model_Article extends Model
     }
 
     /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 1;
+    }
+
+    /**
      * Returns an array of path to js files.
      *
      * @see Scaffold_Controller
