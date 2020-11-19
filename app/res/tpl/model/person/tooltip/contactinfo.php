@@ -20,14 +20,6 @@ $contacts = $record->with("ORDER BY name")->ownContact;
     <table>
         <tbody>
             <tr>
-                <td><?php echo I18n::__('person_label_email') ?></td>
-                <td><?php echo htmlspecialchars($record->email) ?></td>
-            </tr>
-            <tr>
-                <td><?php echo I18n::__('person_label_url') ?></td>
-                <td><?php echo htmlspecialchars($record->url) ?></td>
-            </tr>
-            <tr>
                 <td><?php echo I18n::__('person_label_phone') ?></td>
                 <td><?php echo htmlspecialchars($record->phone) ?></td>
             </tr>
@@ -36,8 +28,16 @@ $contacts = $record->with("ORDER BY name")->ownContact;
                 <td><?php echo htmlspecialchars($record->phonesec) ?></td>
             </tr>
             <tr>
+                <td><?php echo I18n::__('person_label_email') ?></td>
+                <td><?php echo htmlspecialchars($record->email) ?></td>
+            </tr>
+            <tr>
                 <td><?php echo I18n::__('person_label_fax') ?></td>
                 <td><?php echo htmlspecialchars($record->fax) ?></td>
+            </tr>
+            <tr>
+                <td><?php echo I18n::__('person_label_url') ?></td>
+                <td><?php echo htmlspecialchars($record->url) ?></td>
             </tr>
         </tbody>
     </table>
@@ -49,7 +49,7 @@ $contacts = $record->with("ORDER BY name")->ownContact;
                 <td>
                     <table>
                         <tbody>
-                            <?php foreach ($_contact->ownContactinfo as $_c_id => $_contactinfo): ?>
+                            <?php foreach ($_contact->with("ORDER BY label DESC")->ownContactinfo as $_c_id => $_contactinfo): ?>
                             <tr>
                                 <td><?php echo I18n::__('contactinfo_label_' . $_contactinfo->label) ?></td>
                                 <td><?php echo htmlspecialchars($_contactinfo->value) ?></td>

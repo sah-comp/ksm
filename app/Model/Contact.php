@@ -65,7 +65,7 @@ class Model_Contact extends Model
      */
     public function getContactinfo()
     {
-        $infos = $this->bean->ownContactinfo;
+        $infos = $this->bean->with("ORDER BY label DESC")->ownContactinfo;
         if (empty($infos)) {
             return I18n::__('contactinfo_empty');
         }
