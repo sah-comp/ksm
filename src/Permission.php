@@ -84,13 +84,13 @@ class Permission extends Controller
     public static function getPermission(RedBeanPHP\OODBBean $domain, $action_name)
     {
         $permission = R::findOne(
-             'permission',
-             'method = ? AND domain_id = ?',
+            'permission',
+            'method = ? AND domain_id = ?',
             array(
                 $action_name,
                 $domain->getId()
             )
-         );
+        );
         if ($permission && $permission->sharedRole) {
             return $permission;
         }
