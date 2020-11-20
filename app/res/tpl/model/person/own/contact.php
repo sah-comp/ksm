@@ -95,15 +95,18 @@
         id="person-<?php echo $record->getId() ?>-contact-<?php echo $_contact->getId() ?>-container"
         class="contact-info container attachable detachable sortable">
         <?php
-        if (count($_contact->ownContactinfo) == 0):
+        if (!$_contact->getId() || count($_contact->ownContactinfo) == 0):
             $_contact->ownContactinfo[] = R::dispense('contactinfo');
+            $_contactinfos = $_contact->ownContactinfo;
+        else:
+            $_contactinfos = $_contact->with("ORDER BY label DESC")->ownContactinfo;
         endif;
         ?>
         <?php
             $_index = 0;
             //$_labels = [];
         ?>
-        <?php foreach ($_contact->with("ORDER BY label DESC")->ownContactinfo as $_contactinfo_id => $_contactinfo): ?>
+        <?php foreach ($_contactinfos as $_contactinfo_id => $_contactinfo): ?>
         <?php $_index++ ?>
         <?php Flight::render('model/contact/own/contactinfo', array(
             'record' => $record,
