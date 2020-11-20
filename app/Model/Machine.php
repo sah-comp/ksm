@@ -295,7 +295,7 @@ SQL;
     {
         $files = reset(Flight::request()->files);
         $file = reset($files);
-        if (!empty($file)) {
+        if (!empty($file) && !$file['error']) {
             if ($file['error']) {
                 $this->addError($file['error'], 'file');
                 throw new Exception('fileupload error ' . $file['error']);
