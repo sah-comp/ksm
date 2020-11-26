@@ -26,7 +26,7 @@
                 class="pday"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 required="required"
-                value="<?php echo $pdate ?>" />
+                value="<?php echo date('d.m.Y', strtotime($pdate)) ?>" />
             <input
                 name="submit"
                 type="submit"
