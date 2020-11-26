@@ -9,6 +9,10 @@ select {
     font-size: inherit;
 }
 
+.float-left {
+    float: left;
+}
+
 .panel label.salesprice {
     color: #009933;
 }

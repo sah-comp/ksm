@@ -264,6 +264,7 @@ class Model_Appointment extends Model
                 $filter[':pday_to'] = $date_to;
             } else {
                 $add_date = ' AND date = :pday ';
+                $date = $this->convertToDate($date);
                 $filter[':pday'] = $date;
             }
         }

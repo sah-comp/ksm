@@ -31,14 +31,21 @@ $_artifacts = R::find('artifact', "machine_id = ? ORDER BY name DESC", [$record-
     <?php
     foreach ($_artifacts as $_artifact_id => $_artifact):
     ?>
-        <tr>
+        <tr id="machine-<?php echo $record->getId() ?>-artifact-<?php echo $_artifact->getId() ?>">
             <td
                 data-order="<?php echo $_artifact->name ?>">
                 <a
                     href="<?php echo Url::build('/upload/%s', [$_artifact->filename]) ?>"
                     target="_blank"
-                    class="in-table">
+                    class="in-table float-left">
                     <?php echo htmlspecialchars($_artifact->name) ?>
+                </a>
+                <a
+                    class="ir action action-delete"
+                    href="<?php echo Url::build('/admin/artifact/kill/%d', [$_artifact->getId()]) ?>"
+                    title="<?php echo I18n::__('action_tooltip_delete') ?>"
+                    data-target="machine-<?php echo $record->getId() ?>-artifact-<?php echo $_artifact->getId() ?>">
+                    <?php echo I18n::__('action_installedpart_delete') ?>
                 </a>
             </td>
         </tr>
