@@ -9,11 +9,13 @@ $_ip_allowed = Permission::validate(Flight::get('user'), 'machine', 'pricing');
 <tr id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $_installedpart->getId() ?>">
     <td
         data-sort="<?php echo $_article->number ?>">
-        <a
-            href="<?php echo Url::build('/admin/%s/edit/%d/', [$_article->getMeta('type'), $_article->getId()]) ?>"
-            class="in-table">
-            <?php echo htmlspecialchars($_article->number) ?>
-        </a>
+        <input
+            id="<?php echo $_type ?>-<?php echo $_id ?>-number"
+            name="article_number"
+            type="text"
+            class=""
+            readonly="readonly"
+            value="<?php echo htmlspecialchars($_article->number) ?>" />
     </td>
     <td
         data-sort="<?php echo $_article->description ?>">
