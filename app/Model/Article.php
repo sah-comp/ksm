@@ -203,6 +203,7 @@ class Model_Article extends Model
                     article.number LIKE :searchtext OR
                     article.description LIKE :searchtext
                 ORDER BY
+                    article.isoriginal DESC,
                     article.number
                 LIMIT {$limit}
 SQL;
