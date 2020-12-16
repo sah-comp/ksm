@@ -255,7 +255,7 @@ SQL;
     {
         $this->addValidator('name', [
             new Validator_HasValue(),
-            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
+            //new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
         ]);
         $this->addConverter(
             'lastservice',
