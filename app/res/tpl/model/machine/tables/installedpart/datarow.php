@@ -8,7 +8,8 @@ $_ip_allowed = Permission::validate(Flight::get('user'), 'machine', 'pricing');
 ?>
 <tr id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $_installedpart->getId() ?>">
     <td
-        data-sort="<?php echo $_article->number ?>">
+        data-sort="<?php echo htmlspecialchars($_article->number) ?>"
+        data-filter="<?php echo htmlspecialchars($_article->number) ?>">
         <input
             id="<?php echo $_type ?>-<?php echo $_id ?>-number"
             name="article_number"
