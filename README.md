@@ -3,6 +3,11 @@ KSM
 
 A webbased software for selling, buying, lending and maintaining forklifts build on [Bienlein](https://github.com/sah-comp/bienlein).
 
+Requirements
+============
+
+* Set max_input_vars to 5000
+
 Installation
 ============
 
