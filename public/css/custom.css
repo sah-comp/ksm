@@ -326,6 +326,10 @@ a.in-form {
     text-decoration: none;
 }
 
+a.no-master {
+    color: red;
+}
+
 a.in-form {
     display: inline-block;
 }

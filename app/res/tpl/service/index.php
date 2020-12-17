@@ -199,7 +199,7 @@ Flight::render('script/datatable_config');
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_machine->getMeta('type'), $_machine->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_machine->name) ?>"
-                            class="in-table">
+                            class="in-table <?php echo ($_machine->masterdata) ? 'yes-master' : 'no-master' ?>">
                             <?php echo htmlspecialchars($_machine->name) ?>
                         </a>
                     </td>
