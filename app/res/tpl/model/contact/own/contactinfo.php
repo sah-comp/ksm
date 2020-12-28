@@ -10,6 +10,7 @@
 ?>
 <!-- contactinfo edit subform -->
 <fieldset
+    class="sub"
     id="person-<?php echo $record->getId() ?>-owncontact-<?php echo $_contact->getId() ?>-<?php echo $_index ?>">
     <legend class="verbose"><?php echo I18n::__('person_legend_contact_contactinfo') ?></legend>
     <a

@@ -89,7 +89,7 @@
         <div class="span1">
             <input
                 id="machine-buildyear"
-                class="number autowidth"
+                class="autowidth"
                 type="text"
                 name="dialog[buildyear]"
                 value="<?php echo htmlspecialchars($record->buildyear) ?>" />
@@ -97,7 +97,7 @@
         <div class="span2">
             <input
                 id="machine-workinghours"
-                class="number autowidth"
+                class="autowidth"
                 type="text"
                 name="dialog[workinghours]"
                 value="<?php echo htmlspecialchars($record->workinghours) ?>" />
@@ -217,21 +217,21 @@
             <div class="span3">
                 <label
                     for="machine-weight"
-                    class="number <?php echo ($record->hasError('weight')) ? 'error' : ''; ?>">
+                    class="<?php echo ($record->hasError('weight')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_weight') ?>
                 </label>
             </div>
             <div class="span3">
                 <label
                     for="machine-height"
-                    class="number <?php echo ($record->hasError('height')) ? 'error' : ''; ?>">
+                    class="<?php echo ($record->hasError('height')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_height') ?>
                 </label>
             </div>
             <div class="span3">
                 <label
                     for="machine-maxload"
-                    class="number <?php echo ($record->hasError('maxload')) ? 'error' : ''; ?>">
+                    class="<?php echo ($record->hasError('maxload')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_maxload') ?>
                 </label>
             </div>
@@ -241,7 +241,7 @@
             <div class="span3">
                 <input
                     id="machine-weight"
-                    class="autowidth number"
+                    class="autowidth"
                     type="text"
                     name="dialog[weight]"
                     value="<?php echo htmlspecialchars($record->weight) ?>"/>
@@ -249,7 +249,7 @@
             <div class="span3">
                 <input
                     id="machine-height"
-                    class="autowidth number"
+                    class="autowidth"
                     type="text"
                     name="dialog[height]"
                     value="<?php echo htmlspecialchars($record->height) ?>"/>
@@ -257,7 +257,7 @@
             <div class="span3">
                 <input
                     id="machine-maxload"
-                    class="autowidth number"
+                    class="autowidth"
                     type="text"
                     name="dialog[maxload]"
                     value="<?php echo htmlspecialchars($record->maxload) ?>"/>
@@ -284,7 +284,7 @@
             <div class="span3">
                 <label
                     for="machine-forkmaxheight"
-                    class="number <?php echo ($record->hasError('forkmaxheight')) ? 'error' : ''; ?>">
+                    class="<?php echo ($record->hasError('forkmaxheight')) ? 'error' : ''; ?>">
                     <?php echo I18n::__('machine_label_forkmaxheight') ?>
                 </label>
             </div>
@@ -310,7 +310,7 @@
             <div class="span3">
                 <input
                     id="machine-forkmaxheight"
-                    class="autowidth number"
+                    class="autowidth"
                     type="text"
                     name="dialog[forkmaxheight]"
                     value="<?php echo htmlspecialchars($record->forkmaxheight) ?>"/>

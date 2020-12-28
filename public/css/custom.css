@@ -590,6 +590,16 @@ hr.person-contact-divider:last-child {
     display: none;
 }
 
+fieldset>.detach,
+fieldset>.attach {
+    top: 1em;
+}
+
+fieldset.sub>.detach,
+fieldset.sub>.attach {
+    top: 50%;
+}
+
 /*
 hr.person-contact-divider:after {
     content: '\002702';
