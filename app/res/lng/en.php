@@ -28,6 +28,7 @@ $_tokens = array (
   'action_edit_select' => 'Save and edit',
   'action_expunge' => 'Delete',
   'action_expunge_select' => 'Delete',
+  'action_fix_select' => 'action_fix_select',
   'action_h1' => 'Actions',
   'action_idle' => 'Idle',
   'action_idle_select' => 'All marked&hellip;',

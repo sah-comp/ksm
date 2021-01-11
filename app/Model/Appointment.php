@@ -29,7 +29,7 @@ class Model_Appointment extends Model
      */
     public function __construct()
     {
-        $this->setAction('index', ['idle', 'expunge', 'complete', 'adjourn', 'adjournweekday']);
+        $this->setAction('index', ['idle', 'expunge', 'fix', 'complete', 'adjourn', 'adjournweekday']);
     }
 
     /**
@@ -361,6 +361,17 @@ class Model_Appointment extends Model
     {
         $this->bean->completed = true;
         $this->bean->terminationdate = date('Y-m-d');
+        R::store($this->bean);
+    }
+
+    /**
+     * Set this appointment to be fixed.
+     *
+     * A fixed appointment has to be started for completion on the given date and time.
+     */
+    public function fix()
+    {
+        $this->bean->fix = true;
         R::store($this->bean);
     }
 

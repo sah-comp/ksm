@@ -28,6 +28,7 @@ $_tokens = array (
   'action_edit_select' => 'Sichern und bearbeiten',
   'action_expunge' => 'Entfernen',
   'action_expunge_select' => 'Löschen',
+  'action_fix_select' => 'Als "fix" markieren',
   'action_h1' => 'Aktionen',
   'action_idle' => 'Nichts tun',
   'action_idle_select' => 'Auf alle markierten&hellip;',
