@@ -15,11 +15,4 @@
         <?php echo I18n::__('action_add_appointment_with_me') ?>
     </a>
 </li>
-<li>
-    <a
-        href="<?php echo Url::build("/{$type}/pdf/{$record->getId()}") ?>"
-        accesskey="p">
-        <?php echo I18n::__('contract_action_pdf') ?>
-    </a>
-</li>
 <?php endif; ?>

@@ -65,6 +65,7 @@ Flight::render('script/datatable_config');
                 <tr
                     id="bean-<?php echo $_record->getId() ?>"
                     data-sort="<?php echo $_record->sortorder() ?>"
+                    data-href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                     class="<?php echo $_timecheck ?>">
                     <td>
                         <a

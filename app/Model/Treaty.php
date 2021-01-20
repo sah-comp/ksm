@@ -9,15 +9,15 @@
  */
 
 /**
- * Contract model.
+ * Treaty model.
  *
- * Due to misunderstandings the contract model is the (real) customer-machine connection model.
+ * Due to misunderstandings the treaty model is the (real) contract model.
  *
  * @package Cinnebar
  * @subpackage Model
  * @version $Id$
  */
-class Model_Contract extends Model
+class Model_Treaty extends Model
 {
     /**
      * Returns an array with possible units.
@@ -47,12 +47,24 @@ class Model_Contract extends Model
             [
                 'name' => 'number',
                 'sort' => [
-                    'name' => 'contract.number'
+                    'name' => 'treaty.number'
                 ],
                 'filter' => [
                     'tag' => 'text'
                 ],
                 'width' => '10rem'
+            ],
+            [
+                'name' => 'contracttype.name',
+                'sort' => [
+                    'name' => 'contracttype.name'
+                ],
+                'callback' => [
+                    'name' => 'contracttypeName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
             ],
             [
                 'name' => 'person.name',
@@ -64,8 +76,7 @@ class Model_Contract extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ],
-                'width' => '15rem'
+                ]
             ],
             [
                 'name' => 'machine.name',
@@ -77,8 +88,7 @@ class Model_Contract extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ],
-                'width' => '12rem'
+                ]
             ],
             [
                 'name' => 'machine.serialnumber',
@@ -90,8 +100,7 @@ class Model_Contract extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ],
-                'width' => '15rem'
+                ]
             ],
             [
                 'name' => 'location.name',
@@ -103,27 +112,54 @@ class Model_Contract extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '6rem'
+            ],
+            [
+                'name' => 'startdate',
+                'sort' => [
+                    'name' => 'contract.startdate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'enddate',
+                'sort' => [
+                    'name' => 'treaty.enddate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'width' => '8rem'
             ]
         ];
     }
 
     /**
-     * Returns a string that will work as a filename for contract as PDF.
+     * Returns a string that will work as a filename for treaty as PDF.
      *
      * @return string
      */
     public function getFilename()
     {
         $stack = [];
-        //$stack[] = $this->bean->contracttypeName();
+        $stack[] = $this->bean->contracttypeName();
         $stack[] = $this->bean->number;
         $stack[] = $this->bean->person->nickname;
         return trim(implode('-', $stack));
     }
 
     /**
-     * Returns a string that will work as a title of contract.
+     * Returns a string that will work as a title of treaty.
      *
      * @return string
      */
@@ -153,7 +189,7 @@ class Model_Contract extends Model
         if (empty($this->bean->unit)) {
             return '';
         }
-        return I18n::__('contract_unit_' . $this->bean->unit);
+        return I18n::__('treaty_unit_' . $this->bean->unit);
     }
 
     /**
@@ -304,11 +340,13 @@ class Model_Contract extends Model
             FROM
                 {$this->bean->getMeta('type')}
             LEFT JOIN
-                person ON person.id = contract.person_id
+                contracttype ON contracttype.id = treaty.contracttype_id
             LEFT JOIN
-                machine ON machine.id = contract.machine_id
+                person ON person.id = treaty.person_id
             LEFT JOIN
-                location ON location.id = contract.location_id
+                machine ON machine.id = treaty.machine_id
+            LEFT JOIN
+                location ON location.id = treaty.location_id
             WHERE
                 {$where}
 SQL;
@@ -328,8 +366,8 @@ SQL;
      */
     public function dispense()
     {
-        //$this->addConverter('startdate', new Converter_Mysqldate());
-        //$this->addConverter('enddate', new Converter_Mysqldate());
+        $this->addConverter('startdate', new Converter_Mysqldate());
+        $this->addConverter('enddate', new Converter_Mysqldate());
         $this->addConverter('signdate', new Converter_Mysqldate());
     }
 
@@ -339,6 +377,10 @@ SQL;
     public function update()
     {
         if (!CINNEBAR_MIP) {
+            if (!$this->bean->contracttype_id) {
+                $this->bean->contracttype_id = null;
+                unset($this->bean->contracttype);
+            }
             if (!$this->bean->location_id) {
                 $this->bean->location_id = null;
                 unset($this->bean->location);

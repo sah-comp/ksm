@@ -366,7 +366,7 @@ $_personkinds = $record->sharedPersonkind;
             'person-location' => I18n::__('person_location_tab'),
             'person-contact' => I18n::__('person_contact_tab'),
             'person-machine' => I18n::__('person_machine_tab'),
-            'person-contract' => I18n::__('person_contract_tab'),
+            'person-treaty' => I18n::__('person_treaty_tab'),
         ),
         'default_tab' => 'person-address'
     )) ?>
@@ -466,14 +466,14 @@ $_personkinds = $record->sharedPersonkind;
         </div>
     </fieldset>
     <fieldset
-        id="person-contract"
+        id="person-treaty"
         class="tab"
         style="display: none;">
-        <legend class="verbose"><?php echo I18n::__('person_legend_contract_tab') ?></legend>
+        <legend class="verbose"><?php echo I18n::__('person_legend_treaty_tab') ?></legend>
         <div
-            id="person-<?php echo $record->getId() ?>-contract-container"
+            id="person-<?php echo $record->getId() ?>-treaty-container"
             class="container attachable detachable sortable">
-            <?php Flight::render('model/person/tables/contract', array(
+            <?php Flight::render('model/person/tables/treaty', array(
                 'record' => $record
             )) ?>
         </div>

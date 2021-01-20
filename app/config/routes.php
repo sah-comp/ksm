@@ -208,10 +208,20 @@ Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) 
 
 /**
  * Routes to the contract controller to download a contract as PDF to the client.
+ *
+ * @deprecated since we have the Treaty controller.
  */
 Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $contractController = new Controller_Contract($id);
     $contractController->pdf();
+});
+
+/**
+ * Routes to the treaty controller to download a treaty as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
+    $treatyController = new Controller_Treaty($id);
+    $treatyController->pdf();
 });
 
 /**

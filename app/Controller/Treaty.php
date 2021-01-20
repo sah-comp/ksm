@@ -9,15 +9,15 @@
  */
 
 /**
- * Contract controller.
+ * Treaty controller.
  *
- * Manages the connection between a customer (person) and a machine.
+ * Due to misunderstandings the treaty controller is the (real) contract controller.
  *
  * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Contract extends Controller
+class Controller_Treaty extends Controller
 {
     /**
      * Holds the company bean.
@@ -31,7 +31,7 @@ class Controller_Contract extends Controller
      *
      * @var object
      */
-    public $contract;
+    public $treaty;
 
     /**
      * Holds the machine bean.
@@ -66,19 +66,19 @@ class Controller_Contract extends Controller
      * @var array
      */
     public $placeholders = [
-        'contract.number' => '',
+        'treaty.number' => '',
         'company.legalname' => '',
         'company.formattedaddress' => 'formattedAddress',
         'person.name' => '',
         'person.formattedaddress' => 'formattedAddress',
-        'contract.startdate' => 'localizedDate',
+        'treaty.startdate' => 'localizedDate',
         'machine.name' => '',
-        'contract.priceperunit' => 'decimal',
-        'contract.unit' => 'localizedUnit',
-        'contract.enddate' => 'localizedDate',
+        'treaty.priceperunit' => 'decimal',
+        'treaty.unit' => 'localizedUnit',
+        'treaty.enddate' => 'localizedDate',
         'location.name' => '',
         'company.city' => '',
-        'contract.signdate' => 'localizedDate'
+        'treaty.signdate' => 'localizedDate'
     ];
 
     /**
@@ -90,7 +90,7 @@ class Controller_Contract extends Controller
     {
         session_start();
         Auth::check();
-        $this->contract = R::load('contract', $id);
+        $this->treaty = R::load('treaty', $id);
     }
 
     /*
@@ -98,23 +98,24 @@ class Controller_Contract extends Controller
      */
     public function pdf()
     {
-        $this->contract->signdate = date('Y-m-d');
+        $this->treaty->signdate = date('Y-m-d');
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $this->person = $this->contract->getPerson();
-        $this->machine = $this->contract->getMachine();
-        $this->location = $this->contract->getLocation();
-        $this->text = $this->contract->contracttype->text;
-        R::store($this->contract);
-        $filename = I18n::__('contract_pdf_filename', null, [$this->contract->getFilename()]);
-        $docname = I18n::__('contract_pdf_docname', null, [$this->contract->getDocname()]);
+        $this->person = $this->treaty->getPerson();
+        $this->machine = $this->treaty->getMachine();
+        $this->location = $this->treaty->getLocation();
+        $this->text = $this->treaty->contracttype->text;
+        R::store($this->treaty);
+        $filename = I18n::__('treaty_pdf_filename', null, [$this->treaty->getFilename()]);
+        $docname = I18n::__('treaty_pdf_docname', null, [$this->treaty->getDocname()]);
         $this->text = $this->substitute();
         $mpdf = new mPDF('c', 'A4');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
         ob_start();
-        Flight::render('model/contract/contract/contract', [
-            'record' => $this->contract,
+        Flight::render('model/treaty/treaty/treaty', [
+            'company' => $this->company,
+            'record' => $this->treaty,
             'text' => $this->text
         ]);
         $html = ob_get_contents();
@@ -141,7 +142,7 @@ class Controller_Contract extends Controller
                 $replacetext = $this->{$bean}->{$attribute};
             }
             if (empty($replacetext)) {
-                $replacetext = I18n::__('contract_replacetext_empty');
+                $replacetext = I18n::__('treaty_replacetext_empty');
             }
             $this->text = str_replace("{{".$searchtext."}}", $replacetext, $this->text);
         }
@@ -156,10 +157,10 @@ class Controller_Contract extends Controller
     public function dependent()
     {
         $person = R::load('person', Flight::request()->data->person_id);
-        $dependents = $this->contract->getDependents($person);
+        $dependents = $this->treaty->getDependents($person);
         ob_start();
-        Flight::render('model/contract/location', [
-            'record' => $this->contract,
+        Flight::render('model/treaty/location', [
+            'record' => $this->treaty,
             'locations' => $dependents['locations']
         ]);
         $html = ob_get_contents();
