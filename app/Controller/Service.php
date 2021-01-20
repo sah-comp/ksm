@@ -86,6 +86,7 @@ class Controller_Service extends Controller_Scaffold
         }
         $this->records = $this->record->getConfirmedUndone();
         $_SESSION['service']['appointments'] = count($this->records);
+        $_SESSION['service']['updated'] = $this->record->getLastUpdated();
         $this->render();
     }
 
@@ -174,10 +175,19 @@ class Controller_Service extends Controller_Scaffold
                  ':yes' => 1
             ]
         );
+        /*
         if ($count != $_SESSION['service']['appointments']) {
             $new_count = $count - $_SESSION['service']['appointments'];
             //$_SESSION['service']['appointments'] = $count;
             echo '<span class="badge">' . $new_count . '</span>';
+        } else {
+            echo '';
+        }
+        */
+        $lastupdated = $this->record->getLastUpdated();
+        if ($lastupdated > $_SESSION['service']['updated'] || $count != $_SESSION['service']['appointments']) {
+            $new_count = $count - $_SESSION['service']['appointments'];
+            echo '<span class="badge">&nbsp;</span>';
         } else {
             echo '';
         }

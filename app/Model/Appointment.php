@@ -273,6 +273,37 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Returns the timestamp of the latest updated "service" bean or false.
+     *
+     * @param string $date
+     * @return mixed
+     */
+    public function getLastUpdated($date = '')
+    {
+        $filter = [':yes' => 1];
+        $add_date = '';
+        if ($date) {
+            if (strpos($date, $this->daterangedelimiter)) {
+                $dates = explode($this->daterangedelimiter, $date);
+                $date_from = $this->convertToDate($dates[0]);
+                $date_to = $this->convertToDate($dates[1]);
+                $add_date = ' AND (date >= :pday_from AND date <= :pday_to)';
+                $filter[':pday_from'] = $date_from;
+                $filter[':pday_to'] = $date_to;
+            } else {
+                $add_date = ' AND date = :pday ';
+                $date = $this->convertToDate($date);
+                $filter[':pday'] = $date;
+            }
+        }
+        $sql = "confirmed = :yes AND completed != :yes {$add_date} ORDER BY updated DESC LIMIT 1";
+        if ($latest = R::findOne('appointment', $sql, $filter)) {
+            return (int)$latest->updated;
+        }
+        return false;
+    }
+
+    /**
      * Returns a mysql date string.
      *
      * @param string the value to convert
@@ -709,6 +740,7 @@ SQL;
                 unset($this->bean->location);
             }
         }
+        $this->bean->updated = time();
         parent::update();
     }
 }
