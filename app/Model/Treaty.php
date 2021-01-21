@@ -79,43 +79,6 @@ class Model_Treaty extends Model
                 ]
             ],
             [
-                'name' => 'machine.name',
-                'sort' => [
-                    'name' => 'machine.name'
-                ],
-                'callback' => [
-                    'name' => 'machineName'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ]
-            ],
-            [
-                'name' => 'machine.serialnumber',
-                'sort' => [
-                    'name' => 'machine.serialnumber'
-                ],
-                'callback' => [
-                    'name' => 'machineSerialnumber'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ]
-            ],
-            [
-                'name' => 'location.name',
-                'sort' => [
-                    'name' => 'location.name'
-                ],
-                'callback' => [
-                    'name' => 'locationName'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ],
-                'width' => '6rem'
-            ],
-            [
                 'name' => 'startdate',
                 'sort' => [
                     'name' => 'contract.startdate'
@@ -386,6 +349,18 @@ SQL;
                 unset($this->bean->location);
             }
         }
+        if ($this->bean->ctext == '') {
+            // fetch the contract text from the contracttype if not already set
+            $this->bean->ctext = $this->bean->contracttype->text;
+        }
+        $this->bean->updated = time();
+        $limb = Flight::request()->data->limb;
+        /*
+        foreach ($limb as $name => $value) {
+            error_log($name . " = " . $value);
+        }
+        */
+        $this->bean->payload = json_encode($limb);
         parent::update();
     }
 }

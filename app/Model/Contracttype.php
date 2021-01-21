@@ -34,6 +34,19 @@ class Model_Contracttype extends Model
                 'filter' => [
                     'tag' => 'text'
                 ]
+            ],
+            [
+                'name' => 'enabled',
+                'sort' => [
+                    'name' => 'contracttype.enabled'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '5rem'
             ]
         ];
     }
@@ -46,5 +59,14 @@ class Model_Contracttype extends Model
         $this->addValidator('name', [
             new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
         ]);
+    }
+
+    /**
+     * Update.
+     */
+    public function update()
+    {
+        $this->bean->updated = time();
+        parent::update();
     }
 }

@@ -28,6 +28,35 @@
             value="<?php echo htmlspecialchars($record->name) ?>"
             required="required" />
     </div>
+    <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[enabled]"
+            value="0" />
+        <input
+            id="contracttype-enabled"
+            type="checkbox"
+            name="dialog[enabled]"
+            <?php echo ($record->enabled) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-enabled"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_enabled') ?>
+        </label>
+    </div>
+    <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
+        <label
+            for="contracttype-note">
+            <?php echo I18n::__('contracttype_label_note') ?>
+        </label>
+        <textarea
+            id="contracttype-note"
+            name="dialog[note]"
+            rows="5"
+            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+        <p class="info"><?php echo I18n::__('contracttype_info_note') ?></p>
+    </div>
 </fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(
@@ -61,7 +90,7 @@
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('contracttype_limb_legend') ?></legend>
         <div class="row">
-            <div class="span3">
+            <div class="span1">
                 &nbsp;
             </div>
             <div class="span1">
@@ -70,24 +99,24 @@
             <div class="span1">
                 <?php echo I18n::__('limb_label_sequence') ?>
             </div>
-            <div class="span2">
+            <div class="span3">
                 <?php echo I18n::__('limb_label_name') ?>
             </div>
             <div class="span2">
-                <?php echo I18n::__('limb_label_kind') ?>
+                <?php echo I18n::__('limb_label_placeholder') ?>
             </div>
             <div class="span2">
                 <?php echo I18n::__('limb_label_tag') ?>
             </div>
-            <div class="span1">
-                <?php echo I18n::__('limb_label_filter') ?>
+            <div class="span2">
+                <?php echo I18n::__('limb_label_stub') ?>
             </div>
         </div>
         <div
             id="contracttype-<?php echo $record->getId() ?>-limb-container"
             class="container attachable detachable sortable">
-        <?php $_limbs = $record->with(' ORDER BY sequence ASC ')->ownLimb ?>
-        <?php if (count($_limbs) == 0):
+            <?php $_limbs = $record->with(' ORDER BY sequence ASC ')->ownLimb ?>
+            <?php if (count($_limbs) == 0):
             $_limbs[] = R::dispense('limb');
         endif; ?>
         <?php $index = 0 ?>

@@ -220,7 +220,7 @@ class Controller_Scaffold extends Controller
             $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
             // next action
             $_SESSION['scaffold'][$this->type]['index']['next_action'] = 'idle';
-            $_SESSION['scaffold'][$this->type]['add']['next_action'] = 'add';
+            $_SESSION['scaffold'][$this->type]['add']['next_action'] = 'edit';
             $_SESSION['scaffold'][$this->type]['edit']['next_action'] = 'edit';
             $_SESSION['scaffold'][$this->type]['delete']['next_action'] = 'index';
         }

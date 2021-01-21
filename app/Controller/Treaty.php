@@ -103,7 +103,7 @@ class Controller_Treaty extends Controller
         $this->person = $this->treaty->getPerson();
         $this->machine = $this->treaty->getMachine();
         $this->location = $this->treaty->getLocation();
-        $this->text = $this->treaty->contracttype->text;
+        $this->text = $this->treaty->ctext;
         R::store($this->treaty);
         $filename = I18n::__('treaty_pdf_filename', null, [$this->treaty->getFilename()]);
         $docname = I18n::__('treaty_pdf_docname', null, [$this->treaty->getDocname()]);
