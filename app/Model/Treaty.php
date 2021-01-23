@@ -307,8 +307,6 @@ class Model_Treaty extends Model
             LEFT JOIN
                 person ON person.id = treaty.person_id
             LEFT JOIN
-                machine ON machine.id = treaty.machine_id
-            LEFT JOIN
                 location ON location.id = treaty.location_id
             WHERE
                 {$where}
