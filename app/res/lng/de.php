@@ -791,7 +791,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'treaty_contracttype_none' => 'Wählen Sie eine Vertragsart &hellip;',
   'treaty_detail_tab' => 'Details',
   'treaty_h1' => 'Verträge',
-  'treaty_header_info' => 'Vertrag %s',
+  'treaty_header_info' => 'Referenz %s',
   'treaty_info_note' => 'Tragen Sie hier Notizen ein.',
   'treaty_label_contracttype' => 'Art',
   'treaty_label_contracttype.name' => 'Art',
