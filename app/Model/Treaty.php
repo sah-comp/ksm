@@ -349,18 +349,15 @@ SQL;
                 unset($this->bean->location);
             }
         }
-        if ($this->bean->ctext == '') {
-            // fetch the contract text from the contracttype if not already set
-            $this->bean->ctext = $this->bean->contracttype->text;
-        }
+        //if ($this->bean->ctext == '') {
+        // fetch the contract text from the contracttype if not already set
+        $this->bean->ctext = $this->bean->contracttype->text;
+        //}
         $this->bean->updated = time();
-        $limb = Flight::request()->data->limb;
-        /*
-        foreach ($limb as $name => $value) {
-            error_log($name . " = " . $value);
+        if (Flight::request()->method == 'POST') {
+            $limb = Flight::request()->data->limb;
+            $this->bean->payload = json_encode($limb);
         }
-        */
-        $this->bean->payload = json_encode($limb);
         parent::update();
     }
 }

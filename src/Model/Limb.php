@@ -39,7 +39,7 @@ class Model_Limb extends Model
             )
         );
     }
-    
+
     /**
      * Returns an array of possible kind values.
      *
@@ -55,7 +55,7 @@ class Model_Limb extends Model
             'alias'
         );
     }
-    
+
     /**
      * Returns an array of possible tags.
      *
@@ -65,11 +65,11 @@ class Model_Limb extends Model
     {
         return array(
             'text',
-            'number',
+            //'number',
             'textarea',
-            'checkbox',
-            'subform',
-            'password'
+            //'checkbox',
+            //'subform',
+            //'password'
         );
     }
 
@@ -83,7 +83,7 @@ class Model_Limb extends Model
         return array(
         );
     }
-    
+
     /**
      * Renders a limb together with a bean.
      *
@@ -97,9 +97,9 @@ class Model_Limb extends Model
             'limb'  => $this->bean
         ));
     }
-    
+
     /**
-     * Render a 
+     * Render a
      */
 
     /**
@@ -107,9 +107,6 @@ class Model_Limb extends Model
      */
     public function dispense()
     {
-        $this->addValidator('name', array(
-            new Validator_HasValue()
-        ));
     }
 
     /**
@@ -117,6 +114,6 @@ class Model_Limb extends Model
      */
     public function update()
     {
-		parent::update();
+        parent::update();
     }
 }

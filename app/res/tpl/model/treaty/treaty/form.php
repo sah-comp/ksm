@@ -3,10 +3,31 @@
 <head>
     <meta charset="utf-8">
     <title><?php echo $title ?></title>
+    <link rel="stylesheet" href="/css/style.css">
     <style>
     body {
                 font-family: sans-serif;
     	        font-size: 10pt;
+                width: calc(210mm - 30mm);
+                padding: 10mm 15mm;
+                margin: 0 auto;
+                border-left: 1px solid silver;
+                border-right: 1px solid silver;
+            }
+            input[type=text],
+            input[type=password],
+            input[type=email],
+            input[type=tel],
+            input[type=url],
+            input[type=number],
+            input[type=date],
+            input[type=time] {
+                width: auto;
+                margin: 0.2em 0;
+            }
+            input[type=submit] {
+                margin: 2em;
+                float: right;
             }
             p {
                 margin: 0pt 0pt 10pt 0pt;
@@ -39,6 +60,9 @@
             }
             table {
                 border-collapse: collapse;
+            }
+            td {
+                vertical-align: middle;
             }
             th {
                 text-align: left;
@@ -83,35 +107,35 @@
     </style>
 </head>
 <body>
-    <!--mpdf
-    <htmlpageheader name="ksmheader-firstpage" style="display: none;">
-        <table width="100%">
-            <tr>
-                <td class="centered" style="vertical-align: top; width: 100%;">
-                    <img src="/img/<?php echo Flight::setting()->logo ?>" width="<?php echo Flight::setting()->logowidth ?>px" height="<?php echo Flight::setting()->logoheight ?>px" alt="" />
-                </td>
-            </tr>
-        </table>
-    </htmlpageheader>
-    <htmlpageheader name="ksmheader" style="display: none;">
-        <table width="100%">
-            <tr>
-                <td class="bb moredinky" width="60%" style="text-align: left;"><?php echo htmlspecialchars($company->legalname) ?></td>
-                <td class="bb moredinky" width="40%" style="text-align: right;"><?php echo I18n::__('treaty_header_info', null, array($record->number)) ?></td>
-            </tr>
-        </table>
-    </htmlpageheader>
-    <htmlpagefooter name="ksmfooter" style="display: none;">
-        <div class="moredinky centered" style="border-top: 0.1mm solid #000000; padding-top: 3mm;">
-            <?php echo I18n::__('treaty_text_page') ?> {PAGENO} <?php echo I18n::__('treaty_text_of') ?> {nbpg}
-        </div>
-    </htmlpagefooter>
-    <sethtmlpageheader name="ksmheader-firstpage" value="on" show-this-page="1" />
-    <sethtmlpageheader name="ksmheader" value="on" />
-    <sethtmlpagefooter name="ksmfooter" value="on" />
-    mpdf-->
 
-    <?php echo $text ?>
+    <table width="100%">
+        <tr>
+            <td class="centered" style="vertical-align: top; width: 100%;">
+                <img src="/img/<?php echo Flight::setting()->logo ?>" width="<?php echo Flight::setting()->logowidth ?>px" height="<?php echo Flight::setting()->logoheight ?>px" alt="" />
+            </td>
+        </tr>
+    </table>
+
+    <form
+        id="form-treaty"
+        method="POST"
+        accept-charset="utf-8"
+        autocomplete="off"
+        enctype="multipart/form-data">
+
+        <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
+
+        <?php echo $text ?>
+
+        <div class="row">
+            <input
+                type="submit"
+                name="submit"
+                accesskey="s"
+                value="<?php echo I18n::__('treaty_submit') ?>" />
+        </div>
+
+    </form>
 
 </body>
 </html>

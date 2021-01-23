@@ -140,16 +140,14 @@
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('treaty_legend_limb') ?></legend>
         <?php $_payload = json_decode($record->payload, true) ?>
-        <?php foreach ($record->contracttype->withCondition("active = 1 ORDER BY sequence")->ownLimb as $_id => $_limb): ?>
-        <div class="row">
-            <label><?php echo $_limb->name ?></label>
-            <input
-                type="text"
-                name="limb[<?php echo $_limb->stub ?>]"
-                placeholder="<?php echo $_limb->placeholder ?>"
-                value="<?php echo $_payload[$_limb->stub] ?>">
-        </div>
-        <?php endforeach; ?>
+        <?php
+        foreach ($record->contracttype->withCondition("active = 1 ORDER BY sequence")->ownLimb as $_id => $_limb):
+            Flight::render('model/treaty/part/limb', [
+                'payload' => $_payload,
+                'limb' => $_limb
+            ]);
+        endforeach;
+        ?>
     </fieldset>
     <fieldset
         id="treaty-note"

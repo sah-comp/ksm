@@ -225,6 +225,14 @@ Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Routes to the treaty controller to display a treaty as a HTML page to the client.
+ */
+Flight::route('(/[a-z]{2})/treaty/form/@id:[0-9]+', function ($id) {
+    $treatyController = new Controller_Treaty($id);
+    $treatyController->form();
+});
+
+/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
