@@ -6,10 +6,10 @@
     <style>
     body {
                 font-family: sans-serif;
-    	        font-size: 10pt;
+    	        font-size: 9pt;
             }
             p {
-                padding: 0pt 0pt 10pt 0pt;
+                padding: 0 0 2mm 0;
             }
             .senderline {
                 font-size: 6pt;
@@ -18,14 +18,14 @@
             .name,
             .postal,
             .postal-address {
-                font-size: 11pt;
+                font-size: 10pt;
             }
             .emphasize {
                 font-weight: bold;
                 font-size: 11pt;
             }
             .uberemphasize {
-                font-size: 14pt;
+                font-size: 12pt;
                 font-weight: bold;
             }
             .dinky {
