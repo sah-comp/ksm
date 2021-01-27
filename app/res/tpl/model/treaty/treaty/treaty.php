@@ -9,7 +9,8 @@
     	        font-size: 9pt;
             }
             p {
-                padding: 0 0 2mm 0;
+                margin: 0 0 5mm 0;
+                padding: 0;
             }
             .senderline {
                 font-size: 6pt;
