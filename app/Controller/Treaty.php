@@ -191,7 +191,7 @@ class Controller_Treaty extends Controller
             if (empty($replacetext)) {
                 $replacetext = I18n::__('treaty_replacetext_empty');
             }
-            $this->text = str_replace("{{".$searchtext."}}", $replacetext, $this->text);
+            $this->text = str_replace("{{".$searchtext."}}", nl2br($replacetext), $this->text);
         }
         return $this->text;
     }
