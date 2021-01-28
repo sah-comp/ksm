@@ -8,7 +8,7 @@
                 font-family: sans-serif;
     	        font-size: 9pt;
             }
-            p {
+            p, ul, ol {
                 margin: 2.5mm 0;
                 padding: 0;
             }
