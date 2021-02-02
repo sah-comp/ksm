@@ -565,6 +565,11 @@ form.pform {
     border-right: 1px solid silver;
 }
 
+form.pform.within {
+    padding-left: 1em;
+    border-left: 1px solid silver;
+}
+
 form.pform input.pday {
     padding: 0.25em;
     font-size: small;

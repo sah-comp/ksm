@@ -67,13 +67,13 @@ class Controller_Service extends Controller_Scaffold
     {
         $this->action = 'index';
         if (Flight::request()->method == 'POST') {
+            if (! Security::validateCSRFToken(Flight::request()->data->token)) {
+                $this->redirect("/logout");
+            }
             if (Flight::request()->data->submit == I18n::__('service_action_print_day')) {
                 $_SESSION['service']['pday'] = Flight::request()->data->pday;
                 $this->pdf($_SESSION['service']['pday']);
                 $this->redirect("/service"); // I never get there, PDF download needs exit
-            }
-            if (! Security::validateCSRFToken(Flight::request()->data->token)) {
-                $this->redirect("/logout");
             }
             //handle a selection
             $this->selection = Flight::request()->data->selection;

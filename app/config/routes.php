@@ -233,6 +233,14 @@ Flight::route('(/[a-z]{2})/treaty/form/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Routes to the treaty controller to duplicate the given bean as a new type.
+ */
+Flight::route('GET (/[a-z]{2})/treaty/copy/@id:[0-9]+', function ($id) {
+    $treatyController = new Controller_Treaty($id);
+    $treatyController->copy();
+});
+
+/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {

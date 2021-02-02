@@ -62,6 +62,9 @@
                 </option>
                 <?php endforeach ?>
             </select>
+            <?php if ($record->hasParent()): ?>
+            <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$record->treaty->getId(), $record->treaty->contracttype->name, $record->treaty->number]) ?></p>
+            <?php endif; ?>
         </div>
         <div class="span2">
             <input

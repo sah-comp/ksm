@@ -10,6 +10,30 @@
 ?>
 <?php if ($record->getId()): ?>
 <li>
+    <form
+        id="pform"
+        name="pform"
+        class="pform within"
+        method="GET"
+        action="<?php echo Url::build('/treaty/copy/' . $record->getId()) ?>"
+        accept-charset="utf-8"
+        autocomplete="off"
+        enctype="multipart/form-data">
+        <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
+        <select
+            name="copyas">
+            <option value=""><?php echo I18n::__('treaty_copy_as') ?></option>
+            <?php foreach (R::find('contracttype', ' enabled = 1 ORDER BY name') as $_id => $_contracttype): ?>
+            <option value="<?php echo $_id ?>"><?php echo $_contracttype->name ?></option>
+            <?php endforeach; ?>
+        </select>
+        <input
+            name="submit"
+            type="submit"
+            value="<?php echo I18n::__('treaty_action_copy_as') ?>" />
+    </form>
+</li>
+<li>
     <a
         href="<?php echo Url::build("/{$type}/form/{$record->getId()}") ?>"
         accesskey="f">

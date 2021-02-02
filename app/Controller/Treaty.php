@@ -173,6 +173,30 @@ class Controller_Treaty extends Controller
     }
 
     /**
+     * Duplicates the given treaty as another contracttype and redirects to edit it.
+     */
+    public function copy()
+    {
+        if (Flight::request()->query->submit == I18n::__('treaty_action_copy_as')) {
+            R::begin();
+            try {
+                $copy = R::duplicate($this->treaty);
+                $copy->contracttype_id = Flight::request()->query->copyas;
+                $copy->treaty = $this->treaty;
+                R::store($copy);
+                R::commit();
+                Flight::get('user')->notify(I18n::__('treaty_success_copy', null, [$this->treaty->number, $copy->contracttype->name]), 'success');
+                $this->redirect('/admin/treaty/edit/' . $copy->getId());
+            } catch (\Exception $e) {
+                R::rollback();
+                error_log($e);
+                Flight::get('user')->notify(I18n::__('treaty_error_copy'), 'error');
+                $this->redirect('/admin/treaty/edit/' . $this->treaty->getId());
+            }
+        }
+    }
+
+    /**
      * Replaces the placeholders with actual content.
      *
      * @return string

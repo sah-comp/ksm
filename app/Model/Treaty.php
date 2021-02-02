@@ -323,6 +323,16 @@ SQL;
     }
 
     /**
+     * Returns wether this treaty was derived from a former one or not.
+     *
+     * @return bool
+     */
+    public function hasParent()
+    {
+        return $this->bean->treaty;
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
