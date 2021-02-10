@@ -13,7 +13,7 @@
     <form
         id="pform"
         name="pform"
-        class="pform within"
+        class="pform"
         method="GET"
         action="<?php echo Url::build('/treaty/copy/%d/', [$record->getId()]) ?>"
         accept-charset="utf-8"
