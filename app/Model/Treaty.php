@@ -20,6 +20,13 @@
 class Model_Treaty extends Model
 {
     /**
+     * Pattern for the number code
+     *
+     * @var string
+     */
+    const PATTERN = "%s-%02d-%02d-%04d";
+
+    /**
      * Returns an array with possible units.
      *
      * @return array
@@ -52,7 +59,7 @@ class Model_Treaty extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '10rem'
+                'width' => '12rem'
             ],
             [
                 'name' => 'contracttype.name',
@@ -64,7 +71,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '12rem'
             ],
             [
                 'name' => 'person.name',
@@ -108,6 +116,19 @@ class Model_Treaty extends Model
     }
 
     /**
+     * Returns special css classes depending on the type of treaty.
+     *
+     * @return string
+     */
+    public function classesCss()
+    {
+        if ($this->bean->contracttype->hidesome) {
+            return 'visuallyhidden';
+        }
+        return '';
+    }
+
+    /**
      * Returns a string that will work as a filename for treaty as PDF.
      *
      * @return string
@@ -117,7 +138,7 @@ class Model_Treaty extends Model
         $stack = [];
         $stack[] = $this->bean->contracttypeName();
         $stack[] = $this->bean->number;
-        $stack[] = $this->bean->person->nickname;
+        $stack[] = $this->bean->getPerson()->nickname;
         return trim(implode('-', $stack));
     }
 
@@ -323,13 +344,16 @@ SQL;
     }
 
     /**
-     * Returns wether this treaty was derived from a former one or not.
+     * Returns a treaty bean if this bean has derived from a former one or false if not.
      *
-     * @return bool
+     * @return mixed
      */
     public function hasParent()
     {
-        return $this->bean->treaty;
+        if ($this->bean->mytreatyid) {
+            return R::load('treaty', $this->bean->mytreatyid);
+        }
+        return false;
     }
 
     /**
@@ -337,6 +361,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->mytreatyid = 0;
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
         $this->addConverter('signdate', new Converter_Mysqldate());
@@ -357,14 +382,29 @@ SQL;
                 unset($this->bean->location);
             }
         }
+
+        if (!$this->bean->person_id) {
+            $this->bean->person_id = null;
+            unset($this->bean->person);
+        }
+
+        if (!$this->bean->getId()) {
+            // This is a new bean, we want to stamp its number
+            $number = $this->bean->contracttype->nextnumber;
+            $this->bean->contracttype->nextnumber++;
+            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, Flight::setting()->companyyear, $number);
+        }
+
         //if ($this->bean->ctext == '') {
         // fetch the contract text from the contracttype if not already set
         $this->bean->ctext = $this->bean->contracttype->text;
         //}
         $this->bean->updated = time();
         if (Flight::request()->method == 'POST') {
+            //error_log('POST treaty');
             $limb = Flight::request()->data->limb;
             $this->bean->payload = json_encode($limb);
+            //error_log($this->bean->payload);
         }
         parent::update();
     }

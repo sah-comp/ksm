@@ -24,6 +24,7 @@ switch ($limb->tag):
     case 'textarea':
         ?>
         <textarea
+            id="<?php echo $limb->stub ?>"
             name="limb[<?php echo $limb->stub ?>]"
             placeholder="<?php echo htmlspecialchars($limb->placeholder) ?>"
             rows="5"
@@ -34,6 +35,7 @@ switch ($limb->tag):
     default:
         ?>
         <input
+            id="<?php echo $limb->stub ?>"
             type="text"
             name="limb[<?php echo $limb->stub ?>]"
             placeholder="<?php echo htmlspecialchars($limb->placeholder) ?>"

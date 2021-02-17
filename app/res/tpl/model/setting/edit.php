@@ -34,6 +34,20 @@ $appointmenttypes = R::findAll('appointmenttype');
             required="required" />
     </div>
 
+    <div class="row <?php echo ($record->hasError('companyyear')) ? 'error' : ''; ?>">
+        <label
+            for="setting-companyyear">
+            <?php echo I18n::__('setting_label_companyyear') ?>
+        </label>
+        <input
+            id="setting-companyyear"
+            type="number"
+            step="1"
+            name="dialog[companyyear]"
+            value="<?php echo htmlspecialchars($record->companyyear) ?>"
+            required="required" />
+    </div>
+
     <div class="row">
         <label
             for="setting-appointmenttypeservice"

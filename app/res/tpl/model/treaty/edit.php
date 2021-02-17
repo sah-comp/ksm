@@ -31,14 +31,14 @@
                 <?php echo I18n::__('treaty_label_number') ?>
             </label>
         </div>
-        <div class="span2">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <label
                 for="treaty-startdate"
                 class="<?php echo ($record->hasError('startdate')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('treaty_label_startdate') ?>
             </label>
         </div>
-        <div class="span2">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <label
                 for="treaty-enddate"
                 class="<?php echo ($record->hasError('enddate')) ? 'error' : ''; ?>">
@@ -62,8 +62,8 @@
                 </option>
                 <?php endforeach ?>
             </select>
-            <?php if ($record->hasParent()): ?>
-            <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$record->treaty->getId(), $record->treaty->contracttype->name, $record->treaty->number]) ?></p>
+            <?php if ($_parent = $record->hasParent()): ?>
+            <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$_parent->getId(), $_parent->contracttype->name, $_parent->number]) ?></p>
             <?php endif; ?>
         </div>
         <div class="span2">
@@ -74,7 +74,7 @@
                 name="dialog[number]"
                 value="<?php echo htmlspecialchars($record->number) ?>" />
         </div>
-        <div class="span2">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <input
                 id="treaty-startdate"
                 class="autowidth"
@@ -83,7 +83,7 @@
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->startdate) ?>" />
         </div>
-        <div class="span2">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <input
                 id="treaty-enddate"
                 class="autowidth"
@@ -102,6 +102,11 @@
             <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getPerson()->getMeta('type'), $record->getPerson()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
             <?php echo I18n::__('treaty_label_person') ?>
         </label>
+        <input
+            type="hidden"
+            id="treaty-person-id-shadow"
+            name="dialog[person_id]"
+            value="<?php echo $record->getPerson()->getId() ?>" />
         <input
             type="hidden"
             name="dialog[person][type]"
@@ -123,7 +128,9 @@
             data-spread='<?php
                 echo json_encode([
                     'treaty-person-name' => 'value',
-                    'treaty-person-id' => 'id'
+                    'treaty-person-id' => 'id',
+                    'treaty-person-id-shadow' => 'id',
+                    'postal-address' => 'postaladdress'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
     </div>

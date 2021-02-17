@@ -78,6 +78,8 @@ class Controller_Treaty extends Controller
         'treaty.enddate' => 'localizedDate',
         'location.name' => '',
         'company.city' => '',
+        'company.email' => '',
+        'company.fax' => '',
         'treaty.signdate' => 'localizedDate'
     ];
 
@@ -182,7 +184,7 @@ class Controller_Treaty extends Controller
             try {
                 $copy = R::duplicate($this->treaty);
                 $copy->contracttype_id = Flight::request()->query->copyas;
-                $copy->treaty = $this->treaty;
+                $copy->mytreatyid = $this->treaty->getId();
                 R::store($copy);
                 R::commit();
                 Flight::get('user')->notify(I18n::__('treaty_success_copy', null, [$this->treaty->number, $copy->contracttype->name]), 'success');
@@ -235,6 +237,9 @@ class Controller_Treaty extends Controller
                     $value = Flight::textile($payload[$limb->stub]);
                 } else {
                     $value = $payload[$limb->stub];
+                    if (empty($value)) {
+                        $value = I18n::__('treaty_replacetext_empty');
+                    }
                 }
             }
             $this->text = str_replace("{{".$limb->stub."}}", $value, $this->text);
@@ -262,6 +267,7 @@ class Controller_Treaty extends Controller
                         <textarea
                             name="limb[{$limb->stub}]"
                             placeholder="{$limb->placeholder}"
+                            title="{$limb->name}"
                             rows="5"
                             cols="60">{$value}</textarea>
 HTML;
@@ -274,6 +280,7 @@ HTML;
                         name="limb[{$limb->stub}]"
                         size="{$size}"
                         placeholder="{$limb->placeholder}"
+                        title="{$limb->name}"
                         value="{$value}">
 HTML;
                     break;
@@ -291,7 +298,15 @@ HTML;
     public function dependent()
     {
         $person = R::load('person', Flight::request()->data->person_id);
+        //error_log('Person ' . $person->nickname);
         $dependents = $this->treaty->getDependents($person);
+        if ($person->getId() && $this->treaty->getId()) {
+            // This is intended to helo "Live-Editor" a little, but does it? Not really.
+            R::exec("UPDATE treaty SET person_id = :person_id WHERE id = :treaty_id LIMIT 1", [
+                'person_id' => $person->getId(),
+                'treaty_id' => $this->treaty->getId()
+            ]);
+        }
         ob_start();
         Flight::render('model/treaty/location', [
             'record' => $this->treaty,

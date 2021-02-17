@@ -28,6 +28,30 @@
             value="<?php echo htmlspecialchars($record->name) ?>"
             required="required" />
     </div>
+    <div class="row <?php echo ($record->hasError('nickname')) ? 'error' : ''; ?>">
+        <label
+            for="contracttype-nickname">
+            <?php echo I18n::__('contracttype_label_nickname') ?>
+        </label>
+        <input
+            id="contracttype-nickname"
+            type="text"
+            name="dialog[nickname]"
+            value="<?php echo htmlspecialchars($record->nickname) ?>"
+            required="required" />
+    </div>
+    <div class="row <?php echo ($record->hasError('nextnumber')) ? 'error' : ''; ?>">
+        <label
+            for="contracttype-nextnumber">
+            <?php echo I18n::__('contracttype_label_nextnumber') ?>
+        </label>
+        <input
+            id="contracttype-nextnumber"
+            type="number"
+            name="dialog[nextnumber]"
+            value="<?php echo htmlspecialchars($record->nextnumber) ?>"
+            required="required" />
+    </div>
     <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
         <input
             type="hidden"
@@ -43,6 +67,23 @@
             for="contracttype-enabled"
             class="cb">
             <?php echo I18n::__('contracttype_label_enabled') ?>
+        </label>
+    </div>
+    <div class="row <?php echo ($record->hasError('hidesome')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[hidesome]"
+            value="0" />
+        <input
+            id="contracttype-hidesome"
+            type="checkbox"
+            name="dialog[hidesome]"
+            <?php echo ($record->hidesome) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-hidesome"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_hidesome') ?>
         </label>
     </div>
     <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">

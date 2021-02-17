@@ -36,6 +36,27 @@ class Model_Contracttype extends Model
                 ]
             ],
             [
+                'name' => 'nickname',
+                'sort' => [
+                    'name' => 'nickname'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'nextnumber',
+                'sort' => [
+                    'name' => 'nextnumber'
+                ],
+                'class' => 'number',
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '8rem'
+            ],
+            [
                 'name' => 'enabled',
                 'sort' => [
                     'name' => 'contracttype.enabled'
