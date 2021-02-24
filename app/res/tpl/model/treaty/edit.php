@@ -96,6 +96,17 @@
 </fieldset>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('treaty_legend_customer') ?></legend>
+    <div class="row <?php echo ($record->hasError('prospect')) ? 'error' : ''; ?>">
+        <label
+            for="treaty-prospect">
+            <?php echo I18n::__('treaty_label_prospect') ?>
+        </label>
+        <input
+            type="text"
+            id="treaty-prospect"
+            name="dialog[prospect]"
+            value="<?php echo htmlspecialchars($record->prospect) ?>" />
+    </div>
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
             for="treaty-person-name">
@@ -133,6 +144,17 @@
                     'postal-address' => 'postaladdress'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+    </div>
+    <div class="row <?php echo ($record->hasError('serialnumber')) ? 'error' : ''; ?>">
+        <label
+            for="treaty-serialnumber">
+            <?php echo I18n::__('treaty_label_serialnumber') ?>
+        </label>
+        <input
+            type="text"
+            id="treaty-serialnumber"
+            name="dialog[serialnumber]"
+            value="<?php echo htmlspecialchars($record->serialnumber) ?>" />
     </div>
 </fieldset>
 <div class="tab-container">

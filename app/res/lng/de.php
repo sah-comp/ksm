@@ -829,7 +829,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'treaty_pdf_docname' => 'Vertrag %s',
   'treaty_pdf_filename' => '%s.pdf',
   'treaty_person_select_before_me' => 'Wählen Sie einen Kunden, bevor Sie im weiteren den <em>Standort</em> auswählen.',
-  'treaty_replacetext_empty' => '',
+  'treaty_replacetext_empty' => '–',
   'treaty_submit' => 'Sichern und bearbeiten',
   'treaty_success_copy' => 'Der Vertrag %s wurde erfolgreich kopiert und als %s hinzugefügt. Bearbeiten Sie nun den neuen Vertrag',
   'treaty_text_of' => 'von',

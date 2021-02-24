@@ -75,12 +75,30 @@ class Model_Treaty extends Model
                 'width' => '12rem'
             ],
             [
+                'name' => 'prospect',
+                'sort' => [
+                    'name' => 'prospect'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
+            ],
+            [
                 'name' => 'person.name',
                 'sort' => [
                     'name' => 'person.name'
                 ],
                 'callback' => [
                     'name' => 'personName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
+            ],
+            [
+                'name' => 'serialnumber',
+                'sort' => [
+                    'name' => 'serialnumber'
                 ],
                 'filter' => [
                     'tag' => 'text'

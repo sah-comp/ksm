@@ -799,7 +799,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'treaty_pdf_docname' => 'treaty_pdf_docname',
   'treaty_pdf_filename' => 'treaty_pdf_filename',
   'treaty_person_select_before_me' => 'treaty_person_select_before_me',
-  'treaty_replacetext_empty' => '',
+  'treaty_replacetext_empty' => '–',
   'treaty_submit' => 'treaty_submit',
   'treaty_success_copy' => 'treaty_success_copy',
   'treaty_text_of' => 'treaty_text_of',
