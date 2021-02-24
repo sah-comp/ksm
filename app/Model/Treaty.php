@@ -351,7 +351,10 @@ SQL;
     public function hasParent()
     {
         if ($this->bean->mytreatyid) {
-            return R::load('treaty', $this->bean->mytreatyid);
+            $parent = R::load('treaty', $this->bean->mytreatyid);
+            if ($parent->getId()) {
+                return $parent;
+            }
         }
         return false;
     }

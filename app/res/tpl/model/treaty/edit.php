@@ -63,7 +63,7 @@
                 <?php endforeach ?>
             </select>
             <?php if ($_parent = $record->hasParent()): ?>
-            <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$_parent->getId(), $_parent->contracttype->name, $_parent->number]) ?></p>
+            <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
             <?php endif; ?>
         </div>
         <div class="span2">
