@@ -46,7 +46,7 @@ class Controller_Appointment extends Controller
         $company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename = I18n::__('appointment_list_filename', null, [date('Y-m-d-H-i-s')]);
         $title = I18n::__('appointment_list_docname', null, [date('Y-m-d H:i:s')]);
-        $mpdf = new mPDF('c', 'A4-L');
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
         $mpdf->SetTitle($title);
         $mpdf->SetAuthor($company->legalname);
         $mpdf->SetDisplayMode('fullpage');
@@ -68,7 +68,7 @@ class Controller_Appointment extends Controller
 
         ob_start();
         Flight::render('model/appointment/print', [
-            'language' => 'de',
+            'language' => Flight::get('language'),
             'records' => $records,
             'company_name' => $company->legalname,
             'pdf_headline' => $title

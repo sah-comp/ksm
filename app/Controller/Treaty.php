@@ -111,7 +111,7 @@ class Controller_Treaty extends Controller
         $docname = I18n::__('treaty_pdf_docname', null, [$this->treaty->getDocname()]);
         $this->text = $this->substitute();
         $this->text = $this->substituteLimb();
-        $mpdf = new mPDF('c', 'A4');
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');

@@ -2415,7 +2415,7 @@ define('CINNEBAR_MIP', true);
 /**
  * RedbeanPHP Version .
  */
-require __DIR__ . '/../lib/redbean/rb-5.6-mysql.php';
+require __DIR__ . '/../lib/redbean/rb-mysql.php';
 require __DIR__ . '/../lib/redbean/Plugin/Cooker.php';
 
 /**

@@ -305,7 +305,7 @@ class Controller_Scaffold extends Controller
      * @param int $index of the subsub record, eg. contact
      * @return void
      */
-    public function attachattach($prefix, $subtype, $id = 0, $main, $mainid, $sindex, $index)
+    public function attachattach($prefix, $subtype, $id, $main, $mainid, $sindex, $index)
     {
         $_index = md5(microtime(true));
         $_subrecord = R::dispense($subtype);

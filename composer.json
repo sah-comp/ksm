@@ -21,7 +21,7 @@
         "phpmailer/phpmailer": "dev-master",
 		"docopt/docopt": "v1.0.*",
         "goodby/csv": "*",
-        "mpdf/mpdf": "v6.*"
+        "mpdf/mpdf": "v8.0.*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "3.7.*"

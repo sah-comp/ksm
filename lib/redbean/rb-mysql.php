@@ -613,6 +613,22 @@ interface Driver
 	 * @return integer
 	 */
 	public function getQueryCount();
+
+	/**
+	 * Sets initialization code for connection.
+	 *
+	 * @param callable $code code
+	 *
+	 * @return void
+	 */
+	public function setInitCode( $code );
+
+	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public function DatabaseServerVersion();
 }
 }
 
@@ -720,6 +736,11 @@ class RPDO implements Driver
 	protected $initSQL = NULL;
 
 	/**
+	 * @var callable
+	 */
+	protected $initCode = NULL;
+
+	/**
 	 * Binds parameters. This method binds parameters to a PDOStatement for
 	 * Query Execution. This method binds parameters as NULL, INTEGER or STRING
 	 * and supports both named keys and question mark keys.
@@ -780,8 +801,11 @@ class RPDO implements Driver
 		}
 		try {
 			if ( strpos( 'pgsql', $this->dsn ) === 0 ) {
-				//one line because unable to test this otherwise (coverage trick).
-				if ( defined( '\PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT' ) ) { $statement = $this->pdo->prepare( $sql, array( \PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => TRUE ) ); } else { $statement = $this->pdo->prepare( $sql ); }
+				if (defined('\\PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT')) {
+                 			$statement = @$this->pdo->prepare($sql, array(\PDO::PGSQL_ATTR_DISABLE_NATIVE_PREPARED_STATEMENT => TRUE));
+             			} else {
+                 			$statement = $this->pdo->prepare($sql);
+             			}
 			} else {
 				$statement = $this->pdo->prepare( $sql );
 			}
@@ -913,7 +937,7 @@ class RPDO implements Driver
 	 *
 	 * @return void
 	 */
-	public function __construct( $dsn, $user = NULL, $pass = NULL )
+	public function __construct( $dsn, $user = NULL, $pass = NULL, $options = array() )
 	{
 		if ( is_object( $dsn ) ) {
 			$this->pdo = $dsn;
@@ -926,6 +950,7 @@ class RPDO implements Driver
 		} else {
 			$this->dsn = $dsn;
 			$this->connectInfo = array( 'pass' => $pass, 'user' => $user );
+			if (is_array($options)) $this->connectInfo['options'] = $options;
 		}
 
 		//PHP 5.3 PDO SQLite has a bug with large numbers:
@@ -1024,6 +1049,18 @@ class RPDO implements Driver
 	}
 
 	/**
+	 * Sets initialization code to execute upon connecting.
+	 *
+	 * @param callable $code
+	 *
+	 * @return void
+	 */
+	public function setInitCode($code)
+	{
+		$this->initCode= $code;
+	}
+
+	/**
 	 * Establishes a connection to the database using PHP\PDO
 	 * functionality. If a connection has already been established this
 	 * method will simply return directly. This method also turns on
@@ -1038,7 +1075,11 @@ class RPDO implements Driver
 		try {
 			$user = $this->connectInfo['user'];
 			$pass = $this->connectInfo['pass'];
-			$this->pdo = new \PDO( $this->dsn, $user, $pass );
+			$options = array();
+			if (isset($this->connectInfo['options']) && is_array($this->connectInfo['options'])) {
+				$options = $this->connectInfo['options'];
+			}
+			$this->pdo = new \PDO( $this->dsn, $user, $pass, $options );
 			$this->setEncoding();
 			$this->pdo->setAttribute( \PDO::ATTR_STRINGIFY_FETCHES, $this->stringifyFetches );
 			//cant pass these as argument to constructor, CUBRID driver does not understand...
@@ -1049,6 +1090,10 @@ class RPDO implements Driver
 			if ( $this->initSQL !== NULL ) {
 				$this->Execute( $this->initSQL );
 				$this->initSQL = NULL;
+			}
+			if ( $this->initCode !== NULL ) {
+				$code = $this->initCode;
+				$code( $this->pdo->getAttribute( \PDO::ATTR_SERVER_VERSION ) );
 			}
 		} catch ( \PDOException $exception ) {
 			$matches = array();
@@ -1064,12 +1109,58 @@ class RPDO implements Driver
 	 * this method if you are an expert on RedBeanPHP, PDO and UTF8 connections and
 	 * you know your database server VERY WELL.
 	 *
-	 * @param PDO $pdo PDO instance
+	 * - connected     TRUE|FALSE (treat this instance as connected, default: TRUE)
+	 * - setEncoding   TRUE|FALSE (let RedBeanPHP set encoding for you, default: TRUE)
+	 * - setAttributes TRUE|FALSE (let RedBeanPHP set attributes for you, default: TRUE)*
+	 * - setDSNString  TRUE|FALSE (extract DSN string from PDO instance, default: TRUE)
+	 * - stringFetch   TRUE|FALSE (whether you want to stringify fetches or not, default: TRUE)
+	 * - runInitCode   TRUE|FALSE (run init code if any, default: TRUE)
+	 *
+	 * *attributes:
+	 * - RedBeanPHP will ask database driver to throw Exceptions on errors (recommended for compatibility)
+         * - RedBeanPHP will ask database driver to use associative arrays when fetching (recommended for compatibility)
+	 *
+	 * @param PDO     $pdo       PDO instance
+	 * @param array   $options   Options to apply
 	 *
 	 * @return void
 	 */
-	public function setPDO( \PDO $pdo ) {
+	public function setPDO( \PDO $pdo, $options = array() ) {
 		$this->pdo = $pdo;
+
+		$connected     = TRUE;
+		$setEncoding   = TRUE;
+		$setAttributes = TRUE;
+		$setDSNString  = TRUE;
+		$runInitCode   = TRUE;
+		$stringFetch   = TRUE;
+
+		if ( isset($options['connected']) )     $connected     = $options['connected'];
+		if ( isset($options['setEncoding']) )   $setEncoding   = $options['setEncoding'];
+		if ( isset($options['setAttributes']) ) $setAttributes = $options['setAttributes'];
+		if ( isset($options['setDSNString']) )  $setDSNString  = $options['setDSNString'];
+		if ( isset($options['runInitCode']) )   $runInitCode   = $options['runInitCode'];
+		if ( isset($options['stringFetch']) )   $stringFetch   = $options['stringFetch'];
+
+		if ($connected) $this->connected = $connected;
+		if ($setEncoding) $this->setEncoding();
+		if ($setAttributes) {
+			$this->pdo->setAttribute( \PDO::ATTR_ERRMODE,\PDO::ERRMODE_EXCEPTION );
+			$this->pdo->setAttribute( \PDO::ATTR_DEFAULT_FETCH_MODE,\PDO::FETCH_ASSOC );
+			$this->pdo->setAttribute( \PDO::ATTR_STRINGIFY_FETCHES, $stringFetch );
+		}
+		if ($runInitCode) {
+			/* run initialisation query if any */
+			if ( $this->initSQL !== NULL ) {
+				$this->Execute( $this->initSQL );
+				$this->initSQL = NULL;
+			}
+			if ( $this->initCode !== NULL ) {
+				$code = $this->initCode;
+				$code( $this->pdo->getAttribute( \PDO::ATTR_SERVER_VERSION ) );
+			}
+		}
+		if ($setDSNString) $this->dsn = $this->getDatabaseType();
 	}
 
 	/**
@@ -1306,9 +1397,9 @@ class RPDO implements Driver
 	}
 
 	/**
-	 * Returns the version identifier string of the database.
+	 * Returns the version identifier string of the database client.
 	 * This method can be used to identify the currently installed
-	 * database. Note that this method will also establish a connection
+	 * database client. Note that this method will also establish a connection
 	 * (because this is required to obtain the version information).
 	 *
 	 * Example of a version string:
@@ -1328,6 +1419,9 @@ class RPDO implements Driver
 	 * Note that this is a driver-specific method, not part of the
 	 * driver interface. This method might not be available in other
 	 * drivers since it relies on PDO.
+	 *
+	 * To obtain the database server version, use getDatabaseServerVersion()
+	 * instead.
 	 *
 	 * @return mixed
 	 */
@@ -1476,6 +1570,15 @@ class RPDO implements Driver
 		$this->initSQL = $sql;
 		return $this;
 	}
+
+	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public function DatabaseServerVersion() {
+		return trim( strval( $this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION) ) );
+	}
 }
 }
 
@@ -1509,7 +1612,7 @@ if (interface_exists('\JsonSerializable')) { interface Jsonable extends \JsonSer
  * This source file is subject to the BSD/GPLv2 License that is bundled
  * with this source code in the file license.txt.
  */
-class OODBBean implements\IteratorAggregate,\ArrayAccess,\Countable,Jsonable
+class OODBBean implements \IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 {
 	/**
 	 * FUSE error modes.
@@ -2761,6 +2864,22 @@ class OODBBean implements\IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 	}
 
 	/**
+	 * Returns a value from the data bundle.
+	 * The data bundle might contain additional data send from an SQL query,
+	 * for instance, the total number of rows. If the property cannot be
+	 * found, the default value will be returned. If no default has
+	 * been specified, this method returns NULL.
+	 *
+	 * @param string $key     key
+	 * @param mixed  $default default (defaults to NULL)
+	 *
+	 * @return mixed;
+	 */
+	public function info( $key, $default = NULL ) {
+		return ( isset( $this->__info['data.bundle'][$key] ) ) ? $this->__info['data.bundle'][$key] : $default;
+	}
+
+	/**
 	 * Gets and unsets a meta property.
 	 * Moves a meta property out of the bean.
 	 * This is a short-cut method that can be used instead
@@ -2853,7 +2972,7 @@ class OODBBean implements\IteratorAggregate,\ArrayAccess,\Countable,Jsonable
 			$overrideDontFail = TRUE;
 		}
 
-		if ( !method_exists( $this->__info['model'], $method ) ) {
+		if ( !is_callable( array( $this->__info['model'], $method ) ) ) {
 
 			if ( self::$errorHandlingFUSE === FALSE || $overrideDontFail ) {
 				return NULL;
@@ -3946,12 +4065,8 @@ interface Adapter
 	public function getCell( $sql, $bindings = array() );
 
 	/**
-	 * Executes the SQL query specified in $sql and takes
-	 * the first two columns of the resultset. This function transforms the
-	 * resultset into an associative array. Values from the the first column will
-	 * serve as keys while the values of the second column will be used as values.
-	 * The values array can be used to bind values to the place holders in the
-	 * SQL query.
+	 * Executes the SQL query specified in $sql and indexes
+	 * the row by the first column.
 	 *
 	 * @param string $sql      string containing SQL code for database
 	 * @param array  $bindings array of values to bind to parameters in query string
@@ -3961,8 +4076,8 @@ interface Adapter
 	public function getAssoc( $sql, $bindings = array() );
 
 	/**
-	 * Executes the SQL query specified in $sql and indexes
-	 * the row by the first column.
+	 * Executes the SQL query specified in $sql and returns
+	 * an associative array where the column names are the keys.
 	 *
 	 * @param string $sql      Sstring containing SQL code for databaseQL
 	 * @param array  $bindings values to bind
@@ -4053,6 +4168,13 @@ interface Adapter
 	 * @return boolean
 	 */
 	public function setOption( $optionKey, $optionValue );
+
+	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public function getDatabaseServerVersion();
 }
 }
 
@@ -4320,6 +4442,15 @@ class DBAdapter extends Observable implements Adapter
 	}
 
 	/**
+	 * Sets initialization code for connection.
+	 *
+	 * @param callable $code
+	 */
+	public function setInitCode($code) {
+		$this->db->setInitCode($code);
+	}
+
+	/**
 	 * @see Adapter::setOption
 	 */
 	public function setOption( $optionKey, $optionValue ) {
@@ -4328,6 +4459,14 @@ class DBAdapter extends Observable implements Adapter
 			return TRUE;
 		}
 		return FALSE;
+	}
+
+	/**
+	 * @see Adapter::getDatabaseServerVersion
+	 */
+	public function getDatabaseServerVersion()
+	{
+		return $this->db->DatabaseServerVersion();
 	}
 }
 }
@@ -4669,6 +4808,13 @@ interface QueryWriter
 	const C_GLUE_AND   = 2;
 
 	/**
+	 * CTE Select Snippet
+	 * Constants specifying select snippets for CTE queries
+	 */
+	 const C_CTE_SELECT_NORMAL = FALSE;
+	 const C_CTE_SELECT_COUNT  = TRUE;
+
+	/**
 	 * Parses an sql string to create joins if needed.
 	 *
 	 * For instance with $type = 'book' and $sql = ' @joined.author.name LIKE ? OR @joined.detail.title LIKE ? '
@@ -4960,15 +5106,21 @@ interface QueryWriter
 	 * as defined by having <type>_id = id or all parent rows as defined per id = <type>_id
 	 * taking into account an optional SQL snippet along with parameters.
 	 *
+	 * The $select parameter can be used to adjust the select snippet of the query.
+	 * Possible values are: C_CTE_SELECT_NORMAL (just select all columns, default), C_CTE_SELECT_COUNT
+	 * (count rows) used for countParents and countChildren functions - or you can specify a
+	 * string yourself like 'count(distinct brand)'.
+	 *
 	 * @param string  $type     the bean type you want to query rows for
 	 * @param integer $id       id of the reference row
 	 * @param boolean $up       TRUE to query parent rows, FALSE to query child rows
 	 * @param string  $addSql   optional SQL snippet to embed in the query
 	 * @param array   $bindings parameter bindings for additional SQL snippet
+	 * @param mixed   $select   Select Snippet to use when querying (optional)
 	 *
 	 * @return array
 	 */
-	public function queryRecursiveCommonTableExpression( $type, $id, $up = TRUE, $addSql = NULL, $bindings = array() );
+	public function queryRecursiveCommonTableExpression( $type, $id, $up = TRUE, $addSql = NULL, $bindings = array(), $select = QueryWriter::C_CTE_SELECT_NORMAL );
 
 	/**
 	 * This method should update (or insert a record), it takes
@@ -5257,6 +5409,54 @@ abstract class AQueryWriter
 	 * @var bool
 	 */
 	protected static $noNuke = false;
+
+	/**
+	 * Sets a data definition template to change the data
+	 * creation statements per type.
+	 *
+	 * For instance to add  ROW_FORMAT=DYNAMIC to all MySQL tables
+	 * upon creation:
+	 *
+	 * $sql = $writer->getDDLTemplate( 'createTable', '*' );
+	 * $writer->setDDLTemplate( 'createTable', '*', $sql . '  ROW_FORMAT=DYNAMIC ' );
+	 *
+	 * For property-specific templates set $beanType to:
+	 * account.username -- then the template will only be applied to SQL statements relating
+	 * to that column/property.
+	 *
+	 * @param string $type     ( 'createTable' | 'widenColumn' | 'addColumn' )
+	 * @param string $beanType ( type of bean or '*' to apply to all types )
+	 * @param string $template SQL template, contains %s for slots
+	 *
+	 * @return void
+	 */
+	public function setDDLTemplate( $type, $beanType, $template )
+	{
+		$this->DDLTemplates[ $type ][ $beanType ] = $template;
+	}
+
+	/**
+	 * Returns the specified data definition template.
+	 * If no template can be found for the specified type, the template for
+	 * '*' will be returned instead.
+	 *
+	 * @param string $type     ( 'createTable' | 'widenColumn' | 'addColumn' )
+	 * @param string $beanType ( type of bean or '*' to apply to all types )
+	 * @param string $property specify if you're looking for a property-specific template
+	 *
+	 * @return string
+	 */
+	public function getDDLTemplate( $type, $beanType = '*', $property = NULL )
+	{
+		$key = ( $property ) ? "{$beanType}.{$property}" : $beanType;
+		if ( isset( $this->DDLTemplates[ $type ][ $key ] ) ) {
+			return $this->DDLTemplates[ $type ][ $key ];
+		}
+		if ( isset( $this->DDLTemplates[ $type ][ $beanType ] ) ) {
+			return $this->DDLTemplates[ $type ][ $beanType ];
+		}
+		return $this->DDLTemplates[ $type ][ '*' ];
+	}
 
 	/**
 	 * Toggles support for IS-NULL-conditions.
@@ -5993,16 +6193,16 @@ abstract class AQueryWriter
 	/**
 	 * @see QueryWriter::addColumn
 	 */
-	public function addColumn( $type, $column, $field )
+	public function addColumn( $beanType, $column, $field )
 	{
-		$table  = $type;
+		$table  = $beanType;
 		$type   = $field;
 		$table  = $this->esc( $table );
 		$column = $this->esc( $column );
 
 		$type = ( isset( $this->typeno_sqltype[$type] ) ) ? $this->typeno_sqltype[$type] : '';
 
-		$this->adapter->exec( "ALTER TABLE $table ADD $column $type " );
+		$this->adapter->exec( sprintf( $this->getDDLTemplate('addColumn', $beanType, $column ), $table, $column, $type ) );
 	}
 
 	/**
@@ -6410,7 +6610,8 @@ abstract class AQueryWriter
 
 		$sqlFilterStr = '';
 		if ( count( self::$sqlFilters ) ) {
-			$sqlFilterStr = $this->getSQLFilterSnippet( $destType );
+			$linkType = $this->getAssocTable( array( $sourceType, $destType ) );
+			$sqlFilterStr = $this->getSQLFilterSnippet( "{$linkType}" );
 		}
 
 		if ( $sourceTable === $destTable ) {
@@ -6582,8 +6783,13 @@ abstract class AQueryWriter
 	/**
 	 * @see QueryWriter::queryRecursiveCommonTableExpression
 	 */
-	public function queryRecursiveCommonTableExpression( $type, $id, $up = TRUE, $addSql = NULL, $bindings = array(), $count = FALSE )
+	public function queryRecursiveCommonTableExpression( $type, $id, $up = TRUE, $addSql = NULL, $bindings = array(), $selectForm = FALSE )
 	{
+		if ($selectForm === QueryWriter::C_CTE_SELECT_COUNT) {
+			$selectForm = "count(redbeantree.*)";
+		} elseif ( $selectForm === QueryWriter::C_CTE_SELECT_NORMAL ) {
+			$selectForm = "redbeantree.*";
+		}
 		$alias     = $up ? 'parent' : 'child';
 		$direction = $up ? " {$alias}.{$type}_id = {$type}.id " : " {$alias}.id = {$type}.{$type}_id ";
 		/* allow numeric and named param bindings, if '0' exists then numeric */
@@ -6605,7 +6811,7 @@ abstract class AQueryWriter
 				SELECT {$type}.* FROM {$type}
 				INNER JOIN redbeantree {$alias} ON {$direction}
 			)
-			SELECT ".($count ? "count(redbeantree.*)" : "redbeantree.*" )." FROM redbeantree {$sql};",
+			SELECT {$selectForm} FROM redbeantree {$sql};",
 			$bindings
 		);
 		return $rows;
@@ -6663,7 +6869,7 @@ abstract class AQueryWriter
 
 		$newType = $this->typeno_sqltype[$dataType];
 
-		$this->adapter->exec( "ALTER TABLE $table CHANGE $column $column $newType " );
+		$this->adapter->exec( sprintf( $this->getDDLTemplate( 'widenColumn', $type, $column ), $type, $column, $column, $newType ) );
 
 		return TRUE;
 	}
@@ -6819,6 +7025,21 @@ class MySQL extends AQueryWriter implements QueryWriter
 	protected $quoteCharacter = '`';
 
 	/**
+	 * @var array
+	 */
+	protected $DDLTemplates = array(
+		'addColumn' => array(
+			'*' => 'ALTER TABLE %s ADD %s %s '
+		),
+		'createTable' => array(
+			'*' => 'CREATE TABLE %s (id INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY ( id )) ENGINE = InnoDB DEFAULT CHARSET=%s COLLATE=%s '
+		),
+		'widenColumn' => array(
+			'*' => 'ALTER TABLE `%s` CHANGE %s %s %s '
+		)
+	);
+
+	/**
 	 * @see AQueryWriter::getKeyMapForType
 	 */
 	protected function getKeyMapForType( $type )
@@ -6892,8 +7113,9 @@ class MySQL extends AQueryWriter implements QueryWriter
 	 * object.
 	 *
 	 * @param Adapter $adapter Database Adapter
+	 * @param array   $options options array
 	 */
-	public function __construct( Adapter $adapter )
+	public function __construct( Adapter $adapter, $options = array() )
 	{
 		$this->typeno_sqltype = array(
 			MySQL::C_DATATYPE_BOOL             => ' TINYINT(1) UNSIGNED ',
@@ -6920,8 +7142,36 @@ class MySQL extends AQueryWriter implements QueryWriter
 		}
 
 		$this->adapter = $adapter;
-
 		$this->encoding = $this->adapter->getDatabase()->getMysqlEncoding();
+		$me = $this;
+		if (!isset($options['noInitcode']))
+		$this->adapter->setInitCode(function($version) use(&$me) {
+			try {
+				if (strpos($version, 'maria')===FALSE && intval($version)>=8) {
+						$me->useFeature('ignoreDisplayWidth');
+				}
+			} catch( \Exception $e ){}
+		});
+	}
+
+	/**
+	 * Enables certain features/dialects.
+	 *
+	 * - ignoreDisplayWidth required for MySQL8+
+	 *   (automatically set by setup() if you pass dsn instead of PDO object)
+	 *
+	 * @param string $name feature ID
+	 *
+	 * @return void
+	 */
+	public function useFeature($name) {
+		if ($name == 'ignoreDisplayWidth') {
+			$this->typeno_sqltype[MySQL::C_DATATYPE_BOOL] = ' TINYINT UNSIGNED ';
+			$this->typeno_sqltype[MySQL::C_DATATYPE_UINT32] = ' INT UNSIGNED ';
+			foreach ( $this->typeno_sqltype as $k => $v ) {
+				$this->sqltype_typeno[trim( strtolower( $v ) )] = $k;
+			}
+		}
 	}
 
 	/**
@@ -6946,15 +7196,15 @@ class MySQL extends AQueryWriter implements QueryWriter
 	/**
 	 * @see QueryWriter::createTable
 	 */
-	public function createTable( $table )
+	public function createTable( $type )
 	{
-		$table = $this->esc( $table );
+		$table = $this->esc( $type );
 
 		$charset_collate = $this->adapter->getDatabase()->getMysqlEncoding( TRUE );
 		$charset = $charset_collate['charset'];
 		$collate = $charset_collate['collate'];
 
-		$sql   = "CREATE TABLE $table (id INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY ( id )) ENGINE = InnoDB DEFAULT CHARSET={$charset} COLLATE={$collate} ";
+		$sql = sprintf( $this->getDDLTemplate( 'createTable', $type ), $table, $charset, $collate );
 
 		$this->adapter->exec( $sql );
 	}
@@ -7009,7 +7259,7 @@ class MySQL extends AQueryWriter implements QueryWriter
 		}
 
 		//setter turns TRUE FALSE into 0 and 1 because database has no real bools (TRUE and FALSE only for test?).
-		if ( $value === FALSE || $value === TRUE || $value === '0' || $value === '1' ) {
+		if ( $value === FALSE || $value === TRUE || $value === '0' || $value === '1' || $value === 0 || $value === 1 ) {
 			return MySQL::C_DATATYPE_BOOL;
 		}
 
@@ -7175,907 +7425,6 @@ class MySQL extends AQueryWriter implements QueryWriter
 		}
 
 		$this->adapter->exec( 'SET FOREIGN_KEY_CHECKS = 1;' );
-	}
-}
-}
-
-namespace RedBeanPHP\QueryWriter {
-
-use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
-use RedBeanPHP\QueryWriter as QueryWriter;
-use RedBeanPHP\Adapter\DBAdapter as DBAdapter;
-use RedBeanPHP\Adapter as Adapter;
-use RedBeanPHP\RedException\SQL as SQLException;
-
-/**
- * RedBeanPHP SQLiteWriter with support for SQLite types
- * This is a QueryWriter class for RedBeanPHP.
- * This QueryWriter provides support for the SQLite database platform.
- *
- * @file    RedBeanPHP/QueryWriter/SQLiteT.php
- * @author  Gabor de Mooij and the RedBeanPHP Community
- * @license BSD/GPLv2
- *
- * @copyright
- * (c) copyright G.J.G.T. (Gabor) de Mooij and the RedBeanPHP Community.
- * This source file is subject to the BSD/GPLv2 License that is bundled
- * with this source code in the file license.txt.
- */
-class SQLiteT extends AQueryWriter implements QueryWriter
-{
-	/**
-	 * Data types
-	 */
-	const C_DATATYPE_INTEGER   = 0;
-	const C_DATATYPE_NUMERIC   = 1;
-	const C_DATATYPE_TEXT      = 2;
-	const C_DATATYPE_SPECIFIED = 99;
-
-	/**
-	 * @var DBAdapter
-	 */
-	protected $adapter;
-
-	/**
-	 * @var string
-	 */
-	protected $quoteCharacter = '`';
-
-	/**
-	 * Gets all information about a table (from a type).
-	 *
-	 * Format:
-	 * array(
-	 *    name => name of the table
-	 *    columns => array( name => datatype )
-	 *    indexes => array() raw index information rows from PRAGMA query
-	 *    keys => array() raw key information rows from PRAGMA query
-	 * )
-	 *
-	 * @param string $type type you want to get info of
-	 *
-	 * @return array
-	 */
-	protected function getTable( $type )
-	{
-		$tableName = $this->esc( $type, TRUE );
-		$columns   = $this->getColumns( $type );
-		$indexes   = $this->getIndexes( $type );
-		$keys      = $this->getKeyMapForType( $type );
-
-		$table = array(
-			'columns' => $columns,
-			'indexes' => $indexes,
-			'keys' => $keys,
-			'name' => $tableName
-		);
-
-		$this->tableArchive[$tableName] = $table;
-
-		return $table;
-	}
-
-	/**
-	 * Puts a table. Updates the table structure.
-	 * In SQLite we can't change columns, drop columns, change or add foreign keys so we
-	 * have a table-rebuild function. You simply load your table with getTable(), modify it and
-	 * then store it with putTable()...
-	 *
-	 * @param array $tableMap information array
-	 *
-	 * @return void
-	 */
-	protected function putTable( $tableMap )
-	{
-		$table = $tableMap['name'];
-		$q     = array();
-		$q[]   = "DROP TABLE IF EXISTS tmp_backup;";
-
-		$oldColumnNames = array_keys( $this->getColumns( $table ) );
-
-		foreach ( $oldColumnNames as $k => $v ) $oldColumnNames[$k] = "`$v`";
-
-		$q[] = "CREATE TEMPORARY TABLE tmp_backup(" . implode( ",", $oldColumnNames ) . ");";
-		$q[] = "INSERT INTO tmp_backup SELECT * FROM `$table`;";
-		$q[] = "PRAGMA foreign_keys = 0 ";
-		$q[] = "DROP TABLE `$table`;";
-
-		$newTableDefStr = '';
-		foreach ( $tableMap['columns'] as $column => $type ) {
-			if ( $column != 'id' ) {
-				$newTableDefStr .= ",`$column` $type";
-			}
-		}
-
-		$fkDef = '';
-		foreach ( $tableMap['keys'] as $key ) {
-			$fkDef .= ", FOREIGN KEY(`{$key['from']}`)
-						 REFERENCES `{$key['table']}`(`{$key['to']}`)
-						 ON DELETE {$key['on_delete']} ON UPDATE {$key['on_update']}";
-		}
-
-		$q[] = "CREATE TABLE `$table` ( `id` INTEGER PRIMARY KEY AUTOINCREMENT  $newTableDefStr  $fkDef );";
-
-		foreach ( $tableMap['indexes'] as $name => $index ) {
-			if ( strpos( $name, 'UQ_' ) === 0 ) {
-				$cols = explode( '__', substr( $name, strlen( 'UQ_' . $table ) ) );
-				foreach ( $cols as $k => $v ) $cols[$k] = "`$v`";
-				$q[] = "CREATE UNIQUE INDEX $name ON `$table` (" . implode( ',', $cols ) . ")";
-			} else $q[] = "CREATE INDEX $name ON `$table` ({$index['name']}) ";
-		}
-
-		$q[] = "INSERT INTO `$table` SELECT * FROM tmp_backup;";
-		$q[] = "DROP TABLE tmp_backup;";
-		$q[] = "PRAGMA foreign_keys = 1 ";
-
-		foreach ( $q as $sq ) $this->adapter->exec( $sq );
-	}
-
-	/**
-	 * Returns the an array describing the indexes for type $type.
-	 *
-	 * @param string $type type to describe indexes of
-	 *
-	 * @return array
-	 */
-	protected function getIndexes( $type )
-	{
-		$table   = $this->esc( $type, TRUE );
-		$indexes = $this->adapter->get( "PRAGMA index_list('$table')" );
-
-		$indexInfoList = array();
-		foreach ( $indexes as $i ) {
-			$indexInfoList[$i['name']] = $this->adapter->getRow( "PRAGMA index_info('{$i['name']}') " );
-
-			$indexInfoList[$i['name']]['unique'] = $i['unique'];
-		}
-
-		return $indexInfoList;
-	}
-
-	/**
-	 * Adds a foreign key to a type.
-	 * Note: cant put this in try-catch because that can hide the fact
-	 * that database has been damaged.
-	 *
-	 * @param  string  $type        type you want to modify table of
-	 * @param  string  $targetType  target type
-	 * @param  string  $field       field of the type that needs to get the fk
-	 * @param  string  $targetField field where the fk needs to point to
-	 * @param  integer $buildopt    0 = NO ACTION, 1 = ON DELETE CASCADE
-	 *
-	 * @return boolean
-	 */
-	protected function buildFK( $type, $targetType, $property, $targetProperty, $constraint = FALSE )
-	{
-		$table           = $this->esc( $type, TRUE );
-		$targetTable     = $this->esc( $targetType, TRUE );
-		$column          = $this->esc( $property, TRUE );
-		$targetColumn    = $this->esc( $targetProperty, TRUE );
-
-		$tables = $this->getTables();
-		if ( !in_array( $targetTable, $tables ) ) return FALSE;
-
-		if ( !is_null( $this->getForeignKeyForTypeProperty( $table, $column ) ) ) return FALSE;
-		$t = $this->getTable( $table );
-		$consSQL = ( $constraint ? 'CASCADE' : 'SET NULL' );
-		$label   = 'from_' . $column . '_to_table_' . $targetTable . '_col_' . $targetColumn;
-		$t['keys'][$label] = array(
-			'table'     => $targetTable,
-			'from'      => $column,
-			'to'        => $targetColumn,
-			'on_update' => $consSQL,
-			'on_delete' => $consSQL
-		);
-		$this->putTable( $t );
-		return TRUE;
-	}
-
-	/**
-	 * @see AQueryWriter::getKeyMapForType
-	 */
-	protected function getKeyMapForType( $type )
-	{
-		$table = $this->esc( $type, TRUE );
-		$keys  = $this->adapter->get( "PRAGMA foreign_key_list('$table')" );
-		$keyInfoList = array();
-		foreach ( $keys as $k ) {
-			$label = $this->makeFKLabel( $k['from'], $k['table'], $k['to'] );
-			$keyInfoList[$label] = array(
-				'name'          => $label,
-				'from'          => $k['from'],
-				'table'         => $k['table'],
-				'to'            => $k['to'],
-				'on_update'     => $k['on_update'],
-				'on_delete'     => $k['on_delete']
-			);
-		}
-		return $keyInfoList;
-	}
-
-	/**
-	 * Constructor
-	 * Most of the time, you do not need to use this constructor,
-	 * since the facade takes care of constructing and wiring the
-	 * RedBeanPHP core objects. However if you would like to
-	 * assemble an OODB instance yourself, this is how it works:
-	 *
-	 * Usage:
-	 *
-	 * <code>
-	 * $database = new RPDO( $dsn, $user, $pass );
-	 * $adapter = new DBAdapter( $database );
-	 * $writer = new PostgresWriter( $adapter );
-	 * $oodb = new OODB( $writer, FALSE );
-	 * $bean = $oodb->dispense( 'bean' );
-	 * $bean->name = 'coffeeBean';
-	 * $id = $oodb->store( $bean );
-	 * $bean = $oodb->load( 'bean', $id );
-	 * </code>
-	 *
-	 * The example above creates the 3 RedBeanPHP core objects:
-	 * the Adapter, the Query Writer and the OODB instance and
-	 * wires them together. The example also demonstrates some of
-	 * the methods that can be used with OODB, as you see, they
-	 * closely resemble their facade counterparts.
-	 *
-	 * The wiring process: create an RPDO instance using your database
-	 * connection parameters. Create a database adapter from the RPDO
-	 * object and pass that to the constructor of the writer. Next,
-	 * create an OODB instance from the writer. Now you have an OODB
-	 * object.
-	 *
-	 * @param Adapter $adapter Database Adapter
-	 */
-	public function __construct( Adapter $adapter )
-	{
-		$this->typeno_sqltype = array(
-			SQLiteT::C_DATATYPE_INTEGER => 'INTEGER',
-			SQLiteT::C_DATATYPE_NUMERIC => 'NUMERIC',
-			SQLiteT::C_DATATYPE_TEXT    => 'TEXT',
-		);
-
-		$this->sqltype_typeno = array();
-
-		foreach ( $this->typeno_sqltype as $k => $v ) {
-			$this->sqltype_typeno[$v] = $k;
-		}
-
-		$this->adapter = $adapter;
-		$this->adapter->setOption( 'setInitQuery', ' PRAGMA foreign_keys = 1 ' );
-	}
-
-	/**
-	 * This method returns the datatype to be used for primary key IDS and
-	 * foreign keys. Returns one if the data type constants.
-	 *
-	 * @return integer $const data type to be used for IDS.
-	 */
-	public function getTypeForID()
-	{
-		return self::C_DATATYPE_INTEGER;
-	}
-
-	/**
-	 * @see QueryWriter::scanType
-	 */
-	public function scanType( $value, $flagSpecial = FALSE )
-	{
-		$this->svalue = $value;
-
-		if ( $value === NULL ) return self::C_DATATYPE_INTEGER;
-		if ( $value === INF ) return self::C_DATATYPE_TEXT;
-
-		if ( $this->startsWithZeros( $value ) ) return self::C_DATATYPE_TEXT;
-
-		if ( $value === TRUE || $value === FALSE )  return self::C_DATATYPE_INTEGER;
-
-		if ( is_numeric( $value ) && ( intval( $value ) == $value ) && $value < 2147483648 && $value > -2147483648 ) return self::C_DATATYPE_INTEGER;
-
-		if ( ( is_numeric( $value ) && $value < 2147483648 && $value > -2147483648)
-			|| preg_match( '/\d{4}\-\d\d\-\d\d/', $value )
-			|| preg_match( '/\d{4}\-\d\d\-\d\d\s\d\d:\d\d:\d\d/', $value )
-		) {
-			return self::C_DATATYPE_NUMERIC;
-		}
-
-		return self::C_DATATYPE_TEXT;
-	}
-
-	/**
-	 * @see QueryWriter::addColumn
-	 */
-	public function addColumn( $table, $column, $type )
-	{
-		$column = $this->check( $column );
-		$table  = $this->check( $table );
-		$type   = $this->typeno_sqltype[$type];
-
-		$this->adapter->exec( "ALTER TABLE `$table` ADD `$column` $type " );
-	}
-
-	/**
-	 * @see QueryWriter::code
-	 */
-	public function code( $typedescription, $includeSpecials = FALSE )
-	{
-		$r = ( ( isset( $this->sqltype_typeno[$typedescription] ) ) ? $this->sqltype_typeno[$typedescription] : 99 );
-
-		return $r;
-	}
-
-	/**
-	 * @see QueryWriter::widenColumn
-	 */
-	public function widenColumn( $type, $column, $datatype )
-	{
-		$t = $this->getTable( $type );
-
-		$t['columns'][$column] = $this->typeno_sqltype[$datatype];
-
-		$this->putTable( $t );
-	}
-
-	/**
-	 * @see QueryWriter::getTables();
-	 */
-	public function getTables()
-	{
-		return $this->adapter->getCol( "SELECT name FROM sqlite_master
-			WHERE type='table' AND name!='sqlite_sequence';" );
-	}
-
-	/**
-	 * @see QueryWriter::createTable
-	 */
-	public function createTable( $table )
-	{
-		$table = $this->esc( $table );
-
-		$sql   = "CREATE TABLE $table ( id INTEGER PRIMARY KEY AUTOINCREMENT ) ";
-
-		$this->adapter->exec( $sql );
-	}
-
-	/**
-	 * @see QueryWriter::getColumns
-	 */
-	public function getColumns( $table )
-	{
-		$table      = $this->esc( $table, TRUE );
-
-		$columnsRaw = $this->adapter->get( "PRAGMA table_info('$table')" );
-
-		$columns    = array();
-		foreach ( $columnsRaw as $r ) $columns[$r['name']] = $r['type'];
-
-		return $columns;
-	}
-
-	/**
-	 * @see QueryWriter::addUniqueIndex
-	 */
-	public function addUniqueConstraint( $type, $properties )
-	{
-		$tableNoQ = $this->esc( $type, TRUE );
-		$name  = 'UQ_' . $this->esc( $type, TRUE ) . implode( '__', $properties );
-		$t     = $this->getTable( $type );
-		$t['indexes'][$name] = array( 'name' => $name );
-		try {
-			$this->putTable( $t );
-		} catch( SQLException $e ) {
-			return FALSE;
-		}
-		return TRUE;
-	}
-
-	/**
-	 * @see QueryWriter::sqlStateIn
-	 */
-	public function sqlStateIn( $state, $list, $extraDriverDetails = array() )
-	{
-		$stateMap = array(
-			'23000' => QueryWriter::C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION
-		);
-		if ( $state == 'HY000'
-		&& isset($extraDriverDetails[1])
-		&& $extraDriverDetails[1] == 1
-		&& ( in_array( QueryWriter::C_SQLSTATE_NO_SUCH_TABLE, $list )
-			|| in_array( QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN, $list )
-		)) {
-			return TRUE;
-		}
-		return in_array( ( isset( $stateMap[$state] ) ? $stateMap[$state] : '0' ), $list );
-	}
-
-	/**
-	 * Sets an SQL snippet to be used for the next queryRecord() operation.
-	 * SQLite has no SELECT-FOR-UPDATE and filters this.
-	 *
-	 * @param string $sql SQL snippet to use in SELECT statement.
-	 *
-	 * return self
-	 */
-	public function setSQLSelectSnippet( $sqlSelectSnippet = '' ) {
-		if ( $sqlSelectSnippet === AQueryWriter::C_SELECT_SNIPPET_FOR_UPDATE) $sqlSelectSnippet = '';
-		$this->sqlSelectSnippet = $sqlSelectSnippet;
-		return $this;
-	}
-
-	/**
-	 * @see QueryWriter::addIndex
-	 */
-	public function addIndex( $type, $name, $column )
-	{
-		$columns = $this->getColumns( $type );
-		if ( !isset( $columns[$column] ) ) return FALSE;
-
-		$table  = $this->esc( $type );
-		$name   = preg_replace( '/\W/', '', $name );
-		$column = $this->esc( $column, TRUE );
-
-		try {
-			$t = $this->getTable( $type );
-			$t['indexes'][$name] = array( 'name' => $column );
-			$this->putTable( $t );
-			return TRUE;
-		} catch( SQLException $exception ) {
-			return FALSE;
-		}
-	}
-
-	/**
-	 * @see QueryWriter::wipe
-	 */
-	public function wipe( $type )
-	{
-		$table = $this->esc( $type );
-
-		$this->adapter->exec( "DELETE FROM $table " );
-	}
-
-	/**
-	 * @see QueryWriter::addFK
-	 */
-	public function addFK( $type, $targetType, $property, $targetProperty, $isDep = FALSE )
-	{
-		return $this->buildFK( $type, $targetType, $property, $targetProperty, $isDep );
-	}
-
-	/**
-	 * @see QueryWriter::wipeAll
-	 */
-	public function wipeAll()
-	{
-		if (AQueryWriter::$noNuke) throw new \Exception('The nuke() command has been disabled using noNuke() or R::feature(novice/...).');
-		$this->adapter->exec( 'PRAGMA foreign_keys = 0 ' );
-
-		foreach ( $this->getTables() as $t ) {
-			try { $this->adapter->exec( "DROP TABLE IF EXISTS `$t`" ); } catch ( SQLException $e ) { ; }
-			try { $this->adapter->exec( "DROP TABLE IF EXISTS `$t`" ); } catch ( SQLException $e ) { ; }
-		}
-
-		$this->adapter->exec( 'PRAGMA foreign_keys = 1 ' );
-	}
-}
-}
-
-namespace RedBeanPHP\QueryWriter {
-
-use RedBeanPHP\QueryWriter\AQueryWriter as AQueryWriter;
-use RedBeanPHP\QueryWriter as QueryWriter;
-use RedBeanPHP\Adapter\DBAdapter as DBAdapter;
-use RedBeanPHP\Adapter as Adapter;
-use RedBeanPHP\RedException\SQL as SQLException;
-
-/**
- * RedBeanPHP PostgreSQL Query Writer.
- * This is a QueryWriter class for RedBeanPHP.
- * This QueryWriter provides support for the PostgreSQL database platform.
- *
- * @file    RedBeanPHP/QueryWriter/PostgreSQL.php
- * @author  Gabor de Mooij and the RedBeanPHP Community
- * @license BSD/GPLv2
- *
- * @copyright
- * (c) copyright G.J.G.T. (Gabor) de Mooij and the RedBeanPHP Community.
- * This source file is subject to the BSD/GPLv2 License that is bundled
- * with this source code in the file license.txt.
- */
-class PostgreSQL extends AQueryWriter implements QueryWriter
-{
-	/**
-	 * Data types
-	 */
-	const C_DATATYPE_INTEGER          = 0;
-	const C_DATATYPE_DOUBLE           = 1;
-	const C_DATATYPE_TEXT             = 3;
-	const C_DATATYPE_SPECIAL_DATE     = 80;
-	const C_DATATYPE_SPECIAL_DATETIME = 81;
-	const C_DATATYPE_SPECIAL_TIME     = 82; //TIME (no zone) only manual
-	const C_DATATYPE_SPECIAL_TIMEZ    = 83; //TIME (plus zone) only manual
-	const C_DATATYPE_SPECIAL_POINT    = 90;
-	const C_DATATYPE_SPECIAL_LSEG     = 91;
-	const C_DATATYPE_SPECIAL_CIRCLE   = 92;
-	const C_DATATYPE_SPECIAL_MONEY    = 93;
-	const C_DATATYPE_SPECIAL_POLYGON  = 94;
-	const C_DATATYPE_SPECIAL_MONEY2   = 95; //Numbers only money, i.e. fixed point numeric
-	const C_DATATYPE_SPECIAL_JSON     = 96; //JSON support (only manual)
-	const C_DATATYPE_SPECIFIED        = 99;
-
-	/**
-	 * @var DBAdapter
-	 */
-	protected $adapter;
-
-	/**
-	 * @var string
-	 */
-	protected $quoteCharacter = '"';
-
-	/**
-	 * @var string
-	 */
-	protected $defaultValue = 'DEFAULT';
-
-	/**
-	 * Returns the insert suffix SQL Snippet
-	 *
-	 * @param string $table table
-	 *
-	 * @return  string $sql SQL Snippet
-	 */
-	protected function getInsertSuffix( $table )
-	{
-		return 'RETURNING id ';
-	}
-
-	/**
-	 * @see AQueryWriter::getKeyMapForType
-	 */
-	protected function getKeyMapForType( $type )
-	{
-		$table = $this->esc( $type, TRUE );
-		$keys = $this->adapter->get( '
-			SELECT
-			information_schema.key_column_usage.constraint_name AS "name",
-			information_schema.key_column_usage.column_name AS "from",
-			information_schema.constraint_table_usage.table_name AS "table",
-			information_schema.constraint_column_usage.column_name AS "to",
-			information_schema.referential_constraints.update_rule AS "on_update",
-			information_schema.referential_constraints.delete_rule AS "on_delete"
-				FROM information_schema.key_column_usage
-			INNER JOIN information_schema.constraint_table_usage
-				ON (
-					information_schema.key_column_usage.constraint_name = information_schema.constraint_table_usage.constraint_name
-					AND information_schema.key_column_usage.constraint_schema = information_schema.constraint_table_usage.constraint_schema
-					AND information_schema.key_column_usage.constraint_catalog = information_schema.constraint_table_usage.constraint_catalog
-				)
-			INNER JOIN information_schema.constraint_column_usage
-				ON (
-					information_schema.key_column_usage.constraint_name = information_schema.constraint_column_usage.constraint_name
-					AND information_schema.key_column_usage.constraint_schema = information_schema.constraint_column_usage.constraint_schema
-					AND information_schema.key_column_usage.constraint_catalog = information_schema.constraint_column_usage.constraint_catalog
-				)
-			INNER JOIN information_schema.referential_constraints
-				ON (
-					information_schema.key_column_usage.constraint_name = information_schema.referential_constraints.constraint_name
-					AND information_schema.key_column_usage.constraint_schema = information_schema.referential_constraints.constraint_schema
-					AND information_schema.key_column_usage.constraint_catalog = information_schema.referential_constraints.constraint_catalog
-				)
-			WHERE
-				information_schema.key_column_usage.table_catalog = current_database()
-				AND information_schema.key_column_usage.table_schema = ANY( current_schemas( FALSE ) )
-				AND information_schema.key_column_usage.table_name = ?
-		', array( $type ) );
-		$keyInfoList = array();
-		foreach ( $keys as $k ) {
-			$label = $this->makeFKLabel( $k['from'], $k['table'], $k['to'] );
-			$keyInfoList[$label] = array(
-				'name'          => $k['name'],
-				'from'          => $k['from'],
-				'table'         => $k['table'],
-				'to'            => $k['to'],
-				'on_update'     => $k['on_update'],
-				'on_delete'     => $k['on_delete']
-			);
-		}
-		return $keyInfoList;
-	}
-
-	/**
-	 * Constructor
-	 * Most of the time, you do not need to use this constructor,
-	 * since the facade takes care of constructing and wiring the
-	 * RedBeanPHP core objects. However if you would like to
-	 * assemble an OODB instance yourself, this is how it works:
-	 *
-	 * Usage:
-	 *
-	 * <code>
-	 * $database = new RPDO( $dsn, $user, $pass );
-	 * $adapter = new DBAdapter( $database );
-	 * $writer = new PostgresWriter( $adapter );
-	 * $oodb = new OODB( $writer, FALSE );
-	 * $bean = $oodb->dispense( 'bean' );
-	 * $bean->name = 'coffeeBean';
-	 * $id = $oodb->store( $bean );
-	 * $bean = $oodb->load( 'bean', $id );
-	 * </code>
-	 *
-	 * The example above creates the 3 RedBeanPHP core objects:
-	 * the Adapter, the Query Writer and the OODB instance and
-	 * wires them together. The example also demonstrates some of
-	 * the methods that can be used with OODB, as you see, they
-	 * closely resemble their facade counterparts.
-	 *
-	 * The wiring process: create an RPDO instance using your database
-	 * connection parameters. Create a database adapter from the RPDO
-	 * object and pass that to the constructor of the writer. Next,
-	 * create an OODB instance from the writer. Now you have an OODB
-	 * object.
-	 *
-	 * @param Adapter $adapter Database Adapter
-	 */
-	public function __construct( Adapter $adapter )
-	{
-		$this->typeno_sqltype = array(
-			self::C_DATATYPE_INTEGER          => ' integer ',
-			self::C_DATATYPE_DOUBLE           => ' double precision ',
-			self::C_DATATYPE_TEXT             => ' text ',
-			self::C_DATATYPE_SPECIAL_DATE     => ' date ',
-			self::C_DATATYPE_SPECIAL_TIME     => ' time ',
-			self::C_DATATYPE_SPECIAL_TIMEZ    => ' time with time zone ',
-			self::C_DATATYPE_SPECIAL_DATETIME => ' timestamp without time zone ',
-			self::C_DATATYPE_SPECIAL_POINT    => ' point ',
-			self::C_DATATYPE_SPECIAL_LSEG     => ' lseg ',
-			self::C_DATATYPE_SPECIAL_CIRCLE   => ' circle ',
-			self::C_DATATYPE_SPECIAL_MONEY    => ' money ',
-			self::C_DATATYPE_SPECIAL_MONEY2   => ' numeric(10,2) ',
-			self::C_DATATYPE_SPECIAL_POLYGON  => ' polygon ',
-			self::C_DATATYPE_SPECIAL_JSON     => ' json ',
-		);
-
-		$this->sqltype_typeno = array();
-
-		foreach ( $this->typeno_sqltype as $k => $v ) {
-			$this->sqltype_typeno[trim( strtolower( $v ) )] = $k;
-		}
-
-		$this->adapter = $adapter;
-	}
-
-	/**
-	 * This method returns the datatype to be used for primary key IDS and
-	 * foreign keys. Returns one if the data type constants.
-	 *
-	 * @return integer
-	 */
-	public function getTypeForID()
-	{
-		return self::C_DATATYPE_INTEGER;
-	}
-
-	/**
-	 * @see QueryWriter::getTables
-	 */
-	public function getTables()
-	{
-		return $this->adapter->getCol( 'SELECT table_name FROM information_schema.tables WHERE table_schema = ANY( current_schemas( FALSE ) )' );
-	}
-
-	/**
-	 * @see QueryWriter::createTable
-	 */
-	public function createTable( $table )
-	{
-		$table = $this->esc( $table );
-
-		$this->adapter->exec( " CREATE TABLE $table (id SERIAL PRIMARY KEY); " );
-	}
-
-	/**
-	 * @see QueryWriter::getColumns
-	 */
-	public function getColumns( $table )
-	{
-		$table      = $this->esc( $table, TRUE );
-
-		$columnsRaw = $this->adapter->get( "SELECT column_name, data_type FROM information_schema.columns WHERE table_name='$table' AND table_schema = ANY( current_schemas( FALSE ) )" );
-
-		$columns = array();
-		foreach ( $columnsRaw as $r ) {
-			$columns[$r['column_name']] = $r['data_type'];
-		}
-
-		return $columns;
-	}
-
-	/**
-	 * @see QueryWriter::scanType
-	 */
-	public function scanType( $value, $flagSpecial = FALSE )
-	{
-		$this->svalue = $value;
-
-		if ( $value === INF ) return self::C_DATATYPE_TEXT;
-
-		if ( $flagSpecial && $value ) {
-			if ( preg_match( '/^\d{4}\-\d\d-\d\d$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_DATE;
-			}
-
-			if ( preg_match( '/^\d{4}\-\d\d-\d\d\s\d\d:\d\d:\d\d(\.\d{1,6})?$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_DATETIME;
-			}
-
-			if ( preg_match( '/^\([\d\.]+,[\d\.]+\)$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_POINT;
-			}
-
-			if ( preg_match( '/^\[\([\d\.]+,[\d\.]+\),\([\d\.]+,[\d\.]+\)\]$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_LSEG;
-			}
-
-			if ( preg_match( '/^\<\([\d\.]+,[\d\.]+\),[\d\.]+\>$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_CIRCLE;
-			}
-
-			if ( preg_match( '/^\((\([\d\.]+,[\d\.]+\),?)+\)$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_POLYGON;
-			}
-
-			if ( preg_match( '/^\-?(\$|€|¥|£)[\d,\.]+$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_MONEY;
-			}
-
-			if ( preg_match( '/^-?\d+\.\d{2}$/', $value ) ) {
-				return PostgreSQL::C_DATATYPE_SPECIAL_MONEY2;
-			}
-			if ( self::$flagUseJSONColumns && $this->isJSON( $value ) ) {
-				return self::C_DATATYPE_SPECIAL_JSON;
-			}
-		}
-
-		if ( is_float( $value ) ) return self::C_DATATYPE_DOUBLE;
-
-		if ( $this->startsWithZeros( $value ) ) return self::C_DATATYPE_TEXT;
-
-		if ( $value === FALSE || $value === TRUE || $value === NULL || ( is_numeric( $value )
-				&& AQueryWriter::canBeTreatedAsInt( $value )
-				&& $value < 2147483648
-				&& $value > -2147483648 )
-		) {
-			return self::C_DATATYPE_INTEGER;
-		} elseif ( is_numeric( $value ) ) {
-			return self::C_DATATYPE_DOUBLE;
-		} else {
-			return self::C_DATATYPE_TEXT;
-		}
-	}
-
-	/**
-	 * @see QueryWriter::code
-	 */
-	public function code( $typedescription, $includeSpecials = FALSE )
-	{
-		$r = ( isset( $this->sqltype_typeno[$typedescription] ) ) ? $this->sqltype_typeno[$typedescription] : 99;
-
-		if ( $includeSpecials ) return $r;
-
-		if ( $r >= QueryWriter::C_DATATYPE_RANGE_SPECIAL ) {
-			return self::C_DATATYPE_SPECIFIED;
-		}
-
-		return $r;
-	}
-
-	/**
-	 * @see QueryWriter::widenColumn
-	 */
-	public function widenColumn( $type, $column, $datatype )
-	{
-		$table   = $type;
-		$type    = $datatype;
-
-		$table   = $this->esc( $table );
-		$column  = $this->esc( $column );
-
-		$newtype = $this->typeno_sqltype[$type];
-
-		$this->adapter->exec( "ALTER TABLE $table \n\t ALTER COLUMN $column TYPE $newtype " );
-	}
-
-	/**
-	 * @see QueryWriter::addUniqueIndex
-	 */
-	public function addUniqueConstraint( $type, $properties )
-	{
-		$tableNoQ = $this->esc( $type, TRUE );
-		$columns = array();
-		foreach( $properties as $key => $column ) $columns[$key] = $this->esc( $column );
-		$table = $this->esc( $type );
-		sort( $columns ); //else we get multiple indexes due to order-effects
-		$name = "UQ_" . sha1( $table . implode( ',', $columns ) );
-		$sql = "ALTER TABLE {$table}
-                ADD CONSTRAINT $name UNIQUE (" . implode( ',', $columns ) . ")";
-		try {
-			$this->adapter->exec( $sql );
-		} catch( SQLException $e ) {
-			return FALSE;
-		}
-		return TRUE;
-	}
-
-	/**
-	 * @see QueryWriter::sqlStateIn
-	 */
-	public function sqlStateIn( $state, $list, $extraDriverDetails = array() )
-	{
-		$stateMap = array(
-			'42P01' => QueryWriter::C_SQLSTATE_NO_SUCH_TABLE,
-			'42703' => QueryWriter::C_SQLSTATE_NO_SUCH_COLUMN,
-			'23505' => QueryWriter::C_SQLSTATE_INTEGRITY_CONSTRAINT_VIOLATION,
-			'55P03' => QueryWriter::C_SQLSTATE_LOCK_TIMEOUT
-		);
-		return in_array( ( isset( $stateMap[$state] ) ? $stateMap[$state] : '0' ), $list );
-	}
-
-	/**
-	 * @see QueryWriter::addIndex
-	 */
-	public function addIndex( $type, $name, $property )
-	{
-		$table  = $this->esc( $type );
-		$name   = preg_replace( '/\W/', '', $name );
-		$column = $this->esc( $property );
-
-		try {
-			$this->adapter->exec( "CREATE INDEX {$name} ON $table ({$column}) " );
-			return TRUE;
-		} catch ( SQLException $e ) {
-			return FALSE;
-		}
-	}
-
-	/**
-	 * @see QueryWriter::addFK
-	 */
-	public function addFK( $type, $targetType, $property, $targetProperty, $isDep = FALSE )
-	{
-		$table = $this->esc( $type );
-		$targetTable = $this->esc( $targetType );
-		$field = $this->esc( $property );
-		$targetField = $this->esc( $targetProperty );
-		$tableNoQ = $this->esc( $type, TRUE );
-		$fieldNoQ = $this->esc( $property, TRUE );
-		if ( !is_null( $this->getForeignKeyForTypeProperty( $tableNoQ, $fieldNoQ ) ) ) return FALSE;
-		try{
-			$delRule = ( $isDep ? 'CASCADE' : 'SET NULL' );
-			$this->adapter->exec( "ALTER TABLE {$table}
-				ADD FOREIGN KEY ( {$field} ) REFERENCES  {$targetTable}
-				({$targetField}) ON DELETE {$delRule} ON UPDATE {$delRule} DEFERRABLE ;" );
-			return TRUE;
-		} catch ( SQLException $e ) {
-			return FALSE;
-		}
-	}
-
-	/**
-	 * @see QueryWriter::wipeAll
-	 */
-	public function wipeAll()
-	{
-		if (AQueryWriter::$noNuke) throw new \Exception('The nuke() command has been disabled using noNuke() or R::feature(novice/...).');
-		$this->adapter->exec( 'SET CONSTRAINTS ALL DEFERRED' );
-
-		foreach ( $this->getTables() as $t ) {
-			$t = $this->esc( $t );
-			//Some plugins (PostGIS have unremovable tables/views), avoid exceptions.
-			try { $this->adapter->exec( "DROP TABLE IF EXISTS $t CASCADE " ); }catch( \Exception $e ) {}
-		}
-
-		$this->adapter->exec( 'SET CONSTRAINTS ALL IMMEDIATE' );
 	}
 }
 }
@@ -10875,23 +10224,26 @@ class Finder
 	 * Format of criteria set: property => value
 	 * The criteria set also supports OR-conditions: property => array( value1, orValue2 )
 	 *
-	 * @param string $type type of bean to search for
-	 * @param array  $like criteria set describing bean to search for
+	 * @param string  $type type of bean to search for
+	 * @param array   $like criteria set describing bean to search for
+	 * @param boolean $hasBeenCreated set to TRUE if bean has been created
 	 *
 	 * @return OODBBean
 	 */
-	public function findOrCreate( $type, $like = array(), $sql = '' )
+	public function findOrCreate( $type, $like = array(), $sql = '', &$hasBeenCreated = false )
 	{
 			$sql = $this->toolbox->getWriter()->glueLimitOne( $sql );
 			$beans = $this->findLike( $type, $like, $sql );
 			if ( count( $beans ) ) {
 				$bean = reset( $beans );
+				$hasBeenCreated = false;
 				return $bean;
 			}
 
 			$bean = $this->redbean->dispense( $type );
 			$bean->import( $like );
 			$this->redbean->store( $bean );
+			$hasBeenCreated = true;
 			return $bean;
 	}
 
@@ -12417,7 +11769,7 @@ use RedBeanPHP\Util\Feature;
  * RedBean Facade
  *
  * Version Information
- * RedBean Version @version 5.5
+ * RedBean Version @version 5.6
  *
  * This class hides the object landscape of
  * RedBeanPHP behind a single letter class providing
@@ -12437,7 +11789,7 @@ class Facade
 	/**
 	 * RedBeanPHP version constant.
 	 */
-	const C_REDBEANPHP_VERSION = '5.5';
+	const C_REDBEANPHP_VERSION = '5.6';
 
 	/**
 	 * @var ToolBox
@@ -12594,6 +11946,16 @@ class Facade
 	}
 
 	/**
+	 * Returns the version string from the database server.
+	 *
+	 * @return string
+	 */
+	public static function getDatabaseServerVersion()
+	{
+		return self::$adapter->getDatabaseServerVersion();
+	}
+
+	/**
 	 * Tests the database connection.
 	 * Returns TRUE if connection has been established and
 	 * FALSE otherwise. Suppresses any warnings that may
@@ -12639,20 +12001,22 @@ class Facade
 	 * a connection is really required, for instance when attempting to load
 	 * a bean.
 	 *
-	 * @param string  $dsn      Database connection string
-	 * @param string  $username Username for database
-	 * @param string  $password Password for database
-	 * @param boolean $frozen   TRUE if you want to setup in frozen mode
+	 * @param string  $dsn          Database connection string
+	 * @param string  $username     Username for database
+	 * @param string  $password     Password for database
+	 * @param boolean $frozen       TRUE if you want to setup in frozen mode
+	 * @param boolean $partialBeans TRUE to enable partial bean updates
+	 * @param array   $options      Additional (PDO) options to pass
 	 *
 	 * @return ToolBox
 	 */
-	public static function setup( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE )
+	public static function setup( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
 	{
 		if ( is_null( $dsn ) ) {
-			$dsn = 'sqlite:/' . sys_get_temp_dir() . '/red.db';
+			$dsn = 'sqlite:' . DIRECTORY_SEPARATOR . sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'red.db';
 		}
 
-		self::addDatabase( 'default', $dsn, $username, $password, $frozen, $partialBeans );
+		self::addDatabase( 'default', $dsn, $username, $password, $frozen, $partialBeans, $options );
 		self::selectDatabase( 'default' );
 
 		return self::$toolbox;
@@ -12780,13 +12144,13 @@ class Facade
 	 *
 	 * @return void
 	 */
-	public static function addDatabase( $key, $dsn, $user = NULL, $pass = NULL, $frozen = FALSE, $partialBeans = FALSE )
+	public static function addDatabase( $key, $dsn, $user = NULL, $pass = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
 	{
 		if ( isset( self::$toolboxes[$key] ) ) {
 			throw new RedException( 'A database has already been specified for this key.' );
 		}
 
-		self::$toolboxes[$key] = self::createToolbox($dsn, $user, $pass, $frozen, $partialBeans);
+		self::$toolboxes[$key] = self::createToolbox($dsn, $user, $pass, $frozen, $partialBeans, $options);
 	}
 
 	/**
@@ -12822,13 +12186,13 @@ class Facade
 	 *
 	 * @return ToolBox
 	 */
-  public static function createToolbox( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE )
+  public static function createToolbox( $dsn = NULL, $username = NULL, $password = NULL, $frozen = FALSE, $partialBeans = FALSE, $options = array() )
   {
 		if ( is_object($dsn) ) {
 			$db  = new RPDO( $dsn );
 			$dbType = $db->getDatabaseType();
 		} else {
-			$db = new RPDO( $dsn, $username, $password, TRUE );
+			$db = new RPDO( $dsn, $username, $password, $options );
 			$dbType = substr( $dsn, 0, strpos( $dsn, ':' ) );
 		}
 
@@ -12856,21 +12220,6 @@ class Facade
 		}
 
 		return new ToolBox( $redbean, $adapter, $writer );
-  }
-
-	/**
-	 * Sets PDO attributes for MySQL SSL connection.
-	 *
-	 * @param string $key  path client key i.e. '/etc/mysql/ssl/client-key.pem'
-	 * @param string $cert path client cert i.e. '/etc/mysql/ssl/client-cert.pem'
-	 * @param string $ca   path certifying agent certificate '/etc/mysql/ssl/ca-cert.pem'
-	 * @param string $id   apply to toolbox (default = 'default')
-	 */
-	public static function useMysqlSSL( $key, $cert, $ca, $id = 'default' ) {
-		$pdo = self::$toolboxes[$id]->getDatabaseAdapter()->getDatabase()->getPDO();
-		$pdo->setAttribute( \PDO::MYSQL_ATTR_SSL_KEY,  $key);
-		$pdo->setAttribute( \PDO::MYSQL_ATTR_SSL_CERT,  $cert);
-		$pdo->setAttribute( \PDO::MYSQL_ATTR_SSL_CA,  $ca);
 	}
 
 	/**
@@ -13857,7 +13206,7 @@ class Facade
 	 *
 	 * <code>
 	 * $rows = R::getAll( 'SELECT FROM... COUNT(*) AS extra_count ...' );
-	 * $beans = R::convertToBeans( $rows );
+	 * $beans = R::convertToBeans( $rows, 'extra_' );
 	 * $bean = reset( $beans );
 	 * $data = $bean->getMeta( 'data.bundle' );
 	 * $extra_count = $data['extra_count'];
@@ -13895,6 +13244,65 @@ class Facade
 		$beans = self::$redbean->convertToBeans( $type, array( $row ), $metamask );
 		$bean  = reset( $beans );
 		return $bean;
+	}
+
+	/**
+	 * Convenience function to 'find' beans from an SQL query.
+	 * Used mostly to obtain a series of beans as well as
+	 * pagination data (to paginate results) and optionally
+	 * other data as well (that should not be considered part of
+	 * a bean).
+	 *
+	 * Example:
+	 *
+	 *  $books = R::findFromSQL('book',"
+	 *  SELECT *, count(*) OVER() AS total
+	 *  FROM book
+	 *  WHERE {$filter}
+	 *  OFFSET {$from} LIMIT {$to} ", ['total']);
+	 *
+	 * This is the same as doing (example uses PostgreSQL dialect):
+	 *
+	 *  $rows = R::getAll("
+	 *  SELECT *, count(*) OVER() AS total
+	 *  FROM book
+	 *  WHERE {$filter}
+	 *  OFFSET {$from} LIMIT {$to}
+	 *  ", $params);
+	 *  $books = R::convertToBeans('book', $rows, ['total']);
+	 *
+	 * The additional data can be obtained using:
+	 *
+	 * $book->info('total');
+	 *
+	 * For further details see R::convertToBeans().
+	 * If you set $autoExtract to TRUE and meta mask is an array,
+	 * an array will be returned containing two nested arrays, the
+	 * first of those nested arrays will contain the meta values
+	 * you requested, the second array will contain the beans.
+	 *
+	 * @param string  $type        Type of bean to produce
+	 * @param string  $sql         SQL query snippet to use
+	 * @param array   $bindings    bindings for query (optional)
+	 * @param mixed   $metamask    meta mask (optional, defaults to 'extra_')
+	 * @param boolean $autoExtract TRUE to return meta mask values as first item of array
+	 *
+	 * @return array
+	 */
+	public static function findFromSQL( $type, $sql, $bindings = array(), $metamask = 'extra_', $autoExtract = false) {
+		$rows = self::query( 'get', $sql, $bindings );
+		$beans = array();
+		if (count($rows)) $beans = self::$redbean->convertToBeans( $type, $rows, $metamask );
+		if ($autoExtract && is_array($metamask)) {
+			$values = array();
+			$firstBean = NULL;
+			if (count($beans)) $firstBean = reset($beans);
+			foreach($metamask as $key) {
+				$values[$key] = ($firstBean) ? $firstBean->info($key) : NULL;
+			}
+			return array( $values, $beans );
+		}
+		return $beans;
 	}
 
 	/**
@@ -14994,12 +14402,13 @@ class Facade
 	 *
 	 * @param string $type type of bean to search for
 	 * @param array  $like criteria set describing the bean to search for
+	 * @param boolean $hasBeenCreated set to TRUE if bean has been created
 	 *
 	 * @return OODBBean
 	 */
-	public static function findOrCreate( $type, $like = array(), $sql = '' )
+	public static function findOrCreate( $type, $like = array(), $sql = '', &$hasBeenCreated = false )
 	{
-		return self::$finder->findOrCreate( $type, $like, $sql = '' );
+		return self::$finder->findOrCreate( $type, $like, $sql = '', $hasBeenCreated );
 	}
 
 	/**
@@ -15525,13 +14934,27 @@ class Facade
 	 * a warning mechanism in case your database does not support this
 	 * functionality.
 	 *
-	 * @param OODBBean $bean     bean to find children of
-	 * @param string   $sql      optional SQL snippet
-	 * @param array    $bindings SQL snippet parameter bindings
+	 * @note:
+	 * You are allowed to use named parameter bindings as well as
+	 * numeric parameter bindings (using the question mark notation).
+	 * However, you can not mix. Also, if using named parameter bindings,
+	 * parameter binding key ':slot0' is reserved for the ID of the bean
+	 * and used in the query.
+	 *
+	 * @note:
+	 * By default, if no select is given or select=TRUE this method will subtract 1 of
+	 * the total count to omit the starting bean. If you provide your own select,
+	 * this method assumes you take control of the resulting total yourself since
+	 * it cannot 'predict' what or how you are trying to 'count'.
+	 *
+	 * @param OODBBean       $bean     bean to find children of
+	 * @param string         $sql      optional SQL snippet
+	 * @param array          $bindings SQL snippet parameter bindings
+	 * @param string|boolean $select   select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)
 	 */
-	public static function countChildren( OODBBean $bean, $sql = NULL, $bindings = array() )
+	public static function countChildren( OODBBean $bean, $sql = NULL, $bindings = array(), $select = QueryWriter::C_CTE_SELECT_COUNT )
 	{
-		return self::$tree->countChildren( $bean, $sql, $bindings );
+		return self::$tree->countChildren( $bean, $sql, $bindings, $select );
 	}
 
 	/**
@@ -15544,13 +14967,27 @@ class Facade
 	 * a warning mechanism in case your database does not support this
 	 * functionality.
 	 *
-	 * @param OODBBean $bean     bean to find children of
-	 * @param string   $sql      optional SQL snippet
-	 * @param array    $bindings SQL snippet parameter bindings
+	 * @note:
+	 * You are allowed to use named parameter bindings as well as
+	 * numeric parameter bindings (using the question mark notation).
+	 * However, you can not mix. Also, if using named parameter bindings,
+	 * parameter binding key ':slot0' is reserved for the ID of the bean
+	 * and used in the query.
+	 *
+	 * @note:
+	 * By default, if no select is given or select=TRUE this method will subtract 1 of
+	 * the total count to omit the starting bean. If you provide your own select,
+	 * this method assumes you take control of the resulting total yourself since
+	 * it cannot 'predict' what or how you are trying to 'count'.
+	 *
+	 * @param OODBBean       $bean     bean to find children of
+	 * @param string         $sql      optional SQL snippet
+	 * @param array          $bindings SQL snippet parameter bindings
+	 * @param string|boolean $select   select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)
 	 */
-	public static function countParents( OODBBean $bean, $sql = NULL, $bindings = array() )
+	public static function countParents( OODBBean $bean, $sql = NULL, $bindings = array(), $select = QueryWriter::C_CTE_SELECT_COUNT )
 	{
-		return self::$tree->countParents( $bean, $sql, $bindings );
+		return self::$tree->countParents( $bean, $sql, $bindings, $select );
 	}
 
 	/**
@@ -17248,26 +16685,33 @@ class Tree {
 	 * $count = R::countChildren( $newsArticle, ' WHERE title = :t ', [ ':t' => $t ] );
 	 * </code>
 	 *
-	 * Note:
+	 * @note:
 	 * You are allowed to use named parameter bindings as well as
 	 * numeric parameter bindings (using the question mark notation).
 	 * However, you can not mix. Also, if using named parameter bindings,
 	 * parameter binding key ':slot0' is reserved for the ID of the bean
 	 * and used in the query.
 	 *
-	 * @param OODBBean $bean     reference bean to find children of
-	 * @param string   $sql      optional SQL snippet
-	 * @param array    $bindings optional parameter bindings for SQL snippet
+	 * @note:
+	 * By default, if no SQL or select is given or select=TRUE this method will subtract 1 of
+	 * the total count to omit the starting bean. If you provide your own select,
+	 * this method assumes you take control of the resulting total yourself since
+	 * it cannot 'predict' what or how you are trying to 'count'.
+	 *
+	 * @param OODBBean       $bean     reference bean to find children of
+	 * @param string         $sql      optional SQL snippet
+	 * @param array          $bindings optional parameter bindings for SQL snippet
+	 * @param string|boolean $select   select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)
 	 *
 	 * @return integer
 	 */
-	public function countChildren( OODBBean $bean, $sql = NULL, $bindings = array() ) {
+	public function countChildren( OODBBean $bean, $sql = NULL, $bindings = array(), $select = TRUE ) {
 		$type = $bean->getMeta('type');
 		$id   = $bean->id;
-		$rows = $this->writer->queryRecursiveCommonTableExpression( $type, $id, FALSE, $sql, $bindings, TRUE );
+		$rows = $this->writer->queryRecursiveCommonTableExpression( $type, $id, FALSE, $sql, $bindings, $select );
 		$first = reset($rows);
 		$cell  = reset($first);
-		return intval($cell) - 1;
+		return (intval($cell) - (($select === TRUE && is_null($sql)) ? 1 : 0));
 	}
 
 	/**
@@ -17290,19 +16734,26 @@ class Tree {
 	 * parameter binding key ':slot0' is reserved for the ID of the bean
 	 * and used in the query.
 	 *
+	 * Note:
+	 * By default, if no SQL or select is given or select=TRUE this method will subtract 1 of
+	 * the total count to omit the starting bean. If you provide your own select,
+	 * this method assumes you take control of the resulting total yourself since
+	 * it cannot 'predict' what or how you are trying to 'count'.
+	 *
 	 * @param OODBBean $bean     reference bean to find parents of
 	 * @param string   $sql      optional SQL snippet
 	 * @param array    $bindings optional parameter bindings for SQL snippet
+	 * @param string|boolean $select   select snippet to use (advanced, optional, see QueryWriter::queryRecursiveCommonTableExpression)
 	 *
 	 * @return integer
 	 */
-	public function countParents( OODBBean $bean, $sql = NULL, $bindings = array() ) {
+	public function countParents( OODBBean $bean, $sql = NULL, $bindings = array(), $select = TRUE ) {
 		$type = $bean->getMeta('type');
 		$id   = $bean->id;
-		$rows = $this->writer->queryRecursiveCommonTableExpression( $type, $id, TRUE, $sql, $bindings, TRUE );
+		$rows = $this->writer->queryRecursiveCommonTableExpression( $type, $id, TRUE, $sql, $bindings, $select );
 		$first = reset($rows);
 		$cell  = reset($first);
-		return intval($cell) - 1;
+		return (intval($cell) - (($select === TRUE && is_null($sql)) ? 1 : 0));
 	}
 }
 }
