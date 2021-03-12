@@ -210,6 +210,11 @@
         </label>
         <input
             type="hidden"
+            id="appointment-person-id-shadow"
+            name="dialog[person_id]"
+            value="<?php echo $record->getPerson()->getId() ?>" />
+        <input
+            type="hidden"
             name="dialog[person][type]"
             value="person" />
         <input
@@ -230,9 +235,16 @@
                 echo json_encode([
                     'appointment-person-name' => 'value',
                     'appointment-person-id' => 'id',
+                    'appointment-person-id-shadow' => 'id',
                     'appointment-person-note' => 'note'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+            <a
+                href="#scratch-item"
+                title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
+                data-clear="appointment-person-name"
+                data-scratch="appointment-person-id-shadow"
+                class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
     </div>
 
 </fieldset>

@@ -722,6 +722,11 @@ SQL;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
         }
 
+        if (!$this->bean->person_id) {
+            $this->bean->person_id = null;
+            unset($this->bean->person);
+        }
+
         if (!CINNEBAR_MIP) {
             if (!$this->bean->machine_id) {
                 $this->bean->machine_id = null;

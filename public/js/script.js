@@ -330,6 +330,16 @@ $('body').ready(function() {
 	    }, 'json');
     });
 
+    $('body').on('click', ".scratch", function(event) {
+        event.preventDefault();
+        var clear = $(this).attr('data-clear');
+        var scratch = $(this).attr('data-scratch');
+        //alert('Scratch me! ' + scratch);
+        $("#" + clear).attr('value', '');
+        $("#" + scratch).attr('value', '');
+        return false;
+    });
+
     /**
      * Within is a mini form within a server-side form that does not hold data
      * that will be processed by the server en bloc. Instead the "within" sends

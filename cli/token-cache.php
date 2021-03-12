@@ -89,7 +89,7 @@ require __DIR__ . '/../vendor/autoload.php';
 /**
  * RedbeanPHP Version .
  */
-require __DIR__ . '/../lib/redbean/rb-5.5.php';
+require __DIR__ . '/../lib/redbean/rb-mysql.php';
 require __DIR__ . '/../lib/redbean/Plugin/Cooker.php';
 
 /**

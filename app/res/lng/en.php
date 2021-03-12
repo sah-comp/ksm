@@ -672,6 +672,8 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'role_translation_tab' => 'Translations',
   'scaffold_action_edit' => 'Edit',
   'scaffold_action_finish' => 'Finish and hide',
+  'scaffold_action_scratch_linktext' => 'scaffold_action_scratch_linktext',
+  'scaffold_action_scratch_title' => 'scaffold_action_scratch_title',
   'scaffold_attach' => 'Add',
   'scaffold_attach_linktext' => 'Attach',
   'scaffold_caption_index' => '%d Items',

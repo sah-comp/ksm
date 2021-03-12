@@ -144,6 +144,12 @@
                     'postal-address' => 'postaladdress'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+            <a
+                href="#scratch-item"
+                title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
+                data-clear="treaty-person-name"
+                data-scratch="treaty-person-id-shadow"
+                class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
     </div>
     <div class="row <?php echo ($record->hasError('serialnumber')) ? 'error' : ''; ?>">
         <label
