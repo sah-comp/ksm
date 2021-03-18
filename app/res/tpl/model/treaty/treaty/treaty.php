@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title><?php echo $title ?></title>
     <style>
-    body {
+    body, pre {
                 font-family: sans-serif;
     	        font-size: 9pt;
             }
