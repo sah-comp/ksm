@@ -470,6 +470,7 @@ Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdie
   'machine_label_internalnumber' => 'machine_label_internalnumber',
   'machine_label_keynumber' => 'machine_label_keynumber',
   'machine_label_lastservice' => 'machine_label_lastservice',
+  'machine_label_lever' => 'Lever',
   'machine_label_machinebrand' => 'machine_label_machinebrand',
   'machine_label_machinebrand.name' => 'machine_label_machinebrand.name',
   'machine_label_masterdata' => 'machine_label_masterdata',
