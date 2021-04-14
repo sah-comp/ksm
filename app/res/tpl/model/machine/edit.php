@@ -388,6 +388,13 @@
                     <?php echo I18n::__('machine_label_motorserialnumber') ?>
                 </label>
             </div>
+            <div class="span3">
+                <label
+                    for="machine-lever"
+                    class="<?php echo ($record->hasError('lever')) ? 'error' : ''; ?>">
+                    <?php echo I18n::__('machine_label_lever') ?>
+                </label>
+            </div>
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
@@ -406,6 +413,14 @@
                     type="text"
                     name="dialog[motorserialnumber]"
                     value="<?php echo htmlspecialchars($record->motorserialnumber) ?>"/>
+            </div>
+            <div class="span3">
+                <input
+                    id="machine-lever"
+                    class="autowidth"
+                    type="text"
+                    name="dialog[lever]"
+                    value="<?php echo htmlspecialchars($record->lever) ?>"/>
             </div>
         </div>
         <!-- /first block -->
