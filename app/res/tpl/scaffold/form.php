@@ -18,7 +18,7 @@
     <!-- scaffold edit form -->
     <form
         id="form-<?php echo $record->getMeta('type') ?>"
-        class="panel panel-<?php echo $record->getMeta('type') ?> action-<?php echo $current_action ?>"
+        class="checko panel panel-<?php echo $record->getMeta('type') ?> action-<?php echo $current_action ?>"
         method="POST"
         accept-charset="utf-8"
         autocomplete="off"

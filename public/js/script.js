@@ -51,6 +51,11 @@ $('body').ready(function() {
     initAutocompletes();
 
     /**
+     * Check for dirty forms and warn the user if inputs were not yet saved.
+     */
+    $('form.checko').areYouSure();
+
+    /**
      * Activate datatables.
      *
      * @see https://datatables.net

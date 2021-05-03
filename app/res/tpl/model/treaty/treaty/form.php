@@ -118,6 +118,7 @@
 
     <form
         id="form-treaty"
+        class="checko"
         method="POST"
         accept-charset="utf-8"
         autocomplete="off"
@@ -136,6 +137,10 @@
         </div>
 
     </form>
+
+    <script src="/js/jquery-1.11.1.min.js"></script>
+    <script src="/js/jquery.are-you-sure.js"></script>
+    <script src="/js/treaty.js"></script>
 
 </body>
 </html>
