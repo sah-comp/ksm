@@ -41,6 +41,13 @@ RewriteBase /
 #RewriteCond %{HTTPS} !on
 #RewriteRule ^(.*) https://%{SERVER_NAME}/$1 [L,R]
 
+#
+# Uncomment the next three lines to activate the maintenance mode for this site
+# Replace the IP address with your own address to allow yourself access to the site exclusively
+#
+#RewriteCond %{REMOTE_ADDR} !^11\.111\.111\.111
+#RewriteCond %{REQUEST_URI} !^/maintenance\.html$
+#RewriteRule ^(.*)$ maintenance.html [R=307,L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
