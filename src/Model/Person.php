@@ -382,6 +382,13 @@ SQL;
             ));
         }
 
+        if (!$this->bean->vat_id) {
+            $this->bean->vat_id = null;
+            unset($this->bean->vat);
+        } else {
+            $this->bean->vat = R::load('vat', $this->bean->vat_id);
+        }
+
         // set the phonetic names
         $this->bean->phoneticlastname = soundex($this->bean->lastname);
         $this->bean->phoneticfirstname = soundex($this->bean->firstname);

@@ -148,6 +148,46 @@ $_personkinds = $record->sharedPersonkind;
     <?php endforeach ?>
 </fieldset>
 <fieldset>
+    <legend><?php echo I18n::__('person_legend_payments') ?></legend>
+    <!-- grid based header -->
+    <div class="row nomargins">
+        <div class="span3">&nbsp;</div>
+        <div class="span3">
+        <label
+            for="person-pricing">
+            Skonto oder so
+        </label>
+        </div>
+        <div class="span3">
+	        <label
+	            for="person-vat">
+	            <?php echo I18n::__('person_label_vat') ?>
+	        </label>
+        </div>
+    </div>
+    <!-- end of grid based header -->
+    <!-- grid based data -->
+    <div class="row">
+		<div class="span3">&nbsp;</div>
+		<div class="span3">
+	        &nbsp;
+    	</div>
+ 	   <div class="span3">
+	        <select
+	            id="person-vat"
+	            name="dialog[vat_id]">
+	            <option value=""><?php echo I18n::__('person_vat_please_select') ?></option>
+	            <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat): ?>
+	            <option
+	                value="<?php echo $_vat->getId() ?>"
+	                <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name) ?></option>
+	            <?php endforeach ?>
+	        </select>
+		</div>
+	</div>
+	<!-- end of grid based data -->
+</fieldset>
+<fieldset>
     <legend class="verbose"><?php echo I18n::__('person_legend_email') ?></legend>
     <div class="row <?php echo ($record->hasError('email')) ? 'error' : ''; ?>">
         <label
