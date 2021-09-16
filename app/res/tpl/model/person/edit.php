@@ -153,28 +153,29 @@ $_personkinds = $record->sharedPersonkind;
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
         <div class="span3">
-        <label
-            for="person-pricing">
-            Skonto oder so
-        </label>
-        </div>
-        <div class="span3">
 	        <label
 	            for="person-vat">
 	            <?php echo I18n::__('person_label_vat') ?>
 	        </label>
+        </div>
+        <div class="span3">
+            <label for="person-duedays"><?php echo I18n::__('person_label_duedays') ?></label>
+        </div>
+        <div class="span3">
+        <label
+            for="person-discount">
+            <?php echo I18n::__('person_label_discount') ?>
+        </label>
         </div>
     </div>
     <!-- end of grid based header -->
     <!-- grid based data -->
     <div class="row">
 		<div class="span3">&nbsp;</div>
-		<div class="span3">
-	        &nbsp;
-    	</div>
- 	   <div class="span3">
+        <div class="span3">
 	        <select
 	            id="person-vat"
+                class="autowidth"
 	            name="dialog[vat_id]">
 	            <option value=""><?php echo I18n::__('person_vat_please_select') ?></option>
 	            <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat): ?>
@@ -184,6 +185,26 @@ $_personkinds = $record->sharedPersonkind;
 	            <?php endforeach ?>
 	        </select>
 		</div>
+        <div class="span3">
+            <input
+                id="person-duedays"
+                type="text"
+                name="dialog[duedays]"
+                value="<?php echo htmlspecialchars($record->decimal('duedays', 0)) ?>" />
+		</div>
+		<div class="span3">
+            <select
+	            id="person-discount"
+                class="autowidth"
+	            name="dialog[discount_id]">
+	            <option value=""><?php echo I18n::__('person_discount_please_select') ?></option>
+	            <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount): ?>
+	            <option
+	                value="<?php echo $_discount->getId() ?>"
+	                <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
+	            <?php endforeach ?>
+	        </select>
+        </div>
 	</div>
 	<!-- end of grid based data -->
 </fieldset>
@@ -272,7 +293,7 @@ $_personkinds = $record->sharedPersonkind;
             rows="3"
             cols="60"><?php echo htmlspecialchars($record->organization) ?></textarea>
     </div>
-    <div class="row <?php echo ($record->hasError('company')) ? 'error' : ''; ?>">
+    <div class="row <?php echo ($record->hasError('tabs')) ? 'error' : ''; ?>">
         <label
             for="person-company"
             class="cb">
@@ -407,6 +428,7 @@ $_personkinds = $record->sharedPersonkind;
             'person-contact' => I18n::__('person_contact_tab'),
             'person-machine' => I18n::__('person_machine_tab'),
             'person-treaty' => I18n::__('person_treaty_tab'),
+            'person-bankaccount' => I18n::__('person_bankaccount_tab')
         ),
         'default_tab' => 'person-address'
     )) ?>
@@ -516,6 +538,78 @@ $_personkinds = $record->sharedPersonkind;
             <?php Flight::render('model/person/tables/treaty', array(
                 'record' => $record
             )) ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-bankaccount"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_bankaccount_tab') ?></legend>
+        <div class="row <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
+            <label
+                for="person-billingemail">
+                <?php echo I18n::__('person_label_billingemail') ?>
+            </label>
+            <input
+                id="person-billingemail"
+                type="email"
+                name="dialog[billingemail]"
+                value="<?php echo htmlspecialchars($record->billingemail) ?>" />
+        </div>
+        <div class="row <?php echo ($record->hasError('bankname')) ? 'error' : ''; ?>">
+            <label
+                for="person-bankname">
+                <?php echo I18n::__('person_label_bankname') ?>
+            </label>
+            <input
+                id="person-bankname"
+                type="text"
+                name="dialog[bankname]"
+                value="<?php echo htmlspecialchars($record->bankname) ?>" />
+        </div>
+        <div class="row <?php echo ($record->hasError('bankcode')) ? 'error' : ''; ?>">
+            <label
+                for="person-bankcode">
+                <?php echo I18n::__('person_label_bankcode') ?>
+            </label>
+            <input
+                id="person-bankcode"
+                type="text"
+                name="dialog[bankcode]"
+                value="<?php echo htmlspecialchars($record->bankcode) ?>" />
+        </div>
+        <div class="row <?php echo ($record->hasError('bankaccount')) ? 'error' : ''; ?>">
+            <label
+                for="person-bankaccountfield">
+                <?php echo I18n::__('person_label_bankaccount') ?>
+            </label>
+            <input
+                id="person-bankaccountfield"
+                type="text"
+                name="dialog[bankaccount]"
+                value="<?php echo htmlspecialchars($record->bankaccount) ?>" />
+        </div>
+        <div class="row <?php echo ($record->hasError('bic')) ? 'error' : ''; ?>">
+            <label
+                for="person-bic">
+                <?php echo I18n::__('person_label_bic') ?>
+            </label>
+            <input
+                id="person-bic"
+                type="text"
+                name="dialog[bic]"
+                value="<?php echo htmlspecialchars($record->bic) ?>" />
+        </div>
+        <div class="row <?php echo ($record->hasError('iban')) ? 'error' : ''; ?>">
+            <label
+                for="person-iban">
+                <?php echo I18n::__('person_label_iban') ?>
+            </label>
+            <input
+                id="person-iban"
+                type="text"
+                name="dialog[iban]"
+                value="<?php echo htmlspecialchars($record->iban) ?>" />
         </div>
     </fieldset>
 </div>

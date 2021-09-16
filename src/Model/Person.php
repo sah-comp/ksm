@@ -366,6 +366,9 @@ SQL;
             new Validator_HasValue(),
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'nickname'))
         ));
+        $this->addConverter('duedays', [
+            new Converter_Decimal()
+        ]);
     }
 
     /**
@@ -382,11 +385,24 @@ SQL;
             ));
         }
 
+        if ($this->bean->billingemail) {
+            $this->addValidator('billingemail', array(
+                new Validator_IsEmail(),
+                new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'billingemail'))
+            ));
+        }
+
         if (!$this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
         } else {
             $this->bean->vat = R::load('vat', $this->bean->vat_id);
+        }
+        if (!$this->bean->discount_id) {
+            $this->bean->discount_id = null;
+            unset($this->bean->discount);
+        } else {
+            $this->bean->discount = R::load('discount', $this->bean->discount_id);
         }
 
         // set the phonetic names

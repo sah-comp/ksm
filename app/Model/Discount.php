@@ -9,13 +9,13 @@
  */
 
 /**
- * Vat model.
+ * Discount model.
  *
  * @package Cinnebar
  * @subpackage Model
  * @version $Id$
  */
-class Model_Vat extends Model
+class Model_Discount extends Model
 {
     /**
      * Returns an array with attributes for lists.
@@ -48,6 +48,20 @@ class Model_Vat extends Model
                     'tag' => 'number'
                 ],
                 'width' => '8rem'
+            ],
+            [
+                'name' => 'days',
+                'sort' => [
+                    'name' => 'days'
+                ],
+                'callback' => [
+                    'name' => 'integer'
+                ],
+                'class' => 'number',
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '8rem'
             ]
         ];
     }
@@ -63,6 +77,9 @@ class Model_Vat extends Model
         ));
         */
         $this->addConverter('value', [
+            new Converter_Decimal()
+        ]);
+        $this->addConverter('days', [
             new Converter_Decimal()
         ]);
     }
