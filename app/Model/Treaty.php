@@ -24,7 +24,7 @@ class Model_Treaty extends Model
      *
      * @var string
      */
-    const PATTERN = "%s-%02d-%02d-%04d";
+    public const PATTERN = "%s-%02d-%02d-%04d";
 
     /**
      * Returns an array with possible units.

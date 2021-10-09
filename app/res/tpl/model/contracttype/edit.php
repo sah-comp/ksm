@@ -52,6 +52,43 @@
             value="<?php echo htmlspecialchars($record->nextnumber) ?>"
             required="required" />
     </div>
+
+    <div class="row <?php echo ($record->hasError('service')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[service]"
+            value="0" />
+        <input
+            id="contracttype-service"
+            type="checkbox"
+            name="dialog[service]"
+            <?php echo ($record->service) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-service"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_service') ?>
+        </label>
+    </div>
+
+    <div class="row <?php echo ($record->hasError('ledger')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[ledger]"
+            value="0" />
+        <input
+            id="contracttype-ledger"
+            type="checkbox"
+            name="dialog[ledger]"
+            <?php echo ($record->ledger) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-ledger"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_ledger') ?>
+        </label>
+    </div>
+
     <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
         <input
             type="hidden"

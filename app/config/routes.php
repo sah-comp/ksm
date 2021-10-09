@@ -241,6 +241,14 @@ Flight::route('GET (/[a-z]{2})/treaty/copy/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Routes to the transaction controller to download a transaction as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/transaction/pdf/@id:[0-9]+', function ($id) {
+    $transactionController = new Controller_Transaction($id);
+    $transactionController->pdf();
+});
+
+/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
@@ -315,6 +323,14 @@ Flight::route('(/[a-z]{2})/service/recheck', function () {
 Flight::route('(/[a-z]{2})/cockpit(/index)', function () {
     $cockpitController = new Controller_Cockpit();
     $cockpitController->index();
+});
+
+/**
+ * Display the ledger index page.
+ */
+Flight::route('(/[a-z]{2})/ledger(/index)', function () {
+    $ledgerController = new Controller_Ledger();
+    $ledgerController->index();
 });
 
 /**

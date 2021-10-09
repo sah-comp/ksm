@@ -22,7 +22,7 @@
         <select
             name="copyas">
             <option value=""><?php echo I18n::__('treaty_copy_as') ?></option>
-            <?php foreach (R::find('contracttype', ' enabled = 1 ORDER BY name') as $_id => $_contracttype): ?>
+            <?php foreach (R::find('contracttype', ' enabled = 1 AND service = 1 ORDER BY name') as $_id => $_contracttype): ?>
             <option value="<?php echo $_id ?>"><?php echo $_contracttype->name ?></option>
             <?php endforeach; ?>
         </select>
