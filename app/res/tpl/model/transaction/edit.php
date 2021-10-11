@@ -24,6 +24,14 @@
                 <?php echo I18n::__('transaction_label_number') ?>
             </label>
         </div>
+        <div class="span3">&nbsp;</div>
+        <div class="span3">
+            <label
+                for="transaction-bookingdate"
+                class="<?php echo ($record->hasError('bookingdate')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('transaction_label_bookingdate') ?>
+            </label>
+        </div>
     </div>
     <div class="row">
         <div class="span3">
@@ -31,7 +39,8 @@
                 id="transaction-contracttype"
                 class="autowidth"
                 name="dialog[contracttype_id]"
-                disabled="disabled">
+                disabled="disabled"
+                required="required">
                 <option value=""><?php echo I18n::__('transaction_contracttype_none') ?></option>
                 <?php foreach (R::find('contracttype', "enabled = 1 AND ledger = 1 ORDER BY name") as $_id => $_contracttype): ?>
                 <option
@@ -48,15 +57,29 @@
                 type="text"
                 readonly="readonly"
                 name="dialog[number]"
+                required="required"
                 value="<?php echo htmlspecialchars($record->number) ?>" />
             <?php if ($_parent = $record->hasParent()): ?>
             <p class="info"><?php echo I18n::__('transaction_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
             <?php endif; ?>
         </div>
+        <div class="span3">
+            &nbsp;
+        </div>
+        <div class="span3">
+            <input
+                id="transaction-bookingdate"
+                class="autowidth"
+                type="date"
+                name="dialog[bookingdate]"
+                required="required"
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($record->bookingdate) ?>" />
+        </div>
     </div>
 </fieldset>
 <fieldset>
-    <legend></legend>
+    <legend class="verbose"><?php echo I18n::__('transaction_legend_person') ?></legend>
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
             for="transaction-person-name">

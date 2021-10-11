@@ -72,7 +72,20 @@ class Model_Transaction extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => 'auto'
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'bookingdate',
+                'sort' => [
+                    'name' => 'transaction.bookingdate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'person.name',
@@ -209,6 +222,9 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->status = 'open';
+        $this->bean->bookingdate = date('Y-m-d', time());
+        $this->addConverter('bookingdate', new Converter_Mysqldate());
     }
 
     /**
