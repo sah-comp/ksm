@@ -5,6 +5,10 @@
  * copy it to default.css if everything works out fine
  * and you like to have in your base stylesheet.
  */
+article.main {
+    min-height: 100vh;
+}
+
 select {
     font-size: inherit;
 }
@@ -146,6 +150,10 @@ div.domain p.the-count {
 form.panel,
 ul.tab-navigation a.selected {
     background-color: rgb(252, 252, 252);
+}
+
+form.panel {
+    min-height: 100vh;
 }
 
 .autocomplete {}
