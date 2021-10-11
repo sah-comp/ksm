@@ -291,7 +291,7 @@ HTML;
     }
 
     /**
-     * Rerenders the "person-dependent" part of an appointment form.
+     * Rerenders the "person-dependent" part of an treaty form.
      *
      * @return string
      */

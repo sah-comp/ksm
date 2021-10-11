@@ -426,9 +426,10 @@ $_personkinds = $record->sharedPersonkind;
             'person-address' => I18n::__('person_address_tab'),
             'person-location' => I18n::__('person_location_tab'),
             'person-contact' => I18n::__('person_contact_tab'),
+            'person-bankaccount' => I18n::__('person_bankaccount_tab'),
             'person-machine' => I18n::__('person_machine_tab'),
             'person-treaty' => I18n::__('person_treaty_tab'),
-            'person-bankaccount' => I18n::__('person_bankaccount_tab')
+            'person-transaction' => I18n::__('person_transaction_tab')
         ),
         'default_tab' => 'person-address'
     )) ?>
@@ -536,6 +537,19 @@ $_personkinds = $record->sharedPersonkind;
             id="person-<?php echo $record->getId() ?>-treaty-container"
             class="container attachable detachable sortable">
             <?php Flight::render('model/person/tables/treaty', array(
+                'record' => $record
+            )) ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-transaction"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_transaction_tab') ?></legend>
+        <div
+            id="person-<?php echo $record->getId() ?>-transaction-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/person/tables/transaction', array(
                 'record' => $record
             )) ?>
         </div>

@@ -188,6 +188,7 @@ class Model_Person extends Model
                 SELECT
                     person.id AS id,
                     CONCAT(person.name, ' (', person.nickname, ', ', CONCAT(address.street, ' ', address.zip, ' ', address.city), ')') AS label,
+                    address.label AS addresslabel,
                     CONCAT(person.name, '\n', CONCAT(address.street, '\n', address.zip, ' ', address.city), '') AS postaladdress,
                     person.name AS value,
                     person.note AS note

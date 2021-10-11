@@ -73,7 +73,19 @@ class Model_Transaction extends Model
                     'tag' => 'text'
                 ],
                 'width' => 'auto'
-            ]
+            ],
+            [
+                'name' => 'person.name',
+                'sort' => [
+                    'name' => 'person.name'
+                ],
+                'callback' => [
+                    'name' => 'personName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ]
+            ],
         ];
     }
 
@@ -135,6 +147,29 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Return the person bean.
+     *
+     * @return $person
+     */
+    public function getPerson()
+    {
+        if (! $this->bean->person) {
+            $this->bean->person = R::dispense('person');
+        }
+        return $this->bean->person;
+    }
+
+    /**
+     * Returns the name of the person (customer)
+     *
+     * @return string
+     */
+    public function personName()
+    {
+        return $this->bean->getPerson()->name;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
@@ -153,6 +188,8 @@ class Model_Transaction extends Model
                 {$this->bean->getMeta('type')}
             LEFT JOIN
                 contracttype ON contracttype.id = transaction.contracttype_id
+            LEFT JOIN
+                person ON person.id = transaction.person_id
             WHERE
                 {$where}
 SQL;
@@ -184,6 +221,11 @@ SQL;
                 $this->bean->contracttype_id = null;
                 unset($this->bean->contracttype);
             }
+        }
+
+        if (!$this->bean->person_id) {
+            $this->bean->person_id = null;
+            unset($this->bean->person);
         }
 
         if (!$this->bean->getId()) {
