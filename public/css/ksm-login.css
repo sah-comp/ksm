@@ -3,6 +3,7 @@ form.panel.login,
 form.panel.lostpassword {
     margin-top: 10em;
     margin-left: calc(50% - 240px);
+    min-height: auto;
     height: 320px;
     width: 480px;
     padding-top: 2em;
