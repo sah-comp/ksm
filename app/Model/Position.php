@@ -103,6 +103,19 @@ class Model_Position extends Model
     }
 
     /**
+     * Return the costunittype bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getCostunittype()
+    {
+        if (! $this->bean->costunittype) {
+            $this->bean->costunittype = R::dispense('costunittype');
+        }
+        return $this->bean->costunittype;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
@@ -156,8 +169,10 @@ SQL;
         if (!$this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
-        } else {
-            $this->bean->vat = R::load('vat', $this->bean->vat_id);
+        }
+        if (!$this->bean->costunittype_id) {
+            $this->bean->costunittype_id = null;
+            unset($this->bean->costunittype);
         }
         // calculate net, vat and gros
         $this->bean->total = $this->bean->count * $this->bean->salesprice;

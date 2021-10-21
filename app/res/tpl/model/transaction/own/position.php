@@ -69,6 +69,11 @@
                 name="dialog[ownPosition][<?php echo $index ?>][vatpercentage]"
                 value="<?php echo $_position->vatpercentage ?>" />
             <input
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
+                type="hidden"
+                name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]"
+                value="<?php echo $_position->getCostunittype()->getId() ?>" />
+            <input
                 type="text"
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-number"
                 name="dialog[ownPosition][<?php echo $index ?>][product][number]"
@@ -83,6 +88,7 @@
                         'transaction-'.$record->getId().'-position-'.$index.'-product-unit' => 'unit',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-salesprice' => 'salesprice',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-vat-id' => 'vat_id',
+                        'transaction-'.$record->getId().'-position-'.$index.'-product-costunittype-id' => 'costunittype_id',
                         'transaction-'.$record->getId().'-position-'.$index.'-vatpercentage' => 'vatpercentage'
                     ]); ?>'
                 value="<?php echo htmlspecialchars($_position->getProduct()->number) ?>" />

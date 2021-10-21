@@ -56,6 +56,23 @@
                 value="<?php echo htmlspecialchars($record->matchcode) ?>" />
         </div>
     </div>
+    <div class="row <?php echo ($record->hasError('costunittype_id')) ? 'error' : ''; ?>">
+        <label
+            for="product-costunittype">
+            <?php echo I18n::__('product_label_costunittype') ?>
+        </label>
+        <select
+            id="product-costunittype"
+            name="dialog[costunittype_id]">
+            <option value=""><?php echo I18n::__('product_costunittype_none') ?></option>
+            <?php foreach (R::findAll('costunittype') as $_id => $_costunittype): ?>
+            <option
+                value="<?php echo $_costunittype->getId() ?>"
+                <?php echo ($record->costunittype_id == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
+            </option>
+            <?php endforeach ?>
+        </select>
+    </div>
     <div class="row <?php echo ($record->hasError('description')) ? 'error' : ''; ?>">
         <label
             for="product-description">

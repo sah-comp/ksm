@@ -152,6 +152,7 @@ class Model_Product extends Model
                     product.id AS id,
                     product.number AS ska,
                     product.vat_id AS vat_id,
+                    product.costunittype_id AS costunittype_id,
                     vat.value AS vatpercentage,
                     CONCAT(product.number, ' ', product.description, ' ', FORMAT(product.salesprice, 2, 'de_DE')) AS label,
                     CONCAT(product.description) AS value,
@@ -226,11 +227,14 @@ SQL;
      */
     public function update()
     {
+        if (!$this->bean->costunittype_id) {
+            $this->bean->costunittype_id = null;
+            unset($this->bean->costunittype);
+        }
+
         if (!$this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
-        } else {
-            $this->bean->vat = R::load('vat', $this->bean->vat_id);
         }
         parent::update();
     }
