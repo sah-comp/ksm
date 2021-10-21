@@ -57,6 +57,19 @@ class Model_Product extends Model
                 'width' => 'auto'
             ],
             [
+                'name' => 'vat.name',
+                'sort' => [
+                    'name' => 'vat.name'
+                ],
+                'callback' => [
+                    'name' => 'vatName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '8rem'
+            ],
+            [
                 'name' => 'purchaseprice',
                 'sort' => [
                     'name' => 'product.purchaseprice'
@@ -101,6 +114,29 @@ class Model_Product extends Model
     }
 
     /**
+     * Return the vat bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getVat()
+    {
+        if (! $this->bean->vat) {
+            $this->bean->vat = R::dispense('vat');
+        }
+        return $this->bean->vat;
+    }
+
+    /**
+     * Returns the name of the vat.
+     *
+     * @return string
+     */
+    public function vatName()
+    {
+        return $this->bean->getVat()->name;
+    }
+
+    /**
      * Lookup a searchterm and return the resultset as an array.
      *
      * @param string $searchtext
@@ -114,12 +150,18 @@ class Model_Product extends Model
             $sql = <<<SQL
                 SELECT
                     product.id AS id,
-                    CONCAT(product.number, ' ', product.description) AS label,
-                    CONCAT(product.number, ' ', product.description) AS value,
+                    product.number AS ska,
+                    product.vat_id AS vat_id,
+                    vat.value AS vatpercentage,
+                    CONCAT(product.number, ' ', product.description, ' ', FORMAT(product.salesprice, 2, 'de_DE')) AS label,
+                    CONCAT(product.description) AS value,
+                    product.unit AS unit,
                     FORMAT(product.purchaseprice, 2, 'de_DE') AS purchaseprice,
                     FORMAT(product.salesprice, 2, 'de_DE') AS salesprice
                 FROM
                     product
+                LEFT JOIN
+                    vat ON vat.id = product.vat_id
                 WHERE
                     product.number LIKE :searchtext OR
                     product.matchcode LIKE :searchtext OR
@@ -150,6 +192,8 @@ SQL;
                 {$fields}
             FROM
                 {$this->bean->getMeta('type')}
+            LEFT JOIN
+                vat ON vat.id = product.vat_id
             WHERE
                 {$where}
 SQL;

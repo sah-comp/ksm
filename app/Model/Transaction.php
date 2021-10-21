@@ -72,7 +72,7 @@ class Model_Transaction extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '8rem'
+                'width' => '6rem'
             ],
             [
                 'name' => 'bookingdate',
@@ -99,6 +99,58 @@ class Model_Transaction extends Model
                     'tag' => 'text'
                 ]
             ],
+            [
+                'name' => 'status',
+                'sort' => [
+                    'name' => 'transaction.status'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '4rem'
+            ],
+            [
+                'name' => 'net',
+                'sort' => [
+                    'name' => 'net'
+                ],
+                'callback' => [
+                    'name' => 'decimal'
+                ],
+                'class' => 'number',
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'vat',
+                'sort' => [
+                    'name' => 'vat'
+                ],
+                'callback' => [
+                    'name' => 'decimal'
+                ],
+                'class' => 'number',
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '8rem'
+            ],
+            [
+                'name' => 'gros',
+                'sort' => [
+                    'name' => 'gros'
+                ],
+                'callback' => [
+                    'name' => 'decimal'
+                ],
+                'class' => 'number',
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '8rem'
+            ]
         ];
     }
 
@@ -218,6 +270,71 @@ SQL;
     }
 
     /**
+     * Returns vat values grouped by possible differnt vat percentages.
+     *
+     * @return array
+     */
+    public function getVatSentences()
+    {
+        $sql = <<<SQL
+            SELECT
+                vatpercentage,
+                sum(total) AS net,
+                (sum(total) * vatpercentage / 100) AS vatvalue
+            FROM
+                position
+            WHERE
+                transaction_id = ?
+            GROUP BY
+                vatpercentage
+            ORDER BY
+                vatpercentage
+SQL;
+        $result = R::getAll($sql, [$this->bean->getId()]);
+        return $result;
+    }
+
+    /**
+     * Returns a string with styling information of a scaffold table row.
+     *
+     * The styles shall reflect the status of the transaction. Maybe type and status?
+     *
+     * Stati are NULL, open, canceled
+     *
+     * @return string
+     */
+    public function scaffoldStyle()
+    {
+        switch ($this->bean->status) {
+            case 'open':
+                $style = 'style="color: orange;"';
+                break;
+
+            case 'paid':
+                $style = 'style="color: green;"';
+                break;
+
+            case 'canceled':
+                $style = 'style="color: red;"';
+                break;
+
+            default:
+                $style = 'style="color: inherit;"';
+                break;
+        }
+        return $style;
+    }
+
+    /**
+     * Storno.
+     */
+    public function expunge()
+    {
+        $this->bean->status = 'canceled';
+        R::store($this->bean);
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
@@ -225,6 +342,7 @@ SQL;
         $this->bean->status = 'open';
         $this->bean->bookingdate = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
+        $this->addConverter('net', new Converter_Decimal());
     }
 
     /**
@@ -232,6 +350,21 @@ SQL;
      */
     public function update()
     {
+        parent::update();
+
+        // calculate the net, vats and gros of this transaction
+        $converter = new Converter_Decimal();
+        $this->bean->net = 0;
+        $this->bean->vat = 0;
+        $this->bean->gros = 0;
+        foreach ($this->bean->ownPosition as $id => $position) {
+            $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
+            $vat = $net * $position->vatpercentage / 100;
+            $this->bean->net += $net;
+            $this->bean->vat += $vat;
+            $this->bean->gros += $net + $vat;
+        }
+
         if (!CINNEBAR_MIP) {
             if (!$this->bean->contracttype_id) {
                 $this->bean->contracttype_id = null;
@@ -250,6 +383,5 @@ SQL;
             $this->bean->contracttype->nextnumber++;
             $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, Flight::setting()->companyyear, $number);
         }
-        parent::update();
     }
 }

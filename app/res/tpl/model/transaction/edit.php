@@ -83,7 +83,7 @@
         'tab_id' => 'transaction-tabs',
         'tabs' => array(
             'transaction-head' => I18n::__('transaction_tab_head'),
-            'transaction-pos' => I18n::__('transaction_tab_pos')
+            'transaction-position' => I18n::__('transaction_tab_position')
         ),
         'default_tab' => 'transaction-head'
     )) ?>
@@ -117,9 +117,6 @@
                 id="transaction-person-name"
                 name="dialog[person][name]"
                 class="autocomplete"
-                data-target="person-dependent"
-                data-extra="transaction-person-id"
-                data-dynamic="<?php echo Url::build('/transaction/%d/person/changed/?callback=?', [$record->getId()]) ?>"
                 data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
                 data-spread='<?php
                     echo json_encode([
@@ -151,12 +148,95 @@
         </div>
     </fieldset>
     <fieldset
-        id="transaction-pos"
-        class="tab"
+        id="transaction-position"
+        class="tab smaller-font"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('transaction_legend_position') ?></legend>
         <div class="row">
-            Fieldset POS
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span1">
+                <?php echo I18n::__('position_label_product') ?>
+            </div>
+            <div class="span4">
+                <?php echo I18n::__('position_label_product_desc') ?>
+            </div>
+            <div class="span1 tar">
+                <?php echo I18n::__('position_label_count') ?>
+            </div>
+            <div class="span1">
+                <?php echo I18n::__('position_label_unit') ?>
+            </div>
+            <div class="span2 tar">
+                <?php echo I18n::__('position_label_salesprice') ?>
+            </div>
+            <div class="span2 tar">
+                <?php echo I18n::__('position_label_total') ?>
+            </div>
+        </div>
+        <div
+            id="transaction-<?php echo $record->getId() ?>-position-container"
+            class="container attachable detachable sortable">
+            <?php $_positions = $record->with(' ORDER BY id ASC ')->ownPosition ?>
+            <?php if (count($_positions) == 0):
+            $_positions[] = R::dispense('position');
+        endif; ?>
+        <?php $index = 0 ?>
+        <?php foreach ($_positions as $_position_id => $_position): ?>
+        <?php $index++ ?>
+        <?php Flight::render('model/transaction/own/position', array(
+            'record' => $record,
+            '_position' => $_position,
+            'index' => $index
+        )) ?>
+        <?php endforeach ?>
+        </div>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span9 tar">
+                <?php echo I18n::__('transaction_label_total_net') ?>
+            </div>
+            <div class="span2">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[net]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('net', 2)) ?>">
+            </div>
+        </div>
+        <?php $vats = $record->getVatSentences(); ?>
+        <?php foreach ($vats as $_id => $_vat): ?>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span9 tar">
+                <?php echo htmlspecialchars($_vat['vatpercentage'] . ' ' . $_vat['net']) ?>
+            </div>
+            <div class="span2">
+                <?php echo htmlspecialchars($_vat['vatvalue']) ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span9 tar">
+                <?php echo I18n::__('transaction_label_total_gros') ?>
+            </div>
+            <div class="span2">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[gros]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('gros', 2)) ?>">
+            </div>
         </div>
     </fieldset>
 </div>

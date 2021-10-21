@@ -57,6 +57,10 @@ a.logo {
     color: green;
 }
 
+.smaller-font {
+    font-size: 0.975rem;
+}
+
 /* Cockpit stuff */
 div.domain {
     width: calc(25% - 2px - 2rem);
@@ -163,13 +167,11 @@ textarea[readonly=readonly] {
     padding-right: 0;
     background: white;
     color: gray;
-    transform: rotate(-1.2deg);
 }
 
 input[disabled=disabled],
 textarea[disabled=disabled] {
     color: gray;
-    transform: rotate(-1.2deg);
 }
 
 /*

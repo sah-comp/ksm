@@ -67,6 +67,17 @@
             rows="3"
             cols="60"><?php echo htmlspecialchars($record->description) ?></textarea>
     </div>
+    <div class="row <?php echo ($record->hasError('unit')) ? 'error' : ''; ?>">
+        <label
+            for="product-unit">
+            <?php echo I18n::__('product_label_unit') ?>
+        </label>
+        <input
+            id="product-unit"
+            type="text"
+            name="dialog[unit]"
+            value="<?php echo htmlspecialchars($record->unit) ?>" />
+    </div>
     <div class="row <?php echo ($record->hasError('purchaseprice')) ? 'error' : ''; ?>">
         <label
             for="product-purchaseprice">

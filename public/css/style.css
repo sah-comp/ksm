@@ -1230,6 +1230,7 @@ input[type=radio] {
     padding: 0;
 }
 
+.tar,
 input[type=number],
 input.number,
 input.monetary {
