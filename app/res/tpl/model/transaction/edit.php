@@ -146,6 +146,18 @@
                 required="required"><?php echo htmlspecialchars($record->postaladdress) ?></textarea>
             <p class="info"><?php echo I18n::__('transaction_info_postaladdress') ?></p>
         </div>
+        <div class="row <?php echo ($record->hasError('header')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-header">
+                <?php echo I18n::__('transaction_label_header') ?>
+            </label>
+            <textarea
+                id="transaction-header"
+                name="dialog[header]"
+                rows="10"
+                cols="60"><?php echo htmlspecialchars($record->header) ?></textarea>
+            <p class="info"><?php echo I18n::__('transaction_info_header') ?></p>
+        </div>
     </fieldset>
     <fieldset
         id="transaction-position"
@@ -168,7 +180,10 @@
             <div class="span1">
                 <?php echo I18n::__('position_label_unit') ?>
             </div>
-            <div class="span2 tar">
+            <div class="span1">
+                <?php echo I18n::__('position_label_alternate') ?>
+            </div>
+            <div class="span1 tar">
                 <?php echo I18n::__('position_label_salesprice') ?>
             </div>
             <div class="span2 tar">
@@ -177,20 +192,23 @@
         </div>
         <div
             id="transaction-<?php echo $record->getId() ?>-position-container"
-            class="container attachable detachable sortable">
-            <?php $_positions = $record->with(' ORDER BY id ASC ')->ownPosition ?>
+            data-href="<?php echo Url::build('/transaction/sortable/position/position/') ?>"
+            data-container="transaction-<?php echo $record->getId() ?>-position-container"
+            data-variable="position"
+            class="container attachable detachable sortable ui-sortable">
+            <?php $_positions = $record->with(' ORDER BY currentindex ASC ')->ownPosition ?>
             <?php if (count($_positions) == 0):
             $_positions[] = R::dispense('position');
-        endif; ?>
-        <?php $index = 0 ?>
-        <?php foreach ($_positions as $_position_id => $_position): ?>
-        <?php $index++ ?>
-        <?php Flight::render('model/transaction/own/position', array(
-            'record' => $record,
-            '_position' => $_position,
-            'index' => $index
-        )) ?>
-        <?php endforeach ?>
+            endif; ?>
+            <?php $index = 0 ?>
+            <?php foreach ($_positions as $_position_id => $_position): ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/transaction/own/position', array(
+                    'record' => $record,
+                    '_position' => $_position,
+                    'index' => $index
+                )) ?>
+            <?php endforeach ?>
         </div>
         <div class="row">
             <div class="span1">
@@ -214,11 +232,24 @@
             <div class="span1">
                 &nbsp;
             </div>
-            <div class="span9 tar">
-                <?php echo htmlspecialchars($_vat['vatpercentage'] . ' ' . $_vat['net']) ?>
+            <div class="span7 tar">
+                <?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?>
+            </div>
+            <div class="span2 tar">
+                <input
+                    type="text"
+                    class="number"
+                    name="vatnet[]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars(number_format($_vat['net'], 2, ',', '.')) ?>">
             </div>
             <div class="span2">
-                <?php echo htmlspecialchars($_vat['vatvalue']) ?>
+                <input
+                    type="text"
+                    class="number"
+                    name="vatvalue[]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars(number_format($_vat['vatvalue'], 2, ',', '.')) ?>">
             </div>
         </div>
         <?php endforeach; ?>

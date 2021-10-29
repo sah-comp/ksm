@@ -284,7 +284,8 @@ SQL;
             FROM
                 position
             WHERE
-                transaction_id = ?
+                transaction_id = ? AND
+                alternative != 1
             GROUP BY
                 vatpercentage
             ORDER BY
@@ -307,22 +308,22 @@ SQL;
     {
         switch ($this->bean->status) {
             case 'open':
-                $style = 'style="color: orange;"';
+                $bordercolor = 'orange';
                 break;
 
             case 'paid':
-                $style = 'style="color: green;"';
+                $bordercolor = 'green';
                 break;
 
             case 'canceled':
-                $style = 'style="color: red;"';
+                $bordercolor = 'red';
                 break;
 
             default:
-                $style = 'style="color: inherit;"';
+                $bordercolor = 'inherit';
                 break;
         }
-        return $style;
+        return "style=\"border-left: 3px solid {$bordercolor};\"";
     }
 
     /**
@@ -358,6 +359,10 @@ SQL;
         $this->bean->vat = 0;
         $this->bean->gros = 0;
         foreach ($this->bean->ownPosition as $id => $position) {
+            if ($position->alternative) {
+                // skip this position if it is an alternative position
+                continue;
+            }
             $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
             $vat = $net * $position->vatpercentage / 100;
             $this->bean->net += $net;

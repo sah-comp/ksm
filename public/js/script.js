@@ -56,6 +56,22 @@ $('body').ready(function() {
     $('form.checko').areYouSure();
 
     /**
+     * Sortable containers.
+     */
+    $('.ui-sortable').sortable({
+        "axis": "y",
+        "containment": "parent",
+        "cursor": "move",
+        "items": "> fieldset",
+        "opacity": 0.8,
+        "stop": function() {
+            $('.currentindex').each(function(i) {
+                $(this).val(i);
+            });
+        }
+    });
+
+    /**
      * Activate datatables.
      *
      * @see https://datatables.net

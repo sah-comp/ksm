@@ -49,7 +49,6 @@ class Controller_Transaction extends Controller
     public function pdf()
     {
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        R::store($this->transaction);
         $filename = I18n::__('transaction_pdf_filename', null, [$this->transaction->getFilename()]);
         $docname = I18n::__('transaction_pdf_docname', null, [$this->transaction->getDocname()]);
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);

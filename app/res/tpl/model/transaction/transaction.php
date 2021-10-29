@@ -112,7 +112,43 @@
     <sethtmlpagefooter name="ksmfooter" value="on" />
     mpdf-->
 
-    <?php echo 'Your transaction information goes here.' ?>
+    <div style="height: 25mm;"></div>
+    <table width="100%">
+        <tr>
+            <td style="width: 95mm; vertical-align: top;">
+                <div class="senderline">
+                    <?php echo htmlspecialchars($company->getSenderline()) ?>
+                    <br /><br />
+                </div>
+                <div class="name">
+                    <?php echo htmlspecialchars($record->getPerson()->name) ?>
+                </div>
+                <div class="postal">
+                    <p>
+                        <?php echo nl2br(htmlspecialchars($record->getPerson()->getAddress('billing')->getFormattedAddress())) ?>
+                    </p>
+                </div>
+            </td>
+            <td style="width: 65mm; vertical-align: top;">
+                <table class="info" width="100%">
+                    <tr>
+                        <td class="label"><?php echo I18n::__('transaction_label_serial') ?></label>
+                        <td class="value emphasize"><?php echo $record->number ?></label>
+                    </tr>
+                    <tr>
+                        <td class="label"><?php echo I18n::__('transaction_label_bookingdate') ?></label>
+                        <td class="value"><?php echo $record->localizedDate('bookingdate') ?></label>
+                    </tr>
+                    <tr>
+                        <td class="label"><?php echo I18n::__('person_label_account') ?></label>
+                        <td class="value"><?php echo $record->getPerson()->account ?></label>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div style="height: 18mm;"></div>
 
 </body>
 </html>

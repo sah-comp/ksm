@@ -36,6 +36,11 @@
             type="hidden"
             name="dialog[ownPosition][<?php echo $index ?>][id]"
             value="<?php echo $_position->getId() ?>" />
+        <input
+            type="hidden"
+            class="currentindex"
+            name="dialog[ownPosition][<?php echo $index ?>][currentindex]"
+            value="<?php echo $index ?>" />
     </div>
 
     <div class="row">
@@ -53,6 +58,10 @@
                 type="hidden"
                 name="dialog[ownPosition][<?php echo $index ?>][product][type]"
                 value="product" />
+            <input
+                type="hidden"
+                name="dialog[ownPosition][<?php echo $index ?>][alternative]"
+                value="0" />
             <input
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-id"
                 type="hidden"
@@ -114,7 +123,15 @@
                 name="dialog[ownPosition][<?php echo $index ?>][unit]"
                 value="<?php echo htmlspecialchars($_position->unit) ?>">
         </div>
-        <div class="span2">
+        <div class="span1">
+            <input
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-alternative"
+                type="checkbox"
+                name="dialog[ownPosition][<?php echo $index ?>][alternative]"
+                <?php echo ($_position->alternative) ? 'checked="checked"' : '' ?>
+                value="1" />
+        </div>
+        <div class="span1">
             <input
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-salesprice"
                 type="text"
