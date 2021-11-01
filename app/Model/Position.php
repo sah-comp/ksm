@@ -116,6 +116,14 @@ class Model_Position extends Model
     }
 
     /**
+     * Returns wether the position has alternative true or not
+     */
+    public function isAlternative()
+    {
+        return $this->bean->alternative;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select

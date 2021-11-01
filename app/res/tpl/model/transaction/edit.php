@@ -83,7 +83,8 @@
         'tab_id' => 'transaction-tabs',
         'tabs' => array(
             'transaction-head' => I18n::__('transaction_tab_head'),
-            'transaction-position' => I18n::__('transaction_tab_position')
+            'transaction-position' => I18n::__('transaction_tab_position'),
+            'transaction-foot' => I18n::__('transaction_tab_foot')
         ),
         'default_tab' => 'transaction-head'
     )) ?>
@@ -91,7 +92,7 @@
         id="transaction-head"
         class="tab"
         style="display: block;">
-        <legend class="verbose"><?php echo I18n::__('transaction_legend_person') ?></legend>
+        <legend class="verbose"><?php echo I18n::__('transaction_legend_head') ?></legend>
         <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
             <label
                 for="transaction-person-name">
@@ -123,7 +124,9 @@
                         'transaction-person-name' => 'value',
                         'transaction-person-id' => 'id',
                         'transaction-person-id-shadow' => 'id',
-                        'transaction-postaladdress' => 'postaladdress'
+                        'transaction-postaladdress' => 'postaladdress',
+                        'transaction-duedays' => 'duedays',
+                        'transaction-discount-id' => 'discount_id'
                     ]); ?>'
                 value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
                 <a
@@ -132,6 +135,7 @@
                     data-clear="transaction-person-name"
                     data-scratch="transaction-person-id-shadow"
                     class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
+                <p class="info"><?php echo I18n::__('transaction_info_person') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('postaladdress')) ? 'error' : ''; ?>">
             <label
@@ -144,7 +148,6 @@
                 rows="5"
                 cols="60"
                 required="required"><?php echo htmlspecialchars($record->postaladdress) ?></textarea>
-            <p class="info"><?php echo I18n::__('transaction_info_postaladdress') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('header')) ? 'error' : ''; ?>">
             <label
@@ -157,6 +160,51 @@
                 rows="10"
                 cols="60"><?php echo htmlspecialchars($record->header) ?></textarea>
             <p class="info"><?php echo I18n::__('transaction_info_header') ?></p>
+        </div>
+    </fieldset>
+    <fieldset
+        id="transaction-foot"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('transaction_legend_foot') ?></legend>
+        <div class="row <?php echo ($record->hasError('duedays')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-duedays">
+                <?php echo I18n::__('transaction_label_duedays') ?>
+            </label>
+            <input
+                type="text"
+                id="transaction-duedays"
+                name="dialog[duedays]"
+                value="<?php echo htmlspecialchars($record->duedays) ?>" />
+        </div>
+        <div class="row">
+            <label
+                for="transaction-discount-id">
+                <?php echo I18n::__('transaction_label_discount') ?>
+            </label>
+            <select
+                id="transaction-discount-id"
+                name="dialog[discount_id]">
+                <option value=""><?php echo I18n::__('person_discount_please_select') ?></option>
+                <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount): ?>
+                <option
+                    value="<?php echo $_discount->getId() ?>"
+                    <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+        <div class="row <?php echo ($record->hasError('footer')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-footer">
+                <?php echo I18n::__('transaction_label_footer') ?>
+            </label>
+            <textarea
+                id="transaction-footer"
+                name="dialog[footer]"
+                rows="10"
+                cols="60"><?php echo htmlspecialchars($record->footer) ?></textarea>
+            <p class="info"><?php echo I18n::__('transaction_info_footer') ?></p>
         </div>
     </fieldset>
     <fieldset

@@ -162,9 +162,11 @@ class Model_Transaction extends Model
     public function getFilename()
     {
         $stack = [];
-        $stack[] = 'Transaction';
+        $stack[] = $this->bean->getContracttype()->name;
         $stack[] = $this->bean->number;
-        $stack[] = 'Customer';
+        //$stack[] = $this->bean->getPerson()->nickname;
+        $stack[] = I18n::__('person_label_account');
+        $stack[] = $this->bean->getPerson()->account;
         return trim(implode('-', $stack));
     }
 
@@ -343,6 +345,7 @@ SQL;
         $this->bean->status = 'open';
         $this->bean->bookingdate = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
+        $this->addConverter('duedate', new Converter_Mysqldate());
         $this->addConverter('net', new Converter_Decimal());
     }
 
@@ -377,9 +380,19 @@ SQL;
             }
         }
 
+        // duedate
+        $this->bean->duedate = date('Y-m-d', strtotime($this->bean->bookingdate . ' +' . $this->bean->duedays . 'days'));
+
+        // customer (person)
         if (!$this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
+        }
+
+        // discount (skonto) copied from customer (person)
+        if (!$this->bean->discount_id) {
+            $this->bean->discount_id = null;
+            unset($this->bean->discount);
         }
 
         if (!$this->bean->getId()) {

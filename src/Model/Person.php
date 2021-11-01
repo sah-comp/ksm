@@ -191,7 +191,9 @@ class Model_Person extends Model
                     address.label AS addresslabel,
                     CONCAT(person.name, '\n', CONCAT(address.street, '\n', address.zip, ' ', address.city), '') AS postaladdress,
                     person.name AS value,
-                    person.note AS note
+                    person.note AS note,
+                    person.duedays AS duedays,
+                    person.discount_id AS discount_id
                 FROM
                     person
                 LEFT JOIN
@@ -396,14 +398,10 @@ SQL;
         if (!$this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
-        } else {
-            $this->bean->vat = R::load('vat', $this->bean->vat_id);
         }
         if (!$this->bean->discount_id) {
             $this->bean->discount_id = null;
             unset($this->bean->discount);
-        } else {
-            $this->bean->discount = R::load('discount', $this->bean->discount_id);
         }
 
         // set the phonetic names
