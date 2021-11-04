@@ -241,6 +241,14 @@ Flight::route('GET (/[a-z]{2})/treaty/copy/@id:[0-9]+', function ($id) {
 });
 
 /**
+ * Routes to the transaction controller to duplicate the given bean as a new type.
+ */
+Flight::route('GET (/[a-z]{2})/transaction/copy/@id:[0-9]+', function ($id) {
+    $transactionController = new Controller_Transaction($id);
+    $transactionController->copy();
+});
+
+/**
  * Routes to the transaction controller to download a transaction as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/transaction/pdf/@id:[0-9]+', function ($id) {

@@ -43,6 +43,30 @@ class Controller_Transaction extends Controller
         $this->transaction = R::load('transaction', $id);
     }
 
+    /**
+     * Duplicates the given transaction as another contracttype and redirects to edit it.
+     */
+    public function copy()
+    {
+        if (Flight::request()->query->submit == I18n::__('transaction_action_copy_as')) {
+            R::begin();
+            try {
+                $copy = R::duplicate($this->transaction);
+                $copy->contracttype_id = Flight::request()->query->copyas;
+                $copy->mytransactionid = $this->transaction->getId();
+                R::store($copy);
+                R::commit();
+                Flight::get('user')->notify(I18n::__('transaction_success_copy', null, [$this->transaction->number, $copy->contracttype->name]), 'success');
+                $this->redirect('/admin/transaction/edit/' . $copy->getId());
+            } catch (\Exception $e) {
+                R::rollback();
+                error_log($e);
+                Flight::get('user')->notify(I18n::__('transaction_error_copy'), 'error');
+                $this->redirect('/admin/transaction/edit/' . $this->transaction->getId());
+            }
+        }
+    }
+
     /*
      * Generate a PDF with data deriving from the addressed contract bean.
      */

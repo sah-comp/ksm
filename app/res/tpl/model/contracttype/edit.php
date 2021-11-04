@@ -142,6 +142,7 @@
         'tabs' => array(
             'contracttype-detail' => I18n::__('contracttype_detail_tab'),
             'contracttype-limb' => I18n::__('contracttype_limb_tab'),
+            'contracttype-style' => I18n::__('contracttype_style_tab')
         ),
         'default_tab' => 'contracttype-detail'
     )) ?>
@@ -149,6 +150,7 @@
         id="contracttype-detail"
         class="tab"
         style="display: block;">
+        <legend class="verbose"><?php echo I18n::__('contracttype_detail_legend') ?></legend>
         <div class="row <?php echo ($record->hasError('text')) ? 'error' : ''; ?>">
             <label
                 for="contracttype-text">
@@ -160,6 +162,21 @@
                 rows="23"
                 cols="60"><?php echo htmlspecialchars($record->text) ?></textarea>
             <p class="info"><?php echo I18n::__('contracttype_info_text') ?></p>
+        </div>
+    </fieldset>
+    <fieldset id="contracttype-style" class="tab" style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('contracttype_style_legend') ?></legend>
+        <div class="row <?php echo ($record->hasError('css')) ? 'error' : ''; ?>">
+            <label
+                for="contracttype-css">
+                <?php echo I18n::__('contracttype_label_css') ?>
+            </label>
+            <textarea
+                id="contracttype-css"
+                name="dialog[css]"
+                rows="5"
+                cols="60"><?php echo htmlspecialchars($record->css) ?></textarea>
+            <p class="info"><?php echo I18n::__('contracttype_info_css') ?></p>
         </div>
     </fieldset>
     <fieldset

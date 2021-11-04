@@ -104,7 +104,6 @@ class Model_Criteria extends Model
     public function convertToNumber($value)
     {
         return (float)str_replace(',', '.', $value);
-        //return $value;
     }
 
     /**

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title><?php echo $title ?></title>
     <style>
-    body, pre {
+    body, pre, h1, h2, h3 {
         font-family: sans-serif;
         font-size: 9pt;
     }
@@ -12,9 +12,19 @@
         margin: 2.5mm 0;
         padding: 0;
     }
+    .payment-conditions {
+    }
+    .pagefooter,
     .senderline {
+        color: #333333;
         font-size: 6pt;
-        border-bottom: 0.1mm solid #000000;
+    }
+    .senderline {
+        border-bottom: 0.1mm solid #333333;
+    }
+    .pagefooter.legal {
+        font-size: 4pt;
+        text-align: center;
     }
     tr.alternative th,
     tr.alternative td {
@@ -91,7 +101,10 @@
     @page :first {
         header: ksmheader-firstpage;
         footer: ksmfooter-firstpage;
+        margin-bottom: 4cm;
     }
+    /* Extra styles are coming in dynamicly, depending on the transaction type */
+    <?php echo $record->getContracttype()->css ?>
     </style>
 </head>
 <body>
@@ -109,14 +122,62 @@
         <table width="100%">
             <tr>
                 <td class="bb moredinky" width="60%" style="text-align: left;"><?php echo htmlspecialchars($company->legalname) ?></td>
-                <td class="bb moredinky" width="40%" style="text-align: right;"><?php echo I18n::__('transaction_header_info', null, array($record->number)) ?></td>
+                <td class="bb moredinky" width="40%" style="text-align: right;"><?php echo I18n::__('transaction_header_info', null, [$record->getContracttype()->name, $record->number]) ?></td>
             </tr>
         </table>
     </htmlpageheader>
     <htmlpagefooter name="ksmfooter-firstpage" style="display: none;">
-        <div>
-            <p>first page footer</p>
-        </div>
+        <table style="width: 100%">
+            <tr>
+                <td style="vertical-align: top;" width="25%">
+                    <table class="pagefooter" width="100%">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_1')) ?>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="vertical-align: top;" width="25%">
+                    <table class="pagefooter" width="100%">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_2')) ?>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="vertical-align: top;" width="25%">
+                    <table class="pagefooter" width="100%">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_3')) ?>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td style="vertical-align: top;" width="25%">
+                    <table class="pagefooter" width="100%">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_4')) ?>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" style="vertical-align: top;" width="100%">
+                    <table class="pagefooter legal" width="100%">
+                        <tr>
+                            <td style="vertical-align: top;">
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_legal')) ?>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
     </htmlpagefooter>
     <htmlpagefooter name="ksmfooter" style="display: none;">
         <div class="moredinky centered" style="border-top: 0.1mm solid #000000; padding-top: 3mm;">
@@ -149,16 +210,20 @@
             <td style="width: 65mm; vertical-align: top;">
                 <table class="info" width="100%">
                     <tr>
-                        <td class="label"><?php echo I18n::__('transaction_label_serial') ?></label>
-                        <td class="value emphasize"><?php echo $record->number ?></label>
+                        <td style="vertical-align: center;" class="label"><?php echo $record->getContracttype()->name ?></td>
+                        <td class="value emphasize"><?php echo $record->number ?></td>
                     </tr>
                     <tr>
-                        <td class="label"><?php echo I18n::__('transaction_label_bookingdate') ?></label>
-                        <td class="value"><?php echo $record->localizedDate('bookingdate') ?></label>
+                        <td class="label"><?php echo I18n::__('transaction_label_bookingdate') ?></td>
+                        <td class="value"><?php echo $record->localizedDate('bookingdate') ?></td>
                     </tr>
                     <tr>
-                        <td class="label"><?php echo I18n::__('person_label_account') ?></label>
-                        <td class="value"><?php echo $record->getPerson()->account ?></label>
+                        <td class="label"><?php echo I18n::__('transaction_label_account') ?></td>
+                        <td class="value"><?php echo $record->getPerson()->account ?></td>
+                    </tr>
+                    <tr>
+                        <td class="label"><span class="payment-conditions"><?php echo I18n::__('transaction_label_duedate') ?></span></td>
+                        <td class="value"><span class="payment-conditions"><?php echo htmlspecialchars($record->localizedDate('duedate')) ?></span></td>
                     </tr>
                 </table>
             </td>
@@ -167,6 +232,9 @@
 
     <div style="height: 18mm;"></div>
 
+    <h1 class="emphasize">
+        <?php echo $record->getContracttype()->name ?>
+    </h1>
     <?php echo Flight::textile($record->header) ?>
 
     <table class="position" width="100%">
@@ -213,6 +281,10 @@
             <?php endforeach ?>
         </tbody>
     </table>
+
+    <div class="payment-conditions dinky">
+        <?php echo Flight::textile($record->paymentConditions()) ?>
+    </div>
 
     <?php echo Flight::textile($record->footer) ?>
 

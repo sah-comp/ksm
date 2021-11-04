@@ -181,6 +181,34 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns a string with payment conditions.
+     *
+     * @return string
+     */
+    public function paymentConditions()
+    {
+        $discount = $this->bean->getDiscount();
+        if ($discount->days != 0 && $discount->value != 0) {
+            return I18n::__('transaction_payment_condition_discount', null, [$this->bean->duedays, $discount->days, $discount->value]);
+        } else {
+            return I18n::__('transaction_payment_condition_no_discount', null, [$this->bean->duedays]);
+        }
+    }
+
+    /**
+     * Return the discount bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getDiscount()
+    {
+        if (! $this->bean->discount) {
+            $this->bean->discount = R::dispense('discount');
+        }
+        return $this->bean->discount;
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @return bool
@@ -338,10 +366,27 @@ SQL;
     }
 
     /**
+     * Returns a transaction bean if this bean has derived from a former one or false if not.
+     *
+     * @return mixed
+     */
+    public function hasParent()
+    {
+        if ($this->bean->mytransactionid) {
+            $parent = R::load('transaction', $this->bean->mytransactionid);
+            if ($parent->getId()) {
+                return $parent;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
     {
+        $this->bean->mytransactionid = 0;
         $this->bean->status = 'open';
         $this->bean->bookingdate = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
