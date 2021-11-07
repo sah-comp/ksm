@@ -90,23 +90,23 @@ class Controller_Revenue extends Controller
     }
 
     /**
-     * Returns the lowest transaction number.
+     * Returns the first day of the current month.
      *
      * @return string
      */
     public function getMinDate()
     {
-        return date('Y-m-d');
+        return date('Y-m-01');
     }
 
     /**
-     * Returns the highest transaction number.
+     * Returns the last day of the current month.
      *
      * @return string
      */
     public function getMaxDate()
     {
-        return date('Y-m-d');
+        return date('Y-m-t');
     }
 
     /**

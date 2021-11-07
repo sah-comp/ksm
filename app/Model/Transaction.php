@@ -108,16 +108,6 @@ class Model_Transaction extends Model
                 ]
             ],
             [
-                'name' => 'status',
-                'sort' => [
-                    'name' => 'transaction.status'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ],
-                'width' => '4rem'
-            ],
-            [
                 'name' => 'net',
                 'sort' => [
                     'name' => 'net'

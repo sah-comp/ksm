@@ -6,7 +6,7 @@
         </nav>
     </header>
     <div class="panel">
-        <div class="scaffold cockpit clearfix">
+        <div class="scaffold accounting clearfix">
         <?php foreach ($records as $_id => $_record): ?>
             <div class="domain">
                 <h1><a href="<?php echo Url::build('/' . $_record->url) ?>"><?php echo htmlspecialchars(I18n::__($_record->name . '_h1')) ?></a></h1>

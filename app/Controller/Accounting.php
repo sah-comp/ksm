@@ -9,13 +9,13 @@
  */
 
 /**
- * Ledger controller.
+ * Accounting controller.
  *
  * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Ledger extends Controller
+class Controller_Accounting extends Controller
 {
     /**
      * Holds the records.
@@ -36,7 +36,7 @@ class Controller_Ledger extends Controller
      *
      * @var string
      */
-    public $template = 'ledger/index';
+    public $template = 'accounting/index';
 
     /**
      * Constructor
@@ -66,17 +66,17 @@ class Controller_Ledger extends Controller
         Flight::render('shared/navigation/account', [], 'navigation_account');
         Flight::render('shared/navigation/main', [], 'navigation_main');
         Flight::render('shared/navigation', [], 'navigation');
-        Flight::render('ledger/toolbar', [
+        Flight::render('accounting/toolbar', [
             'record' => $this->record
         ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => I18n::__("ledger_head_title"),
+            'title' => I18n::__("accounting_head_title"),
             'records' => $this->records
         ], 'content');
         Flight::render('html5', [
-            'title' => I18n::__("ledger_head_title"),
+            'title' => I18n::__("accounting_head_title"),
             'language' => Flight::get('language')
         ]);
     }

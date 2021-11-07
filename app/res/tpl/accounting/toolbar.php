@@ -12,7 +12,7 @@
 	<li>
 		<a
 			href="<?php echo Url::build('/backup') ?>">
-			<?php echo I18n::__('ledger_action_backup') ?>
+			<?php echo I18n::__('accounting_action_backup') ?>
 		</a>
 	</li>
 </ul>

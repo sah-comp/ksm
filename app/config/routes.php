@@ -342,6 +342,14 @@ Flight::route('(/[a-z]{2})/ledger(/index)', function () {
 });
 
 /**
+ * Display the Accounting index page.
+ */
+Flight::route('(/[a-z]{2})/accounting(/index)', function () {
+    $accountingController = new Controller_Accounting();
+    $accountingController->index();
+});
+
+/**
  * Route to the revenue controller.
  */
 Flight::route('(/[a-z]{2})/revenue(/@method:[a-z]+(/@id:[0-9]+))', function ($method, $id) {
