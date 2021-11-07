@@ -86,7 +86,7 @@ if (! $_installedpart->article) {
                 id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $index ?>-purchaseprice"
                 class="number"
                 name="dialog[ownInstalledpart][<?php echo $index ?>][purchaseprice]"
-                value="<?php echo htmlspecialchars(number_format((float)$_installedpart->purchaseprice, 2, ',', '.')) ?>" />
+                value="<?php echo htmlspecialchars($_installedpart->decimal('purchaseprice')) ?>" />
         </div>
         <div class="span2">
             <input
@@ -94,7 +94,7 @@ if (! $_installedpart->article) {
                 id="machine-<?php echo $record->getId() ?>-installedpart-<?php echo $index ?>-salesprice"
                 class="number"
                 name="dialog[ownInstalledpart][<?php echo $index ?>][salesprice]"
-                value="<?php echo htmlspecialchars(number_format((float)$_installedpart->salesprice, 2, ',', '.')) ?>" />
+                value="<?php echo htmlspecialchars($_installedpart->decimal('salesprice')) ?>" />
         </div>
     </div>
 </fieldset>

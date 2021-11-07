@@ -105,7 +105,7 @@
             type="text"
             class="number"
             name="dialog[purchaseprice]"
-            value="<?php echo htmlspecialchars(number_format((float)$record->purchaseprice, 2, ',', '.')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('purchaseprice')) ?>" />
             <p class="info">
                 <?php echo I18n::__('product_info_purchaseprice') ?>
             </p>
@@ -137,7 +137,7 @@
             type="text"
             class="number"
             name="dialog[salesprice]"
-            value="<?php echo htmlspecialchars(number_format((float)$record->salesprice, 2, ',', '.')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('salesprice')) ?>" />
             <p class="info">
                 <?php echo I18n::__('product_info_salesprice') ?>
             </p>

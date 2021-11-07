@@ -13,6 +13,20 @@ select {
     font-size: inherit;
 }
 
+.panel table thead th.centered {
+    text-align: center;
+}
+
+.panel thead th.pastel {
+    color: black;
+}
+
+.panel table.revenue th,
+.panel table.revenue td {
+    padding-top: 0.333em;
+    padding-bottom: 0.333em;
+}
+
 .float-left {
     float: left;
 }

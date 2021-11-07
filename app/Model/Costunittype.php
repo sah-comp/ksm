@@ -33,7 +33,8 @@ class Model_Costunittype extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '20rem'
             ],
             [
                 'name' => 'color',
@@ -43,7 +44,17 @@ class Model_Costunittype extends Model
                 'filter' => [
                     'tag' => 'text'
                 ]
-            ]
+            ],
+            [
+                'name' => 'sequence',
+                'sort' => [
+                    'name' => 'sequence'
+                ],
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '8rem'
+            ],
         ];
     }
 
@@ -62,6 +73,7 @@ class Model_Costunittype extends Model
      */
     public function dispense()
     {
+        $this->bean->sequence = 0;
         $this->addValidator('name', [
             new Validator_HasValue(),
             new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])

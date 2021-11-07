@@ -342,6 +342,20 @@ Flight::route('(/[a-z]{2})/ledger(/index)', function () {
 });
 
 /**
+ * Route to the revenue controller.
+ */
+Flight::route('(/[a-z]{2})/revenue(/@method:[a-z]+(/@id:[0-9]+))', function ($method, $id) {
+    if ($method === null) {
+        $method = 'index';
+    }
+    if ($id === null) {
+        $id = 0;
+    }
+    $controller = new Controller_Revenue($id);
+    $controller->$method();
+});
+
+/**
  * Display the CMS index page.
  */
 Flight::route('(/[a-z]{2})/cms(/index)', function () {

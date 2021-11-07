@@ -20,14 +20,14 @@ class Controller_Transaction extends Controller
     /**
      * Holds the company bean.
      *
-     * @var object
+     * @var RedBeanPHP\OODBBean
      */
     public $company;
 
     /**
      * Holds the contract bean.
      *
-     * @var object
+     * @var RedBeanPHP\OODBBean
      */
     public $transaction;
 
@@ -54,6 +54,7 @@ class Controller_Transaction extends Controller
                 $copy = R::duplicate($this->transaction);
                 $copy->contracttype_id = Flight::request()->query->copyas;
                 $copy->mytransactionid = $this->transaction->getId();
+                $copy->status = 'open';
                 R::store($copy);
                 R::commit();
                 Flight::get('user')->notify(I18n::__('transaction_success_copy', null, [$this->transaction->number, $copy->contracttype->name]), 'success');

@@ -15,6 +15,17 @@
 </div>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('costunittype_legend') ?></legend>
+    <div class="row <?php echo ($record->hasError('sequence')) ? 'error' : ''; ?>">
+        <label
+            for="costunittype-sequence">
+            <?php echo I18n::__('costunittype_label_sequence') ?>
+        </label>
+        <input
+            id="costunittype-sequence"
+            type="number"
+            name="dialog[sequence]"
+            value="<?php echo htmlspecialchars($record->sequence) ?>" />
+    </div>
     <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
         <label
             for="costunittype-name">

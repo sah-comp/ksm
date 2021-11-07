@@ -257,7 +257,7 @@ class Model extends RedBean_SimpleModel
      */
     public function decimal($attribute, $decimals = CINNEBAR_DECIMAL_PLACES, $decimal_point = ',', $thousands_separator = '.')
     {
-        if (! $this->bean->{$attribute}) {
+        if ((float)$this->bean->{$attribute} === 0.0) {
             return '';
         }
         return number_format((float)$this->bean->{$attribute}, $decimals, $decimal_point, $thousands_separator);

@@ -228,7 +228,7 @@ class Controller_Scaffold extends Controller
     }
 
     /**
-     * Delete the current bean and.
+     * Delete the current bean.
      *
      * @return void
      */
@@ -280,7 +280,7 @@ class Controller_Scaffold extends Controller
      */
     public function attach($prefix, $subtype, $id = 0)
     {
-        $index = md5(microtime(true));
+        $index = $this->randIndex();
         $_subrecord = R::dispense($subtype);
         Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
             'record' => $this->record,
@@ -307,7 +307,7 @@ class Controller_Scaffold extends Controller
      */
     public function attachattach($prefix, $subtype, $id, $main, $mainid, $sindex, $index)
     {
-        $_index = md5(microtime(true));
+        $_index = $this->randIndex();
         $_subrecord = R::dispense($subtype);
         $main = R::load($main, $mainid);
         Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
@@ -318,6 +318,18 @@ class Controller_Scaffold extends Controller
             '_index' => $_index
         ));
         return true;
+    }
+
+    /**
+     * Returns a (random) number to be used as an array index.
+     *
+     * Why this? We have to make sure the index is higher than any sub record.
+     *
+     * @return mixed
+     */
+    public function randIndex()
+    {
+        return random_int(100000, 200000);
     }
 
     /**
@@ -584,10 +596,7 @@ class Controller_Scaffold extends Controller
             }
             //handle a selection
             $this->selection = Flight::request()->data->selection;
-            if ($this->applyToSelection(
-                $this->selection[$this->type],
-                Flight::request()->data->next_action
-            )) {
+            if ($this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
                 $this->redirect("{$this->base_url}/{$this->type}/");
             }
         }

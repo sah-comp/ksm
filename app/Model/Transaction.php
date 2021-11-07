@@ -27,6 +27,14 @@ class Model_Transaction extends Model
     public const PATTERN = "%s-%02d-%02d-%04d";
 
     /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->setAction('index', ['idle', 'cancel', 'expunge']);
+    }
+
+    /**
      * Returns an array with possible units.
      *
      * @return array
@@ -265,6 +273,38 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns the sum of all net value of all positions of the given cost unit type.
+     *
+     * @param $costunittype Redbean\OODBBean
+     * @return float
+     */
+    public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
+    {
+        $sql = "SELECT ROUND(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id";
+        $result = R::getCell($sql, [
+            ':trans_id' => $this->bean->getId(),
+            ':cut_id' => $costunittype->getId()
+        ]);
+        return $result;
+    }
+
+    /**
+     * Returns the sum of all gros value of all positions of the given cost unit type.
+     *
+     * @param $costunittype RedbeanPHP\OODBBean
+     * @return float
+     */
+    public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
+    {
+        $sql = "SELECT ROUND(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id";
+        $result = R::getCell($sql, [
+            ':trans_id' => $this->bean->getId(),
+            ':cut_id' => $costunittype->getId()
+        ]);
+        return $result;
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
@@ -357,12 +397,26 @@ SQL;
     }
 
     /**
-     * Storno.
+     * Cancels this transaction.
+     *
+     * @return mixed
      */
-    public function expunge()
+    public function cancel()
     {
+        if ($this->bean->status == 'canceled') {
+            throw new Exception(I18n::__('transaction_is_already_canceled'));
+        }
+        $dup = R::duplicate($this->bean);
+        $dup->status = 'canceled';
+        $dup->bookingdate = date('Y-m-d');
+        $dup->mytransactionid = $this->bean->getId();
+        foreach ($dup->ownPosition as $id => $position) {
+            $position->count = $position->count * -1;
+        }
+        R::store($dup);
         $this->bean->status = 'canceled';
         R::store($this->bean);
+        return $dup;
     }
 
     /**
@@ -387,6 +441,7 @@ SQL;
     public function dispense()
     {
         $this->bean->mytransactionid = 0;
+        $this->bean->duedays = 0;
         $this->bean->status = 'open';
         $this->bean->bookingdate = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
@@ -417,6 +472,9 @@ SQL;
             $this->bean->vat += $vat;
             $this->bean->gros += $net + $vat;
         }
+        $this->bean->net = round($this->bean->net, 2);
+        $this->bean->vat = round($this->bean->vat, 2);
+        $this->bean->gros = round($this->bean->gros, 2);
 
         if (!CINNEBAR_MIP) {
             if (!$this->bean->contracttype_id) {

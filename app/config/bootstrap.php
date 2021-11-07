@@ -130,6 +130,16 @@ Flight::map('textile', function ($text, $restricted = false, $mode = 'html5') {
 });
 
 /**
+ * number_format
+ */
+Flight::map('nformat', function ($number, $digits = CINNEBAR_DECIMAL_PLACES, $thousands_separator = '.', $decimal_point = ',') {
+    if ((float)$number === 0.0) {
+        return '';
+    }
+    return number_format((float)$number, $digits, $decimal_point, $thousands_separator);
+});
+
+/**
  * Appointmenttype "Service".
  *
  * Service appointments are handle special.

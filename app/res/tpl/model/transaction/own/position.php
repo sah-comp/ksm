@@ -114,7 +114,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownPosition][<?php echo $index ?>][count]"
-                value="<?php echo htmlspecialchars($_position->decimal('count', 2)) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('count')) ?>">
         </div>
         <div class="span1">
             <input
@@ -137,7 +137,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownPosition][<?php echo $index ?>][salesprice]"
-                value="<?php echo htmlspecialchars($_position->decimal('salesprice', 2)) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('salesprice')) ?>">
         </div>
         <div class="span2">
             <input
@@ -146,7 +146,7 @@
                 class="number"
                 readonly="readonly"
                 name="dialog[ownPosition][<?php echo $index ?>][total]"
-                value="<?php echo htmlspecialchars($_position->decimal('total', 2)) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('total')) ?>">
         </div>
     </div>
 </fieldset>

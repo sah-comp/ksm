@@ -64,7 +64,7 @@ class Controller_Cockpit extends Controller
     }
 
     /**
-     * Renders the account page.
+     * Renders the cockpit page.
      */
     protected function render()
     {

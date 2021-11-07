@@ -37,7 +37,7 @@
             class="number"
             type="text"
             name="dialog[value]"
-            value="<?php echo htmlspecialchars($record->decimal('value', 3)) ?>"
+            value="<?php echo htmlspecialchars($record->decimal('value')) ?>"
             required="required" />
     </div>
 </fieldset>

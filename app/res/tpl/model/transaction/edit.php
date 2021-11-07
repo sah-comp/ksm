@@ -271,7 +271,7 @@
                     class="number"
                     name="dialog[net]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('net', 2)) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('net')) ?>">
             </div>
         </div>
         <?php $vats = $record->getVatSentences(); ?>
@@ -289,7 +289,7 @@
                     class="number"
                     name="vatnet[]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars(number_format($_vat['net'], 2, ',', '.')) ?>">
+                    value="<?php echo htmlspecialchars(Flight::nformat($_vat['net'])) ?>">
             </div>
             <div class="span2">
                 <input
@@ -297,7 +297,7 @@
                     class="number"
                     name="vatvalue[]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars(number_format($_vat['vatvalue'], 2, ',', '.')) ?>">
+                    value="<?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?>">
             </div>
         </div>
         <?php endforeach; ?>
@@ -314,7 +314,7 @@
                     class="number"
                     name="dialog[gros]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('gros', 2)) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('gros')) ?>">
             </div>
         </div>
     </fieldset>

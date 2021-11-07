@@ -164,7 +164,7 @@
                 class="autowidth number"
                 type="text"
                 name="dialog[duration]"
-                value="<?php echo htmlspecialchars($record->decimal('duration', 2)) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('duration')) ?>" />
         </div>
         <div class="span3">
             <input

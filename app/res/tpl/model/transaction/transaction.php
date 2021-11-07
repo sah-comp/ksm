@@ -252,20 +252,20 @@
             <tr>
                 <td colspan="4" class="bt emphasize">&nbsp;</td>
                 <td class="bt emphasize number"><?php echo I18n::__('transaction_label_total_net') ?></td>
-                <td class="bt emphasize number"><?php echo htmlspecialchars($record->decimal('net', 2)) ?></td>
+                <td class="bt emphasize number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
             </tr>
             <?php $vats = $record->getVatSentences(); ?>
             <?php foreach ($vats as $_id => $_vat): ?>
             <tr>
                 <td colspan="4" class="number"></td>
                 <td class="bt number"><?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?></td>
-                <td class="bt number"><?php echo htmlspecialchars(number_format($_vat['vatvalue'], 2, ',', '.')) ?></td>
+                <td class="bt number"><?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?></td>
             </tr>
             <?php endforeach ?>
             <tr>
                 <td colspan="4" class="">&nbsp;</td>
                 <td class="bt bb emphasize number"><?php echo I18n::__('transaction_label_total_gros') ?></td>
-                <td class="bt bb emphasize number"><?php echo htmlspecialchars($record->decimal('gros', 2)) ?></td>
+                <td class="bt bb emphasize number"><?php echo htmlspecialchars($record->decimal('gros')) ?></td>
             </tr>
         </tfoot>
         <tbody>
@@ -275,8 +275,8 @@
                 <td><?php echo htmlspecialchars($_position->desc) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_position->count) ?></td>
                 <td><?php echo htmlspecialchars($_position->unit) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice', 2)) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_position->decimal('total', 2)) ?></td>
+                <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?></td>
+                <td class="number"><?php echo htmlspecialchars($_position->decimal('total')) ?></td>
             </tr>
             <?php endforeach ?>
         </tbody>

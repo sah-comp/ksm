@@ -159,9 +159,19 @@ SQL;
      */
     public function dispense()
     {
-        $this->addConverter('total', new Converter_Decimal());
+        $this->bean->count = 0;
+        $this->bean->salesprice = 0;
+        $this->bean->total = 0;
+        $this->bean->vatpercentage = 0;
+        $this->bean->vatamount = 0;
+        $this->bean->gros = 0;
+        $this->bean->currentindex = 0;
         $this->addConverter('count', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
+        $this->addConverter('total', new Converter_Decimal());
+        $this->addConverter('vatpercentage', new Converter_Decimal());
+        $this->addConverter('vatamount', new Converter_Decimal());
+        $this->addConverter('gros', new Converter_Decimal());
     }
 
     /**
@@ -170,6 +180,7 @@ SQL;
     public function update()
     {
         parent::update();
+
         if (!$this->bean->product_id) {
             $this->bean->product_id = null;
             unset($this->bean->product);
