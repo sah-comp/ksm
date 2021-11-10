@@ -39,4 +39,11 @@
         <?php echo I18n::__('transaction_action_pdf') ?>
     </a>
 </li>
+<?php else: ?>
+<li>
+    <a
+        href="<?php echo Url::build("/transaction/pdf") ?>">
+        <?php echo I18n::__('transaction_action_pdf_list') ?>
+    </a>
+</li>
 <?php endif; ?>

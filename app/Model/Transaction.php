@@ -426,6 +426,19 @@ SQL;
     }
 
     /**
+     * Returns the latest user bean.
+     *
+     * @return RedBeanPHP\OODBBean
+     */
+    public function getEditor()
+    {
+        if (!$this->bean->fetchAs('user')->editor) {
+            $this->bean->editor = R::dispense('user');
+        }
+        return $this->bean->fetchAs('user')->editor;
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
@@ -437,6 +450,10 @@ SQL;
         $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('duedate', new Converter_Mysqldate());
         $this->addConverter('net', new Converter_Decimal());
+        $this->addConverter('vat', new Converter_Decimal());
+        $this->addConverter('gros', new Converter_Decimal());
+        $this->addConverter('totalpaid', new Converter_Decimal()); //saldo
+        $this->addConverter('balance', new Converter_Decimal()); //saldo
     }
 
     /**
@@ -448,6 +465,8 @@ SQL;
 
         // calculate the net, vats and gros of this transaction
         $converter = new Converter_Decimal();
+
+        // calculate totals
         $this->bean->net = 0;
         $this->bean->vat = 0;
         $this->bean->gros = 0;
@@ -462,9 +481,19 @@ SQL;
             $this->bean->vat += $vat;
             $this->bean->gros += $net + $vat;
         }
+
+        // calculate payments
+        $this->bean->totalpaid = 0;
+        foreach ($this->bean->ownPayment as $id => $payment) {
+            $this->bean->totalpaid += $converter->convert($payment->amount);
+        }
+        $this->bean->totalpaid = round($this->bean->totalpaid, 2);
+
         $this->bean->net = round($this->bean->net, 2);
         $this->bean->vat = round($this->bean->vat, 2);
         $this->bean->gros = round($this->bean->gros, 2);
+
+        $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid);
 
         if (!CINNEBAR_MIP) {
             if (!$this->bean->contracttype_id) {
@@ -494,5 +523,8 @@ SQL;
             $this->bean->contracttype->nextnumber++;
             $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, Flight::setting()->companyyear, $number);
         }
+
+        $this->bean->stamp = time();
+        $this->bean->editor = Flight::get('user');
     }
 }

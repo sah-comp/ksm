@@ -126,6 +126,7 @@
         <div class="span1">
             <input
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-alternative"
+                title="<?php echo I18n::__('position_title_alternative') ?>"
                 type="checkbox"
                 name="dialog[ownPosition][<?php echo $index ?>][alternative]"
                 <?php echo ($_position->alternative) ? 'checked="checked"' : '' ?>

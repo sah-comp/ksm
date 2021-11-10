@@ -128,7 +128,8 @@
         'tabs' => array(
             'transaction-head' => I18n::__('transaction_tab_head'),
             'transaction-position' => I18n::__('transaction_tab_position'),
-            'transaction-foot' => I18n::__('transaction_tab_foot')
+            'transaction-foot' => I18n::__('transaction_tab_foot'),
+            'transaction-booking' => I18n::__('transaction_tab_booking')
         ),
         'default_tab' => 'transaction-head'
     )) ?>
@@ -229,7 +230,7 @@
                 <?php echo I18n::__('position_label_unit') ?>
             </div>
             <div class="span1">
-                <?php echo I18n::__('position_label_alternate') ?>
+                <?php echo I18n::__('position_label_alternative') ?>
             </div>
             <div class="span1 tar">
                 <?php echo I18n::__('position_label_salesprice') ?>
@@ -315,6 +316,91 @@
                     name="dialog[gros]"
                     readonly="readonly"
                     value="<?php echo htmlspecialchars($record->decimal('gros')) ?>">
+            </div>
+        </div>
+    </fieldset>
+    <fieldset
+        id="transaction-booking"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('transaction_legend_booking') ?></legend>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span2">
+                <?php echo I18n::__('payment_label_bookingdate') ?>
+            </div>
+            <div class="span7">
+                <?php echo I18n::__('payment_label_desc') ?>
+            </div>
+            <div class="span2 tar">
+                <?php echo I18n::__('payment_label_amount') ?>
+            </div>
+        </div>
+        <div
+            id="transaction-<?php echo $record->getId() ?>-payment-container"
+            class="container attachable detachable sortable">
+            <?php $_payments = $record->with(' ORDER BY bookingdate ASC ')->ownPayment ?>
+            <?php if (count($_payments) == 0):
+            $_payments[] = R::dispense('payment');
+            endif; ?>
+            <?php $index = 0 ?>
+            <?php foreach ($_payments as $_payment_id => $_payment): ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/transaction/own/payment', array(
+                    'record' => $record,
+                    '_payment' => $_payment,
+                    'index' => $index
+                )) ?>
+            <?php endforeach ?>
+        </div>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span9 tar">
+                <?php echo I18n::__('transaction_label_gros_to_pay') ?>
+            </div>
+            <div class="span2">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[gros]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('gros')) ?>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span9 tar">
+                <?php echo I18n::__('transaction_label_totalpaid') ?>
+            </div>
+            <div class="span2">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[totalpaid]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('totalpaid')) ?>">
+            </div>
+        </div>
+        <div class="row">
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span9 tar">
+                <?php echo I18n::__('transaction_label_balance') ?>
+            </div>
+            <div class="span2">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[balance]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('balance')) ?>">
             </div>
         </div>
     </fieldset>

@@ -251,7 +251,7 @@ Flight::route('GET (/[a-z]{2})/transaction/copy/@id:[0-9]+', function ($id) {
 /**
  * Routes to the transaction controller to download a transaction as PDF to the client.
  */
-Flight::route('(/[a-z]{2})/transaction/pdf/@id:[0-9]+', function ($id) {
+Flight::route('(/[a-z]{2})/transaction/pdf(/@id:[0-9]+)', function ($id) {
     $transactionController = new Controller_Transaction($id);
     $transactionController->pdf();
 });

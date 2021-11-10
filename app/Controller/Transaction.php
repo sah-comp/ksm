@@ -73,6 +73,26 @@ class Controller_Transaction extends Controller
      */
     public function pdf()
     {
+        if ($this->transaction->getId()) {
+            $this->pdfSingleTransaction();
+        }
+        $this->pdfList();
+    }
+
+    /**
+     * Generate a PDF with all (filtered) records.
+     */
+    public function pdfList()
+    {
+        error_log('PDF transaction list');
+        exit;
+    }
+
+    /*
+     * Generate a PDF with data deriving from the addressed contract bean.
+     */
+    public function pdfSingleTransaction()
+    {
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename = I18n::__('transaction_pdf_filename', null, [$this->transaction->getFilename()]);
         $docname = I18n::__('transaction_pdf_docname', null, [$this->transaction->getDocname()]);
