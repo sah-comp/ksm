@@ -102,7 +102,7 @@ class Controller_Transaction extends Controller
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
         ob_start();
-        Flight::render('model/transaction/transaction', [
+        Flight::render('model/transaction/pdf/' . $layout, [
             'title' => $docname,
             'company' => $this->company,
             'record' => $this->transaction,
