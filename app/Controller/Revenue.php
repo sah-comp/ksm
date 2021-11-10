@@ -168,6 +168,34 @@ class Controller_Revenue extends Controller
     }
 
     /**
+     * Returns an array with formatted data to be exported as .csv file.
+     *
+     * @uses getCollection() to load records
+     *
+     * @return array
+     */
+    public function makeCsvData()
+    {
+        $this->getCollection();
+        $data = [];
+        foreach ($this->records as $id => $transaction) {
+            $data[$id] = [
+                'bookingdate' => $transaction->localizedDate('bookingdate'),
+                'number' => $transaction->number,
+                'account' => $transaction->getPerson()->name,
+                'totalnet' => Flight::nformat($transaction->net),
+                'totalgros' => Flight::nformat($transaction->gros)
+            ];
+            // add total for each cost unit type
+            foreach ($this->costunittypes as $cut_id => $cut) {
+                $data[$id][$cut->name . 'net'] = Flight::nformat($transaction->netByCostunit($cut));
+                $data[$id][$cut->name . 'gros'] = Flight::nformat($transaction->grosByCostunit($cut));
+            }
+        }
+        return $data;
+    }
+
+    /**
      * Generates an PDF with a list of selected bookings using mPDF library and downloads it to the client.
      *
      * @return void
@@ -206,6 +234,36 @@ class Controller_Revenue extends Controller
         $mpdf->WriteHTML($html);
         $mpdf->Output($filename, 'D');
         exit;
+    }
+
+    /**
+     * Export the revenue list as .csv file
+     *
+     * @return void
+     */
+    public function csv()
+    {
+        $filename = I18n::__('revenue_filename_csv', null, [$_SESSION['revenue']['startdate'], $_SESSION['revenue']['enddate']]);
+        $csv = new \ParseCsv\Csv();
+        $csv->encoding('UTF-8', 'UTF-8');
+        $csv->delimiter = ";";
+        $csv->output_delimiter = ";";
+        $csv->linefeed = "\r\n";
+        $csv->titles = [
+            I18n::__('revenue_csv_date'), //Datum
+            I18n::__('revenue_csv_number'), //Rechnungsnummer
+            I18n::__('revenue_csv_account'), //Kunde
+            I18n::__('revenue_csv_total_net'), //Gesamt Netto
+            I18n::__('revenue_csv_total_gros') //Gesamt Brutto
+        ];
+        // add net and gros for each cost unit type
+        foreach ($this->costunittypes as $id => $cut) {
+            $csv->titles[] = I18n::__('revenue_csv_template_net', null, [$cut->name]);
+            $csv->titles[] = I18n::__('revenue_csv_template_gros', null, [$cut->name]);
+        }
+        $csv->heading = true;
+        $csv->data = $this->makeCsvData();
+        $csv->output($filename);
     }
 
     /**

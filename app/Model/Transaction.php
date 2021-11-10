@@ -51,6 +51,19 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns an array with layouts for PDF.
+     *
+     * @return array
+     */
+    public function getPrintLayouts()
+    {
+        return [
+            'letterhead' => true,
+            'blank' => false
+        ];
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout

@@ -93,6 +93,7 @@ class Controller_Transaction extends Controller
      */
     public function pdfSingleTransaction()
     {
+        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename = I18n::__('transaction_pdf_filename', null, [$this->transaction->getFilename()]);
         $docname = I18n::__('transaction_pdf_docname', null, [$this->transaction->getDocname()]);

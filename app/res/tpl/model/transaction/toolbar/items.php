@@ -11,9 +11,9 @@
 <?php if ($record->getId()): ?>
 <li>
     <form
-        id="pform"
-        name="pform"
-        class="pform"
+        id="copyform"
+        name="copyform"
+        class="pform within"
         method="GET"
         action="<?php echo Url::build('/transaction/copy/%d/', [$record->getId()]) ?>"
         accept-charset="utf-8"
@@ -33,11 +33,26 @@
     </form>
 </li>
 <li>
-    <a
-        href="<?php echo Url::build("/{$type}/pdf/{$record->getId()}") ?>"
-        accesskey="p">
-        <?php echo I18n::__('transaction_action_pdf') ?>
-    </a>
+    <form
+        id="printform"
+        name="printform"
+        class="pform"
+        method="GET"
+        action="<?php echo Url::build('/transaction/pdf/%d/', [$record->getId()]) ?>"
+        accept-charset="utf-8"
+        autocomplete="off"
+        enctype="multipart/form-data">
+        <select
+            name="layout">
+            <?php foreach ($record->getPrintLayouts() as $_layout => $_default): ?>
+            <option value="<?php echo $_layout ?>" <?php echo ($_default) ? 'selected="selected"' : '' ?>><?php echo I18n::__('transaction_layout_' . $_layout) ?></option>
+            <?php endforeach; ?>
+        </select>
+        <input
+            name="submit"
+            type="submit"
+            value="<?php echo I18n::__('transaction_action_pdf') ?>" />
+    </form>
 </li>
 <?php else: ?>
 <li>

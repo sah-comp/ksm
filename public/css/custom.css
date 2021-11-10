@@ -591,6 +591,12 @@ form.pform {
     border-right: 1px solid silver;
 }
 
+li:last-child form.pform {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
 form.pform.within {
     padding-left: 1em;
     border-left: 1px solid silver;
