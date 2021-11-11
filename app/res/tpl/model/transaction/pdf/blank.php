@@ -20,7 +20,7 @@
         font-size: 6pt;
     }
     .senderline {
-        border-bottom: 0.1mm solid #333333;
+        /*border-bottom: 0.1mm solid #333333;*/
     }
     .pagefooter.legal {
         font-size: 4pt;
@@ -113,7 +113,7 @@
         <table width="100%">
             <tr>
                 <td class="centered" style="vertical-align: top; width: 100%;">
-                    <img src="/img/<?php echo Flight::setting()->logo ?>" width="<?php echo Flight::setting()->logowidth ?>px" height="<?php echo Flight::setting()->logoheight ?>px" alt="" />
+                    <div style="<?php echo Flight::setting()->logoheight ?>px;"></div>
                 </td>
             </tr>
         </table>
@@ -127,57 +127,7 @@
         </table>
     </htmlpageheader>
     <htmlpagefooter name="ksmfooter-firstpage" style="display: none;">
-        <table style="width: 100%">
-            <tr>
-                <td style="vertical-align: top;" width="25%">
-                    <table class="pagefooter" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_1')) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="vertical-align: top;" width="25%">
-                    <table class="pagefooter" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_2')) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="vertical-align: top;" width="25%">
-                    <table class="pagefooter" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_3')) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-                <td style="vertical-align: top;" width="25%">
-                    <table class="pagefooter" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_4')) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4" style="vertical-align: top;" width="100%">
-                    <table class="pagefooter legal" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_legal')) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+        <div style="height: 30mm;"></div>
     </htmlpagefooter>
     <htmlpagefooter name="ksmfooter" style="display: none;">
         <div class="moredinky centered" style="border-top: 0.1mm solid #000000; padding-top: 3mm;">
@@ -190,12 +140,12 @@
     <sethtmlpagefooter name="ksmfooter" value="on" />
     mpdf-->
 
-    <div style="height: 25mm;"></div>
+    <div style="height: 33mm;"></div>
     <table width="100%">
         <tr>
             <td style="width: 95mm; vertical-align: top;">
                 <div class="senderline">
-                    <?php echo htmlspecialchars($company->getSenderline()) ?>
+                    &nbsp;
                     <br /><br />
                 </div>
                 <div class="name">
@@ -233,7 +183,7 @@
     <div style="height: 18mm;"></div>
 
     <h1 class="emphasize">
-        <?php echo $record->getContracttype()->name . ' as BLANK' ?>
+        <?php echo $record->getContracttype()->name ?>
     </h1>
     <?php echo Flight::textile($record->header) ?>
 

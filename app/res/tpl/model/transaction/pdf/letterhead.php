@@ -190,7 +190,7 @@
     <sethtmlpagefooter name="ksmfooter" value="on" />
     mpdf-->
 
-    <div style="height: 25mm;"></div>
+    <div style="height: 33mm;"></div>
     <table width="100%">
         <tr>
             <td style="width: 95mm; vertical-align: top;">
