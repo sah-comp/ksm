@@ -203,8 +203,7 @@ class Controller_Revenue extends Controller
     public function pdf()
     {
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $this->getCollection('ASC');
-        $this->record = reset($this->records);
+        $this->getCollection();
         $startdate = $_SESSION['revenue']['startdate'];
         $enddate = $_SESSION['revenue']['enddate'];
         $filename = I18n::__('revenue_list_filename', null, [

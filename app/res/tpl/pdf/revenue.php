@@ -5,14 +5,14 @@
     <style>
         body {
             font-family: sans-serif;
-	        font-size: 9pt;
+	        font-size: 8pt;
         }
         .emphasize {
             font-weight: bold;
-            font-size: 10pt;
+            font-size: 9pt;
         }
         .uberemphasize {
-            font-size: 12pt;
+            font-size: 11pt;
             font-weight: bold;
         }
         table {
@@ -21,9 +21,6 @@
         caption {
             font-weight: bold;
             padding-bottom: 3mm;
-        }
-        tr.invoice-kind-1 td {
-            color: #666;
         }
         td {
             vertical-align: top;
@@ -50,7 +47,7 @@
 </head>
 <body>
     <!--mpdf
-    <htmlpageheader name="tkheader" style="display: none;">
+    <htmlpageheader name="ksmheader" style="display: none;">
         <table width="100%">
             <tr>
                 <td width="60%" style="text-align: left;"><?php echo htmlspecialchars($company_name) ?></td>
@@ -58,31 +55,70 @@
             </tr>
         </table>
     </htmlpageheader>
-    <htmlpagefooter name="tkfooter" style="display: none;">
+    <htmlpagefooter name="ksmfooter" style="display: none;">
         <div style="border-top: 0.1mm solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm;">
             <?php echo I18n::__('transaction_text_page') ?> {PAGENO} <?php echo I18n::__('transaction_text_of') ?> {nbpg}
         </div>
     </htmlpagefooter>
-    <sethtmlpageheader name="tkheader" value="on" show-this-page="1" />
-    <sethtmlpagefooter name="tkfooter" value="on" />
+    <sethtmlpageheader name="ksmheader" value="on" show-this-page="1" />
+    <sethtmlpagefooter name="ksmfooter" value="on" />
     mpdf-->
 
-    <table class="revenue" width="100%">
+    <table class="revenue" style="width: 100%;">
+        <caption><?php echo I18n::__('revenue_head_title') ?></caption>
+        <colgroup>
+            <col class="grey" span="5" />
+            <?php foreach ($costunittypes as $_id => $_cut): ?>
+            <col style="background-color: <?php echo $_cut->color ?>;" span="2" />
+            <?php endforeach; ?>
+        </colgroup>
         <thead>
             <tr>
-                <th width="100%">XXX</th>
+                <th class="bt" style="width: 8%;"><?php echo I18n::__('revenue_th_date') ?></th>
+                <th class="bt" style="width: 8%;"><?php echo I18n::__('revenue_th_number') ?></th>
+                <th class="bt" style="width: 23%;"><?php echo I18n::__('revenue_th_account') ?></th>
+                <th class="bt" class="centered" colspan="2" style="text-align: center;"><?php echo I18n::__('revenue_th_amount') ?></th>
+                <?php foreach ($costunittypes as $_id => $_cut): ?>
+                <th class="bt pastel centered" colspan="2" style="text-align: center; background-color: <?php echo $_cut->color ?>;"><?php echo $_cut->name ?></th>
+                <?php endforeach; ?>
+            </tr>
+            <tr style="border-bottom: 1px solid gray;">
+                <th colspan="3">&nbsp;</th>
+                <th class="number"><?php echo I18n::__('revenue_th_net') ?></th>
+                <th class="number"><?php echo I18n::__('revenue_th_gros') ?></th>
+                <?php foreach ($costunittypes as $_id => $_cut): ?>
+                <th class="pastel number" style="background-color: <?php echo $_cut->color ?>;"><?php echo I18n::__('revenue_th_net') ?></th>
+                <th class="pastel number" style="background-color: <?php echo $_cut->color ?>;"><?php echo I18n::__('revenue_th_gros') ?></th>
+                <?php endforeach; ?>
             </tr>
         </thead>
+        <tfoot>
+            <tr>
+                <td class="bt bb emphasize" colspan="3"><?php echo I18n::__('revenue_totals') ?></td>
+                <td class="bt bb emphasize number"><?php echo htmlspecialchars(Flight::nformat($totals['totalnet'])) ?></td>
+                <td class="bt bb emphasize number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
+                <?php foreach ($costunittypes as $_id => $_cut): ?>
+                    <td class="bt bb emphasize number"><?php echo htmlspecialchars(Flight::nformat($totals[$_cut->getId()]['totalnet'])) ?></td>
+                    <td class="bt bb emphasize number"><?php echo htmlspecialchars(Flight::nformat($totals[$_cut->getId()]['totalgros'])) ?></td>
+                <?php endforeach; ?>
+            </tr>
+        </tfoot>
         <tbody>
-        <?php foreach ($records as $_id => $_record): ?>
+            <?php foreach ($records as $_id => $_record): ?>
             <tr>
+                <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
                 <td><?php echo htmlspecialchars($_record->number) ?></td>
+                <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><?php echo htmlspecialchars($_record->getPerson()->name) ?></td>
+                <td class="number"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
+                <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
+                <?php foreach ($costunittypes as $_id => $_cut): ?>
+                <td class="number" style="background-color: <?php echo $_cut->color ?>;"><?php echo htmlspecialchars(Flight::nformat($_record->netByCostunit($_cut))) ?></td>
+                <td class="number" style="background-color: <?php echo $_cut->color ?>;"><?php echo htmlspecialchars(Flight::nformat($_record->grosByCostunit($_cut))) ?></td>
+                <?php endforeach; ?>
             </tr>
-        <?php endforeach ?>
-            <tr>
-                <td class="bt bb emphasize"><?php echo I18n::__('transaction_label_total') ?></td>
-            </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
+
 </body>
 </html>

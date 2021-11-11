@@ -200,8 +200,13 @@ class Model_Transaction extends Model
     {
         $discount = $this->bean->getDiscount();
         if ($discount->days != 0 && $discount->value != 0) {
+            // there is a possible discount within a certain time period, aka. skonto
             return I18n::__('transaction_payment_condition_discount', null, [$this->bean->duedays, $discount->days, $discount->value]);
+        } elseif ($this->bean->duedays == 0) {
+            // duedays is 0 (zero)
+            return I18n::__('transaction_payment_condition_immediately');
         } else {
+            // no discount, but due days are not zero
             return I18n::__('transaction_payment_condition_no_discount', null, [$this->bean->duedays]);
         }
     }
@@ -462,6 +467,7 @@ SQL;
         $this->bean->bookingdate = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('duedate', new Converter_Mysqldate());
+        $this->addConverter('duedays', new Converter_Decimal());
         $this->addConverter('net', new Converter_Decimal());
         $this->addConverter('vat', new Converter_Decimal());
         $this->addConverter('gros', new Converter_Decimal());
