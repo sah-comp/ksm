@@ -42,6 +42,23 @@
                     value="<?php echo htmlspecialchars($_SESSION['revenue']['enddate']) ?>"
                     required="required" />
             </div>
+            <div class="row">
+                <input
+                    type="hidden"
+                    name="dialog[unpaid]"
+                    value="0" />
+                <input
+                    id="revenue-unpaid"
+                    type="checkbox"
+                    name="dialog[unpaid]"
+                    <?php echo ($_SESSION['revenue']['unpaid']) ? 'checked="checked"' : '' ?>
+                    value="1" />
+                <label
+                    for="revenue-unpaid"
+                    class="cb">
+                    <?php echo I18n::__('revenue_label_unpaid') ?>
+                </label>
+            </div>
         </fielset>
         <div class="buttons">
             <a

@@ -44,7 +44,7 @@
     </tfoot>
     <tbody>
         <?php foreach ($records as $_id => $_record): ?>
-        <tr>
+        <tr <?php echo $_record->scaffoldStyle() ?>>
             <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
             <td>
                 <a href="<?php echo Url::build('/admin/transaction/edit/%d/', [$_record->getId()]) ?>" title="<?php echo htmlspecialchars($_record->number) ?>" class="in-table"><?php echo htmlspecialchars($_record->number) ?></a>

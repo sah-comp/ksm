@@ -28,6 +28,23 @@
             value="<?php echo htmlspecialchars($record->name) ?>"
             required="required" />
     </div>
+    <div class="row <?php echo ($record->hasError('bookable')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[bookable]"
+            value="0" />
+        <input
+            id="contracttype-bookable"
+            type="checkbox"
+            name="dialog[bookable]"
+            <?php echo ($record->bookable) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-bookable"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_bookable') ?>
+        </label>
+    </div>
     <div class="row <?php echo ($record->hasError('nickname')) ? 'error' : ''; ?>">
         <label
             for="contracttype-nickname">

@@ -1174,6 +1174,10 @@ fieldset.tab fieldset:last-child .attach {
     text-align: left;
 }
 
+.panel .tab [class*="span"].tar label {
+    text-align: right;
+}
+
 /* input, textarea and select in a tab will stretch */
 .panel .tab [class*="span"] input,
 .panel .tab [class*="span"] textarea,

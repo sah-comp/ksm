@@ -218,25 +218,25 @@
                 &nbsp;
             </div>
             <div class="span1">
-                <?php echo I18n::__('position_label_product') ?>
+                <label><?php echo I18n::__('position_label_product') ?></label>
             </div>
             <div class="span4">
-                <?php echo I18n::__('position_label_product_desc') ?>
+                <label><?php echo I18n::__('position_label_product_desc') ?></label>
             </div>
             <div class="span1 tar">
-                <?php echo I18n::__('position_label_count') ?>
+                <label><?php echo I18n::__('position_label_count') ?></label>
             </div>
             <div class="span1">
-                <?php echo I18n::__('position_label_unit') ?>
+                <label><?php echo I18n::__('position_label_unit') ?></label>
             </div>
             <div class="span1">
-                <?php echo I18n::__('position_label_alternative') ?>
+                <label><?php echo I18n::__('position_label_alternative') ?></label>
             </div>
             <div class="span1 tar">
-                <?php echo I18n::__('position_label_salesprice') ?>
+                <label><?php echo I18n::__('position_label_salesprice') ?></label>
             </div>
             <div class="span2 tar">
-                <?php echo I18n::__('position_label_total') ?>
+                <label><?php echo I18n::__('position_label_total') ?></label>
             </div>
         </div>
         <div
@@ -329,19 +329,19 @@
                 &nbsp;
             </div>
             <div class="span2">
-                <?php echo I18n::__('payment_label_bookingdate') ?>
+                <label><?php echo I18n::__('payment_label_bookingdate') ?></label>
             </div>
             <div class="span4">
-                <?php echo I18n::__('payment_label_desc') ?>
+                <label><?php echo I18n::__('payment_label_desc') ?></label>
             </div>
             <div class="span2">
-                <?php echo I18n::__('payment_label_statement') ?>
+                <label><?php echo I18n::__('payment_label_statement') ?></label>
             </div>
             <div class="span1">
-                <?php echo I18n::__('payment_label_closingpayment') ?>
+                <label><?php echo I18n::__('payment_label_closingpayment') ?></label>
             </div>
             <div class="span2 tar">
-                <?php echo I18n::__('payment_label_amount') ?>
+                <label><?php echo I18n::__('payment_label_amount') ?></label>
             </div>
         </div>
         <div

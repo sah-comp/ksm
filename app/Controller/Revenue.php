@@ -60,6 +60,13 @@ class Controller_Revenue extends Controller
     public $costunittypes = [];
 
     /**
+     * Container for bookable contracttype beans
+     *
+     * @var array
+     */
+    public $bookables = [];
+
+    /**
      * Constructs a new Revenue controller.
      *
      * @param int (optional) id of a bean
@@ -71,12 +78,13 @@ class Controller_Revenue extends Controller
         if (! isset($_SESSION['revenue'])) {
             $_SESSION['revenue'] = [
                 'startdate' => $this->getMinDate(),
-                'enddate' => $this->getMaxDate()
-
+                'enddate' => $this->getMaxDate(),
+                'unpaid' => 0
             ];
         }
         $this->record = R::load('transaction', $id);
         $this->costunittypes = R::find('costunittype', 'ORDER BY sequence');
+        $this->bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
     }
 
     /**
@@ -123,7 +131,8 @@ class Controller_Revenue extends Controller
             $dialog = Flight::request()->data->dialog;
             $_SESSION['revenue'] = [
                 'startdate' => $dialog['startdate'],
-                'enddate' => $dialog['enddate']
+                'enddate' => $dialog['enddate'],
+                'unpaid' => $dialog['unpaid']
             ];
             Flight::get('user')->notify(I18n::__('revenue_select_success'));
             $this->redirect('/revenue/');
@@ -144,26 +153,40 @@ class Controller_Revenue extends Controller
      * @param string $order_dir defaults to 'DESC'
      * @return void
      */
-    public function getCollection($contracttype_id = 12, $order_dir = 'ASC')
+    public function getCollection($order_dir = 'ASC')
     {
-        $this->records = R::find('transaction', " (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id = :type ORDER BY number " . $order_dir, [
+        $types = [];
+        foreach ($this->bookables as $id => $contracttype) {
+            $types[$id] = $contracttype->nickname;
+        }
+        $type_flat = implode(', ', array_keys($types));
+
+        $stati = "'paid'";
+        if ($_SESSION['revenue']['unpaid']) {
+            $stati .= ", 'open'";
+        }
+
+        $this->records = R::find('transaction', " (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $stati . ") ORDER BY number " . $order_dir, [
             ':startdate' => $_SESSION['revenue']['startdate'],
             ':enddate' => $_SESSION['revenue']['enddate'],
-            ':type' => $contracttype_id
+            ':type' => $type_flat
         ]);
-        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id = :type", [
+
+        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $stati . ")", [
             ':startdate' => $_SESSION['revenue']['startdate'],
             ':enddate' => $_SESSION['revenue']['enddate'],
-            ':type' => $contracttype_id
+            ':type' => $type_flat
         ]);
+
         foreach ($this->costunittypes as $id => $cut) {
-            $this->totals[$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id = :type WHERE pos.costunittype_id = :cut_id", [
+            $this->totals[$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $stati . ") WHERE pos.costunittype_id = :cut_id", [
                 ':startdate' => $_SESSION['revenue']['startdate'],
                 ':enddate' => $_SESSION['revenue']['enddate'],
-                ':type' => $contracttype_id,
+                ':type' => $type_flat,
                 ':cut_id' => $cut->getId()
             ]);
         }
+
         return null;
     }
 
