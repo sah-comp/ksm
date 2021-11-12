@@ -124,7 +124,21 @@ $('body').ready(function() {
      */
     if ($(".tabs").length) {
         $(".tabs").each(function() {
-            $("#"+$(this).attr("id")+" ul").idTabs($(this).attr("data-default"));
+            if (localStorage.getItem("lastTab") && $("#" + localStorage.getItem("lastTab")).length) {
+                // choose lastTab from localStorage as default tabs when it is on the current page
+                var defaultid = localStorage.getItem("lastTab");
+            } else {
+                var defaultid = $(this).attr("data-default");
+            }
+            //alert('Default tab is ' + defaultid);
+            $("#"+$(this).attr("id")+" ul").idTabs({
+                start: defaultid,
+                click: function(id, all, container, settings) {
+                    localStorage.setItem("lastTab", id.substring(1));
+                    //alert('clicked ' + id);
+                    return true;
+                }
+            });
         });
     }
 

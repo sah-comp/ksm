@@ -504,6 +504,9 @@ SQL;
         // calculate payments
         $this->bean->totalpaid = 0;
         foreach ($this->bean->ownPayment as $id => $payment) {
+            if ($payment->closingpayment) {
+                $this->bean->status = "paid";//manually accepted payment as last payment, closing this transaction
+            }
             $this->bean->totalpaid += $converter->convert($payment->amount);
         }
         $this->bean->totalpaid = round($this->bean->totalpaid, 2);
@@ -512,7 +515,10 @@ SQL;
         $this->bean->vat = round($this->bean->vat, 2);
         $this->bean->gros = round($this->bean->gros, 2);
 
-        $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid);
+        $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid, 2);
+        if ($this->bean->balance === 0) {
+            $this->bean->status = "paid";// automatically set as paid when transaction is balanced
+        }
 
         if (!CINNEBAR_MIP) {
             if (!$this->bean->contracttype_id) {

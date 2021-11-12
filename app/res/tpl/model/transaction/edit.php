@@ -331,8 +331,14 @@
             <div class="span2">
                 <?php echo I18n::__('payment_label_bookingdate') ?>
             </div>
-            <div class="span7">
+            <div class="span4">
                 <?php echo I18n::__('payment_label_desc') ?>
+            </div>
+            <div class="span2">
+                <?php echo I18n::__('payment_label_statement') ?>
+            </div>
+            <div class="span1">
+                <?php echo I18n::__('payment_label_closingpayment') ?>
             </div>
             <div class="span2 tar">
                 <?php echo I18n::__('payment_label_amount') ?>

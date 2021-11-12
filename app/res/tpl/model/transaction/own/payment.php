@@ -36,6 +36,10 @@
             type="hidden"
             name="dialog[ownPayment][<?php echo $index ?>][id]"
             value="<?php echo $_payment->getId() ?>" />
+        <input
+            type="hidden"
+            name="dialog[ownPayment][<?php echo $index ?>][closingpayment]"
+            value="0" />
     </div>
 
     <div class="row">
@@ -49,12 +53,28 @@
                 name="dialog[ownPayment][<?php echo $index ?>][bookingdate]"
                 value="<?php echo htmlspecialchars($_payment->bookingdate) ?>">
         </div>
-        <div class="span7">
+        <div class="span4">
             <textarea
                 id="transaction-<?php echo $record->getId() ?>-payment-<?php echo $index ?>-desc"
                 name="dialog[ownPayment][<?php echo $index ?>][desc]"
                 rows="1"
                 cols="60"><?php echo htmlspecialchars($_payment->desc) ?></textarea>
+        </div>
+        <div class="span2">
+            <textarea
+                id="transaction-<?php echo $record->getId() ?>-payment-<?php echo $index ?>-statement"
+                name="dialog[ownPayment][<?php echo $index ?>][statement]"
+                rows="1"
+                cols="60"><?php echo htmlspecialchars($_payment->statement) ?></textarea>
+        </div>
+        <div class="span1">
+            <input
+                id="transaction-<?php echo $record->getId() ?>-payment-<?php echo $index ?>-closingpayment"
+                title="<?php echo I18n::__('payment_title_closingpayment') ?>"
+                type="checkbox"
+                name="dialog[ownPayment][<?php echo $index ?>][closingpayment]"
+                <?php echo ($_payment->closingpayment) ? 'checked="checked"' : '' ?>
+                value="1" />
         </div>
         <div class="span2">
             <input

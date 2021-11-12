@@ -12,7 +12,9 @@ $_transactions = R::find('transaction', "person_id = ? ORDER BY number", [$recor
             <th><?php echo I18n::__('transaction_label_contracttype') ?></th>
             <th><?php echo I18n::__('transaction_label_number') ?></th>
             <th><?php echo I18n::__('transaction_label_bookingdate') ?></th>
-            <th><?php echo I18n::__('transaction_label_status') ?></th>
+            <th class="number"><?php echo I18n::__('transaction_label_net') ?></th>
+            <th class="number"><?php echo I18n::__('transaction_label_vat') ?></th>
+            <th class="number"><?php echo I18n::__('transaction_label_gros') ?></th>
         </tr>
     </thead>
     <tbody>
@@ -37,8 +39,19 @@ $_transactions = R::find('transaction', "person_id = ? ORDER BY number", [$recor
                 <?php echo htmlspecialchars($_transaction->localizedDate('bookingdate')) ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_transaction->status) ?>">
-                <?php echo htmlspecialchars($_transaction->status) ?>
+                class="number"
+                data-order="<?php echo htmlspecialchars($_transaction->decimal('net')) ?>">
+                <?php echo htmlspecialchars($_transaction->decimal('net')) ?>
+            </td>
+            <td
+                class="number"
+                data-order="<?php echo htmlspecialchars($_transaction->decimal('vat')) ?>">
+                <?php echo htmlspecialchars($_transaction->decimal('vat')) ?>
+            </td>
+            <td
+                class="number"
+                data-order="<?php echo htmlspecialchars($_transaction->decimal('gros')) ?>">
+                <?php echo htmlspecialchars($_transaction->decimal('gros')) ?>
             </td>
         </tr>
     <?php endforeach; ?>
