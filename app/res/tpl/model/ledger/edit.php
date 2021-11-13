@@ -121,6 +121,55 @@
         <?php endforeach ?>
         </div>
         <!-- end of grid based data -->
+        <div class="row">
+            <div class="span1">&nbsp;</div>
+            <div class="span5">
+                <label>
+                    <?php echo I18n::__('ledger_label_totals') ?>
+                </label>
+            </div>
+            <div class="span1">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[totaltaking]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('totaltaking')) ?>">
+            </div>
+            <div class="span1">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[totalexpense]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('totalexpense')) ?>">
+            </div>
+            <div class="span1">
+                &nbsp;
+            </div>
+            <div class="span1">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[totalvattaking]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('totalvattaking')) ?>">
+            </div><div class="span1">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[totalvatexpense]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('totalvatexpense')) ?>">
+            </div><div class="span1">
+                <input
+                    type="text"
+                    class="number"
+                    name="dialog[balance]"
+                    readonly="readonly"
+                    value="<?php echo htmlspecialchars($record->decimal('balance')) ?>">
+            </div>
+        </div>
     </fieldset>
 </div>
 <!-- end of ledger edit form -->

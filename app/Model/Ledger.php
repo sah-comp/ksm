@@ -39,6 +39,16 @@ class Model_Ledger extends Model
     }
 
     /**
+     * Returns wether the model has a toolbar menu extension or not.
+     *
+     * @return bool
+     */
+    public function hasMenu()
+    {
+        return true;
+    }
+
+    /**
      * Returns an array of adjustmentitems ordered by deliverer and invoice.
      *
      * @return array
@@ -54,6 +64,21 @@ class Model_Ledger extends Model
     public function update()
     {
         parent::update();
+        $converter = new Converter_Decimal();
+        // calculate totals
+        $this->bean->totaltaking = 0;
+        $this->bean->totalexpense = 0;
+        $this->bean->totalvattaking = 0;
+        $this->bean->totalvatexpense = 0;
+        $this->bean->balance = $this->bean->cash;
+        foreach ($this->bean->ownLedgeritem as $id => $ledgeritem) {
+            $this->bean->totaltaking += $converter->convert($ledgeritem->taking);
+            $this->bean->totalvattaking += $converter->convert($ledgeritem->vattaking);
+            $this->bean->totalexpense += $converter->convert($ledgeritem->expense);
+            $this->bean->totalvatexpense += $converter->convert($ledgeritem->vatexpense);
+            $ledgeritem->balance = $this->bean->balance - $converter->convert($ledgeritem->expense) + $converter->convert($ledgeritem->taking);
+            $this->bean->balance = $this->bean->balance - $converter->convert($ledgeritem->expense) + $converter->convert($ledgeritem->taking);
+        }
     }
 
     /**
@@ -66,5 +91,10 @@ class Model_Ledger extends Model
             new Validator_HasValue()
         ));
         $this->addConverter('cash', new Converter_Decimal());
+        $this->addConverter('totaltaking', new Converter_Decimal());
+        $this->addConverter('totalvattaking', new Converter_Decimal());
+        $this->addConverter('totalexpense', new Converter_Decimal());
+        $this->addConverter('totalvatexpense', new Converter_Decimal());
+        $this->addConverter('balance', new Converter_Decimal());
     }
 }
