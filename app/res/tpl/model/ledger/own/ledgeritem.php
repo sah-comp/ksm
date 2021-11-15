@@ -40,6 +40,7 @@
                 placeholder="yyyy-mm-dd"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][bookingdate]"
                 value="<?php echo htmlspecialchars($_ledgeritem->bookingdate) ?>" />
+            <input type="hidden" name="dialog[ownLedgeritem][<?php echo $index ?>][bookingtime]" value="<?php echo htmlspecialchars($_ledgeritem->getBookingtime()) ?>">
         </div>
         <div class="span3">
             <input

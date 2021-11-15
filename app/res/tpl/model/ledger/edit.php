@@ -15,6 +15,34 @@
 </div>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('ledger_legend') ?></legend>
+    <div class="row <?php echo ($record->hasError('fy')) ? 'error' : ''; ?>">
+        <label
+            for="ledger-fy">
+            <?php echo I18n::__('ledger_label_fy') ?>
+        </label>
+        <input
+            id="ledger-fy"
+            type="text"
+            name="dialog[fy]"
+            value="<?php echo htmlspecialchars($record->fy) ?>"
+            required="required" />
+    </div>
+    <div class="row <?php echo ($record->hasError('month')) ? 'error' : ''; ?>">
+        <label
+            for="ledger-month">
+            <?php echo I18n::__('ledger_label_month') ?>
+        </label>
+        <select
+            id="ledger-month"
+            name="dialog[month]">
+            <?php foreach ($record->getMonths() as $_month): ?>
+            <option
+                value="<?php echo $_month ?>"
+                <?php echo ($record->month == $_month) ? 'selected="selected"' : '' ?>><?php echo I18n::__('month_label_' . $_month) ?>
+            </option>
+            <?php endforeach ?>
+        </select>
+    </div>
     <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
         <label
             for="ledger-name">
@@ -79,7 +107,7 @@
             </div>
             <div class="span1">
                 <label>
-                    <?php echo I18n::__('ledgeritem_label_vat_id') ?>
+                    <?php echo I18n::__('ledgeritem_label_vat') ?>
                 </label>
             </div>
             <div class="span1 tar">

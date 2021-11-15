@@ -18,6 +18,19 @@
 class Model_Ledgeritem extends Model
 {
     /**
+     * Return a string with the booking time.
+     *
+     * @return string
+     */
+    public function getBookingtime()
+    {
+        if (!$this->bean->bookingtime) {
+            $this->bean->bookingtime = date('H:i:s');
+        }
+        return $this->bean->bookingtime;
+    }
+
+    /**
      * Update.
      */
     public function update()
@@ -35,6 +48,7 @@ class Model_Ledgeritem extends Model
     public function dispense()
     {
         $this->bean->bookingdate = null;
+        $this->bean->bookingtime = null;
         $this->bean->vat = 0;
         $this->bean->taking = 0;
         $this->bean->expense = 0;

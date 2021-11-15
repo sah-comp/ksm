@@ -175,7 +175,6 @@ class Model_Transaction extends Model
         $stack = [];
         $stack[] = $this->bean->getContracttype()->name;
         $stack[] = $this->bean->number;
-        //$stack[] = $this->bean->getPerson()->nickname;
         $stack[] = I18n::__('person_label_account');
         $stack[] = $this->bean->getPerson()->account;
         return trim(implode('-', $stack));

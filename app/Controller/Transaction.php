@@ -32,21 +32,7 @@ class Controller_Transaction extends Controller_Scaffold
     public $totals = [];
 
     /**
-     * Constructor
-     *
-     * @param int $id ID of the contract to output as PDF
-     */
-    /*
-    public function __construct($id)
-    {
-        session_start();
-        Auth::check();
-        $this->record = R::load('transaction', $id);
-    }
-    */
-
-    /**
-     * Duplicates the given transaction as another contracttype and redirects to edit it.
+     * Duplicates the given transaction as another transactiontype and redirects to edit it.
      */
     public function copy()
     {
@@ -71,7 +57,7 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /*
-     * Generate a PDF with data deriving from the addressed contract bean.
+     * Generate a PDF with data deriving from the addressed transaction bean.
      */
     public function pdf()
     {
@@ -121,7 +107,7 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /*
-     * Generate a PDF with data deriving from the addressed contract bean.
+     * Generate a PDF with data deriving from the addressed transaction bean.
      */
     public function pdfSingleTransaction()
     {
@@ -142,8 +128,6 @@ class Controller_Transaction extends Controller_Scaffold
         ]);
         $html = ob_get_contents();
         ob_end_clean();
-        //echo $html;
-        //return;
         $mpdf->WriteHTML($html);
         $mpdf->Output($filename, 'D');
         exit;

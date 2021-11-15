@@ -132,8 +132,8 @@ Flight::map('textile', function ($text, $restricted = false, $mode = 'html5') {
 /**
  * number_format
  */
-Flight::map('nformat', function ($number, $digits = CINNEBAR_DECIMAL_PLACES, $thousands_separator = '.', $decimal_point = ',') {
-    if ((float)$number === 0.0) {
+Flight::map('nformat', function ($number, $digits = CINNEBAR_DECIMAL_PLACES, $show_zero = false, $thousands_separator = '.', $decimal_point = ',') {
+    if ((float)$number === 0.0 && !$show_zero) {
         return '';
     }
     return number_format((float)$number, $digits, $decimal_point, $thousands_separator);

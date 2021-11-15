@@ -257,6 +257,14 @@ Flight::route('(/[a-z]{2})/transaction/pdf(/@id:[0-9]+)', function ($id) {
 });
 
 /**
+ * Routes to the ledger controller to download a ledger as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/ledger/pdf(/@id:[0-9]+)', function ($id) {
+    $ledgerController = new Controller_Ledger(null, 'ledger', $id);
+    $ledgerController->pdf();
+});
+
+/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
