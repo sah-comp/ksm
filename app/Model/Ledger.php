@@ -63,6 +63,10 @@ class Model_Ledger extends Model
                 'sort' => [
                     'name' => 'cash'
                 ],
+                'class' => 'number',
+                'callback' => [
+                    'name' => 'decimal'
+                ],
                 'filter' => [
                     'tag' => 'number'
                 ],
@@ -72,6 +76,10 @@ class Model_Ledger extends Model
                 'name' => 'balance',
                 'sort' => [
                     'name' => 'balance'
+                ],
+                'class' => 'number',
+                'callback' => [
+                    'name' => 'decimal'
                 ],
                 'filter' => [
                     'tag' => 'number'
