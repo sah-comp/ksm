@@ -36,7 +36,12 @@ class Controller_Transaction extends Controller_Scaffold
      */
     public function copy()
     {
+        Permission::check(Flight::get('user'), $this->type, 'add');
         if (Flight::request()->query->submit == I18n::__('transaction_action_copy_as')) {
+            if (! Security::validateCSRFToken(Flight::request()->query->token)) {
+                $this->redirect("/logout");
+                exit();
+            }
             R::begin();
             try {
                 $copy = R::duplicate($this->record);
@@ -47,11 +52,13 @@ class Controller_Transaction extends Controller_Scaffold
                 R::commit();
                 Flight::get('user')->notify(I18n::__('transaction_success_copy', null, [$this->record->number, $copy->contracttype->name]), 'success');
                 $this->redirect('/admin/transaction/edit/' . $copy->getId());
+                exit();
             } catch (\Exception $e) {
                 R::rollback();
                 error_log($e);
                 Flight::get('user')->notify(I18n::__('transaction_error_copy'), 'error');
                 $this->redirect('/admin/transaction/edit/' . $this->record->getId());
+                exit();
             }
         }
     }
@@ -77,7 +84,7 @@ class Controller_Transaction extends Controller_Scaffold
         if (count($this->records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
             Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
             $this->redirect('/admin/transaction');
-            exit;
+            exit();
         }
 
         $this->getTotals();

@@ -597,7 +597,7 @@ li:last-child form.pform {
     padding-right: 0;
 }
 
-form.pform.within {
+form.pform {
     padding-left: 1em;
     border-left: 1px solid silver;
 }

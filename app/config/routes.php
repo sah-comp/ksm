@@ -37,6 +37,7 @@ Flight::route('(/[a-z]{2})/', function () {
         // This is what will run if you are not logged in a open the top level page.
         $ksmController = new Controller_Welcome();
         $ksmController->redirect('/admin/appointment');
+        exit();
     }
 });
 
@@ -220,7 +221,7 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
  * Routes to the treaty controller to download a treaty as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
-    $treatyController = new Controller_Treaty($id);
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->pdf();
 });
 
@@ -228,7 +229,7 @@ Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
  * Routes to the treaty controller to display a treaty as a HTML page to the client.
  */
 Flight::route('(/[a-z]{2})/treaty/form/@id:[0-9]+', function ($id) {
-    $treatyController = new Controller_Treaty($id);
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->form();
 });
 
@@ -236,7 +237,7 @@ Flight::route('(/[a-z]{2})/treaty/form/@id:[0-9]+', function ($id) {
  * Routes to the treaty controller to duplicate the given bean as a new type.
  */
 Flight::route('GET (/[a-z]{2})/treaty/copy/@id:[0-9]+', function ($id) {
-    $treatyController = new Controller_Treaty($id);
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->copy();
 });
 
@@ -244,7 +245,7 @@ Flight::route('GET (/[a-z]{2})/treaty/copy/@id:[0-9]+', function ($id) {
  * Routes to the transaction controller to duplicate the given bean as a new type.
  */
 Flight::route('GET (/[a-z]{2})/transaction/copy/@id:[0-9]+', function ($id) {
-    $transactionController = new Controller_Transaction($id);
+    $transactionController = new Controller_Transaction(null, 'transaction', $id);
     $transactionController->copy();
 });
 

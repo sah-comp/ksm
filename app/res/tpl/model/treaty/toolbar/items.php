@@ -13,14 +13,16 @@
     <form
         id="pform"
         name="pform"
-        class="pform within"
+        class="pform"
         method="GET"
         action="<?php echo Url::build('/treaty/copy/%d/', [$record->getId()]) ?>"
         accept-charset="utf-8"
         autocomplete="off"
         enctype="multipart/form-data">
+        <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
         <select
-            name="copyas">
+            name="copyas"
+            required="required">
             <option value=""><?php echo I18n::__('treaty_copy_as') ?></option>
             <?php foreach (R::find('contracttype', ' enabled = 1 AND service = 1 ORDER BY name') as $_id => $_contracttype): ?>
             <option value="<?php echo $_id ?>"><?php echo $_contracttype->name ?></option>
