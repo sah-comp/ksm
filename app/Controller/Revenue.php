@@ -79,7 +79,7 @@ class Controller_Revenue extends Controller
             $_SESSION['revenue'] = [
                 'startdate' => $this->getMinDate(),
                 'enddate' => $this->getMaxDate(),
-                'unpaid' => 0
+                'unpaid' => 1
             ];
         }
         $this->record = R::load('transaction', $id);
@@ -95,6 +95,7 @@ class Controller_Revenue extends Controller
         Permission::check(Flight::get('user'), 'transaction', 'index');
         unset($_SESSION['revenue']);
         $this->redirect('/revenue/index');
+        exit();
     }
 
     /**
@@ -127,6 +128,7 @@ class Controller_Revenue extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             $dialog = Flight::request()->data->dialog;
             $_SESSION['revenue'] = [

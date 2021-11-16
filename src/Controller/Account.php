@@ -39,12 +39,14 @@ class Controller_Account extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             Flight::get('user')->import(Flight::request()->data->dialog);
             try {
                 R::store(Flight::get('user'));
                 Flight::get('user')->notify(I18n::__('account_edit_success'), 'success');
                 $this->redirect('/account/');
+                exit();
             } catch (Exception $e) {
                 Flight::get('user')->notify(I18n::__('account_edit_failure'), 'error');
             }
@@ -68,6 +70,7 @@ class Controller_Account extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             if (Flight::get('user')->changePassword(
                 Flight::request()->data->pw,
@@ -78,6 +81,7 @@ class Controller_Account extends Controller
                     R::store(Flight::get('user'));
                     Flight::get('user')->notify(I18n::__('account_changepassword_success'), 'success');
                     $this->redirect('/account/');
+                    exit();
                 } catch (Exception $e) {
                     //Whoops, what nu?
                 }

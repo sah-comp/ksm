@@ -64,6 +64,7 @@ class Controller_Appointment extends Controller
         if (count($records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
             Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
             $this->redirect('/admin/appointment');
+            exit();
         }
 
         ob_start();
@@ -97,6 +98,7 @@ class Controller_Appointment extends Controller
             Flight::get('user')->notify(I18n::__("appointment_completion_failed"), 'error');
         }
         $this->redirect("/admin/appointment/edit/{$this->appointment->getId()}");
+        exit();
     }
 
     /**

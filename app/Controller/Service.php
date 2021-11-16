@@ -69,11 +69,13 @@ class Controller_Service extends Controller_Scaffold
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             if (Flight::request()->data->submit == I18n::__('service_action_print_day')) {
                 $_SESSION['service']['pday'] = Flight::request()->data->pday;
                 $this->pdf($_SESSION['service']['pday']);
                 $this->redirect("/service"); // I never get there, PDF download needs exit
+                exit();
             }
             //handle a selection
             $this->selection = Flight::request()->data->selection;
@@ -82,6 +84,7 @@ class Controller_Service extends Controller_Scaffold
                 Flight::request()->data->next_action
             )) {
                 $this->redirect("/service");
+                exit();
             }
         }
         $this->records = $this->record->getConfirmedUndone();
@@ -126,6 +129,7 @@ class Controller_Service extends Controller_Scaffold
             error_log($e);
             $this->notifyAbout('error');
             $this->redirect('/service');
+            exit();
         }
     }
 

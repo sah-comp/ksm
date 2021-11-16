@@ -40,6 +40,7 @@ class Controller_Login extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             try {
                 $login = R::graph(Flight::request()->data->dialog, true);
@@ -51,8 +52,10 @@ class Controller_Login extends Controller
                     R::store($login);
                     if ($login->user->startpage) {
                         $this->redirect('/' . $login->user->startpage);
+                        exit();
                     } else {
                         $this->redirect(Flight::request()->data->goto, $raw = true);
+                        exit();
                     }
                 }
                 $this->message = I18n::__('login_failed');

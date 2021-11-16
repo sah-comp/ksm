@@ -19,7 +19,7 @@ class Controller_Install extends Controller
 {
     /**
      * DANGER MOUSE! DANGER MOUSE! THIS CAN KILL YOUR DATABASE AT ONCE!!!
-     * 
+     *
      * Displays a install page if not already installed.
      *
      * To determine if the install proccess is needed we simply check if there is already
@@ -30,24 +30,25 @@ class Controller_Install extends Controller
      */
     public function index()
     {
-        if ($setting = R::findOne('setting', ' installed = ?', array(true))) $this->redirect('/admin');
+        if ($setting = R::findOne('setting', ' installed = ?', array(true))) {
+            $this->redirect('/admin');
+        }
         $user = R::dispense('user');
-        if (Flight::request()->method == 'POST' && 
+        if (Flight::request()->method == 'POST' &&
                 password_verify(Flight::request()->data->pass, CINNEBAR_INSTALL_PASS)) {
             try {
                 R::nuke();
                 $this->makeDatabase();
                 $this->initialFillings();
-                $user = R::graph( Flight::request()->data->dialog, TRUE );
+                $user = R::graph(Flight::request()->data->dialog, true);
                 R::store($user);
                 $user->notify(I18n::__('app_install_success'), 'success');
                 $this->redirect('/admin');
-            }
-            catch (Exception $e) {
+                exit();
+            } catch (Exception $e) {
                 error_log($e);
                 //we failed to install, why?
             }
-            
         }
         // either no yet submitted or the credentials given failed
         Flight::render('install/index_'.Flight::get('language'), array(
@@ -58,7 +59,7 @@ class Controller_Install extends Controller
             'language' => Flight::get('language')
         ));
     }
-    
+
     /**
      * Installs the inital database if not already done so.
      *
@@ -66,7 +67,7 @@ class Controller_Install extends Controller
      */
     protected function makeDatabase()
     {
-        if ( ! $queries = $this->getQueriesFromSQLFile(__DIR__ . '/../../app/res/db/install.sql')) {
+        if (! $queries = $this->getQueriesFromSQLFile(__DIR__ . '/../../app/res/db/install.sql')) {
             throw new Exception_Install(__DIR__ . '/../../app/res/db/install.sql is missing');
         }
         foreach ($queries as $query) {
@@ -74,7 +75,7 @@ class Controller_Install extends Controller
         }
         return true;
     }
-    
+
     /**
      * Add initially needed tokens and translations.
      *
@@ -130,7 +131,7 @@ class Controller_Install extends Controller
         $sys_i18n[1]->name = 'System';
         $sys_i18n[2]->language = 'us';
         $sys_i18n[2]->name = 'System';
-        
+
         $permissions = R::dispense('permission', 5);
         $permissions[0]->method = $action_index->name;
         $permissions[0]->sharedRole = array($role_admin, $role_user);
@@ -141,281 +142,281 @@ class Controller_Install extends Controller
         $permissions[3]->method = $action_edit->name;
         $permissions[3]->sharedRole = array($role_admin);
         $permissions[4]->method = $action_expunge->name;
-        
+
         $domains[0]->ownPermission = $permissions;
-        
+
         $domains[0]->ownDomaini18n = array(
             $sys_i18n[0], $sys_i18n[1], $sys_i18n[2]
         );
-        
-        
-            $domains[1]->name = 'admin';
-            $domains[1]->url = 'admin';
-            $domains[1]->sequence = 10000;
-            $admin_i18n = R::dispense('domaini18n', 3);
-            $admin_i18n[0]->language = 'de';
-            $admin_i18n[0]->name = 'Einstellungen';
-            $admin_i18n[1]->language = 'en';
-            $admin_i18n[1]->name = 'Settings';
-            $admin_i18n[2]->language = 'us';
-            $admin_i18n[2]->name = 'Settings';
-            $domains[1]->ownDomaini18n = array(
+
+
+        $domains[1]->name = 'admin';
+        $domains[1]->url = 'admin';
+        $domains[1]->sequence = 10000;
+        $admin_i18n = R::dispense('domaini18n', 3);
+        $admin_i18n[0]->language = 'de';
+        $admin_i18n[0]->name = 'Einstellungen';
+        $admin_i18n[1]->language = 'en';
+        $admin_i18n[1]->name = 'Settings';
+        $admin_i18n[2]->language = 'us';
+        $admin_i18n[2]->name = 'Settings';
+        $domains[1]->ownDomaini18n = array(
                 $admin_i18n[0], $admin_i18n[1], $admin_i18n[2]
             );
-            
-                $domains[2]->name = 'user';
-                $domains[2]->url = 'admin/user';
-                $domains[2]->sequence = 10100;
-                $user_i18n = R::dispense('domaini18n', 3);
-                $user_i18n[0]->language = 'de';
-                $user_i18n[0]->name = 'Benutzerkonten';
-                $user_i18n[1]->language = 'en';
-                $user_i18n[1]->name = 'Accounts';
-                $user_i18n[2]->language = 'us';
-                $user_i18n[2]->name = 'Accounts';
-                $domains[2]->ownDomaini18n = array(
+
+        $domains[2]->name = 'user';
+        $domains[2]->url = 'admin/user';
+        $domains[2]->sequence = 10100;
+        $user_i18n = R::dispense('domaini18n', 3);
+        $user_i18n[0]->language = 'de';
+        $user_i18n[0]->name = 'Benutzerkonten';
+        $user_i18n[1]->language = 'en';
+        $user_i18n[1]->name = 'Accounts';
+        $user_i18n[2]->language = 'us';
+        $user_i18n[2]->name = 'Accounts';
+        $domains[2]->ownDomaini18n = array(
                     $user_i18n[0], $user_i18n[1], $user_i18n[2]
                 );
-                
-                $domains[3]->name = 'language';
-                $domains[3]->url = 'admin/language';
-                $domains[3]->sequence = 10200;
-                $lang_i18n = R::dispense('domaini18n', 3);
-                $lang_i18n[0]->language = 'de';
-                $lang_i18n[0]->name = 'Sprachen';
-                $lang_i18n[1]->language = 'en';
-                $lang_i18n[1]->name = 'Languages';
-                $lang_i18n[2]->language = 'us';
-                $lang_i18n[2]->name = 'Languages';
-                $domains[3]->ownDomaini18n = array(
+
+        $domains[3]->name = 'language';
+        $domains[3]->url = 'admin/language';
+        $domains[3]->sequence = 10200;
+        $lang_i18n = R::dispense('domaini18n', 3);
+        $lang_i18n[0]->language = 'de';
+        $lang_i18n[0]->name = 'Sprachen';
+        $lang_i18n[1]->language = 'en';
+        $lang_i18n[1]->name = 'Languages';
+        $lang_i18n[2]->language = 'us';
+        $lang_i18n[2]->name = 'Languages';
+        $domains[3]->ownDomaini18n = array(
                     $lang_i18n[0], $lang_i18n[1], $lang_i18n[2]
                 );
-                
-                $domains[15]->name = 'currency';
-                $domains[15]->url = 'admin/currency';
-                $domains[15]->sequence = 10300;
-                $curr_i18n = R::dispense('domaini18n', 3);
-                $curr_i18n[0]->language = 'de';
-                $curr_i18n[0]->name = 'Währungen';
-                $curr_i18n[1]->language = 'en';
-                $curr_i18n[1]->name = 'Currencies';
-                $curr_i18n[2]->language = 'us';
-                $curr_i18n[2]->name = 'Currencies';
-                $domains[15]->ownDomaini18n = array(
+
+        $domains[15]->name = 'currency';
+        $domains[15]->url = 'admin/currency';
+        $domains[15]->sequence = 10300;
+        $curr_i18n = R::dispense('domaini18n', 3);
+        $curr_i18n[0]->language = 'de';
+        $curr_i18n[0]->name = 'Währungen';
+        $curr_i18n[1]->language = 'en';
+        $curr_i18n[1]->name = 'Currencies';
+        $curr_i18n[2]->language = 'us';
+        $curr_i18n[2]->name = 'Currencies';
+        $domains[15]->ownDomaini18n = array(
                     $curr_i18n[0], $curr_i18n[1], $curr_i18n[2]
                 );
-                
-                $domains[4]->name = 'country';
-                $domains[4]->url = 'admin/country';
-                $domains[4]->sequence = 10400;
-                $country_i18n = R::dispense('domaini18n', 3);
-                $country_i18n[0]->language = 'de';
-                $country_i18n[0]->name = 'Länder';
-                $country_i18n[1]->language = 'en';
-                $country_i18n[1]->name = 'Countries';
-                $country_i18n[2]->language = 'us';
-                $country_i18n[2]->name = 'Countries';
-                $domains[4]->ownDomaini18n = array(
+
+        $domains[4]->name = 'country';
+        $domains[4]->url = 'admin/country';
+        $domains[4]->sequence = 10400;
+        $country_i18n = R::dispense('domaini18n', 3);
+        $country_i18n[0]->language = 'de';
+        $country_i18n[0]->name = 'Länder';
+        $country_i18n[1]->language = 'en';
+        $country_i18n[1]->name = 'Countries';
+        $country_i18n[2]->language = 'us';
+        $country_i18n[2]->name = 'Countries';
+        $domains[4]->ownDomaini18n = array(
                     $country_i18n[0], $country_i18n[1], $country_i18n[2]
                 );
-                
-                $domains[5]->name = 'domain';
-                $domains[5]->url = 'admin/domain';
-                $domains[5]->sequence = 10500;
-                $domain_i18n = R::dispense('domaini18n', 3);
-                $domain_i18n[0]->language = 'de';
-                $domain_i18n[0]->name = 'Verzeichnisse';
-                $domain_i18n[1]->language = 'en';
-                $domain_i18n[1]->name = 'Domains';
-                $domain_i18n[2]->language = 'us';
-                $domain_i18n[2]->name = 'Domains';
-                $domains[5]->ownDomaini18n = array(
+
+        $domains[5]->name = 'domain';
+        $domains[5]->url = 'admin/domain';
+        $domains[5]->sequence = 10500;
+        $domain_i18n = R::dispense('domaini18n', 3);
+        $domain_i18n[0]->language = 'de';
+        $domain_i18n[0]->name = 'Verzeichnisse';
+        $domain_i18n[1]->language = 'en';
+        $domain_i18n[1]->name = 'Domains';
+        $domain_i18n[2]->language = 'us';
+        $domain_i18n[2]->name = 'Domains';
+        $domains[5]->ownDomaini18n = array(
                     $domain_i18n[0], $domain_i18n[1], $domain_i18n[2]
                 );
-                
-                $domains[6]->name = 'action';
-                $domains[6]->url = 'admin/action';
-                $domains[6]->sequence = 10600;
-                $action_i18n = R::dispense('domaini18n', 3);
-                $action_i18n[0]->language = 'de';
-                $action_i18n[0]->name = 'Kommandos';
-                $action_i18n[1]->language = 'en';
-                $action_i18n[1]->name = 'Actions';
-                $action_i18n[2]->language = 'us';
-                $action_i18n[2]->name = 'Actions';
-                $domains[6]->ownDomaini18n = array(
+
+        $domains[6]->name = 'action';
+        $domains[6]->url = 'admin/action';
+        $domains[6]->sequence = 10600;
+        $action_i18n = R::dispense('domaini18n', 3);
+        $action_i18n[0]->language = 'de';
+        $action_i18n[0]->name = 'Kommandos';
+        $action_i18n[1]->language = 'en';
+        $action_i18n[1]->name = 'Actions';
+        $action_i18n[2]->language = 'us';
+        $action_i18n[2]->name = 'Actions';
+        $domains[6]->ownDomaini18n = array(
                     $action_i18n[0], $action_i18n[1], $action_i18n[2]
                 );
-                
-                $domains[7]->name = 'role';
-                $domains[7]->url = 'admin/role';
-                $domains[7]->sequence = 10700;
-                $role_i18n = R::dispense('domaini18n', 3);
-                $role_i18n[0]->language = 'de';
-                $role_i18n[0]->name = 'Rollen';
-                $role_i18n[1]->language = 'en';
-                $role_i18n[1]->name = 'Roles';
-                $role_i18n[2]->language = 'us';
-                $role_i18n[2]->name = 'Roles';
-                $domains[7]->ownDomaini18n = array(
+
+        $domains[7]->name = 'role';
+        $domains[7]->url = 'admin/role';
+        $domains[7]->sequence = 10700;
+        $role_i18n = R::dispense('domaini18n', 3);
+        $role_i18n[0]->language = 'de';
+        $role_i18n[0]->name = 'Rollen';
+        $role_i18n[1]->language = 'en';
+        $role_i18n[1]->name = 'Roles';
+        $role_i18n[2]->language = 'us';
+        $role_i18n[2]->name = 'Roles';
+        $domains[7]->ownDomaini18n = array(
                     $role_i18n[0], $role_i18n[1], $role_i18n[2]
                 );
-                
-                $domains[8]->name = 'team';
-                $domains[8]->url = 'admin/team';
-                $domains[8]->sequence = 10800;
-                $team_i18n = R::dispense('domaini18n', 3);
-                $team_i18n[0]->language = 'de';
-                $team_i18n[0]->name = 'Teams';
-                $team_i18n[1]->language = 'en';
-                $team_i18n[1]->name = 'Groups';
-                $team_i18n[2]->language = 'us';
-                $team_i18n[2]->name = 'Groups';
-                $domains[8]->ownDomaini18n = array(
+
+        $domains[8]->name = 'team';
+        $domains[8]->url = 'admin/team';
+        $domains[8]->sequence = 10800;
+        $team_i18n = R::dispense('domaini18n', 3);
+        $team_i18n[0]->language = 'de';
+        $team_i18n[0]->name = 'Teams';
+        $team_i18n[1]->language = 'en';
+        $team_i18n[1]->name = 'Groups';
+        $team_i18n[2]->language = 'us';
+        $team_i18n[2]->name = 'Groups';
+        $domains[8]->ownDomaini18n = array(
                     $team_i18n[0], $team_i18n[1], $team_i18n[2]
                 );
-                
-                $domains[9]->name = 'token';
-                $domains[9]->url = 'admin/token';
-                $domains[9]->sequence = 10900;
-                $token_i18n = R::dispense('domaini18n', 3);
-                $token_i18n[0]->language = 'de';
-                $token_i18n[0]->name = 'Übersetzungen';
-                $token_i18n[1]->language = 'en';
-                $token_i18n[1]->name = 'Translations';
-                $token_i18n[2]->language = 'us';
-                $token_i18n[2]->name = 'Translations';
-                $domains[9]->ownDomaini18n = array(
+
+        $domains[9]->name = 'token';
+        $domains[9]->url = 'admin/token';
+        $domains[9]->sequence = 10900;
+        $token_i18n = R::dispense('domaini18n', 3);
+        $token_i18n[0]->language = 'de';
+        $token_i18n[0]->name = 'Übersetzungen';
+        $token_i18n[1]->language = 'en';
+        $token_i18n[1]->name = 'Translations';
+        $token_i18n[2]->language = 'us';
+        $token_i18n[2]->name = 'Translations';
+        $domains[9]->ownDomaini18n = array(
                     $token_i18n[0], $token_i18n[1], $token_i18n[2]
                 );
-                
-            $domains[10]->name = 'cms';
-            $domains[10]->url = 'cms';
-            $domains[10]->sequence = 9000;
-            $cms_i18n = R::dispense('domaini18n', 3);
-            $cms_i18n[0]->language = 'de';
-            $cms_i18n[0]->name = 'CMS';
-            $cms_i18n[1]->language = 'en';
-            $cms_i18n[1]->name = 'CMS';
-            $cms_i18n[2]->language = 'us';
-            $cms_i18n[2]->name = 'CMS';
-            $domains[10]->ownDomaini18n = array(
+
+        $domains[10]->name = 'cms';
+        $domains[10]->url = 'cms';
+        $domains[10]->sequence = 9000;
+        $cms_i18n = R::dispense('domaini18n', 3);
+        $cms_i18n[0]->language = 'de';
+        $cms_i18n[0]->name = 'CMS';
+        $cms_i18n[1]->language = 'en';
+        $cms_i18n[1]->name = 'CMS';
+        $cms_i18n[2]->language = 'us';
+        $cms_i18n[2]->name = 'CMS';
+        $domains[10]->ownDomaini18n = array(
                 $cms_i18n[0], $cms_i18n[1], $cms_i18n[2]
             );
-            
-                $domains[11]->name = 'media';
-                $domains[11]->url = 'cms/media';
-                $domains[11]->sequence = 9100;
-                $media_i18n = R::dispense('domaini18n', 3);
-                $media_i18n[0]->language = 'de';
-                $media_i18n[0]->name = 'Medien';
-                $media_i18n[1]->language = 'en';
-                $media_i18n[1]->name = 'Media';
-                $media_i18n[2]->language = 'us';
-                $media_i18n[2]->name = 'Media';
-                $domains[11]->ownDomaini18n = array(
+
+        $domains[11]->name = 'media';
+        $domains[11]->url = 'cms/media';
+        $domains[11]->sequence = 9100;
+        $media_i18n = R::dispense('domaini18n', 3);
+        $media_i18n[0]->language = 'de';
+        $media_i18n[0]->name = 'Medien';
+        $media_i18n[1]->language = 'en';
+        $media_i18n[1]->name = 'Media';
+        $media_i18n[2]->language = 'us';
+        $media_i18n[2]->name = 'Media';
+        $domains[11]->ownDomaini18n = array(
                     $media_i18n[0], $media_i18n[1], $media_i18n[2]
                 );
-                
-                $domains[12]->name = 'page';
-                $domains[12]->url = 'cms/page';
-                $domains[12]->invisible = true;//page domain is invisible, we use cms
-                $domains[12]->sequence = 9200;
-                $page_i18n = R::dispense('domaini18n', 3);
-                $page_i18n[0]->language = 'de';
-                $page_i18n[0]->name = 'Webseiten';
-                $page_i18n[1]->language = 'en';
-                $page_i18n[1]->name = 'Webpages';
-                $page_i18n[2]->language = 'us';
-                $page_i18n[2]->name = 'Webpages';
-                $domains[12]->ownDomaini18n = array(
+
+        $domains[12]->name = 'page';
+        $domains[12]->url = 'cms/page';
+        $domains[12]->invisible = true;//page domain is invisible, we use cms
+        $domains[12]->sequence = 9200;
+        $page_i18n = R::dispense('domaini18n', 3);
+        $page_i18n[0]->language = 'de';
+        $page_i18n[0]->name = 'Webseiten';
+        $page_i18n[1]->language = 'en';
+        $page_i18n[1]->name = 'Webpages';
+        $page_i18n[2]->language = 'us';
+        $page_i18n[2]->name = 'Webpages';
+        $domains[12]->ownDomaini18n = array(
                     $page_i18n[0], $page_i18n[1], $page_i18n[2]
                 );
-                
-                    $domains[16]->name = 'about';
-                    $domains[16]->url = 'about';
-                    $domains[16]->sequence = 9210;
-                    $site_i18n = R::dispense('domaini18n', 3);
-                    $site_i18n[0]->language = 'de';
-                    $site_i18n[0]->name = 'Über';
-                    $site_i18n[1]->language = 'en';
-                    $site_i18n[1]->name = 'About';
-                    $site_i18n[2]->language = 'us';
-                    $site_i18n[2]->name = 'About';
-                    $domains[16]->ownDomaini18n = array(
+
+        $domains[16]->name = 'about';
+        $domains[16]->url = 'about';
+        $domains[16]->sequence = 9210;
+        $site_i18n = R::dispense('domaini18n', 3);
+        $site_i18n[0]->language = 'de';
+        $site_i18n[0]->name = 'Über';
+        $site_i18n[1]->language = 'en';
+        $site_i18n[1]->name = 'About';
+        $site_i18n[2]->language = 'us';
+        $site_i18n[2]->name = 'About';
+        $domains[16]->ownDomaini18n = array(
                         $site_i18n[0], $site_i18n[1], $site_i18n[2]
                     );
-                
-                $domains[13]->name = 'module';
-                $domains[13]->url = 'cms/module';
-                $domains[13]->sequence = 9300;
-                $module_i18n = R::dispense('domaini18n', 3);
-                $module_i18n[0]->language = 'de';
-                $module_i18n[0]->name = 'Modulen';
-                $module_i18n[1]->language = 'en';
-                $module_i18n[1]->name = 'Modules';
-                $module_i18n[2]->language = 'us';
-                $module_i18n[2]->name = 'Modules';
-                $domains[13]->ownDomaini18n = array(
+
+        $domains[13]->name = 'module';
+        $domains[13]->url = 'cms/module';
+        $domains[13]->sequence = 9300;
+        $module_i18n = R::dispense('domaini18n', 3);
+        $module_i18n[0]->language = 'de';
+        $module_i18n[0]->name = 'Modulen';
+        $module_i18n[1]->language = 'en';
+        $module_i18n[1]->name = 'Modules';
+        $module_i18n[2]->language = 'us';
+        $module_i18n[2]->name = 'Modules';
+        $domains[13]->ownDomaini18n = array(
                     $module_i18n[0], $module_i18n[1], $module_i18n[2]
                 );
-                
-                $domains[14]->name = 'template';
-                $domains[14]->url = 'cms/template';
-                $domains[14]->sequence = 9400;
-                $template_i18n = R::dispense('domaini18n', 3);
-                $template_i18n[0]->language = 'de';
-                $template_i18n[0]->name = 'Templates';
-                $template_i18n[1]->language = 'en';
-                $template_i18n[1]->name = 'Templates';
-                $template_i18n[2]->language = 'us';
-                $template_i18n[2]->name = 'Templates';
-                $domains[14]->ownDomaini18n = array(
+
+        $domains[14]->name = 'template';
+        $domains[14]->url = 'cms/template';
+        $domains[14]->sequence = 9400;
+        $template_i18n = R::dispense('domaini18n', 3);
+        $template_i18n[0]->language = 'de';
+        $template_i18n[0]->name = 'Templates';
+        $template_i18n[1]->language = 'en';
+        $template_i18n[1]->name = 'Templates';
+        $template_i18n[2]->language = 'us';
+        $template_i18n[2]->name = 'Templates';
+        $domains[14]->ownDomaini18n = array(
                     $template_i18n[0], $template_i18n[1], $template_i18n[2]
                 );
-                
-            $domains[17]->name = 'addressbook';
-            $domains[17]->url = 'admin/person';
-            $domains[17]->sequence = 9500;
-            $ab_i18n = R::dispense('domaini18n', 3);
-            $ab_i18n[0]->language = 'de';
-            $ab_i18n[0]->name = 'Adressbuch';
-            $ab_i18n[1]->language = 'en';
-            $ab_i18n[1]->name = 'Addressbook';
-            $ab_i18n[2]->language = 'us';
-            $ab_i18n[2]->name = 'Addressbook';
-            $domains[17]->ownDomaini18n = array(
+
+        $domains[17]->name = 'addressbook';
+        $domains[17]->url = 'admin/person';
+        $domains[17]->sequence = 9500;
+        $ab_i18n = R::dispense('domaini18n', 3);
+        $ab_i18n[0]->language = 'de';
+        $ab_i18n[0]->name = 'Adressbuch';
+        $ab_i18n[1]->language = 'en';
+        $ab_i18n[1]->name = 'Addressbook';
+        $ab_i18n[2]->language = 'us';
+        $ab_i18n[2]->name = 'Addressbook';
+        $domains[17]->ownDomaini18n = array(
                 $ab_i18n[0], $ab_i18n[1], $ab_i18n[2]
             );
-            
-            $domains[18]->name = 'news';
-            $domains[18]->url = 'admin/news';
-            $domains[18]->sequence = 9600;
-            $news_i18n = R::dispense('domaini18n', 3);
-            $news_i18n[0]->language = 'de';
-            $news_i18n[0]->name = 'Nachrichten';
-            $news_i18n[1]->language = 'en';
-            $news_i18n[1]->name = 'News';
-            $news_i18n[2]->language = 'us';
-            $news_i18n[2]->name = 'News';
-            $domains[18]->ownDomaini18n = array(
+
+        $domains[18]->name = 'news';
+        $domains[18]->url = 'admin/news';
+        $domains[18]->sequence = 9600;
+        $news_i18n = R::dispense('domaini18n', 3);
+        $news_i18n[0]->language = 'de';
+        $news_i18n[0]->name = 'Nachrichten';
+        $news_i18n[1]->language = 'en';
+        $news_i18n[1]->name = 'News';
+        $news_i18n[2]->language = 'us';
+        $news_i18n[2]->name = 'News';
+        $domains[18]->ownDomaini18n = array(
                 $news_i18n[0], $news_i18n[1], $news_i18n[2]
             );
-            
-                $domains[19]->name = 'newscat';
-                $domains[19]->url = 'admin/newscat';
-                $domains[19]->sequence = 9610;
-                $newscat_i18n = R::dispense('domaini18n', 3);
-                $newscat_i18n[0]->language = 'de';
-                $newscat_i18n[0]->name = 'Kategorien';
-                $newscat_i18n[1]->language = 'en';
-                $newscat_i18n[1]->name = 'Categories';
-                $newscat_i18n[2]->language = 'us';
-                $newscat_i18n[2]->name = 'Categories';
-                $domains[19]->ownDomaini18n = array(
+
+        $domains[19]->name = 'newscat';
+        $domains[19]->url = 'admin/newscat';
+        $domains[19]->sequence = 9610;
+        $newscat_i18n = R::dispense('domaini18n', 3);
+        $newscat_i18n[0]->language = 'de';
+        $newscat_i18n[0]->name = 'Kategorien';
+        $newscat_i18n[1]->language = 'en';
+        $newscat_i18n[1]->name = 'Categories';
+        $newscat_i18n[2]->language = 'us';
+        $newscat_i18n[2]->name = 'Categories';
+        $domains[19]->ownDomaini18n = array(
                     $newscat_i18n[0], $newscat_i18n[1], $newscat_i18n[2]
                 );
-                
+
         // make a tree
         $domains[1]->ownDomain = array(
             $domains[2],
@@ -443,7 +444,7 @@ class Controller_Install extends Controller
         $domains[0]->ownDomain = array(
             $domains[1], $domains[10], $domains[17], $domains[18]
         );
-        //store system tree       
+        //store system tree
         R::store($domains[0]);
         //make system the blessed folder
         $setting->blessedfolder = $domains[0]->getId();
@@ -462,7 +463,7 @@ class Controller_Install extends Controller
         $modules[4]->name = 'gallery';
         $modules[4]->enabled = true;
         R::storeAll($modules);
-        
+
         //language
         $languages = R::dispense('language', 3);
         $languages[0]->iso = 'de';
@@ -475,7 +476,7 @@ class Controller_Install extends Controller
         $languages[2]->name = 'US-English';
         $languages[2]->enabled = false;
         R::storeAll($languages);
-        
+
         //currency
         $currencies = R::dispense('currency', 3);
         $currencies[0]->iso = 'eur';
@@ -484,7 +485,7 @@ class Controller_Install extends Controller
         $currencies[0]->sign = '€';
         $currencies[0]->fractionalunit = 'Cent';
         $currencies[0]->numbertobasic = 100;
-        $currencies[0]->exchangerate = (double)1.000;
+        $currencies[0]->exchangerate = (float)1.000;
         //gbp
         $currencies[1]->iso = 'gbp';
         $currencies[1]->name = 'Pound Sterling';
@@ -492,7 +493,7 @@ class Controller_Install extends Controller
         $currencies[1]->sign = '£';
         $currencies[1]->fractionalunit = 'Pence';
         $currencies[1]->numbertobasic = 100;
-        $currencies[1]->exchangerate = (double)0.8490;
+        $currencies[1]->exchangerate = (float)0.8490;
         //usd
         $currencies[2]->iso = 'usd';
         $currencies[2]->name = 'US Dollar';
@@ -500,9 +501,9 @@ class Controller_Install extends Controller
         $currencies[2]->sign = '$';
         $currencies[2]->fractionalunit = 'Cent';
         $currencies[2]->numbertobasic = 100;
-        $currencies[2]->exchangerate = (double)1.2861;
+        $currencies[2]->exchangerate = (float)1.2861;
         R::storeAll($currencies);
-        
+
         $setting->basecurrency = $currencies[0]->getId();
 
         //newscat
@@ -528,7 +529,7 @@ class Controller_Install extends Controller
             'en' => 'I remembered my password',
             'us' => 'I remembered my password'
         ));
-        
+
         I18n::make('lostpassword_email_failed', array(
             'de' => 'Es konnte keine E-Mail versandt werden',
             'en' => 'Failed to send e-mail to you',
@@ -569,8 +570,8 @@ class Controller_Install extends Controller
             'en' => 'Unknown email address',
             'us' => 'Unknown email address'
         ));
-        
-        
+
+
         I18n::make('login_link_lostpassword', array(
             'de' => 'Kennwort vergessen',
             'en' => 'Lost Password',
@@ -626,8 +627,8 @@ class Controller_Install extends Controller
             'en' => 'Text-Only',
             'us' => 'Text-Only'
         ));
-        
-        
+
+
         I18n::make('setting_homepage_label', array(
             'de' => 'Startseite',
             'en' => 'Homepage',
@@ -643,7 +644,7 @@ class Controller_Install extends Controller
             'en' => 'If no homepage is set the welcome controller will run',
             'us' => 'If no homepage is set the welcome controller will run'
         ));
-        
+
         I18n::make('browser_is_not_supporting_iframe', array(
             'de' => 'Die Vorschau konnte nicht eingebettet werden. Öffnen Sie die "Vorschau manuell":%s',
             'en' => 'Open the "preview manually":%s because it could not be embedded',
@@ -704,7 +705,7 @@ class Controller_Install extends Controller
             'en' => 'Roles',
             'us' => 'Roles'
         ));
-        
+
         I18n::make('person_label_enabled', array(
             'de' => 'Aktiv',
             'en' => 'Active',
@@ -725,8 +726,8 @@ class Controller_Install extends Controller
             'en' => 'Edit and save copy or edit "original":%s',
             'us' => 'Edit and save copy or edit "original":%s'
         ));
-        
-        
+
+
         I18n::make('news_label_archived', array(
             'de' => 'Archiviert',
             'en' => 'Archived',
@@ -1047,7 +1048,7 @@ class Controller_Install extends Controller
             'en' => 'Missing HTML',
             'us' => 'Missing HTML'
         ));
-        
+
         I18n::make('slice_label_tag', array(
             'de' => 'Tag',
             'en' => 'Tag',
@@ -1098,7 +1099,7 @@ class Controller_Install extends Controller
             'en' => '<div class="custom">Hello World</div>',
             'us' => '<div class="custom">Hello World</div>'
         ));
-        
+
         I18n::make('cms_url_not_found', array(
             'de' => 'Die URL %s konnte nicht gefunden werden',
             'en' => 'URL %s was not found on this server',
@@ -1109,7 +1110,7 @@ class Controller_Install extends Controller
             'en' => 'URL %s has no content yet',
             'us' => 'URL %s has no content yet'
         ));
-        
+
         I18n::make('cms_add_page', array(
             'de' => 'Fügen Sie eine neue Seite hinzu',
             'en' => 'Add a new page',
@@ -1402,8 +1403,8 @@ class Controller_Install extends Controller
             'en' => 'Exchangerate',
             'us' => 'Exchangerate'
         ));
-        
-        
+
+
         // added 2013-06-24
         I18n::make('scaffold_no_records_add_one', array(
             'de' => 'Es sind noch keine Einträge vorhanden. Erstellen Sie den ersten',
@@ -1445,7 +1446,7 @@ class Controller_Install extends Controller
             'en' => 'Regions',
             'us' => 'Regions'
         ));
-        
+
         I18n::make('cms_h1', array(
             'de' => 'CMS',
             'en' => 'CMS',
@@ -1736,10 +1737,10 @@ class Controller_Install extends Controller
             'en' => 'File',
             'us' => 'File'
         ));
-        
-        
-        
-        
+
+
+
+
         //10
         I18n::make('account_logout_nav', array(
             'de' => 'Abmelden',
@@ -2331,7 +2332,7 @@ class Controller_Install extends Controller
             'en' => 'Password was not changed',
             'us' => 'Password was not changed'
         ));
-        
+
         //at the end we save setting
         $setting->installed = true;
         $setting->fiscalyear = date('Y');
@@ -2339,7 +2340,7 @@ class Controller_Install extends Controller
         $setting->exchangeratelastupd = date('Y-m-d');//never did
         R::store($setting);
     }
-    
+
     /**
      * getQueriesFromSQLFile parses a sql file and extracts all queries
      * for further processing with pdo execute.
@@ -2356,8 +2357,7 @@ class Controller_Install extends Controller
      */
     protected function getQueriesFromSQLFile($sqlfile)
     {
-        if(is_readable($sqlfile) === false)
-        {
+        if (is_readable($sqlfile) === false) {
             throw new Exception($sqlfile . 'does not exist or is not readable.');
         }
 
@@ -2366,14 +2366,22 @@ class Controller_Install extends Controller
 
         # import file line by line
         # and filter (remove) those lines, beginning with an sql comment token
-        $file = array_filter($file,
-                        create_function('$line',
-                                'return strpos(ltrim($line), "--") !== 0;'));
+        $file = array_filter(
+            $file,
+            create_function(
+                            '$line',
+                            'return strpos(ltrim($line), "--") !== 0;'
+                        )
+        );
 
         # and filter (remove) those lines, beginning with an sql notes token
-        $file = array_filter($file,
-                        create_function('$line',
-                                'return strpos(ltrim($line), "/*") !== 0;'));
+        $file = array_filter(
+            $file,
+            create_function(
+                            '$line',
+                            'return strpos(ltrim($line), "/*") !== 0;'
+                        )
+        );
 
         # this is a whitelist of SQL commands, which are allowed to follow a semicolon
         $keywords = array(
@@ -2388,9 +2396,13 @@ class Controller_Install extends Controller
         $splitter = preg_split($regexp, implode("\r\n", $file));
 
         # remove trailing semicolon or whitespaces
-        $splitter = array_map(create_function('$line',
-                                'return preg_replace("/[\s;]*$/", "", $line);'),
-                              $splitter);
+        $splitter = array_map(
+            create_function(
+            '$line',
+            'return preg_replace("/[\s;]*$/", "", $line);'
+        ),
+            $splitter
+        );
 
         # replace the default database prefix "your_prefix_"
         #$table_prefix = $_POST['config']['database']['prefix'];

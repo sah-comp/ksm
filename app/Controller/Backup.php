@@ -25,5 +25,6 @@ class Controller_Backup extends Controller
         session_start();
         Auth::check();
         $this->redirect('/cockpit');
+        exit();
     }
 }

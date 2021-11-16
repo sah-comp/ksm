@@ -575,12 +575,14 @@ class Controller_Scaffold extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             //clear filter?
             if (Flight::request()->data->submit == I18n::__('filter_submit_clear')) {
                 R::trash($this->filter);
                 $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+                exit();
             }
             //refresh filter
             if (Flight::request()->data->submit == I18n::__('filter_submit_refresh')) {
@@ -589,6 +591,7 @@ class Controller_Scaffold extends Controller
                     R::store($this->filter);
                     $_SESSION['scaffold'][$this->type]['filter']['id'] = $this->filter->getId();
                     $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+                    exit();
                 } catch (Exception $e) {
                     error_log($e);
                     Flight::get('user')->notify(I18n::__('action_filter_error', null, array(), 'error'));
@@ -598,6 +601,7 @@ class Controller_Scaffold extends Controller
             $this->selection = Flight::request()->data->selection;
             if ($this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
                 $this->redirect("{$this->base_url}/{$this->type}/");
+                exit();
             }
         }
         $this->getCollection();
@@ -606,6 +610,7 @@ class Controller_Scaffold extends Controller
                 Flight::get('user')->notify(I18n::__('scaffold_no_records_add_one'));
                 //return $this->add($this->layout);//this would not work because we dont set form action
                 $this->redirect("{$this->base_url}/{$this->type}/add/{$this->layout}");
+                exit();
             }
         }
 
@@ -647,6 +652,7 @@ class Controller_Scaffold extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             $this->record = R::graph(Flight::request()->data->dialog, true);
             $this->setNextAction(Flight::request()->data->next_action);
@@ -655,13 +661,17 @@ class Controller_Scaffold extends Controller
                 if (Flight::request()->data->goto) {
                     // Yes, then we want to return where we came from.
                     $this->redirect(Flight::request()->data->goto);
+                    exit();
                 }
                 if ($this->getNextAction() == 'add') {
                     $this->redirect("{$this->base_url}/{$this->type}/add/{$this->layout}/");
+                    exit();
                 } elseif ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/1/0/0/");
+                    exit();
                 }
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}/");
+                exit();
             }
         } else {
             if ($this->record->getId()) {
@@ -709,6 +719,7 @@ class Controller_Scaffold extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             Permission::check(Flight::get('user'), $this->type, 'edit');//check for edit perm now
             $this->record = R::graph(Flight::request()->data->dialog, true);
@@ -718,19 +729,24 @@ class Controller_Scaffold extends Controller
                 if (Flight::request()->data->goto) {
                     // Yes, then we want to return where we came from.
                     $this->redirect(Flight::request()->data->goto);
+                    exit();
                 }
                 if ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/{$this->page}/{$this->order}/{$this->dir}/{$this->layout}/");
+                    exit();
                 } elseif ($this->getNextAction() == 'next_edit' &&
                                                 $next_id = $this->id_at_offset($this->page + 1)) {
                     $next_page = $this->page + 1;
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$next_id}/{$next_page}/{$this->order}/{$this->dir}/{$this->layout}/");
+                    exit();
                 } elseif ($this->getNextAction() == 'prev_edit' &&
                                                 $prev_id = $this->id_at_offset($this->page - 1)) {
                     $prev_page = $this->page - 1;
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$prev_id}/{$prev_page}/{$this->order}/{$this->dir}/{$this->layout}/");
+                    exit();
                 }
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}/");
+                exit();
             }
         }
         $this->render();
