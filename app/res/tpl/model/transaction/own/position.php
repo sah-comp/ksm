@@ -92,6 +92,7 @@
                     echo json_encode([
                         'transaction-'.$record->getId().'-position-'.$index.'-product-number' => 'ska',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-desc' => 'value',
+                        'transaction-'.$record->getId().'-position-'.$index.'-product-count' => 'count',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-id' => 'id',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-id-shadow' => 'id',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-unit' => 'unit',
@@ -111,6 +112,7 @@
         </div>
         <div class="span1">
             <input
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-count"
                 type="text"
                 class="number"
                 name="dialog[ownPosition][<?php echo $index ?>][count]"
