@@ -347,6 +347,35 @@ SQL;
     }
 
     /**
+     * Lookup a searchterm and return the resultset as an array.
+     *
+     * @param string $searchtext
+     * @param string (optional) $query The prepared query or SQL to use for search
+     * @return array
+     */
+    public function clairvoyant($searchtext, $query = 'default', $limit = 10)
+    {
+        switch ($query) {
+            default:
+            $sql = <<<SQL
+                SELECT
+                    transaction.id AS id,
+                    transaction.number AS label,
+                    transaction.number AS value
+                FROM
+                    transaction
+                WHERE
+                    transaction.number LIKE :searchtext
+                ORDER BY
+                    transaction.number
+                LIMIT {$limit}
+    SQL;
+        }
+        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        return $result;
+    }
+
+    /**
      * Returns vat values grouped by possible differnt vat percentages.
      *
      * @return array
@@ -515,7 +544,7 @@ SQL;
         $this->bean->gros = round($this->bean->gros, 2);
 
         $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid, 2);
-        if ($this->bean->balance === 0) {
+        if ($this->bean->balance == 0) {
             $this->bean->status = "paid";// automatically set as paid when transaction is balanced
         }
 
