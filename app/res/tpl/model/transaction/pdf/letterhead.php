@@ -171,7 +171,7 @@
                     <table class="pagefooter legal" width="100%">
                         <tr>
                             <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_legal')) ?>
+                                <?php //echo Flight::textile(I18n::__('transaction_footer_block_legal'))?>
                             </td>
                         </tr>
                     </table>
