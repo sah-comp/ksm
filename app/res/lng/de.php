@@ -959,7 +959,7 @@ BIC WELADED1WES',
   'transaction_footer_block_4' => 'Commerzbank Wesel
 IBAN DE88 3564 0064 0150 1873 00
 BIC COBADEFFXXX',
-  'transaction_footer_block_legal' => 'Bei Zahlungsverzug berechnen wir 0,05% Zinsen pro Tag. Lieferungen erfolgen grundsätzlich unter Eigentumsvorbehalt.',
+  'transaction_footer_block_legal' => 'Bei Zahlungsverzug berechnen wir 0,05%% Zinsen pro Tag. Lieferungen erfolgen grundsätzlich unter Eigentumsvorbehalt.',
   'transaction_h1' => 'Faktura',
   'transaction_header_info' => '%s %s',
   'transaction_info_footer' => 'Der Fußteil wird unten den <em>Positionen</em> und <em>Zahlungsmodalitäten</em> ausgegeben.',
