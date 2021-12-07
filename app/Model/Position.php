@@ -194,8 +194,10 @@ SQL;
             unset($this->bean->costunittype);
         }
         // calculate net, vat and gros
-        $this->bean->total = $this->bean->count * $this->bean->salesprice;
-        $this->bean->vatamount = $this->bean->total * $this->bean->vatpercentage / 100;
-        $this->bean->gros = $this->bean->total + $this->bean->vatamount;
+        if (!$this->bean->alternative) {
+            $this->bean->total = $this->bean->count * $this->bean->salesprice;
+            $this->bean->vatamount = $this->bean->total * $this->bean->vatpercentage / 100;
+            $this->bean->gros = $this->bean->total + $this->bean->vatamount;
+        }
     }
 }

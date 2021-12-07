@@ -29,6 +29,6 @@ class Formatter_Address_De extends Formatter
      */
     public function format(RedBeanPHP\OODBBean $bean)
     {
-        return sprintf("%s\n%s %s\n%s", $bean->street, $bean->zip, $bean->city, 'GERMANY');
+        return sprintf('%1$s'."\n".'%2$s %3$s'."\n", $bean->street, $bean->zip, $bean->city);
     }
 }

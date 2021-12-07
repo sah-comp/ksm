@@ -429,7 +429,7 @@ SQL;
                 $bordercolor = 'inherit';
                 break;
         }
-        return "style=\"border-left: 3px solid {$bordercolor};\"";
+        return "style=\"border-left: 5px solid {$bordercolor};\"";
     }
 
     /**
@@ -574,7 +574,7 @@ SQL;
             // This is a new bean, we want to stamp its number
             $number = $this->bean->contracttype->nextnumber;
             $this->bean->contracttype->nextnumber++;
-            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, Flight::setting()->companyyear, $number);
+            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
         }
 
         $this->bean->stamp = time();

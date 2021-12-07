@@ -148,67 +148,6 @@ $_personkinds = $record->sharedPersonkind;
     <?php endforeach ?>
 </fieldset>
 <fieldset>
-    <legend><?php echo I18n::__('person_legend_payments') ?></legend>
-    <!-- grid based header -->
-    <div class="row nomargins">
-        <div class="span3">&nbsp;</div>
-        <div class="span3">
-	        <label
-	            for="person-vat">
-	            <?php echo I18n::__('person_label_vat') ?>
-	        </label>
-        </div>
-        <div class="span3">
-            <label for="person-duedays"><?php echo I18n::__('person_label_duedays') ?></label>
-        </div>
-        <div class="span3">
-        <label
-            for="person-discount">
-            <?php echo I18n::__('person_label_discount') ?>
-        </label>
-        </div>
-    </div>
-    <!-- end of grid based header -->
-    <!-- grid based data -->
-    <div class="row">
-		<div class="span3">&nbsp;</div>
-        <div class="span3">
-	        <select
-	            id="person-vat"
-                class="autowidth"
-	            name="dialog[vat_id]">
-	            <option value=""><?php echo I18n::__('person_vat_please_select') ?></option>
-	            <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat): ?>
-	            <option
-	                value="<?php echo $_vat->getId() ?>"
-	                <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name) ?></option>
-	            <?php endforeach ?>
-	        </select>
-		</div>
-        <div class="span3">
-            <input
-                id="person-duedays"
-                type="text"
-                name="dialog[duedays]"
-                value="<?php echo htmlspecialchars($record->decimal('duedays', 0)) ?>" />
-		</div>
-		<div class="span3">
-            <select
-	            id="person-discount"
-                class="autowidth"
-	            name="dialog[discount_id]">
-	            <option value=""><?php echo I18n::__('person_discount_please_select') ?></option>
-	            <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount): ?>
-	            <option
-	                value="<?php echo $_discount->getId() ?>"
-	                <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
-	            <?php endforeach ?>
-	        </select>
-        </div>
-	</div>
-	<!-- end of grid based data -->
-</fieldset>
-<fieldset>
     <legend class="verbose"><?php echo I18n::__('person_legend_email') ?></legend>
     <div class="row <?php echo ($record->hasError('email')) ? 'error' : ''; ?>">
         <label
@@ -426,9 +365,9 @@ $_personkinds = $record->sharedPersonkind;
             'person-address' => I18n::__('person_address_tab'),
             'person-location' => I18n::__('person_location_tab'),
             'person-contact' => I18n::__('person_contact_tab'),
-            'person-bankaccount' => I18n::__('person_bankaccount_tab'),
             'person-machine' => I18n::__('person_machine_tab'),
             'person-treaty' => I18n::__('person_treaty_tab'),
+            'person-bankaccount' => I18n::__('person_bankaccount_tab'),
             'person-transaction' => I18n::__('person_transaction_tab')
         ),
         'default_tab' => 'person-address'
@@ -559,6 +498,76 @@ $_personkinds = $record->sharedPersonkind;
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('person_legend_bankaccount_tab') ?></legend>
+        <!-- grid based header -->
+        <div class="row nomargins">
+            <div class="span3">&nbsp;</div>
+            <div class="span3">
+                <label
+                    for="person-vat">
+                    <?php echo I18n::__('person_label_vat') ?>
+                </label>
+            </div>
+            <div class="span3">
+                <label for="person-duedays"><?php echo I18n::__('person_label_duedays') ?></label>
+            </div>
+            <div class="span3">
+            <label
+                for="person-discount">
+                <?php echo I18n::__('person_label_discount') ?>
+            </label>
+            </div>
+        </div>
+        <!-- end of grid based header -->
+        <!-- grid based data -->
+        <div class="row">
+            <div class="span3">&nbsp;</div>
+            <div class="span3">
+                <select
+                    id="person-vat"
+                    class="autowidth"
+                    name="dialog[vat_id]">
+                    <option value=""><?php echo I18n::__('person_vat_please_select') ?></option>
+                    <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat): ?>
+                    <option
+                        value="<?php echo $_vat->getId() ?>"
+                        <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name) ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
+            <div class="span3">
+                <input
+                    id="person-duedays"
+                    type="text"
+                    name="dialog[duedays]"
+                    value="<?php echo htmlspecialchars($record->decimal('duedays', 0)) ?>" />
+            </div>
+            <div class="span3">
+                <select
+                    id="person-discount"
+                    class="autowidth"
+                    name="dialog[discount_id]">
+                    <option value=""><?php echo I18n::__('person_discount_please_select') ?></option>
+                    <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount): ?>
+                    <option
+                        value="<?php echo $_discount->getId() ?>"
+                        <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
+                    <?php endforeach ?>
+                </select>
+            </div>
+        </div>
+        <!-- end of grid based data -->
+        <div class="row <?php echo ($record->hasError('paymentnote')) ? 'error' : ''; ?>">
+            <label
+                for="person-paymentnote">
+                <?php echo I18n::__('person_label_paymentnote') ?>
+            </label>
+            <textarea
+                id="person-paymentnote"
+                name="dialog[paymentnote]"
+                placeholder="<?php echo I18n::__('person_placeholder_paymentnote') ?>"
+                rows="3"
+                cols="60"><?php echo htmlspecialchars($record->paymentnote) ?></textarea>
+        </div>
         <div class="row <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
             <label
                 for="person-billingemail">
