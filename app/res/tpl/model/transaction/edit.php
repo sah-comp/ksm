@@ -218,9 +218,12 @@
                 &nbsp;
             </div>
             <div class="span1">
+                <label><?php echo I18n::__('position_label_kind_pos_alt') ?></label>
+            </div>
+            <div class="span1">
                 <label><?php echo I18n::__('position_label_product') ?></label>
             </div>
-            <div class="span4">
+            <div class="span3">
                 <label><?php echo I18n::__('position_label_product_desc') ?></label>
             </div>
             <div class="span1 tar">
@@ -230,7 +233,7 @@
                 <label><?php echo I18n::__('position_label_unit') ?></label>
             </div>
             <div class="span1">
-                <label><?php echo I18n::__('position_label_alternative') ?></label>
+                <label><?php echo I18n::__('position_label_costunittype') ?></label>
             </div>
             <div class="span1 tar">
                 <label><?php echo I18n::__('position_label_salesprice') ?></label>
@@ -250,12 +253,18 @@
             $_positions[] = R::dispense('position');
             endif; ?>
             <?php $index = 0 ?>
+            <?php $_SESSION['subtotal'] = 0 ?>
             <?php foreach ($_positions as $_position_id => $_position): ?>
                 <?php $index++ ?>
-                <?php Flight::render('model/transaction/own/position', array(
+                <?php if (!$_position->isAlternative()) {
+                $_SESSION['subtotal'] += $_position->total;//adding up this position total to our subtotal, in case
+            }
+                ?>
+                <?php Flight::render('model/transaction/own/' . $_position->kindAsCss(), array(
                     'record' => $record,
                     '_position' => $_position,
-                    'index' => $index
+                    'index' => $index,
+                    '_subtotal' => $_SESSION['subtotal']
                 )) ?>
             <?php endforeach ?>
         </div>

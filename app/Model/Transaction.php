@@ -27,11 +27,31 @@ class Model_Transaction extends Model
     public const PATTERN = "%s-%02d-%02d-%04d";
 
     /**
+     * Pattern for the interim number code
+     *
+     * @var string
+     */
+    public const PATTERN_INTERIM = "%s-%02d-%02d-%s";
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->setAction('index', ['idle', 'cancel', 'expunge']);
+        //$this->setAction('index', ['idle', 'cancel', 'expunge']);
+    }
+
+    /**
+     * Return actions array.
+     */
+    public function getActions()
+    {
+        return [
+            'index' => ['idle', 'cancel', 'expunge'],
+            'add' => ['add', 'edit', 'index'],
+            'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
+            'delete' => ['index']
+        ];
     }
 
     /**
@@ -211,6 +231,16 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns a string with transaction conditions.
+     *
+     * @return string
+     */
+    public function transactionConditions()
+    {
+        return I18n::__('transaction_payment_condition_other');
+    }
+
+    /**
      * Return the discount bean.
      *
      * @return RedbeanPHP\OODBBean
@@ -287,10 +317,11 @@ class Model_Transaction extends Model
      */
     public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT ROUND(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id";
+        $sql = "SELECT ROUND(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
-            ':cut_id' => $costunittype->getId()
+            ':cut_id' => $costunittype->getId(),
+            ':kind_position' => Model_Position::KIND_POSITION
         ]);
         return $result;
     }
@@ -303,10 +334,11 @@ class Model_Transaction extends Model
      */
     public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT ROUND(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id";
+        $sql = "SELECT ROUND(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
-            ':cut_id' => $costunittype->getId()
+            ':cut_id' => $costunittype->getId(),
+            ':kind_position' => Model_Position::KIND_POSITION
         ]);
         return $result;
     }
@@ -391,13 +423,14 @@ SQL;
                 position
             WHERE
                 transaction_id = ? AND
-                alternative != 1
+                alternative != 1 AND
+                kind = ?
             GROUP BY
                 vatpercentage
             ORDER BY
                 vatpercentage
 SQL;
-        $result = R::getAll($sql, [$this->bean->getId()]);
+        $result = R::getAll($sql, [$this->bean->getId(), Model_Position::KIND_POSITION]);
         return $result;
     }
 
@@ -485,10 +518,24 @@ SQL;
     }
 
     /**
+     * Book this transaction.
+     *
+     * When a transaction is booked the number is set and the whole transaction is locked.
+     */
+    public function book()
+    {
+        $number = $this->bean->contracttype->nextnumber;
+        $this->bean->contracttype->nextnumber++;
+        $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
+        $_SESSION['scaffold'][$this->bean->getMeta('type')]['edit']['next_action'] = 'edit';
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
     {
+        $this->bean->number = I18n::__('transaction_placeholder_number');
         $this->bean->mytransactionid = 0;
         $this->bean->duedays = 0;
         $this->bean->status = 'open';
@@ -517,8 +564,14 @@ SQL;
         $this->bean->net = 0;
         $this->bean->vat = 0;
         $this->bean->gros = 0;
+        $seq = 0;
         foreach ($this->bean->ownPosition as $id => $position) {
-            if ($position->alternative) {
+            if ($position->kind == Model_Position::KIND_POSITION) {
+                // count me
+                $seq++;
+                $position->sequence = $seq;
+            }
+            if ($position->alternative || $position->kind != Model_Position::KIND_POSITION) {
                 // skip this position if it is an alternative position
                 continue;
             }
@@ -571,10 +624,12 @@ SQL;
         }
 
         if (!$this->bean->getId()) {
+            // BEHOLD: This has to happen on a dedicated action, not when saving the first time
             // This is a new bean, we want to stamp its number
-            $number = $this->bean->contracttype->nextnumber;
-            $this->bean->contracttype->nextnumber++;
-            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
+            //$number = $this->bean->contracttype->nextnumber;
+            //$this->bean->contracttype->nextnumber++;
+            //$this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
+            $this->bean->number = sprintf(self::PATTERN_INTERIM, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), I18n::__('transaction_placeholder_nonce'));
         }
 
         $this->bean->stamp = time();

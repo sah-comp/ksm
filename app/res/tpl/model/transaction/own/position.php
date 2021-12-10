@@ -41,6 +41,34 @@
             class="currentindex"
             name="dialog[ownPosition][<?php echo $index ?>][currentindex]"
             value="<?php echo $index ?>" />
+        <input
+            id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-id-shadow"
+            type="hidden"
+            name="dialog[ownPosition][<?php echo $index ?>][product_id]"
+            value="<?php echo $_position->getProduct()->getId() ?>" />
+        <input
+            type="hidden"
+            name="dialog[ownPosition][<?php echo $index ?>][product][type]"
+            value="product" />
+        <input
+            type="hidden"
+            name="dialog[ownPosition][<?php echo $index ?>][alternative]"
+            value="0" />
+        <input
+            id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-id"
+            type="hidden"
+            name="dialog[ownPosition][<?php echo $index ?>][product][id]"
+            value="<?php echo $_position->getProduct()->getId() ?>" />
+        <input
+            id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-vat-id"
+            type="hidden"
+            name="dialog[ownPosition][<?php echo $index ?>][vat_id]"
+            value="<?php echo $_position->getVat()->getId() ?>" />
+        <input
+            id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-vatpercentage"
+            type="hidden"
+            name="dialog[ownPosition][<?php echo $index ?>][vatpercentage]"
+            value="<?php echo $_position->vatpercentage ?>" />
     </div>
 
     <div class="row">
@@ -49,39 +77,42 @@
             &nbsp;
         </div>
         <div class="span1">
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-id-shadow"
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][product_id]"
-                value="<?php echo $_position->getProduct()->getId() ?>" />
-            <input
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][product][type]"
-                value="product" />
-            <input
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][alternative]"
-                value="0" />
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-id"
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][product][id]"
-                value="<?php echo $_position->getProduct()->getId() ?>" />
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-vat-id"
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][vat_id]"
-                value="<?php echo $_position->getVat()->getId() ?>" />
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-vatpercentage"
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][vatpercentage]"
-                value="<?php echo $_position->vatpercentage ?>" />
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
-                type="hidden"
-                name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]"
-                value="<?php echo $_position->getCostunittype()->getId() ?>" />
+            <div class="row flex-center">
+                <div class="span6">
+                    <select
+                        id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-kind"
+                        name="dialog[ownPosition][<?php echo $index ?>][kind]">
+                        <option
+                            value="<?php echo Model_Position::KIND_POSITION ?>"
+                            <?php echo ($_position->kind == Model_Position::KIND_POSITION) ? 'selected="selected"' : '' ?>><?php echo I18n::__('position_kind_position') ?></option>
+                        <option
+                            value="<?php echo Model_Position::KIND_SUBTOTAL ?>"
+                            <?php echo ($_position->kind == Model_Position::KIND_SUBTOTAL) ? 'selected="selected"' : '' ?>><?php echo I18n::__('position_kind_subtotal') ?></option>
+                        <option
+                            value="<?php echo Model_Position::KIND_FREETEXT ?>"
+                            <?php echo ($_position->kind == Model_Position::KIND_FREETEXT) ? 'selected="selected"' : '' ?>><?php echo I18n::__('position_kind_freetext') ?></option>
+                    </select>
+                </div>
+                <div class="span4">
+                    <input
+                        id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-sequence"
+                        class="sequence"
+                        type="text"
+                        name="dialog[ownPosition][<?php echo $index ?>][sequence]"
+                        value="<?php echo htmlspecialchars($_position->decimal('sequence', 0)) ?>">
+                </div>
+                <div class="span2">
+                    <input
+                        id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-alternative"
+                        title="<?php echo I18n::__('position_title_alternative') ?>"
+                        type="checkbox"
+                        name="dialog[ownPosition][<?php echo $index ?>][alternative]"
+                        <?php echo ($_position->alternative) ? 'checked="checked"' : '' ?>
+                        value="1" />
+                </div>
+            </div>
+        </div>
+        <div class="span1">
             <input
                 type="text"
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-number"
@@ -103,7 +134,7 @@
                     ]); ?>'
                 value="<?php echo htmlspecialchars($_position->getProduct()->number) ?>" />
         </div>
-        <div class="span4">
+        <div class="span3">
             <textarea
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-desc"
                 name="dialog[ownPosition][<?php echo $index ?>][desc]"
@@ -126,13 +157,17 @@
                 value="<?php echo htmlspecialchars($_position->unit) ?>">
         </div>
         <div class="span1">
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-alternative"
-                title="<?php echo I18n::__('position_title_alternative') ?>"
-                type="checkbox"
-                name="dialog[ownPosition][<?php echo $index ?>][alternative]"
-                <?php echo ($_position->alternative) ? 'checked="checked"' : '' ?>
-                value="1" />
+            <select
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
+                name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]">
+                <option value=""><?php echo I18n::__('product_costunittype_none') ?></option>
+                <?php foreach (R::findAll('costunittype') as $_id => $_costunittype): ?>
+                <option
+                    value="<?php echo $_costunittype->getId() ?>"
+                    <?php echo ($_position->getCostunittype()->getId() == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
+                </option>
+                <?php endforeach ?>
+            </select>
         </div>
         <div class="span1">
             <input

@@ -25,6 +25,11 @@ tr.alternative td {
     font-style: italic;
     color: #666666;
 }
+tr.subtotal td,
+tr.freetext td,
+tr.lofty td {
+    padding: 1mm 0;
+}
 .name,
 .postal,
 .postal-address {
@@ -74,6 +79,9 @@ td.bb {
 th.number,
 td.number {
     text-align: right;
+}
+.cushion-right {
+    padding-right: 2mm;
 }
 table.info td.label,
 table.info td.value {

@@ -72,6 +72,13 @@ class Controller_Scaffold extends Controller
     public $action;
 
     /**
+     * Holds the name of the next action that was requested.
+     *
+     * @var string
+     */
+    public $next_action;
+
+    /**
      * Holds the name of the layout to use.
      *
      * @var string
@@ -370,6 +377,7 @@ class Controller_Scaffold extends Controller
     {
         R::begin();
         try {
+            $this->record->{$this->next_action}();//execute the next action (can be a dummy)
             R::$redbeanAction($this->record);//store or trash -- nothing else works here
             R::commit();
             $this->notifyAbout('success');
@@ -503,6 +511,7 @@ class Controller_Scaffold extends Controller
      */
     protected function setNextAction($action)
     {
+        $this->next_action = $action;
         $_SESSION['scaffold'][$this->type][$this->action]['next_action'] = $action;
     }
 

@@ -479,6 +479,7 @@ SQL;
      */
     public function update()
     {
+        //DEBUG:error_log('Updating ' . $this->bean->getMeta('type') . ' #' . $this->bean->getId());
         if (CINNEBAR_MODEL_CONVERT_AND_VALIDATE) {
             $this->convert();
             $this->validate();

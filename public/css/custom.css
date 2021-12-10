@@ -31,6 +31,11 @@ select {
     float: left;
 }
 
+.flex-center {
+    display: flex;
+    align-items: center;
+}
+
 .panel label.salesprice {
     color: #009933;
 }
