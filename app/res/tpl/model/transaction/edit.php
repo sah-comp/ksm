@@ -158,6 +158,12 @@
             <textarea
                 id="transaction-header"
                 name="dialog[header]"
+                class="autocomplete"
+                data-source="<?php echo Url::build('/autocomplete/headfoot/name/?callback=?') ?>"
+                data-spread='<?php
+                    echo json_encode([
+                        'transaction-header' => 'value'
+                    ]); ?>'
                 rows="10"
                 cols="60"><?php echo htmlspecialchars($record->header) ?></textarea>
             <p class="info"><?php echo I18n::__('transaction_info_header') ?></p>
@@ -203,6 +209,12 @@
             <textarea
                 id="transaction-footer"
                 name="dialog[footer]"
+                class="autocomplete"
+                data-source="<?php echo Url::build('/autocomplete/headfoot/name/?callback=?') ?>"
+                data-spread='<?php
+                    echo json_encode([
+                        'transaction-footer' => 'value'
+                    ]); ?>'
                 rows="10"
                 cols="60"><?php echo htmlspecialchars($record->footer) ?></textarea>
             <p class="info"><?php echo I18n::__('transaction_info_footer') ?></p>

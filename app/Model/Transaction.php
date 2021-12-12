@@ -217,16 +217,20 @@ class Model_Transaction extends Model
      */
     public function paymentConditions()
     {
+        $company = R::load('company', CINNEBAR_COMPANY_ID);
         $discount = $this->bean->getDiscount();
         if ($discount->days != 0 && $discount->value != 0) {
             // there is a possible discount within a certain time period, aka. skonto
-            return I18n::__('transaction_payment_condition_discount', null, [$this->bean->duedays, $discount->days, $discount->value]);
+            return vsprintf($company->conditiondiscount, [$this->bean->duedays, $discount->days, $discount->value]);
+        //return I18n::__('transaction_payment_condition_discount', null, [$this->bean->duedays, $discount->days, $discount->value]);
         } elseif ($this->bean->duedays == 0) {
             // duedays is 0 (zero)
-            return I18n::__('transaction_payment_condition_immediately');
+            return $company->conditionimmediately;
+        //return I18n::__('transaction_payment_condition_immediately');
         } else {
             // no discount, but due days are not zero
-            return I18n::__('transaction_payment_condition_no_discount', null, [$this->bean->duedays]);
+            return vsprintf($company->conditionnodiscount, [$this->bean->duedays]);
+            //return I18n::__('transaction_payment_condition_no_discount', null, [$this->bean->duedays]);
         }
     }
 
@@ -237,7 +241,8 @@ class Model_Transaction extends Model
      */
     public function transactionConditions()
     {
-        return I18n::__('transaction_payment_condition_other');
+        $company = R::load('company', CINNEBAR_COMPANY_ID);
+        return $company->conditionother;
     }
 
     /**
@@ -518,16 +523,33 @@ SQL;
     }
 
     /**
+     * Returns wether the transaction is locked or not.
+     *
+     * @return bool
+     */
+    public function isLocked()
+    {
+        return $this->bean->locked;
+    }
+
+    /**
      * Book this transaction.
      *
      * When a transaction is booked the number is set and the whole transaction is locked.
+     *
+     * @uses $_SESSION
      */
     public function book()
     {
+        $_SESSION['scaffold'][$this->bean->getMeta('type')]['edit']['next_action'] = 'edit';
+        if ($this->bean->locked) {
+            return false;
+        }
+        $this->bean->locked = true;
         $number = $this->bean->contracttype->nextnumber;
         $this->bean->contracttype->nextnumber++;
         $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
-        $_SESSION['scaffold'][$this->bean->getMeta('type')]['edit']['next_action'] = 'edit';
+        return true;
     }
 
     /**
@@ -535,6 +557,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->locked = false;
         $this->bean->number = I18n::__('transaction_placeholder_number');
         $this->bean->mytransactionid = 0;
         $this->bean->duedays = 0;

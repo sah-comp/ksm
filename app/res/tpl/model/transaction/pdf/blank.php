@@ -82,63 +82,11 @@
         </tr>
     </table>
 
-    <div style="height: 18mm;"></div>
-
-    <h1 class="emphasize">
-        <?php echo $record->getContracttype()->name ?>
-    </h1>
-    <?php echo Flight::textile($record->header) ?>
-
-    <table class="position" width="100%">
-        <thead>
-            <tr>
-                <th width="8%" class="bb"><?php echo I18n::__('position_label_product') ?></th>
-                <th width="36%" class="bb"><?php echo I18n::__('position_label_product_desc') ?></th>
-                <th width="8%" class="bb number"><?php echo I18n::__('position_label_count') ?></th>
-                <th width="8%" class="bb"><?php echo I18n::__('position_label_unit') ?></th>
-                <th width="20%" class="bb number"><?php echo I18n::__('position_label_salesprice') ?></th>
-                <th width="20%" class="bb number"><?php echo I18n::__('position_label_total') ?></th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <td colspan="4" class="bt">&nbsp;</td>
-                <td class="bt number"><?php echo I18n::__('transaction_label_total_net') ?></td>
-                <td class="bt number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
-            </tr>
-            <?php $vats = $record->getVatSentences(); ?>
-            <?php foreach ($vats as $_id => $_vat): ?>
-            <tr>
-                <td colspan="4" class="number"></td>
-                <td class="bt number"><?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?></td>
-                <td class="bt number"><?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?></td>
-            </tr>
-            <?php endforeach ?>
-            <tr>
-                <td colspan="4" class="">&nbsp;</td>
-                <td class="bt bb bold number"><?php echo I18n::__('transaction_label_total_gros') ?></td>
-                <td class="bt bb bold number"><?php echo htmlspecialchars($record->decimal('gros')) ?></td>
-            </tr>
-        </tfoot>
-        <tbody>
-            <?php foreach ($record->with(' ORDER BY currentindex ASC ')->ownPosition as $_id => $_position): ?>
-            <tr class="<?php echo $_position->isAlternative() ? 'alternative' : '' ?>">
-                <td><?php echo htmlspecialchars($_position->getProduct()->number) ?></td>
-                <td><?php echo Flight::textile($_position->desc) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_position->count) ?></td>
-                <td><?php echo htmlspecialchars($_position->unit) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_position->decimal('total')) ?></td>
-            </tr>
-            <?php endforeach ?>
-        </tbody>
-    </table>
-
-    <div class="payment-conditions dinky">
-        <?php echo Flight::textile($record->paymentConditions()) ?>
-    </div>
-
-    <?php echo Flight::textile($record->footer) ?>
+    <?php
+    Flight::render('model/transaction/pdf/payload', [
+        'record' => $record
+    ]);
+    ?>
 
 </body>
 </html>
