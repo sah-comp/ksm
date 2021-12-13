@@ -237,11 +237,36 @@ class Model_Revenue extends Model
         }
 
         return [
-            'bookables' => $this->bookables,
             'costunittypes' => $this->costunittypes,
             'revenues' => $this->revenues,
             'totals' => $this->totals
         ];
+    }
+
+    /**
+     * Returns an array with formatted data to be exported as .csv file.
+     *
+     * @param array required with keys revenues and costunittypes
+     * @return array
+     */
+    public function makeCsvData(array $report)
+    {
+        $data = [];
+        foreach ($report['revenues'] as $id => $transaction) {
+            $data[$id] = [
+                'bookingdate' => $transaction->localizedDate('bookingdate'),
+                'number' => $transaction->number,
+                'account' => $transaction->getPerson()->name,
+                'totalnet' => Flight::nformat($transaction->net),
+                'totalgros' => Flight::nformat($transaction->gros)
+            ];
+            // add total for each cost unit type
+            foreach ($report['costunittypes'] as $cut_id => $cut) {
+                $data[$id][$cut->name . 'net'] = Flight::nformat($transaction->netByCostunit($cut));
+                $data[$id][$cut->name . 'gros'] = Flight::nformat($transaction->grosByCostunit($cut));
+            }
+        }
+        return $data;
     }
 
     /**

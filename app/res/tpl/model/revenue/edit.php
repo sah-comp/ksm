@@ -60,7 +60,6 @@
 if ($record->getId()):
     $_report = $record->report();
     Flight::render('model/revenue/report/month', [
-        'bookables' => $_report['bookables'],
         'costunittypes' => $_report['costunittypes'],
         'records' => $_report['revenues'],
         'totals' => $_report['totals']
