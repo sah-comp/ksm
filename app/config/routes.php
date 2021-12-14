@@ -258,14 +258,6 @@ Flight::route('(/[a-z]{2})/transaction/pdf(/@id:[0-9]+)', function ($id) {
 });
 
 /**
- * Routes to the ledger controller to download a ledger as PDF to the client.
- */
-Flight::route('(/[a-z]{2})/ledger/pdf(/@id:[0-9]+)', function ($id) {
-    $ledgerController = new Controller_Ledger(null, 'ledger', $id);
-    $ledgerController->pdf();
-});
-
-/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
@@ -343,14 +335,6 @@ Flight::route('(/[a-z]{2})/cockpit(/index)', function () {
 });
 
 /**
- * Display the ledger index page.
- */
-Flight::route('(/[a-z]{2})/ledger(/index)', function () {
-    $ledgerController = new Controller_Ledger();
-    $ledgerController->index();
-});
-
-/**
  * Display the Accounting index page.
  */
 Flight::route('(/[a-z]{2})/accounting(/index)', function () {
@@ -359,9 +343,9 @@ Flight::route('(/[a-z]{2})/accounting(/index)', function () {
 });
 
 /**
- * Route to the revenue controller.
+ * Route to the revenue controller to download csv or pdf documents.
  */
-Flight::route('(/[a-z]{2})/revenue(/@method:[a-z]+(/@id:[0-9]+))', function ($method, $id) {
+Flight::route('(/[a-z]{2})/revenue/@method:[a-z]+/@id:[0-9]+', function ($method, $id) {
     if ($method === null) {
         $method = 'index';
     }
@@ -369,6 +353,20 @@ Flight::route('(/[a-z]{2})/revenue(/@method:[a-z]+(/@id:[0-9]+))', function ($me
         $id = 0;
     }
     $controller = new Controller_Revenue($id);
+    $controller->$method();
+});
+
+/**
+ * Routes to the ledger controller to download csv or pdf documents.
+ */
+Flight::route('(/[a-z]{2})/ledger/@method:[a-z]+/@id:[0-9]+', function ($method, $id) {
+    if ($method === null) {
+        $method = 'index';
+    }
+    if ($id === null) {
+        $id = 0;
+    }
+    $controller = new Controller_Ledger($id);
     $controller->$method();
 });
 

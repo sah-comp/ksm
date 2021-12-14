@@ -167,6 +167,29 @@ class Model_Ledger extends Model
     }
 
     /**
+     * Generate an array with ledgeritem beans to be used in csv export.
+     *
+     * @return array
+     */
+    public function makeCsvData()
+    {
+        $data = [];
+        foreach ($this->bean->with(' ORDER BY bookingdate')->ownLedgeritem as $id => $ledgeritem) {
+            $data[$id] = [
+                'bookingdate' => $ledgeritem->bookingdate,
+                'desc' => $ledgeritem->desc,
+                'taking' => $ledgeritem->decimal('taking'),
+                'expense' => $ledgeritem->decimal('expense'),
+                'vatpercentage' => $ledgeritem->decimal('vat'),
+                'vattaking' => $ledgeritem->decimal('vattaking'),
+                'vatexpense' => $ledgeritem->decimal('vatexpense'),
+                'balance' => $ledgeritem->decimal('balance')
+            ];
+        }
+        return $data;
+    }
+
+    /**
      * Update.
      */
     public function update()

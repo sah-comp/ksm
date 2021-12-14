@@ -43,6 +43,23 @@
             <?php endforeach ?>
         </select>
     </div>
+    <div class="row <?php echo ($record->hasError('unpaid')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[unpaid]"
+            value="0" />
+        <input
+            id="revenue-unpaid"
+            type="checkbox"
+            name="dialog[unpaid]"
+            <?php echo ($record->unpaid) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="revenue-unpaid"
+            class="cb">
+            <?php echo I18n::__('revenue_label_unpaid') ?>
+        </label>
+    </div>
     <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
         <label
             for="revenue-name">
@@ -57,12 +74,20 @@
     </div>
 </fieldset>
 <?php
-if ($record->getId()):
+if ($record->getId() && $record->month > 0):
     $_report = $record->report();
     Flight::render('model/revenue/report/month', [
         'costunittypes' => $_report['costunittypes'],
         'records' => $_report['revenues'],
         'totals' => $_report['totals']
+    ]);
+elseif ($record->getId() && $record->month == 0):
+    $_report = $record->report();
+    Flight::render('model/revenue/report/year', [
+        'costunittypes' => $_report['costunittypes'],
+        'records' => $_report['revenues'],
+        'totals' => $_report['totals'],
+        'months' => $_report['months']
     ]);
 endif;
 ?>

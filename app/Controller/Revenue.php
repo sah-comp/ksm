@@ -50,6 +50,10 @@ class Controller_Revenue extends Controller
      */
     public function pdf()
     {
+        $layout = 'month';
+        if ($this->record->month == 0) {
+            $layout = 'year';
+        }
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $startdate = $this->record->getStartDate();
         $enddate = $this->record->getEndDate();
@@ -67,14 +71,15 @@ class Controller_Revenue extends Controller
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
         ob_start();
-        Flight::render('model/revenue/pdf/revenue', [
+        Flight::render('model/revenue/pdf/' . $layout, [
             'language' => Flight::get('language'),
             'company_name' => $this->company->legalname,
             'pdf_headline' => I18n::__('revenue_text_header', null, [$startdate, $enddate]),
             'record' => $this->record,
             'records' => $report['revenues'],
             'totals' => $report['totals'],
-            'costunittypes' => $report['costunittypes']
+            'costunittypes' => $report['costunittypes'],
+            'months' => $this->record->getReportMonths()
         ]);
         $html = ob_get_contents();
         ob_end_clean();
@@ -99,13 +104,22 @@ class Controller_Revenue extends Controller
         $csv->delimiter = ";";
         $csv->output_delimiter = ";";
         $csv->linefeed = "\r\n";
-        $csv->titles = [
-            I18n::__('revenue_csv_date'), //Datum
-            I18n::__('revenue_csv_number'), //Rechnungsnummer
-            I18n::__('revenue_csv_account'), //Kunde
-            I18n::__('revenue_csv_total_net'), //Gesamt Netto
-            I18n::__('revenue_csv_total_gros') //Gesamt Brutto
-        ];
+
+        if ($this->record->month == 0) {
+            $csv->titles = [
+                I18n::__('revenue_csv_month'), //Monat
+                I18n::__('revenue_csv_total_net'), //Gesamt Netto
+                I18n::__('revenue_csv_total_gros') //Gesamt Brutto
+            ];
+        } else {
+            $csv->titles = [
+                I18n::__('revenue_csv_date'), //Datum
+                I18n::__('revenue_csv_number'), //Rechnungsnummer
+                I18n::__('revenue_csv_account'), //Kunde
+                I18n::__('revenue_csv_total_net'), //Gesamt Netto
+                I18n::__('revenue_csv_total_gros') //Gesamt Brutto
+            ];
+        }
         // add net and gros for each cost unit type
         foreach ($report['costunittypes'] as $id => $cut) {
             $csv->titles[] = I18n::__('revenue_csv_template_net', null, [$cut->name]);

@@ -15,7 +15,7 @@
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Ledger extends Controller_Scaffold
+class Controller_Ledger extends Controller
 {
     /**
      * Holds the company bean.
@@ -23,6 +23,25 @@ class Controller_Ledger extends Controller_Scaffold
      * @var RedBeanPHP\OODBBean
      */
     public $company;
+
+    /**
+     * Holds the current record.
+     *
+     * @var RedBeanPHP\OODBBean
+     */
+    public $record = null;
+
+    /**
+     * Constructs a new Revenue controller.
+     *
+     * @param int (optional) id of a bean
+     */
+    public function __construct($id = null)
+    {
+        session_start();
+        Auth::check();
+        $this->record = R::load('ledger', $id);
+    }
 
     /*
      * Generate a PDF.
@@ -48,5 +67,33 @@ class Controller_Ledger extends Controller_Scaffold
         $mpdf->WriteHTML($html);
         $mpdf->Output($filename, 'D');
         exit;
+    }
+
+    /**
+     * Export the revenue list as .csv file
+     *
+     * @return void
+     */
+    public function csv()
+    {
+        $filename = I18n::__('ledger_filename_csv', null, [$this->record->name]);
+        $csv = new \ParseCsv\Csv();
+        $csv->encoding('UTF-8', 'UTF-8');
+        $csv->delimiter = ";";
+        $csv->output_delimiter = ";";
+        $csv->linefeed = "\r\n";
+        $csv->titles = [
+            I18n::__('ledger_csv_bookingdate'), //Beledatum
+            I18n::__('ledger_csv_desc'), //Beschreibung
+            I18n::__('ledger_csv_taking'), //Einnahme
+            I18n::__('ledger_csv_expense'), //Ausgabe
+            I18n::__('ledger_csv_vat'), //Steuersatz
+            I18n::__('ledger_csv_vattaking'), //UST Einnahme
+            I18n::__('ledger_csv_vatexpense'), //UST Ausgabe
+            I18n::__('ledger_csv_balance') //Bestand
+        ];
+        $csv->heading = true;
+        $csv->data = $this->record->makeCsvData();
+        $csv->output($filename);
     }
 }

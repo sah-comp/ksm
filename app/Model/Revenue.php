@@ -46,6 +46,27 @@ class Model_Revenue extends Model
     public $bookables = [];
 
     /**
+     * Holds a comma separated string of IDs that are bookable.
+     *
+     * @see Model_Contracttype::$bookable
+     */
+    public $bookable_types = '';
+
+    /**
+     * Holds a comma separated string of status texts that are included in the report.
+     *
+     * @see Model_Transaction::$status
+     */
+    public $stati = "'paid'";
+
+    /**
+     * Holds the numbers of a years months.
+     *
+     * @var array
+     */
+    public $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -124,6 +145,16 @@ class Model_Revenue extends Model
     }
 
     /**
+     * Returns an array with 1 .. 12 for months.
+     *
+     * @return array
+     */
+    public function getReportMonths()
+    {
+        return $this->months;
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @return bool
@@ -184,54 +215,68 @@ class Model_Revenue extends Model
     }
 
     /**
+     * Load costunittype and bookable beans.
+     *
+     * @uses costunittypes
+     * @uses bookables
+     * @uses bookable_types
+     * @uses stati
+     */
+    public function gatherCostunitsAndBookables($value='')
+    {
+        $this->costunittypes = R::find('costunittype', 'ORDER BY sequence');
+        $this->bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
+        $types = [];
+        foreach ($this->bookables as $id => $contracttype) {
+            $types[$id] = $contracttype->nickname;
+        }
+        $this->bookable_types = implode(', ', array_keys($types));
+        // Collect paid transaction beans as well as unpaid ones
+        $this->stati = "'paid'";
+        if ($this->bean->unpaid) {
+            $this->stati .= ", 'open'";
+        }
+    }
+
+    /**
      * Find all accountable revenues in the give time frame.
      *
      * @uses $revenues Will hold the invoice beans according to the set filter
      * @uses $totals Will hold the sums of certain attributes according to the filter
      *
-     * @todo get rid of the magic number for contract type
-     *
      * @param string $order_dir defaults to 'DESC'
+     *
      * @return array with bookables, costunittypes and revenues
      */
     public function report($order_dir = 'ASC')
     {
+        if ($this->bean->month == 0) {
+            return $this->bean->reportYear($order_dir);
+        }
+        //
+        // normal report, that is a timeframe with totals, sums by costunittype and single transaction beans.
+        //
         $startdate = $this->getStartDate();
         $enddate = $this->getEndDate();
+        $this->gatherCostunitsAndBookables();
 
-        $this->costunittypes = R::find('costunittype', 'ORDER BY sequence');
-        $this->bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
-
-        $types = [];
-        foreach ($this->bookables as $id => $contracttype) {
-            $types[$id] = $contracttype->nickname;
-        }
-        $type_flat = implode(', ', array_keys($types));
-
-        // Collect paid transaction beans as well as unpaid ones.
-        $stati = "'paid', 'open'";
-        /*
-        if ($_SESSION['revenue']['unpaid']) {
-            $stati .= ", 'open'";
-        }
-        */
-        $this->revenues = R::find('transaction', " (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $stati . ") ORDER BY bookingdate " . $order_dir . ", number " . $order_dir, [
+        $this->revenues = R::find('transaction', " (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ") ORDER BY bookingdate " . $order_dir . ", number " . $order_dir, [
             ':startdate' => $startdate,
             ':enddate' => $enddate,
-            ':type' => $type_flat
+            ':type' => $this->bookable_types
         ]);
 
-        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $stati . ")", [
+        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ")", [
             ':startdate' => $startdate,
             ':enddate' => $enddate,
-            ':type' => $type_flat
+            ':type' => $this->bookable_types
         ]);
 
         foreach ($this->costunittypes as $id => $cut) {
-            $this->totals[$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $stati . ") WHERE pos.costunittype_id = :cut_id", [
+            $this->totals[$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") WHERE pos.costunittype_id = :cut_id", [
                 ':startdate' => $startdate,
                 ':enddate' => $enddate,
-                ':type' => $type_flat,
+                ':type' => $this->bookable_types,
                 ':cut_id' => $cut->getId()
             ]);
         }
@@ -244,13 +289,75 @@ class Model_Revenue extends Model
     }
 
     /**
+     * Find all accountable transaction of a period grouped by month.
+     *
+     * @param string $order_dir eiterh ASC or DESC
+     *
+     * @return array
+     */
+    public function reportYear($order_dir = 'ASC')
+    {
+        $startdate = $this->getStartDate();
+        $enddate = $this->getEndDate();
+        $this->gatherCostunitsAndBookables();
+
+        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ")", [
+            ':startdate' => $startdate,
+            ':enddate' => $enddate,
+            ':type' => $this->bookable_types
+        ]);
+
+        foreach ($this->costunittypes as $id => $cut) {
+            $this->totals['cut'][$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") WHERE pos.costunittype_id = :cut_id", [
+                ':startdate' => $startdate,
+                ':enddate' => $enddate,
+                ':type' => $this->bookable_types,
+                ':cut_id' => $cut->getId()
+            ]);
+        }
+
+        foreach ($this->months as $month) {
+            $startdate = date('Y-m-01', strtotime($this->bean->fy . '-' . $month . '-01'));
+            $enddate = date('Y-m-t', strtotime($this->bean->fy . '-' . $month . '-01'));
+
+            $this->totals['month'][$month] = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ")", [
+                ':startdate' => $startdate,
+                ':enddate' => $enddate,
+                ':type' => $this->bookable_types
+            ]);
+
+            foreach ($this->costunittypes as $id => $cut) {
+                $this->totals['month'][$month][$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") WHERE pos.costunittype_id = :cut_id", [
+                ':startdate' => $startdate,
+                ':enddate' => $enddate,
+                ':type' => $this->bookable_types,
+                ':cut_id' => $cut->getId()
+            ]);
+            }
+        }
+
+        return [
+            'costunittypes' => $this->costunittypes,
+            'revenues' => [],
+            'totals' => $this->totals,
+            'months' => $this->months
+        ];
+    }
+
+    /**
      * Returns an array with formatted data to be exported as .csv file.
      *
-     * @param array required with keys revenues and costunittypes
+     * @param array required array with keys revenues and costunittypes
      * @return array
      */
     public function makeCsvData(array $report)
     {
+        if ($this->bean->month == 0) {
+            return $this->bean->makeCsvDataYear($report);
+        }
+        //
+        // monthly data as csv
+        //
         $data = [];
         foreach ($report['revenues'] as $id => $transaction) {
             $data[$id] = [
@@ -264,6 +371,29 @@ class Model_Revenue extends Model
             foreach ($report['costunittypes'] as $cut_id => $cut) {
                 $data[$id][$cut->name . 'net'] = Flight::nformat($transaction->netByCostunit($cut));
                 $data[$id][$cut->name . 'gros'] = Flight::nformat($transaction->grosByCostunit($cut));
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * Returns an array with revenue data of one year,
+     *
+     * @param array required array with data to export as csv
+     * @return array
+     */
+    public function makeCsvDataYear(array $report)
+    {
+        $data = [];
+        foreach ($this->months as $month) {
+            $data[$month] = [
+                'month' => I18n::__('month_label_' . $month),
+                'totalnet' => Flight::nformat($report['totals']['month'][$month]['totalnet']),
+                'totalgros' => Flight::nformat($report['totals']['month'][$month]['totalgros'])
+            ];
+            foreach ($this->costunittypes as $cut_id => $cut) {
+                $data[$month][$cut->name . 'net'] = Flight::nformat($report['totals']['month'][$month][$cut->getId()]['totalnet']);
+                $data[$month][$cut->name . 'gros'] = Flight::nformat($report['totals']['month'][$month][$cut->getId()]['totalgros']);
             }
         }
         return $data;
@@ -284,6 +414,7 @@ class Model_Revenue extends Model
     {
         $this->bean->fy = date('Y');
         $this->bean->month = date('m');
+        $this->bean->unpaid = true;
         $this->addValidator('name', array(
             new Validator_HasValue()
         ));

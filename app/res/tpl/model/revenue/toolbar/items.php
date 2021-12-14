@@ -2,7 +2,7 @@
 <li>
     <a
         href="<?php echo Url::build("/{$type}/csv/{$record->getId()}") ?>"
-        accesskey="p">
+        accesskey="e">
         <?php echo I18n::__('revenue_action_csv') ?>
     </a>
 </li>

@@ -34,14 +34,6 @@ class Model_Transaction extends Model
     public const PATTERN_INTERIM = "%s-%02d-%02d-%s";
 
     /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        //$this->setAction('index', ['idle', 'cancel', 'expunge']);
-    }
-
-    /**
      * Return actions array.
      */
     public function getActions()
@@ -491,6 +483,21 @@ SQL;
         $this->bean->status = 'canceled';
         R::store($this->bean);
         return $dup;
+    }
+
+    /**
+     * Expunge is an alias of R::trash().
+     *
+     * The UI uses "expunge" to give models the option to handle trash differntly.
+     * E.g. a invoice may never be trashed, instead it will be stored as canceled.
+     */
+    public function expunge()
+    {
+        if ($this->bean->locked) {
+            //We can not trash this transaction, as it is already booked.
+            return false;
+        }
+        parent::expunge();
     }
 
     /**
