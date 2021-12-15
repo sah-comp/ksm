@@ -173,7 +173,7 @@ class Model_Product extends Model
                 LIMIT {$limit}
 SQL;
         }
-        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        $result = R::getAll($sql, array(':searchtext' => '%' . $searchtext . '%' ));
         return $result;
     }
 

@@ -328,15 +328,21 @@ class Controller_Scaffold extends Controller
     }
 
     /**
-     * Returns a (random) number to be used as an array index.
+     * Returns a (very high) number to be used as an array index.
      *
-     * Why this? We have to make sure the index is higher than any sub record.
+     * Why this? We have to make sure the index is higher than any sub record
+     * to not conflict with sorting and replacing existing bean that are owned or shared
+     * by the main bean.
      *
      * @return mixed
      */
     public function randIndex()
     {
-        return random_int(100000, 200000);
+        if (!isset($_SESSION['lastindex'])) {
+            $_SESSION['lastindex'] = 100000;
+        }
+        $rand = $_SESSION['lastindex']++;
+        return $rand;
     }
 
     /**
