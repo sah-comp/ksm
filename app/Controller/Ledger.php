@@ -78,7 +78,7 @@ class Controller_Ledger extends Controller
     {
         $filename = I18n::__('ledger_filename_csv', null, [$this->record->name]);
         $csv = new \ParseCsv\Csv();
-        $csv->encoding('UTF-8', 'UTF-8');
+        $csv->encoding(Flight::setting()->encodinginput, Flight::setting()->encodingoutput);
         $csv->delimiter = ";";
         $csv->output_delimiter = ";";
         $csv->linefeed = "\r\n";

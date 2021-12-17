@@ -100,7 +100,7 @@ class Controller_Revenue extends Controller
         $report = $this->record->report();
         $filename = I18n::__('revenue_filename_csv', null, [$startdate, $enddate]);
         $csv = new \ParseCsv\Csv();
-        $csv->encoding('UTF-8', 'UTF-8');
+        $csv->encoding(Flight::setting()->encodinginput, Flight::setting()->encodingoutput);
         $csv->delimiter = ";";
         $csv->output_delimiter = ";";
         $csv->linefeed = "\r\n";
