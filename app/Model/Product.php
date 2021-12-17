@@ -57,6 +57,19 @@ class Model_Product extends Model
                 'width' => 'auto'
             ],
             [
+                'name' => 'costunittype.name',
+                'sort' => [
+                    'name' => 'costunittype.name'
+                ],
+                'callback' => [
+                    'name' => 'costunittypeName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '8rem'
+            ],
+            [
                 'name' => 'vat.name',
                 'sort' => [
                     'name' => 'vat.name'
@@ -124,6 +137,29 @@ class Model_Product extends Model
             $this->bean->vat = R::dispense('vat');
         }
         return $this->bean->vat;
+    }
+
+    /**
+     * Returns the name of the costunittype.
+     *
+     * @return string
+     */
+    public function costunittypeName()
+    {
+        return $this->bean->getCostunittype()->name;
+    }
+
+    /**
+     * Return the costunittype bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getCostunittype()
+    {
+        if (! $this->bean->costunittype) {
+            $this->bean->costunittype = R::dispense('costunittype');
+        }
+        return $this->bean->costunittype;
     }
 
     /**
@@ -196,6 +232,8 @@ SQL;
                 {$this->bean->getMeta('type')}
             LEFT JOIN
                 vat ON vat.id = product.vat_id
+            LEFT JOIN
+                costunittype ON costunittype.id = product.costunittype_id
             WHERE
                 {$where}
 SQL;

@@ -89,7 +89,7 @@
         <table width="100%">
             <tr>
                 <td class="centered" style="vertical-align: top; width: 100%;">
-                    <img src="/img/<?php echo Flight::setting()->logo ?>" width="<?php echo Flight::setting()->logowidth ?>px" height="<?php echo Flight::setting()->logoheight ?>px" alt="" />
+                    <img src="/img/<?php echo Flight::setting()->logo ?>" width="<?php echo Flight::setting()->logowidth * 0.7 ?>px" height="<?php echo Flight::setting()->logoheight * 0.7 ?>px" alt="" />
                 </td>
             </tr>
         </table>

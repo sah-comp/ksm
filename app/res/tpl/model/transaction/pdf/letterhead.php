@@ -112,6 +112,9 @@
             <td style="width: 65mm; vertical-align: top;">
                 <table class="info" width="100%">
                     <tr>
+                        <td>&nbsp;<br /><br /></td>
+                    </tr>
+                    <tr>
                         <td style="vertical-align: center;" class="label"><?php echo $record->getContracttype()->name ?></td>
                         <td class="value emphasize"><?php echo $record->number ?></td>
                     </tr>

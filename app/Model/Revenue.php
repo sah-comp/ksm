@@ -260,20 +260,20 @@ class Model_Revenue extends Model
         $enddate = $this->getEndDate();
         $this->gatherCostunitsAndBookables();
 
-        $this->revenues = R::find('transaction', " (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ") ORDER BY bookingdate " . $order_dir . ", number " . $order_dir, [
+        $this->revenues = R::find('transaction', " (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1 ORDER BY bookingdate " . $order_dir . ", number " . $order_dir, [
             ':startdate' => $startdate,
             ':enddate' => $enddate,
             ':type' => $this->bookable_types
         ]);
 
-        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ")", [
+        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1", [
             ':startdate' => $startdate,
             ':enddate' => $enddate,
             ':type' => $this->bookable_types
         ]);
 
         foreach ($this->costunittypes as $id => $cut) {
-            $this->totals[$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") WHERE pos.costunittype_id = :cut_id", [
+            $this->totals[$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = :cut_id", [
                 ':startdate' => $startdate,
                 ':enddate' => $enddate,
                 ':type' => $this->bookable_types,
@@ -301,14 +301,14 @@ class Model_Revenue extends Model
         $enddate = $this->getEndDate();
         $this->gatherCostunitsAndBookables();
 
-        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ")", [
+        $this->totals = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1", [
             ':startdate' => $startdate,
             ':enddate' => $enddate,
             ':type' => $this->bookable_types
         ]);
 
         foreach ($this->costunittypes as $id => $cut) {
-            $this->totals['cut'][$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") WHERE pos.costunittype_id = :cut_id", [
+            $this->totals['cut'][$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = :cut_id", [
                 ':startdate' => $startdate,
                 ':enddate' => $enddate,
                 ':type' => $this->bookable_types,
@@ -320,14 +320,14 @@ class Model_Revenue extends Model
             $startdate = date('Y-m-01', strtotime($this->bean->fy . '-' . $month . '-01'));
             $enddate = date('Y-m-t', strtotime($this->bean->fy . '-' . $month . '-01'));
 
-            $this->totals['month'][$month] = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ")", [
+            $this->totals['month'][$month] = R::getRow(" SELECT count(id) AS count, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(vat), 2) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN :startdate AND :enddate) AND contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1", [
                 ':startdate' => $startdate,
                 ':enddate' => $enddate,
                 ':type' => $this->bookable_types
             ]);
 
             foreach ($this->costunittypes as $id => $cut) {
-                $this->totals['month'][$month][$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") WHERE pos.costunittype_id = :cut_id", [
+                $this->totals['month'][$month][$cut->getId()] = R::getRow("SELECT ROUND(SUM(pos.total), 2) AS totalnet, ROUND(SUM(pos.gros), 2) AS totalgros, ROUND(SUM(pos.vatamount), 2) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN :startdate AND :enddate) AND trans.contracttype_id IN (:type) AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = :cut_id", [
                 ':startdate' => $startdate,
                 ':enddate' => $enddate,
                 ':type' => $this->bookable_types,

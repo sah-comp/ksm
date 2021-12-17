@@ -565,7 +565,7 @@ SQL;
     public function dispense()
     {
         $this->bean->locked = false;
-        $this->bean->number = I18n::__('transaction_placeholder_number');
+        $this->bean->number = '';//I18n::__('transaction_placeholder_number');
         $this->bean->mytransactionid = 0;
         $this->bean->duedays = 0;
         $this->bean->status = 'open';
@@ -599,7 +599,7 @@ SQL;
             if ($position->kind == Model_Position::KIND_POSITION) {
                 // count me
                 $seq++;
-                $position->sequence = $seq;
+                //$position->sequence = $seq;
             }
             if ($position->alternative || $position->kind != Model_Position::KIND_POSITION) {
                 // skip this position if it is an alternative position
@@ -659,7 +659,8 @@ SQL;
             //$number = $this->bean->contracttype->nextnumber;
             //$this->bean->contracttype->nextnumber++;
             //$this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
-            $this->bean->number = sprintf(self::PATTERN_INTERIM, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), I18n::__('transaction_placeholder_nonce'));
+            //$this->bean->number = sprintf(self::PATTERN_INTERIM, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), I18n::__('transaction_placeholder_nonce'));
+            $this->bean->number = '';
         }
 
         $this->bean->stamp = time();
