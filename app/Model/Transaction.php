@@ -465,21 +465,33 @@ SQL;
     /**
      * Cancels this transaction.
      *
-     * @return mixed
+     * @return mixed false if not canceled or RedBeanPHP\OODBBean when canceld
      */
     public function cancel()
     {
         if ($this->bean->status == 'canceled') {
-            throw new Exception(I18n::__('transaction_is_already_canceled'));
+            error_log('Transaction #' . $this->bean->getId() . ' is already canceled. Can not be canceld again.');
+            return false;
+            //throw new Exception(I18n::__('transaction_is_already_canceled'));
         }
+        if (!$this->bean->locked) {
+            error_log('Transaction #' . $this->bean->getId() . ' is not yet booked and can not be canceled.');
+            return false;
+            //throw new Exception(I18n::__('transaction_is_already_canceled'));
+        }
+        $converter = new Converter_Decimal();
         $dup = R::duplicate($this->bean);
+        $dup->locked = false;
         $dup->status = 'canceled';
         $dup->bookingdate = date('Y-m-d');
         $dup->mytransactionid = $this->bean->getId();
         foreach ($dup->ownPosition as $id => $position) {
             $position->count = $position->count * -1;
         }
-        R::store($dup);
+        $dup->calcSums($converter);
+        R::store($dup);//we have to store it once to gather an ID
+        $dup->book();//then we book it, because a cancelation has to be booked immediately
+        R::store($dup);//and store it again to make cancelation persistent
         $this->bean->status = 'canceled';
         R::store($this->bean);
         return $dup;
@@ -560,6 +572,37 @@ SQL;
     }
 
     /**
+     * Calculate net, vat and gros of this transaction from ownPosition.
+     *
+     * @param $converter Converter_Decimal
+     * @uses $bean
+     */
+    public function calcSums(Converter_Decimal $converter)
+    {
+        // calculate totals
+        $this->bean->net = 0;
+        $this->bean->vat = 0;
+        $this->bean->gros = 0;
+        $seq = 0;
+        foreach ($this->bean->ownPosition as $id => $position) {
+            if ($position->kind == Model_Position::KIND_POSITION) {
+                // count me
+                $seq++;
+                //$position->sequence = $seq;
+            }
+            if ($position->alternative || $position->kind != Model_Position::KIND_POSITION) {
+                // skip this position if it is an alternative position
+                continue;
+            }
+            $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
+            $vat = $net * $position->vatpercentage / 100;
+            $this->bean->net += $net;
+            $this->bean->vat += $vat;
+            $this->bean->gros += $net + $vat;
+        }
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
@@ -582,53 +625,36 @@ SQL;
 
     /**
      * Update.
+     *
+     * @uses calcSums()
      */
     public function update()
     {
         parent::update();
 
-        // calculate the net, vats and gros of this transaction
         $converter = new Converter_Decimal();
+        $this->bean->calcSums($converter);
 
-        // calculate totals
-        $this->bean->net = 0;
-        $this->bean->vat = 0;
-        $this->bean->gros = 0;
-        $seq = 0;
-        foreach ($this->bean->ownPosition as $id => $position) {
-            if ($position->kind == Model_Position::KIND_POSITION) {
-                // count me
-                $seq++;
-                //$position->sequence = $seq;
-            }
-            if ($position->alternative || $position->kind != Model_Position::KIND_POSITION) {
-                // skip this position if it is an alternative position
-                continue;
-            }
-            $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
-            $vat = $net * $position->vatpercentage / 100;
-            $this->bean->net += $net;
-            $this->bean->vat += $vat;
-            $this->bean->gros += $net + $vat;
-        }
-
-        // calculate payments
-        $this->bean->totalpaid = 0;
-        foreach ($this->bean->ownPayment as $id => $payment) {
-            if ($payment->closingpayment) {
-                $this->bean->status = "paid";//manually accepted payment as last payment, closing this transaction
-            }
-            $this->bean->totalpaid += $converter->convert($payment->amount);
-        }
-        $this->bean->totalpaid = round($this->bean->totalpaid, 2);
-
+        // rounding
         $this->bean->net = round($this->bean->net, 2);
         $this->bean->vat = round($this->bean->vat, 2);
         $this->bean->gros = round($this->bean->gros, 2);
 
-        $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid, 2);
-        if ($this->bean->balance == 0) {
-            $this->bean->status = "paid";// automatically set as paid when transaction is balanced
+        // calculate payments, if it is not canceled
+        if ($this->bean->status != 'canceled') {
+            $this->bean->totalpaid = 0;
+            foreach ($this->bean->ownPayment as $id => $payment) {
+                if ($payment->closingpayment) {
+                    $this->bean->status = "paid";//manually accepted payment as last payment, closing this transaction
+                }
+                $this->bean->totalpaid += $converter->convert($payment->amount);
+            }
+            $this->bean->totalpaid = round($this->bean->totalpaid, 2);
+
+            $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid, 2);
+            if ($this->bean->balance == 0) {
+                $this->bean->status = "paid";// automatically set as paid when transaction is balanced
+            }
         }
 
         if (!CINNEBAR_MIP) {
