@@ -595,16 +595,20 @@ SQL;
                 // skip this position if it is an alternative position
                 continue;
             }
-            /*
+
             $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
+            if ($position->hasAdjustment()) {
+                $adjustment = $net * $converter->convert($position->adjustment) / 100;
+                $net = $net + $adjustment;
+            }
             $vat = $net * $position->vatpercentage / 100;
-            */
-            $net = $converter->convert($position->total);
-            $vatamount = $converter->convert($position->vatamount);
+
+            //$net = $converter->convert($position->total);
+            //$vatamount = $converter->convert($position->vatamount);
             $this->bean->net += $net;
-            $this->bean->vat += $vatamount;
-            //$this->bean->gros += $net + $vat;
-            $this->bean->gros += $net + $vatamount;
+            $this->bean->vat += $vat;
+            $this->bean->gros += $net + $vat;
+            //$this->bean->gros += $net + $vatamount;
         }
 
         // rounding
