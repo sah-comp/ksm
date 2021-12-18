@@ -208,6 +208,20 @@ Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) 
 });
 
 /**
+ * Route to the openitem controller.
+ */
+Flight::route('(/[a-z]{2})/openitem(/@method:[a-z]+(/@id:[0-9]+))', function ($method, $id) {
+    if ($method === null) {
+        $method = 'index';
+    }
+    if ($id === null) {
+        $id = 0;
+    }
+    $controller = new Controller_Openitem($id);
+    $controller->$method();
+});
+
+/**
  * Routes to the contract controller to download a contract as PDF to the client.
  *
  * @deprecated since we have the Treaty controller.
