@@ -121,6 +121,16 @@ class Model_Transaction extends Model
                 'width' => '8rem'
             ],
             [
+                'name' => 'status',
+                'sort' => [
+                    'name' => 'transaction.status'
+                ],
+                'callback' => [
+                    'name' => 'statusReadable'
+                ],
+                'width' => '6rem'
+            ],
+            [
                 'name' => 'person.name',
                 'sort' => [
                     'name' => 'person.name'
@@ -476,6 +486,16 @@ SQL;
                 break;
         }
         return "style=\"border-left: 5px solid {$bordercolor};\"";
+    }
+
+    /**
+     * Returns a readable string giving the status of this transaction.
+     *
+     * @return string
+     */
+    public function statusReadable()
+    {
+        return I18n::__('transaction_status_readable_' . $this->bean->status);
     }
 
     /**
