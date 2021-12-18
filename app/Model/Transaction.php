@@ -384,23 +384,39 @@ SQL;
      */
     public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
+        $bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
+        $types = [];
+        foreach ($bookables as $id => $contracttype) {
+            $types[$id] = $contracttype->nickname;
+        }
+        $bookable_types = implode(', ', array_keys($types));
+
         switch ($query) {
             default:
             $sql = <<<SQL
                 SELECT
                     transaction.id AS id,
                     transaction.number AS label,
-                    transaction.number AS value
+                    transaction.number AS value,
+                    FORMAT(transaction.gros, 2, 'de_DE') AS gros,
+                    FORMAT(transaction.balance, 2, 'de_DE') AS balance,
+                    FORMAT(transaction.totalpaid, 2, 'de_DE') AS totalpaid
                 FROM
                     transaction
                 WHERE
-                    transaction.number LIKE :searchtext
+                    transaction.number LIKE :searchtext AND
+                    transaction.locked = 1 AND
+                    transaction.status NOT IN ('canceled', 'paid') AND
+                    transaction.contracttype_id IN (:types)
                 ORDER BY
                     transaction.number
                 LIMIT {$limit}
     SQL;
         }
-        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        $result = R::getAll($sql, [
+            ':searchtext' => $searchtext . '%',
+            ':types' => $bookable_types
+        ]);
         return $result;
     }
 

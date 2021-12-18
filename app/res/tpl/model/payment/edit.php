@@ -59,7 +59,9 @@
                     'payment-transaction-number' => 'value',
                     'payment-transaction-id' => 'id',
                     'payment-transaction-id-shadow' => 'id',
-                    //'payment-something' => 'something'
+                    'payment-transaction-gros' => 'gros',
+                    'payment-transaction-totalpaid' => 'totalpaid',
+                    'payment-transaction-balance' => 'balance'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getTransaction()->number) ?>" />
             <a
@@ -69,7 +71,6 @@
                 data-scratch="payment-transaction-id-shadow"
                 class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
     </div>
-
     <div class="row <?php echo ($record->hasError('desc')) ? 'error' : ''; ?>">
         <label
             for="payment-desc">
@@ -78,7 +79,7 @@
         <textarea
             id="payment-desc"
             name="dialog[desc]"
-            rows="3"
+            rows="5"
             cols="60"><?php echo htmlspecialchars($record->desc) ?></textarea>
     </div>
     <div class="row <?php echo ($record->hasError('statement')) ? 'error' : ''; ?>">
@@ -89,8 +90,62 @@
         <textarea
             id="payment-statement"
             name="dialog[statement]"
-            rows="3"
+            rows="4"
             cols="60"><?php echo htmlspecialchars($record->statement) ?></textarea>
+    </div>
+    <div class="row">
+        <label
+            for="payment-transaction-gros">
+            <?php echo I18n::__('payment_label_transaction_gros') ?>
+        </label>
+        <input
+            id="payment-transaction-gros"
+            type="text"
+            class="number"
+            name="gros"
+            readonly="readonly"
+            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('gros')) ?>" />
+    </div>
+    <div class="row">
+        <label
+            for="payment-transaction-totalpaid">
+            <?php echo I18n::__('payment_label_transaction_totalpaid') ?>
+        </label>
+        <input
+            id="payment-transaction-totalpaid"
+            type="text"
+            class="number"
+            name="totalpaid"
+            readonly="readonly"
+            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('totalpaid')) ?>" />
+    </div>
+    <div class="row">
+        <label
+            for="payment-transaction-balance">
+            <?php echo I18n::__('payment_label_transaction_balance') ?>
+        </label>
+        <input
+            id="payment-transaction-balance"
+            type="text"
+            class="number"
+            name="balance"
+            readonly="readonly"
+            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('balance')) ?>" />
+    </div>
+    <div class="row <?php echo ($record->hasError('amount')) ? 'error' : ''; ?>">
+        <label
+            for="payment-amount">
+            <?php echo I18n::__('payment_label_amount') ?>
+        </label>
+        <input
+            id="payment-amount"
+            type="text"
+            class="number"
+            name="dialog[amount]"
+            value="<?php echo htmlspecialchars($record->decimal('amount')) ?>" />
+            <p class="info">
+                <?php echo I18n::__('payment_info_amount') ?>
+            </p>
     </div>
     <div class="row <?php echo ($record->hasError('closingpayment')) ? 'error' : ''; ?>">
         <input
@@ -108,21 +163,6 @@
             class="cb">
             <?php echo I18n::__('payment_label_closingpayment') ?>
         </label>
-    </div>
-    <div class="row <?php echo ($record->hasError('amount')) ? 'error' : ''; ?>">
-        <label
-            for="payment-amount">
-            <?php echo I18n::__('payment_label_amount') ?>
-        </label>
-        <input
-            id="payment-amount"
-            type="text"
-            class="number"
-            name="dialog[amount]"
-            value="<?php echo htmlspecialchars($record->decimal('amount')) ?>" />
-            <p class="info">
-                <?php echo I18n::__('payment_info_amount') ?>
-            </p>
     </div>
 </fieldset>
 <!-- end of payment edit form -->
