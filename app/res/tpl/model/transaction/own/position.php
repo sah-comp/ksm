@@ -177,7 +177,15 @@
                 name="dialog[ownPosition][<?php echo $index ?>][salesprice]"
                 value="<?php echo htmlspecialchars($_position->decimal('salesprice')) ?>">
         </div>
-        <div class="span2">
+        <div class="span1">
+            <input
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-adjustment"
+                type="text"
+                class="number"
+                name="dialog[ownPosition][<?php echo $index ?>][adjustment]"
+                value="<?php echo htmlspecialchars($_position->decimal('adjustment')) ?>">
+        </div>
+        <div class="span1">
             <input
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-total"
                 type="text"

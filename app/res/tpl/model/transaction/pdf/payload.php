@@ -3,7 +3,8 @@
 <h1 class="emphasize">
     <?php echo $record->getContracttype()->name ?>
 </h1>
-<?php $_colspan = 5 ?>
+<?php $_colspan_lft = 5 ?>
+<?php $_colspan_rtg = 2 ?>
 <?php echo Flight::textile($record->header) ?>
 
 <table class="position" width="100%">
@@ -20,7 +21,7 @@
     </thead>
     <tfoot>
         <tr class="lofty">
-            <td colspan="<?php echo $_colspan ?>" class="bt">&nbsp;</td>
+            <td colspan="<?php echo $_colspan_lft ?>" class="bt">&nbsp;</td>
             <td class="bt number"><?php echo I18n::__('transaction_label_total_net') ?></td>
             <td class="bt number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
         </tr>
@@ -28,13 +29,13 @@
         <?php $vats = $record->getVatSentences(); ?>
         <?php foreach ($vats as $_id => $_vat): ?>
         <tr class="lofty">
-            <td colspan="<?php echo $_colspan ?>" class="number"></td>
+            <td colspan="<?php echo $_colspan_lft ?>" class="number"></td>
             <td class="bt number"><?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?></td>
             <td class="bt number"><?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?></td>
         </tr>
         <?php endforeach ?>
         <tr class="lofty">
-            <td colspan="<?php echo $_colspan ?>" class="">&nbsp;</td>
+            <td colspan="<?php echo $_colspan_lft ?>" class="">&nbsp;</td>
             <td class="bt bb bold number"><?php echo I18n::__('transaction_label_total_gros') ?></td>
             <td class="bt bb bold number"><?php echo htmlspecialchars($record->decimal('gros')) ?></td>
         </tr>
@@ -53,7 +54,7 @@
             switch ($_position->kind):
                 case Model_Position::KIND_SUBTOTAL:
                     ?>
-                    <td class="" colspan="5">&nbsp;</td>
+                    <td class="" colspan="<?php echo $_colspan_lft ?>">&nbsp;</td>
                     <td class="bt bb number"><?php echo Flight::textile($_position->desc) ?></td>
                     <td class="bt bb number"><?php echo Flight::nformat($_subtotal) ?></td>
                     <?php
@@ -62,8 +63,8 @@
 
                 case Model_Position::KIND_FREETEXT:
                     ?>
-                    <td colspan="5"><?php echo Flight::textile($_position->desc) ?></td>
-                    <td colspan="2">&nbsp;</td>
+                    <td colspan="<?php echo $_colspan_lft ?>"><?php echo Flight::textile($_position->desc) ?></td>
+                    <td colspan="<?php echo $_colspan_rtg ?>">&nbsp;</td>
                     <?php
                     break;
 
@@ -77,7 +78,7 @@
                     <td><?php echo Flight::textile($_position->desc) ?></td>
                     <td class="number cushion-right"><?php echo htmlspecialchars($_position->count) ?></td>
                     <td><?php echo htmlspecialchars($_position->unit) ?></td>
-                    <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?></td>
+                    <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?><?php echo $_position->hasAdjustment() ? '<span class="dinky">' . htmlspecialchars(' ' . $_position->decimal('adjustment') . "%") . '</span>' : '' ?></td>
                     <td class="number"><?php echo htmlspecialchars($_position->decimal('total')) ?></td>
                     <?php
                     break;

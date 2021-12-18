@@ -250,7 +250,10 @@
             <div class="span1 tar">
                 <label><?php echo I18n::__('position_label_salesprice') ?></label>
             </div>
-            <div class="span2 tar">
+            <div class="span1 tar">
+                <label><?php echo I18n::__('position_label_adjustment') ?></label>
+            </div>
+            <div class="span1 tar">
                 <label><?php echo I18n::__('position_label_total') ?></label>
             </div>
         </div>

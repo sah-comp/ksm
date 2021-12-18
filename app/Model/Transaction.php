@@ -568,6 +568,7 @@ SQL;
         $number = $this->bean->contracttype->nextnumber;
         $this->bean->contracttype->nextnumber++;
         $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
+        //R::store($this->bean);
         return true;
     }
 
@@ -594,12 +595,22 @@ SQL;
                 // skip this position if it is an alternative position
                 continue;
             }
+            /*
             $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
             $vat = $net * $position->vatpercentage / 100;
+            */
+            $net = $converter->convert($position->total);
+            $vatamount = $converter->convert($position->vatamount);
             $this->bean->net += $net;
-            $this->bean->vat += $vat;
-            $this->bean->gros += $net + $vat;
+            $this->bean->vat += $vatamount;
+            //$this->bean->gros += $net + $vat;
+            $this->bean->gros += $net + $vatamount;
         }
+
+        // rounding
+        $this->bean->net = round($this->bean->net, 2);
+        $this->bean->vat = round($this->bean->vat, 2);
+        $this->bean->gros = round($this->bean->gros, 2);
     }
 
     /**
@@ -635,13 +646,8 @@ SQL;
         $converter = new Converter_Decimal();
         $this->bean->calcSums($converter);
 
-        // rounding
-        $this->bean->net = round($this->bean->net, 2);
-        $this->bean->vat = round($this->bean->vat, 2);
-        $this->bean->gros = round($this->bean->gros, 2);
-
-        // calculate payments, if it is not canceled
-        if ($this->bean->status != 'canceled') {
+        // calculate payments, if it is not canceled and it is an already existing transaction
+        if ($this->bean->status != 'canceled' && $this->bean->getId()) {
             $this->bean->totalpaid = 0;
             foreach ($this->bean->ownPayment as $id => $payment) {
                 if ($payment->closingpayment) {
