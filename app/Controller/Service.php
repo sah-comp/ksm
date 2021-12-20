@@ -41,9 +41,13 @@ class Controller_Service extends Controller_Scaffold
     public $users = [];
 
     /**
-     * Constructor
-     */
-    public function __construct()
+    * Constructor
+    *
+    * @param string $base_url for scaffold links and redirects
+    * @param string $type of the bean to scaffold
+    * @param int (optional) $id of the bean to handle
+    */
+    public function __construct($base_url, $type, $id = null)
     {
         session_start();
         Auth::check();
@@ -179,15 +183,6 @@ class Controller_Service extends Controller_Scaffold
                  ':yes' => 1
             ]
         );
-        /*
-        if ($count != $_SESSION['service']['appointments']) {
-            $new_count = $count - $_SESSION['service']['appointments'];
-            //$_SESSION['service']['appointments'] = $count;
-            echo '<span class="badge">' . $new_count . '</span>';
-        } else {
-            echo '';
-        }
-        */
         $lastupdated = $this->record->getLastUpdated();
         if ($lastupdated > $_SESSION['service']['updated'] || $count != $_SESSION['service']['appointments']) {
             $new_count = $count - $_SESSION['service']['appointments'];

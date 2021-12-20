@@ -326,7 +326,7 @@ Flight::route('POST (/[a-z]{2})/@type:[a-z]+/@id:[0-9]+/person/changed(/)', func
  * Display the servie index page.
  */
 Flight::route('(/[a-z]{2})/service(/index)', function () {
-    $serviceController = new Controller_Service();
+    $serviceController = new Controller_Service('/service', 'appointment', null);
     $serviceController->index();
 });
 
@@ -336,7 +336,7 @@ Flight::route('(/[a-z]{2})/service(/index)', function () {
  * The service page toolbar template initiates a interval via js.
  */
 Flight::route('(/[a-z]{2})/service/recheck', function () {
-    $serviceController = new Controller_Service();
+    $serviceController = new Controller_Service('/service', 'appointment', null);
     $serviceController->recheck();
 });
 
