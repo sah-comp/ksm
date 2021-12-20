@@ -9,11 +9,13 @@
  */
 ?>
 <ul class="panel-navigation">
-	<li>
+    <?php if ($hasRecords): ?>
+    <li>
 		<a
 			href="<?php echo Url::build("/openitem/pdf") ?>"
 			accesskey="p">
 			<?php echo I18n::__('openitem_action_pdf') ?>
 		</a>
 	</li>
+    <?php endif; ?>
 </ul>

@@ -217,7 +217,7 @@ Flight::route('(/[a-z]{2})/openitem(/@method:[a-z]+(/@id:[0-9]+))', function ($m
     if ($id === null) {
         $id = 0;
     }
-    $controller = new Controller_Openitem($id);
+    $controller = new Controller_Openitem('/openitem', 'transaction', $id);
     $controller->$method();
 });
 
