@@ -34,6 +34,13 @@ class Model_Transaction extends Model
     public const PATTERN_INTERIM = "%s-%02d-%02d-%s";
 
     /**
+     * Holds a comma separated string of IDs that are bookable.
+     *
+     * @see Model_Contracttype::$bookable
+     */
+    public $bookable_types = '';
+
+    /**
      * Return actions array.
      */
     public function getActions()
@@ -394,12 +401,7 @@ SQL;
      */
     public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
-        $bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
-        $types = [];
-        foreach ($bookables as $id => $contracttype) {
-            $types[$id] = $contracttype->nickname;
-        }
-        $bookable_types = implode(', ', array_keys($types));
+        $this->getBookables();
 
         switch ($query) {
             default:
@@ -425,9 +427,25 @@ SQL;
         }
         $result = R::getAll($sql, [
             ':searchtext' => $searchtext . '%',
-            ':types' => $bookable_types
+            ':types' => $this->bookable_types
         ]);
         return $result;
+    }
+
+    /**
+     * Find bookable contracttype beans and flatted them for SQL queries.
+     *
+     * @uses bookable_types
+     * @return string with flattened IDs of contracttype beans which are bookable
+     */
+    public function getBookables()
+    {
+        $bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
+        $types = [];
+        foreach ($bookables as $id => $contracttype) {
+            $types[$id] = $contracttype->nickname;
+        }
+        return $this->bookable_types = implode(', ', array_keys($types));
     }
 
     /**
