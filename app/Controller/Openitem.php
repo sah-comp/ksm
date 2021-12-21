@@ -86,14 +86,9 @@ class Controller_Openitem extends Controller_Scaffold
     public function getOpenBookables()
     {
         $bookable_types = $this->record->getBookables();
-        $this->records = R::find('transaction', " contracttype_id IN (:bookables) AND status IN (:stati) AND locked = 1 ORDER BY duedate", [
-            ':bookables' => $bookable_types,
-            ':stati' => "open"
-        ]);
-        $this->totals = R::getRow("SELECT ROUND(SUM(gros), 2) AS gros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS balance FROM transaction WHERE contracttype_id IN (:bookables) AND status IN (:stati) AND locked = 1 ORDER BY duedate", [
-            ':bookables' => $bookable_types,
-            ':stati' => "open"
-        ]);
+        $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
+
+        $this->totals = R::getRow("SELECT ROUND(SUM(gros), 2) AS gros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS balance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
     }
 
     /**

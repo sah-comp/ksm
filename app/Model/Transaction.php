@@ -451,7 +451,7 @@ SQL;
     public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
         $this->getBookables();
-
+        $slots = R::genSlots($this->bookable_types);
         switch ($query) {
             default:
             $sql = <<<SQL
@@ -465,19 +465,16 @@ SQL;
                 FROM
                     transaction
                 WHERE
-                    transaction.number LIKE :searchtext AND
+                    transaction.number LIKE ? AND
                     transaction.locked = 1 AND
                     transaction.status NOT IN ('canceled', 'paid') AND
-                    transaction.contracttype_id IN (:types)
+                    transaction.contracttype_id IN ($slots)
                 ORDER BY
                     transaction.number
                 LIMIT {$limit}
     SQL;
         }
-        $result = R::getAll($sql, [
-            ':searchtext' => $searchtext . '%',
-            ':types' => $this->bookable_types
-        ]);
+        $result = R::getAll($sql, array_merge([$searchtext . '%'], $this->bookable_types));
         return $result;
     }
 
@@ -494,7 +491,7 @@ SQL;
         foreach ($bookables as $id => $contracttype) {
             $types[$id] = $contracttype->nickname;
         }
-        return $this->bookable_types = implode(', ', array_keys($types));
+        return $this->bookable_types = array_keys($types);
     }
 
     /**
