@@ -51,8 +51,8 @@
         </div>
         <div class="span2">
             <label
-                for="appointment-invoice"
-                class="<?php echo ($record->hasError('invoice')) ? 'error' : ''; ?>">
+                for="appointment-transaction-number"
+                class="<?php echo ($record->hasError('transaction_id')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('appointment_label_invoice') ?>
             </label>
         </div>
@@ -98,12 +98,40 @@
             </select>
         </div>
         <div class="span2">
+
             <input
-                id="appointment-invoice"
-                class="autowidth"
+                type="hidden"
+                id="appointment-transaction-id-shadow"
+                name="dialog[transaction_id]"
+                value="<?php echo $record->getTransaction()->getId() ?>" />
+            <input
+                type="hidden"
+                name="dialog[transaction][type]"
+                value="transaction" />
+            <input
+                id="appointment-transaction-id"
+                type="hidden"
+                name="dialog[transaction][id]"
+                value="<?php echo $record->getTransaction()->getId() ?>" />
+            <input
                 type="text"
-                name="dialog[invoice]"
-                value="<?php echo htmlspecialchars($record->invoice) ?>">
+                id="appointment-transaction-number"
+                name="dialog[transaction][number]"
+                class="autocomplete autowidth"
+                data-source="<?php echo Url::build('/autocomplete/transaction/number/?callback=?') ?>"
+                data-spread='<?php
+                    echo json_encode([
+                        'appointment-transaction-number' => 'value',
+                        'appointment-transaction-id' => 'id',
+                        'appointment-transaction-id-shadow' => 'id'
+                    ]); ?>'
+                value="<?php echo htmlspecialchars($record->getTransaction()->number) ?>" />
+                <a
+                    href="#scratch-item"
+                    title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
+                    data-clear="appointment-transaction-number"
+                    data-scratch="appointment-transaction-id-shadow"
+                    class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
         </div>
     </div>
 

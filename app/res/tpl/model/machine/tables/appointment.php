@@ -14,6 +14,7 @@ $_appointments = R::find('appointment', "machine_id = ? ORDER BY date DESC", [$r
             <th><?php echo I18n::__('appointment_label_person') ?></th>
             <th><?php echo I18n::__('appointment_label_location') ?></th>
             <th><?php echo I18n::__('appointment_label_note') ?></th>
+            <th><?php echo I18n::__('appointment_label_transaction') ?></th>
         </tr>
     </thead>
     <tbody>
@@ -22,6 +23,7 @@ $_appointments = R::find('appointment', "machine_id = ? ORDER BY date DESC", [$r
         $_appointmenttype = $_appointment->getAppointmenttype();
         $_person = $_appointment->getPerson();
         $_location = $_appointment->getLocation();
+        $_transaction = $_appointment->getTransaction();
     ?>
         <tr>
             <td
@@ -58,6 +60,14 @@ $_appointments = R::find('appointment', "machine_id = ? ORDER BY date DESC", [$r
             </td>
             <td>
                 <?php echo htmlspecialchars($_appointment->note) ?>
+            </td>
+            <td
+                data-order="<?php echo $_transaction->number ?>">
+                <a
+                    href="<?php echo Url::build('/admin/%s/edit/%d/', [$_transaction->getMeta('type'), $_transaction->getId()]) ?>"
+                    class="in-table">
+                    <?php echo htmlspecialchars($_transaction->number) ?>
+                </a>
             </td>
         </tr>
     <?php endforeach; ?>

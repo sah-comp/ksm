@@ -140,6 +140,23 @@
             <?php echo I18n::__('contracttype_label_hidesome') ?>
         </label>
     </div>
+    <div class="row <?php echo ($record->hasError('hideall')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[hideall]"
+            value="0" />
+        <input
+            id="contracttype-hideall"
+            type="checkbox"
+            name="dialog[hideall]"
+            <?php echo ($record->hideall) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-hideall"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_hideall') ?>
+        </label>
+    </div>
     <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
         <label
             for="contracttype-note">
@@ -159,7 +176,8 @@
         'tabs' => array(
             'contracttype-detail' => I18n::__('contracttype_detail_tab'),
             'contracttype-limb' => I18n::__('contracttype_limb_tab'),
-            'contracttype-style' => I18n::__('contracttype_style_tab')
+            'contracttype-style' => I18n::__('contracttype_style_tab'),
+            'contracttype-wording' => I18n::__('contracttype_wording_tab')
         ),
         'default_tab' => 'contracttype-detail'
     )) ?>
@@ -194,6 +212,21 @@
                 rows="5"
                 cols="60"><?php echo htmlspecialchars($record->css) ?></textarea>
             <p class="info"><?php echo I18n::__('contracttype_info_css') ?></p>
+        </div>
+    </fieldset>
+    <fieldset id="contracttype-wording" class="tab" style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('contracttype_wording_legend') ?></legend>
+        <div class="row <?php echo ($record->hasError('wordgros')) ? 'error' : ''; ?>">
+            <label
+                for="contracttype-wordgros">
+                <?php echo I18n::__('contracttype_label_wordgros') ?>
+            </label>
+            <input
+                id="contracttype-wordgros"
+                name="dialog[wordgros]"
+                type="text"
+                value="<?php echo htmlspecialchars($record->wordgros) ?>">
+            <p class="info"><?php echo I18n::__('contracttype_info_wordgros') ?></p>
         </div>
     </fieldset>
     <fieldset

@@ -99,6 +99,20 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns a string in the meaning of transaction gros value, aka. Invoice total or Rechnungsbetrag.
+     *
+     * @param string optional $label to use
+     * @return string
+     */
+    public function getWordingGros($label = 'transaction_label_total_gros')
+    {
+        if (trim($this->getContracttype()->wordgros) == '') {
+            return I18n::__($label);
+        }
+        return $this->getContracttype()->wordgros;
+    }
+
+    /**
      * Returns an array with dunninglevels.
      *
      * @return array
@@ -257,15 +271,12 @@ class Model_Transaction extends Model
         if ($discount->days != 0 && $discount->value != 0) {
             // there is a possible discount within a certain time period, aka. skonto
             return vsprintf($company->conditiondiscount, [$this->bean->duedays, $discount->days, $discount->value]);
-        //return I18n::__('transaction_payment_condition_discount', null, [$this->bean->duedays, $discount->days, $discount->value]);
         } elseif ($this->bean->duedays == 0) {
             // duedays is 0 (zero)
             return $company->conditionimmediately;
-        //return I18n::__('transaction_payment_condition_immediately');
         } else {
             // no discount, but due days are not zero
             return vsprintf($company->conditionnodiscount, [$this->bean->duedays]);
-            //return I18n::__('transaction_payment_condition_no_discount', null, [$this->bean->duedays]);
         }
     }
 
@@ -701,7 +712,8 @@ SQL;
                 $adjustment = $net * $converter->convert($position->adjustment) / 100;
                 $net = $net + $adjustment;
             }
-            $vat = $net * $position->vatpercentage / 100;
+            $vatpercentage = $position->getVat()->value;
+            $vat = $net * $vatpercentage / 100;
 
             //$net = $converter->convert($position->total);
             //$vatamount = $converter->convert($position->vatamount);

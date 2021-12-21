@@ -147,6 +147,19 @@ class Model_Position extends Model
     }
 
     /**
+     * Returns either the desc attribute or a specific string if desc is empty.
+     *
+     * @return string
+     */
+    public function getStringSubtotal()
+    {
+        if ($this->bean->desc) {
+            return $this->bean->desc;
+        }
+        return I18n::__('position_string_subtotal');
+    }
+
+    /**
      * Returns wether the position has adjustment or not
      *
      * @return bool
@@ -215,6 +228,7 @@ SQL;
         $this->bean->count = 0;
         $this->bean->salesprice = 0;
         $this->bean->adjustment = 0;
+        $this->bean->adjustval = 0;
         $this->bean->total = 0;
         $this->bean->vatpercentage = 0;
         $this->bean->vatamount = 0;
@@ -225,6 +239,7 @@ SQL;
         $this->addConverter('count', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
         $this->addConverter('adjustment', new Converter_Decimal());
+        $this->addConverter('adjustval', new Converter_Decimal());
         $this->addConverter('total', new Converter_Decimal());
         $this->addConverter('vatpercentage', new Converter_Decimal());
         $this->addConverter('vatamount', new Converter_Decimal());
@@ -246,6 +261,8 @@ SQL;
             $this->bean->vat_id = null;
             unset($this->bean->vat);
         }
+        $this->bean->vatpercentage = $this->bean->getVat()->value;
+
         if (!$this->bean->costunittype_id) {
             $this->bean->costunittype_id = null;
             unset($this->bean->costunittype);
@@ -254,8 +271,8 @@ SQL;
         if (!$this->bean->alternative && $this->bean->kind == self::KIND_POSITION) {
             $this->bean->total = $this->bean->count * $this->bean->salesprice;
             if ($this->bean->adjustment) {
-                $adjustment = $this->bean->total * $this->bean->adjustment / 100;
-                $this->bean->total = $this->bean->total + $adjustment;
+                $this->bean->adjustval = $this->bean->total * $this->bean->adjustment / 100;
+                $this->bean->total = $this->bean->total + $this->bean->adjustval;
             }
             $this->bean->vatamount = $this->bean->total * $this->bean->vatpercentage / 100;
             $this->bean->gros = $this->bean->total + $this->bean->vatamount;

@@ -59,16 +59,6 @@
             type="hidden"
             name="dialog[ownPosition][<?php echo $index ?>][product][id]"
             value="<?php echo $_position->getProduct()->getId() ?>" />
-        <input
-            id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-vat-id"
-            type="hidden"
-            name="dialog[ownPosition][<?php echo $index ?>][vat_id]"
-            value="<?php echo $_position->getVat()->getId() ?>" />
-        <input
-            id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-vatpercentage"
-            type="hidden"
-            name="dialog[ownPosition][<?php echo $index ?>][vatpercentage]"
-            value="<?php echo $_position->vatpercentage ?>" />
     </div>
 
     <div class="row">
@@ -157,17 +147,38 @@
                 value="<?php echo htmlspecialchars($_position->unit) ?>">
         </div>
         <div class="span1">
-            <select
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
-                name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]">
-                <option value=""><?php echo I18n::__('product_costunittype_none') ?></option>
-                <?php foreach (R::findAll('costunittype') as $_id => $_costunittype): ?>
-                <option
-                    value="<?php echo $_costunittype->getId() ?>"
-                    <?php echo ($_position->getCostunittype()->getId() == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
-                </option>
-                <?php endforeach ?>
-            </select>
+            <div class="row">
+                <div class="span6">
+                    <select
+                        id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
+                        name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]">
+                        <option value=""><?php echo I18n::__('product_costunittype_none') ?></option>
+                        <?php foreach (R::findAll('costunittype') as $_id => $_costunittype): ?>
+                        <option
+                            value="<?php echo $_costunittype->getId() ?>"
+                            <?php echo ($_position->getCostunittype()->getId() == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
+                        </option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+                <div class="span6">
+                    <input
+                        id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-vatpercentage"
+                        type="hidden"
+                        name="dialog[ownPosition][<?php echo $index ?>][vatpercentage]"
+                        value="<?php echo $_position->vatpercentage ?>" />
+                    <select
+                        id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-vat-id"
+                        name="dialog[ownPosition][<?php echo $index ?>][vat_id]">
+                        <?php foreach (R::findAll('vat') as $_id => $_vat): ?>
+                        <option
+                            value="<?php echo $_vat->getId() ?>"
+                            <?php echo ($_position->getVat()->getId() == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo $_vat->name ?>
+                        </option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class="span1">
             <input

@@ -36,7 +36,7 @@
         <?php endforeach ?>
         <tr class="lofty">
             <td colspan="<?php echo $_colspan_lft ?>" class="">&nbsp;</td>
-            <td class="bt bb bold number"><?php echo I18n::__('transaction_label_total_gros') ?></td>
+            <td class="bt bb bold number"><?php echo $record->getWordingGros() ?></td>
             <td class="bt bb bold number"><?php echo htmlspecialchars($record->decimal('gros')) ?></td>
         </tr>
         <?php endif; ?>
@@ -55,7 +55,7 @@
                 case Model_Position::KIND_SUBTOTAL:
                     ?>
                     <td class="" colspan="<?php echo $_colspan_lft ?>">&nbsp;</td>
-                    <td class="bt bb number"><?php echo Flight::textile($_position->desc) ?></td>
+                    <td class="bt bb number"><?php echo Flight::textile($_position->getStringSubtotal()) ?></td>
                     <td class="bt bb number"><?php echo Flight::nformat($_subtotal) ?></td>
                     <?php
                     $_subtotal = 0;//reset subtotal memory to zero (0), allowing the next one to come up
@@ -78,23 +78,31 @@
                     <td><?php echo Flight::textile($_position->desc) ?></td>
                     <td class="number cushion-right"><?php echo htmlspecialchars($_position->count) ?></td>
                     <td><?php echo htmlspecialchars($_position->unit) ?></td>
-                    <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?><?php echo $_position->hasAdjustment() ? '<span class="dinky">' . htmlspecialchars(' ' . $_position->decimal('adjustment') . "%") . '</span>' : '' ?></td>
+                    <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?></td>
                     <td class="number"><?php echo htmlspecialchars($_position->decimal('total')) ?></td>
                     <?php
                     break;
             endswitch;
             ?>
         </tr>
+        <?php if ($_position->hasAdjustment()): ?>
+        <tr>
+            <td class="number cushion-right" colspan="4"><?php echo htmlspecialchars($_position->decimal('adjustment')) ?></td>
+            <td>% <?php echo ($_position->adjustment < 0) ? I18n::__('position_adjustment_rebate') : I18n::__('position_adjustment_additional') ?></td>
+            <td class="number"><?php echo htmlspecialchars($_position->decimal('adjustval')) ?></td>
+            <td>&nbsp;</td>
+        </tr>
+        <?php endif; ?>
         <?php endforeach ?>
     </tbody>
 </table>
-
-<?php if (!$record->getContracttype()->hidesome): ?>
-<div class="payment-conditions dinky">
+<?php if ($record->getContracttype()->hideall): ?>
+<?php elseif (!$record->getContracttype()->hidesome): ?>
+<div class="payment-conditions">
     <?php echo Flight::textile($record->paymentConditions()) ?>
 </div>
 <?php else: ?>
-<div class="transaction-conditions dinky">
+<div class="transaction-conditions">
     <?php echo Flight::textile($record->transactionConditions()) ?>
 </div>
 <?php endif; ?>

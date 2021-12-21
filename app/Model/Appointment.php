@@ -304,6 +304,29 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Return the transaction bean.
+     *
+     * @return $transaction
+     */
+    public function getTransaction()
+    {
+        if (! $this->bean->transaction) {
+            $this->bean->transaction = R::dispense('transaction');
+        }
+        return $this->bean->transaction;
+    }
+
+    /**
+     * Returns the name of the person (customer)
+     *
+     * @return string
+     */
+    public function transactionNumber()
+    {
+        return $this->bean->getTransaction()->number;
+    }
+
+    /**
      * Returns a mysql date string.
      *
      * @param string the value to convert
@@ -743,6 +766,11 @@ SQL;
             if (!$this->bean->location_id) {
                 $this->bean->location_id = null;
                 unset($this->bean->location);
+            }
+            // transaction
+            if (!$this->bean->transaction_id) {
+                $this->bean->transaction_id = null;
+                unset($this->bean->transaction);
             }
         }
         $this->bean->updated = time();

@@ -245,7 +245,7 @@
                 <label><?php echo I18n::__('position_label_unit') ?></label>
             </div>
             <div class="span1">
-                <label><?php echo I18n::__('position_label_costunittype') ?></label>
+                <label><?php echo I18n::__('position_label_cut_and_vat') ?></label>
             </div>
             <div class="span1 tar">
                 <label><?php echo I18n::__('position_label_salesprice') ?></label>
@@ -331,7 +331,7 @@
                 &nbsp;
             </div>
             <div class="span9 tar">
-                <?php echo I18n::__('transaction_label_total_gros') ?>
+                <?php echo $record->getWordingGros() ?>
             </div>
             <div class="span2">
                 <input
