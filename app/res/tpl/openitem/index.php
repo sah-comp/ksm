@@ -1,5 +1,6 @@
 <?php
 Flight::render('script/datatable_config');
+$_colspan = 7;
 ?>
 <article class="main">
     <header id="header-toolbar" class="fixable">
@@ -37,11 +38,28 @@ Flight::render('script/datatable_config');
                             value="1"
                             title="<?php echo I18n::__('scaffold_select_all') ?>" />
                     </th>
-                    <th><?php echo I18n::__('openitem_th_number') ?></th>
+                    <th class="transaction-number"><?php echo I18n::__('openitem_th_number') ?></th>
+                    <th class="date"><?php echo I18n::__('openitem_th_bookingdate') ?></th>
+                    <th class="date"><?php echo I18n::__('openitem_th_duedate') ?></th>
+                    <th class="duedays"><?php echo I18n::__('openitem_th_overdueindays') ?></th>
+                    <th class="gros number"><?php echo I18n::__('openitem_th_gros') ?></th>
+                    <th class="paid number"><?php echo I18n::__('openitem_th_paid') ?></th>
+                    <th class="balance number"><?php echo I18n::__('openitem_th_balance') ?></th>
+                    <th class="dunninglevel"><?php echo I18n::__('openitem_th_dunninglevel') ?></th>
                 </tr>
             </thead>
+            <tfoot>
+                <tr>
+                    <td colspan="<?php echo $_colspan ?>" class="tar"><?php echo I18n::__('openitem_label_sums') ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['gros'])) ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid'])) ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['balance'])) ?></td>
+                    <td>&nbsp;</td>
+                </tr>
+            </tfoot>
             <tbody>
             <?php foreach ($records as $_id => $_record):
+                $_type = $_record->getMeta('type');
             ?>
                 <tr
                     id="bean-<?php echo $_record->getId() ?>">
@@ -54,11 +72,11 @@ Flight::render('script/datatable_config');
                     </td>
                     <td>
                         <a
-                            href="<?php echo Url::build(sprintf('/openitem/paid/%d', $_record->getId())) ?>"
+                            href="<?php echo Url::build(sprintf('/transaction/bookaspaid/%d', $_record->getId())) ?>"
                             class="ir action action-finish finish"
-                            title="<?php echo I18n::__('scaffold_action_finish') ?>"
+                            title="<?php echo I18n::__('transaction_action_pay') ?>"
                             data-target="bean-<?php echo $_record->getId() ?>">
-                            <?php echo I18n::__('scaffold_action_finish') ?>
+                            <?php echo I18n::__('transaction_action_pay') ?>
                         </a>
                     </td>
                     <td>
@@ -70,6 +88,24 @@ Flight::render('script/datatable_config');
                             <?php echo (isset($selection[$_record->getMeta('type')][$_record->getId()]) && $selection[$_record->getMeta('type')][$_record->getId()]) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td><?php echo htmlspecialchars($_record->number) ?></td>
+                    <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
+                    <td><?php echo htmlspecialchars($_record->localizedDate('duedate')) ?></td>
+                    <td class="duedays"><?php echo htmlspecialchars($_record->getOverdueDays()) ?></td>
+                    <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
+                    <td class="number"><?php echo htmlspecialchars($_record->decimal('totalpaid')) ?></td>
+                    <td class="number"><?php echo htmlspecialchars($_record->decimal('balance')) ?></td>
+                    <td>
+                        <select
+                            id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'dunning_id']) ?>"
+                            class="enpassant"
+                            name="dunning_id">
+                            <option value=""><?php echo I18n::__('transaction_dunning_none') ?></option>
+                            <?php foreach ($_record->getDunnings() as $_id_level => $_level): ?>
+                            <option value="<?php echo $_id_level ?>" <?php echo $_record->dunning_id == $_id_level ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_level->name) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>

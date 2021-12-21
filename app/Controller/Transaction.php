@@ -65,6 +65,27 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /*
+     * Sets the transaction to paid.
+     */
+    public function bookaspaid()
+    {
+        R::begin();
+        try {
+            //error_log('Transaction #' . $this->record->getId() . ' paid?');
+            $this->record->status = 'paid';
+            R::store($this->record);
+            R::commit();
+            Flight::get('user')->notify(I18n::__("transaction_paid_done"), 'success');
+        } catch (Exception $e) {
+            error_log($e);
+            R::rollback();
+            Flight::get('user')->notify(I18n::__("transaction_paid_failed"), 'error');
+        }
+        $this->redirect("/admin/transaction/edit/{$this->record->getId()}");
+        exit();
+    }
+
+    /*
      * Generate a PDF with data deriving from the addressed transaction bean.
      */
     public function pdf()

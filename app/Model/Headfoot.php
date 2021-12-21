@@ -9,7 +9,7 @@
  */
 
 /**
- * Costunittype model.
+ * Headfoot model.
  *
  * @package Cinnebar
  * @subpackage Model

@@ -42,15 +42,31 @@ class Model_Transaction extends Model
 
     /**
      * Return actions array.
+     *
+     * @param string $switch decide which action array to return
+     * @return array
      */
-    public function getActions()
+    public function getActions($switch = 'default')
     {
-        return [
-            'index' => ['idle', 'cancel', 'expunge'],
-            'add' => ['add', 'edit', 'index'],
-            'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
-            'delete' => ['index']
-        ];
+        switch ($switch) {
+            case 'openitem':
+                return [
+                    'index' => ['idle', 'cancel'],
+                    'add' => ['add', 'edit', 'index'],
+                    'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
+                    'delete' => ['index']
+                ];
+                break;
+
+            default:
+                return [
+                    'index' => ['idle', 'cancel', 'expunge'],
+                    'add' => ['add', 'edit', 'index'],
+                    'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
+                    'delete' => ['index']
+                ];
+                break;
+        }
     }
 
     /**
@@ -80,6 +96,16 @@ class Model_Transaction extends Model
             'letterhead' => true,
             'blank' => false
         ];
+    }
+
+    /**
+     * Returns an array with dunninglevels.
+     *
+     * @return array
+     */
+    public function getDunnings()
+    {
+        return R::find('dunning', " ORDER BY sequence");
     }
 
     /**
@@ -252,6 +278,29 @@ class Model_Transaction extends Model
     {
         $company = R::load('company', CINNEBAR_COMPANY_ID);
         return $company->conditionother;
+    }
+
+    /**
+     * Returns the number of days overdue
+     *
+     * @return string
+     */
+    public function getOverdueDays()
+    {
+        $duedate = date_create_from_format('Y-m-d', $this->bean->duedate);
+        $today = date_create_from_format('Y-m-d', date('Y-m-d'));
+        $diff = (array)date_diff($duedate, $today);
+        $days = $diff['days'];
+        if (time() > strtotime($this->bean->duedate)) {
+            if ($days == 0) {
+                return I18n::__('transaction_due_today');
+            } elseif ($days == 1) {
+                return I18n::__('transaction_due_day_1');
+            } else {
+                return I18n::__('transaction_due_days', null, [$days]);
+            }
+        }
+        return '';
     }
 
     /**
@@ -735,6 +784,12 @@ SQL;
         if (!$this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
+        }
+
+        // customer (person)
+        if (!$this->bean->dunning_id) {
+            $this->bean->dunning_id = null;
+            unset($this->bean->dunning);
         }
 
         // discount (skonto) copied from customer (person)

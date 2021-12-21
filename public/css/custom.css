@@ -198,6 +198,10 @@ th, td {
     animation: widerthanyou 7000ms ease-out;
 }
 */
+.panel td.tar {
+    text-align: right;
+}
+
 /**
  * Service appointment table width settings.
  */
@@ -228,12 +232,12 @@ table.service tbody tr.coming-up {
     background-color: #c2eddb;
 }
 
-table.service thead th.edit,
-table.service thead th.switch {
+thead th.edit,
+thead th.switch {
     width: 10px;
 }
 
-table.service th.date {
+th.date {
     width: 6rem;
 }
 
@@ -346,6 +350,19 @@ input.num {
     text-align: right;
 }
 
+/* open item transaction table */
+th.gros, th.paid, th.balance {
+    width: 10rem;
+}
+
+th.duedays {
+    width: 8rem;
+}
+
+td.duedays {
+    font-size: smaller;
+}
+
 a.in-table,
 a.in-form {
     display: block;
@@ -410,6 +427,10 @@ span.badge {
     width: auto;
     margin-left: 0;
     margin-right: 0;
+}
+
+thead th.transaction-number {
+    width: 12rem;
 }
 
 /**

@@ -41,6 +41,13 @@ class Controller_Openitem extends Controller_Scaffold
     public $bookable_types = '';
 
     /**
+     * Holds the totals of all open items.
+     *
+     * @var array
+     */
+    public $totals;
+
+    /**
     * Constructor
     *
     * @param string $base_url for scaffold links and redirects
@@ -52,7 +59,7 @@ class Controller_Openitem extends Controller_Scaffold
         session_start();
         Auth::check();
         $this->record = R::load('transaction', $id);
-        $this->actions = $this->record->getActions();
+        $this->actions = $this->record->getActions('openitem');
     }
 
     /*
@@ -70,34 +77,20 @@ class Controller_Openitem extends Controller_Scaffold
         $this->render();
     }
 
-    /*
-     * Sets the transaction to paid.
-     */
-    public function paid()
-    {
-        R::begin();
-        try {
-            error_log('Transaction #' . $this->record->getId() . ' paid?');
-            R::commit();
-            Flight::get('user')->notify(I18n::__("transaction_paid_done"), 'success');
-        } catch (Exception $e) {
-            error_log($e);
-            R::rollback();
-            Flight::get('user')->notify(I18n::__("transaction_paid_failed"), 'error');
-        }
-        $this->redirect("/admin/transaction/edit/{$this->record->getId()}");
-        exit();
-    }
-
     /**
      * Find all transactions that are bookable and open.
      *
      * @uses $records array to store all bookable open transaction beans
+     * @uses $totals
      */
     public function getOpenBookables()
     {
         $bookable_types = $this->record->getBookables();
         $this->records = R::find('transaction', " contracttype_id IN (:bookables) AND status IN (:stati) AND locked = 1 ORDER BY duedate", [
+            ':bookables' => $bookable_types,
+            ':stati' => "open"
+        ]);
+        $this->totals = R::getRow("SELECT ROUND(SUM(gros), 2) AS gros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS balance FROM transaction WHERE contracttype_id IN (:bookables) AND status IN (:stati) AND locked = 1 ORDER BY duedate", [
             ':bookables' => $bookable_types,
             ':stati' => "open"
         ]);
@@ -122,6 +115,7 @@ class Controller_Openitem extends Controller_Scaffold
         Flight::render($this->template, [
             'record' => $this->record,
             'records' => $this->records,
+            'totals' => $this->totals,
             'actions' => $this->actions,
             'current_action' => $this->action,
             'title' => I18n::__("openitem_head_title")
