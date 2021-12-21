@@ -64,7 +64,9 @@ class Model_Address extends Model
             return I18n::__('address_formattedaddress_error_no_country');
         }
         $formatter_name = 'Formatter_Address_'.ucfirst(strtolower($this->bean->country->iso));
+        error_log('Formatter ' . $formatter_name);
         if (! class_exists($formatter_name, true)) {
+            error_log('can not find it, use default');
             return sprintf("%s\n%s %s\n%s\n%s", $this->bean->street, $this->bean->zip, $this->bean->city, $this->bean->county, $this->bean->country->name);
         }
         $formatter = new $formatter_name();
