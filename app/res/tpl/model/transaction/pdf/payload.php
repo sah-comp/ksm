@@ -12,13 +12,14 @@
         <tr>
             <th width="5%" class="bb"><?php echo I18n::__('position_label_sequence') ?></th>
             <th width="7%" class="bb"><?php echo I18n::__('position_label_product') ?></th>
-            <th width="40%" class="bb"><?php echo I18n::__('position_label_product_desc') ?></th>
+            <th width="36%" class="bb"><?php echo I18n::__('position_label_product_desc') ?></th>
             <th width="8%" class="bb number cushion-right"><?php echo I18n::__('position_label_count') ?></th>
-            <th width="8%" class="bb"><?php echo I18n::__('position_label_unit') ?></th>
+            <th width="12%" class="bb"><?php echo I18n::__('position_label_unit') ?></th>
             <th width="16%" class="bb number"><?php echo I18n::__('position_label_salesprice') ?></th>
             <th width="16%" class="bb number"><?php echo I18n::__('position_label_total') ?></th>
         </tr>
     </thead>
+    <?php if (!$record->getContracttype()->hidetotal): ?>
     <tfoot>
         <tr class="lofty">
             <td colspan="<?php echo $_colspan_lft ?>" class="bt">&nbsp;</td>
@@ -41,6 +42,13 @@
         </tr>
         <?php endif; ?>
     </tfoot>
+    <?php else: ?>
+    <tfoot>
+        <tr class="lofty">
+            <td colspan="<?php echo($_colspan_lft + $_colspan_rtg) ?>" class="bt">&nbsp;</td>
+        </tr>
+    </tfoot>
+    <?php endif; ?>
     <tbody>
         <?php
         /**
@@ -87,7 +95,7 @@
         </tr>
         <?php if ($_position->hasAdjustment()): ?>
         <tr>
-            <td class="number cushion-right" colspan="4"><?php echo htmlspecialchars($_position->decimal('adjustment')) ?></td>
+            <td class="number cushion-right" colspan="4"><?php echo htmlspecialchars($_position->decimal('adjustment', 0)) ?></td>
             <td>% <?php echo ($_position->adjustment < 0) ? I18n::__('position_adjustment_rebate') : I18n::__('position_adjustment_additional') ?></td>
             <td class="number"><?php echo htmlspecialchars($_position->decimal('adjustval')) ?></td>
             <td>&nbsp;</td>

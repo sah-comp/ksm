@@ -53,6 +53,7 @@
             <label
                 for="appointment-transaction-number"
                 class="<?php echo ($record->hasError('transaction_id')) ? 'error' : ''; ?>">
+                <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getTransaction()->getMeta('type'), $record->getTransaction()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
                 <?php echo I18n::__('appointment_label_invoice') ?>
             </label>
         </div>

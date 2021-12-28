@@ -140,6 +140,23 @@
             <?php echo I18n::__('contracttype_label_hidesome') ?>
         </label>
     </div>
+    <div class="row <?php echo ($record->hasError('hidetotal')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[hidetotal]"
+            value="0" />
+        <input
+            id="contracttype-hidetotal"
+            type="checkbox"
+            name="dialog[hidetotal]"
+            <?php echo ($record->hidetotal) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-hidetotal"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_hidetotal') ?>
+        </label>
+    </div>
     <div class="row <?php echo ($record->hasError('hideall')) ? 'error' : ''; ?>">
         <input
             type="hidden"
