@@ -28,6 +28,7 @@
         td {
             vertical-align: top;
             white-space: nowrap;
+            padding: 1mm 0.5mm;
         }
         th, td.th {
             text-align: left;
@@ -61,7 +62,7 @@
         <table width="100%">
             <tr>
                 <td width="60%" style="text-align: left;"><?php echo htmlspecialchars($company->legalname) ?></td>
-                <td width="40%" style="text-align: right;"><?php echo I18n::__('ledger_list_header_info', null, [$record->fy, $record->monthname(), $record->name]) ?></td>
+                <td width="40%" style="text-align: right;">&nbsp;</td>
             </tr>
         </table>
     </htmlpageheader>
@@ -76,7 +77,7 @@
 
     <table class="ledger" width="100%">
         <caption>
-            <h1><?php echo htmlspecialchars($record->name) ?></h1>
+            <h1><?php echo I18n::__('ledger_pdf_caption_h1') ?></h1>
             <h2><?php echo htmlspecialchars($record->monthname() . ' ' . $record->fy) ?></h2>
         </caption>
         <tbody>
@@ -86,14 +87,14 @@
                 <td class="bt bb br th number uberemphasize" colspan="2"><?php echo htmlspecialchars($record->decimal('cash')) ?></td>
             </tr>
             <tr>
-                <td class="th bt bb" width="10%"><?php echo I18n::__('ledgeritem_label_bookingdate') ?></th>
-                <td class="th bt bb" width="30%"><?php echo I18n::__('ledgeritem_label_desc') ?></th>
-                <td class="th bt bb number" width="10%" ><?php echo I18n::__('ledgeritem_label_taking') ?></th>
-                <td class="th bt bb number" width="10%"><?php echo I18n::__('ledgeritem_label_expense') ?></th>
-                <td class="th bt bb number" width="10%"><?php echo I18n::__('ledgeritem_label_vat') ?></th>
-                <td class="th bt bb number" width="10%"><?php echo I18n::__('ledgeritem_label_vat_taking') ?></th>
-                <td class="th bt bb number" width="10%"><?php echo I18n::__('ledgeritem_label_vat_expense') ?></th>
-                <td class="th bt bb number" width="10%"><?php echo I18n::__('ledgeritem_label_balance') ?></th>
+                <td class="th bt bb bl br" width="10%"><?php echo I18n::__('ledgeritem_label_bookingdate') ?></th>
+                <td class="th bt bb br" width="30%"><?php echo I18n::__('ledgeritem_label_desc') ?></th>
+                <td class="th bt bb br number" width="10%" ><?php echo I18n::__('ledgeritem_label_taking') ?></th>
+                <td class="th bt bb br number" width="10%"><?php echo I18n::__('ledgeritem_label_expense') ?></th>
+                <td class="th bt bb br number" width="10%"><?php echo I18n::__('ledgeritem_label_vat') ?></th>
+                <td class="th bt bb br number" width="10%"><?php echo I18n::__('ledgeritem_label_vat_taking') ?></th>
+                <td class="th bt bb br number" width="10%"><?php echo I18n::__('ledgeritem_label_vat_expense') ?></th>
+                <td class="th bt bb bl br number" width="10%"><?php echo I18n::__('ledgeritem_label_balance') ?></th>
             </tr>
         </tbody>
         <tbody>
@@ -118,43 +119,43 @@
             $vats[$_ledgeritem->vat]['vatexpense'] += $_ledgeritem->vatexpense;
         ?>
             <tr>
-                <td><?php echo htmlspecialchars($_ledgeritem->localizedDate('bookingdate')) ?></td>
-                <td><?php echo htmlspecialchars($_ledgeritem->desc) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_ledgeritem->decimal('taking')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_ledgeritem->decimal('expense')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_ledgeritem->decimal('vat')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_ledgeritem->decimal('vattaking')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_ledgeritem->decimal('vatexpense')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_ledgeritem->decimal('balance')) ?></td>
+                <td class="bl br"><?php echo htmlspecialchars($_ledgeritem->localizedDate('bookingdate')) ?></td>
+                <td class="br"><?php echo htmlspecialchars($_ledgeritem->desc) ?></td>
+                <td class="number br"><?php echo htmlspecialchars($_ledgeritem->decimal('taking')) ?></td>
+                <td class="number br"><?php echo htmlspecialchars($_ledgeritem->decimal('expense')) ?></td>
+                <td class="number br"><?php echo htmlspecialchars($_ledgeritem->decimal('vat')) ?></td>
+                <td class="number br"><?php echo htmlspecialchars($_ledgeritem->decimal('vattaking')) ?></td>
+                <td class="number br"><?php echo htmlspecialchars($_ledgeritem->decimal('vatexpense')) ?></td>
+                <td class="number br"><?php echo htmlspecialchars($_ledgeritem->decimal('balance')) ?></td>
             </tr>
         <?php endforeach ?>
             <tr>
-                <td class="bt bb number" colspan="2"><?php echo I18n::__('ledger_vat_code_title') ?></td>
-                <td class="bt bb" colspan="6">&nbsp;</td>
+                <td class="bt bb bl br number" colspan="2"><?php echo I18n::__('ledger_vat_code_title') ?></td>
+                <td class="bt bb br" colspan="6">&nbsp;</td>
 
             </tr>
         <?php
             ksort($vats);
             foreach ($vats as $_vatpercentage => $_vat): ?>
             <tr>
+                <td class="bt bb bl">&nbsp;</td>
+                <td class="bt bb br number"><?php echo I18n::__('ledger_vat_code', null, [Flight::nformat($_vatpercentage, 2, true)]) ?></td>
+                <td class="bt bb br number"><?php echo Flight::nformat($_vat['taking']) ?></td>
+                <td class="bt bb br number"><?php echo Flight::nformat($_vat['expense']) ?></td>
                 <td class="bt bb">&nbsp;</td>
-                <td class="bt bb number"><?php echo I18n::__('ledger_vat_code', null, [Flight::nformat($_vatpercentage, 2, true)]) ?></td>
-                <td class="bt bb number"><?php echo Flight::nformat($_vat['taking']) ?></td>
-                <td class="bt bb number"><?php echo Flight::nformat($_vat['expense']) ?></td>
-                <td class="bt bb">&nbsp;</td>
-                <td class="bt bb number"><?php echo Flight::nformat($_vat['vattaking']) ?></td>
-                <td class="bt bb number"><?php echo Flight::nformat($_vat['vatexpense']) ?></td>
-                <td class="bt bb">&nbsp;</td>
+                <td class="bt bb br number"><?php echo Flight::nformat($_vat['vattaking']) ?></td>
+                <td class="bt bb br number"><?php echo Flight::nformat($_vat['vatexpense']) ?></td>
+                <td class="bt bb br">&nbsp;</td>
             </tr>
         <?php endforeach; ?>
         <tr>
-            <td class="bt bb emphasize number" colspan="2"><?php echo I18n::__('ledger_label_totals') ?></td>
-            <td class="bt bb emphasize number"><?php echo htmlspecialchars($record->decimal('totaltaking')) ?></td>
-            <td class="bt bb emphasize number"><?php echo htmlspecialchars($record->decimal('totalexpense')) ?></td>
+            <td class="bt bb bl br emphasize number" colspan="2"><?php echo I18n::__('ledger_label_totals') ?></td>
+            <td class="bt bb br emphasize number"><?php echo htmlspecialchars($record->decimal('totaltaking')) ?></td>
+            <td class="bt bb br emphasize number"><?php echo htmlspecialchars($record->decimal('totalexpense')) ?></td>
             <td class="bt bb">&nbsp;</td>
-            <td class="bt bb emphasize number"><?php echo htmlspecialchars($record->decimal('totalvattaking')) ?></td>
-            <td class="bt bb emphasize number"><?php echo htmlspecialchars($record->decimal('totalvatexpense')) ?></td>
-            <td class="bt bb">&nbsp;</td>
+            <td class="bt bb br emphasize number"><?php echo htmlspecialchars($record->decimal('totalvattaking')) ?></td>
+            <td class="bt bb br emphasize number"><?php echo htmlspecialchars($record->decimal('totalvatexpense')) ?></td>
+            <td class="bt bb br">&nbsp;</td>
         </tr>
         <tr>
             <td class="" colspan="3">&nbsp;</td>

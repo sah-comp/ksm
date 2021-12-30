@@ -34,7 +34,7 @@ class Model_Ledger extends Model
                 'filter' => [
                     'tag' => 'number'
                 ],
-                'width' => '8rem'
+                'width' => '6rem'
             ],
             [
                 'name' => 'month',
@@ -47,16 +47,7 @@ class Model_Ledger extends Model
                 'callback' => [
                     'name' => 'monthname'
                 ],
-                'width' => '8rem'
-            ],
-            [
-                'name' => 'name',
-                'sort' => [
-                    'name' => 'name'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ]
+                'width' => 'auto'
             ],
             [
                 'name' => 'cash',
@@ -142,7 +133,6 @@ class Model_Ledger extends Model
         $stack = [];
         $stack[] = $this->bean->fy;
         $stack[] = $this->bean->monthname();
-        $stack[] = $this->bean->name;
         return trim(implode('-', $stack));
     }
 

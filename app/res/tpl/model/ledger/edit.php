@@ -43,18 +43,6 @@
             <?php endforeach ?>
         </select>
     </div>
-    <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
-        <label
-            for="ledger-name">
-            <?php echo I18n::__('ledger_label_name') ?>
-        </label>
-        <input
-            id="ledger-name"
-            type="text"
-            name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
-            required="required" />
-    </div>
     <div class="row <?php echo ($record->hasError('cash')) ? 'error' : ''; ?>">
         <label
             for="ledger-cash">
