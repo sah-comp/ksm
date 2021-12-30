@@ -1,6 +1,6 @@
 <?php
 Flight::render('script/datatable_config');
-$_colspan = 7;
+$_colspan = 8;
 ?>
 <article class="main">
     <header id="header-toolbar" class="fixable">
@@ -42,10 +42,12 @@ $_colspan = 7;
                     <th class="date"><?php echo I18n::__('openitem_th_bookingdate') ?></th>
                     <th class="date"><?php echo I18n::__('openitem_th_duedate') ?></th>
                     <th class="duedays"><?php echo I18n::__('openitem_th_overdueindays') ?></th>
+                    <th class="person"><?php echo I18n::__('openitem_th_person') ?></th>
                     <th class="gros number"><?php echo I18n::__('openitem_th_gros') ?></th>
                     <th class="paid number"><?php echo I18n::__('openitem_th_paid') ?></th>
                     <th class="balance number"><?php echo I18n::__('openitem_th_balance') ?></th>
                     <th class="dunninglevel"><?php echo I18n::__('openitem_th_dunninglevel') ?></th>
+                    <th class="accumulate"><?php echo I18n::__('openitem_th_accumulate') ?></th>
                 </tr>
             </thead>
             <tfoot>
@@ -54,6 +56,7 @@ $_colspan = 7;
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['gros'])) ?></td>
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid'])) ?></td>
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['balance'])) ?></td>
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                 </tr>
             </tfoot>
@@ -91,6 +94,7 @@ $_colspan = 7;
                     <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
                     <td><?php echo htmlspecialchars($_record->localizedDate('duedate')) ?></td>
                     <td class="duedays"><?php echo htmlspecialchars($_record->getOverdueDays()) ?></td>
+                    <td><?php echo htmlspecialchars($_record->getPerson()->name) ?></td>
                     <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
                     <td class="number"><?php echo htmlspecialchars($_record->decimal('totalpaid')) ?></td>
                     <td class="number"><?php echo htmlspecialchars($_record->decimal('balance')) ?></td>
@@ -98,13 +102,24 @@ $_colspan = 7;
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'dunning_id']) ?>"
-                            class="enpassant"
+                            class="enpassant autowidth"
                             name="dunning_id">
                             <option value=""><?php echo I18n::__('transaction_dunning_none') ?></option>
                             <?php foreach ($_record->getDunnings() as $_id_level => $_level): ?>
                             <option value="<?php echo $_id_level ?>" <?php echo $_record->dunning_id == $_id_level ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_level->name) ?></option>
                             <?php endforeach; ?>
                         </select>
+                    </td>
+                    <td>
+                        <input
+                            id="<?php echo $_type ?>-<?php echo $_id ?>-accumulate"
+                            name="accumulate"
+                            type="checkbox"
+                            class="enpassant"
+                            title="<?php echo I18n::__('transaction_title_accumulate') ?>"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'accumulate']) ?>"
+                            value="1"
+                            <?php echo ($_record->accumulate) ? 'checked="checked"' : '' ?> />
                     </td>
                 </tr>
             <?php endforeach; ?>

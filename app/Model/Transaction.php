@@ -735,6 +735,7 @@ SQL;
     public function dispense()
     {
         $this->bean->locked = false;
+        $this->bean->accumulate = false;//flag to be used for dunning, if true all open items will be combinded in a pdf
         $this->bean->number = '';//I18n::__('transaction_placeholder_number');
         $this->bean->mytransactionid = 0;
         $this->bean->duedays = 0;
