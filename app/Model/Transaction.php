@@ -775,7 +775,7 @@ SQL;
             $this->bean->totalpaid = round($this->bean->totalpaid, 2);
 
             $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid, 2);
-            if ($this->bean->balance == 0) {
+            if ($this->bean->balance == 0 && $this->bean->gros != 0) {
                 $this->bean->status = "paid";// automatically set as paid when transaction is balanced
             }
         }
