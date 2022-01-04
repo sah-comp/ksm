@@ -48,6 +48,7 @@ $_colspan = 8;
                     <th class="balance number"><?php echo I18n::__('openitem_th_balance') ?></th>
                     <th class="dunninglevel"><?php echo I18n::__('openitem_th_dunninglevel') ?></th>
                     <th class="accumulate"><?php echo I18n::__('openitem_th_accumulate') ?></th>
+                    <th class="pdf">&nbsp;</th>
                 </tr>
             </thead>
             <tfoot>
@@ -56,6 +57,7 @@ $_colspan = 8;
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['gros'])) ?></td>
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid'])) ?></td>
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['balance'])) ?></td>
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                 </tr>
@@ -120,6 +122,9 @@ $_colspan = 8;
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'accumulate']) ?>"
                             value="1"
                             <?php echo ($_record->accumulate) ? 'checked="checked"' : '' ?> />
+                    </td>
+                    <td>
+                        PDF
                     </td>
                 </tr>
             <?php endforeach; ?>

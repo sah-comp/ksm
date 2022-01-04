@@ -92,7 +92,7 @@ class Controller_Openitem extends Controller_Scaffold
     }
 
     /**
-     * Renders the account page.
+     * Renders the openitem page.
      */
     protected function render()
     {
