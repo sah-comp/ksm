@@ -54,9 +54,9 @@ $_colspan = 8;
             <tfoot>
                 <tr>
                     <td colspan="<?php echo $_colspan ?>" class="tar"><?php echo I18n::__('openitem_label_sums') ?></td>
-                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['gros'])) ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
                     <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid'])) ?></td>
-                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['balance'])) ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalbalance'])) ?></td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>

@@ -108,11 +108,11 @@ class Controller_Transaction extends Controller_Scaffold
             $this->redirect('/admin/transaction');
             exit();
         }
-
+        $ts = date('Y-m-d');
         $this->getTotals();
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('transaction_pdf_list_filename', null, [$this->record->getFilename()]);
-        $docname = I18n::__('transaction_pdf_list_docname', null, [$this->record->getDocname()]);
+        $filename = I18n::__('transaction_pdf_list_filename', null, [$ts]);
+        $docname = I18n::__('transaction_pdf_list_docname', null, [$ts]);
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
@@ -175,7 +175,7 @@ class Controller_Transaction extends Controller_Scaffold
     public function getTotals()
     {
         $where = $this->filter->buildWhereClause();
-        $sql = "SELECT SUM(gros) AS totalgros, SUM(net) AS totalnet, SUM(vat) AS totalvat FROM transaction LEFT JOIN contracttype ON contracttype.id = transaction.contracttype_id LEFT JOIN person ON person.id = transaction.person_id WHERE " . $where;
+        $sql = "SELECT ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat FROM transaction LEFT JOIN contracttype ON contracttype.id = transaction.contracttype_id LEFT JOIN person ON person.id = transaction.person_id WHERE " . $where;
         R::debug(true);
         $this->totals = R::getRow($sql, $this->filter->getFilterValues());
         R::debug(false);

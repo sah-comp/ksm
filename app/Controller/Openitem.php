@@ -65,6 +65,8 @@ class Controller_Openitem extends Controller_Scaffold
     /*
      * Index.
      *
+     * @uses getOpenBookables()
+     *
      * @param string $layout
      * @param int $page
      * @param int $order
@@ -78,6 +80,44 @@ class Controller_Openitem extends Controller_Scaffold
     }
 
     /**
+     * Generate a PDF with all (filtered) records.
+     */
+    public function pdf()
+    {
+        $this->getOpenBookables();
+
+        if (count($this->records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
+            Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
+            $this->redirect('/openitem');
+            exit();
+        }
+        $ts = date('Y-m-d');
+        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $filename = I18n::__('openitem_pdf_list_filename', null, [$ts]);
+        $docname = I18n::__('openitem_pdf_list_docname', null, [$ts]);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
+        $mpdf->SetTitle($docname);
+        $mpdf->SetAuthor($this->company->legalname);
+        $mpdf->SetDisplayMode('fullpage');
+        ob_start();
+        Flight::render('model/transaction/pdf/openitem', [
+            'title' => $docname,
+            'company' => $this->company,
+            'record' => $this->record,
+            'records' => $this->records,
+            'totals' => $this->totals,
+            'language' => Flight::get('language')
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+        //echo $html;
+        //return;
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
      * Find all transactions that are bookable and open.
      *
      * @uses $records array to store all bookable open transaction beans
@@ -88,7 +128,7 @@ class Controller_Openitem extends Controller_Scaffold
         $bookable_types = $this->record->getBookables();
         $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
 
-        $this->totals = R::getRow("SELECT ROUND(SUM(gros), 2) AS gros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS balance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
+        $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
     }
 
     /**

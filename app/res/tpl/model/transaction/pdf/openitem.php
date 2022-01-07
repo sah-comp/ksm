@@ -71,8 +71,8 @@
         <thead>
             <tr>
                 <th width="10%"><?php echo I18n::__('transaction_label_number') ?></th>
-                <th width="10%"><?php echo I18n::__('transaction_label_contracttype') ?></th>
                 <th width="10%"><?php echo I18n::__('transaction_label_bookingdate') ?></th>
+                <th width="10%"><?php echo I18n::__('transaction_label_duedate') ?></th>
                 <th width="40%"><?php echo I18n::__('transaction_label_person') ?></th>
                 <th width="10%" class="number"><?php echo I18n::__('transaction_label_net') ?></th>
                 <th width="10%" class="number"><?php echo I18n::__('transaction_label_vat') ?></th>
@@ -83,8 +83,8 @@
         <?php foreach ($records as $_id => $_record): ?>
             <tr>
                 <td><?php echo htmlspecialchars($_record->number) ?></td>
-                <td><?php echo htmlspecialchars($_record->getContracttype()->name) ?></td>
                 <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
+                <td><?php echo htmlspecialchars($_record->localizedDate('duedate')) ?></td>
                 <td><?php echo htmlspecialchars($_record->getPerson()->name) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_record->decimal('vat')) ?></td>
