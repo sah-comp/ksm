@@ -70,6 +70,7 @@
                 data-clear="payment-transaction-number"
                 data-scratch="payment-transaction-id-shadow"
                 class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
+            <p class="info"><?php echo(I18n::__('payment_info_transaction_number')) ?></p>
     </div>
     <div class="row <?php echo ($record->hasError('desc')) ? 'error' : ''; ?>">
         <label

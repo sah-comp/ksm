@@ -231,7 +231,7 @@ class Model_Revenue extends Model
             $types[$id] = $contracttype->nickname;
         }
         $this->bookable_types = array_keys($types);
-        error_log('Bookables ' . implode(', ', $this->bookable_types));
+        //error_log('Bookables ' . implode(', ', $this->bookable_types));
         // Collect paid transaction beans as well as unpaid ones
         $this->stati = "'paid'";
         if ($this->bean->unpaid) {

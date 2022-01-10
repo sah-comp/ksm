@@ -98,9 +98,9 @@ Flight::route('(/[a-z]{2})/autocomplete/@type:[a-z]+/@query:[a-z]+', function ($
  * Route to enpassant for updating single attributes of a bean after ajax post requests.
  */
 
-Flight::route('POST (/[a-z]{2})/enpassant/@type:[a-z]+/@id:[0-9]+/@attr:[a-z_]+', function ($type, $id, $attr) {
+Flight::route('POST (/[a-z]{2})/enpassant/@type:[a-z]+/@id:[0-9]+/@attr:[a-z_]+(/@afterburn:[a-z_]+)', function ($type, $id, $attr, $afterburn = null) {
     $enpassantController = new Controller_Enpassant();
-    $enpassantController->update($type, $id, $attr);
+    $enpassantController->update($type, $id, $attr, $afterburn);
 });
 
 

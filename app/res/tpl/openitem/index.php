@@ -103,7 +103,7 @@ $_colspan = 8;
                     <td>
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
-                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_type, $_id, 'dunning_id']) ?>"
+                            data-url="<?php echo Url::build('/enpassant/%s/%d/%s/%s/?callback=?', [$_type, $_id, 'dunning_id', 'dunning']) ?>"
                             class="enpassant autowidth"
                             name="dunning_id">
                             <option value=""><?php echo I18n::__('transaction_dunning_none') ?></option>
@@ -124,7 +124,7 @@ $_colspan = 8;
                             <?php echo ($_record->accumulate) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td>
-                        PDF
+                        <a href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

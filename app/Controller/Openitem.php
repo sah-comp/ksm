@@ -80,6 +80,36 @@ class Controller_Openitem extends Controller_Scaffold
     }
 
     /**
+     * Generate a PDF showing the dunning (mahnung) layout.
+     */
+    public function dunning()
+    {
+        $layout = 'dunning';
+        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilename()]);
+        $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
+        $mpdf->SetTitle($docname);
+        $mpdf->SetAuthor($this->company->legalname);
+        $mpdf->SetDisplayMode('fullpage');
+        ob_start();
+        Flight::render('model/transaction/pdf/' . $layout, [
+            'title' => $docname,
+            'company' => $this->company,
+            'record' => $this->record,
+            'language' => Flight::get('language')
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+        //DEBUG:
+        //echo $html;
+        //exit;
+        $mpdf->WriteHTML($html);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
      * Generate a PDF with all (filtered) records.
      */
     public function pdf()

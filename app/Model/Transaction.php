@@ -123,6 +123,18 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Evaluate dunning settings.
+     *
+     * This is eventually called by Controller_Enpassant::update() when user has
+     * clicked openitem_action_dunning_pdf in openitem/index.
+     *
+     */
+    public function dunning()
+    {
+        error_log('I am dunned');
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -468,13 +480,15 @@ SQL;
             $sql = <<<SQL
                 SELECT
                     transaction.id AS id,
-                    transaction.number AS label,
+                    CONCAT(transaction.number, ' ', DATE_FORMAT(transaction.bookingdate, '%d.%m.%Y'), ' ', REPLACE(person.name, "\r\n", ' '), ' ', FORMAT(transaction.gros, 2, 'de_DE')) AS label,
                     transaction.number AS value,
                     FORMAT(transaction.gros, 2, 'de_DE') AS gros,
                     FORMAT(transaction.balance, 2, 'de_DE') AS balance,
                     FORMAT(transaction.totalpaid, 2, 'de_DE') AS totalpaid
                 FROM
                     transaction
+                LEFT JOIN
+                    person ON person.id = transaction.person_id
                 WHERE
                     transaction.number LIKE ? AND
                     transaction.locked = 1 AND
@@ -485,7 +499,7 @@ SQL;
                 LIMIT {$limit}
     SQL;
         }
-        $result = R::getAll($sql, array_merge([$searchtext . '%'], $this->bookable_types));
+        $result = R::getAll($sql, array_merge(['%' . $searchtext . '%'], $this->bookable_types));
         return $result;
     }
 
