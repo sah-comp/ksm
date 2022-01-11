@@ -835,6 +835,7 @@ SQL;
 
         // calculate payments, if it is not canceled and it is an already existing transaction
         if ($this->bean->status != 'canceled' && $this->bean->getId()) {
+            $this->bean->status = 'open'; //re-open just in case a payment was deleted
             $this->bean->totalpaid = 0;
             foreach ($this->bean->ownPayment as $id => $payment) {
                 if ($payment->closingpayment) {

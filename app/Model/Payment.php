@@ -207,20 +207,39 @@ SQL;
     }
 
     /**
-     * after_update.
+     * After deleting a payment.
      *
-     * Afterwards we need to rebalance the related transaction.
+     * @uses recalculate()
+     */
+    public function after_delete()
+    {
+        $this->recalculate();
+    }
+
+    /**
+     * After updating a payment.
+     *
+     * @uses recalculate()
      */
     public function after_update()
     {
+        $this->recalculate();
+    }
+
+    /**
+     * Recalculate the transaction of this payment bean.
+     *
+     * @see after_delete()
+     * @see after_update()
+     */
+    public function recalculate()
+    {
         $transaction = $this->bean->getTransaction();
-        if ($transaction->getId()) {
+        if ($transaction->status != 'canceled' && $transaction->getId()) {
             // when there is a valid transaction
+            $transaction->status = 'open'; //re-open just in case this payment was fulfilling the amount to pay
             $transaction->totalpaid = 0;
             foreach ($transaction->ownPayment as $id => $payment) {
-                if ($payment->closingpayment) {
-                    $transaction->status = "paid";
-                }
                 $transaction->totalpaid += $payment->amount;
             }
             $transaction->totalpaid = round($transaction->totalpaid, 2);
