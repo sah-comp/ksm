@@ -94,7 +94,7 @@ class Model_Payment extends Model
                 'width' => '4rem'
             ],
             [
-                'name' => 'payment.desc',
+                'name' => 'desc',
                 'sort' => [
                     'name' => 'payment.desc'
                 ],
@@ -104,7 +104,7 @@ class Model_Payment extends Model
                 ]
             ],
             [
-                'name' => 'payment.statement',
+                'name' => 'statement',
                 'sort' => [
                     'name' => 'payment.statement'
                 ],
@@ -191,6 +191,7 @@ SQL;
         $this->bean->amount = 0;
         //$this->bean->bookingdate = date('Y-m-d');
         $this->addConverter('amount', new Converter_Decimal());
+        $this->addConverter('bookingdate', new Converter_Mysqldate());
     }
 
     /**

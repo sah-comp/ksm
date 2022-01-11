@@ -58,6 +58,7 @@ class Controller_Openitem extends Controller_Scaffold
     {
         session_start();
         Auth::check();
+        $this->type = $type;
         $this->record = R::load('transaction', $id);
         $this->actions = $this->record->getActions('openitem');
     }
@@ -75,6 +76,18 @@ class Controller_Openitem extends Controller_Scaffold
     public function index($layout = null, $page = null, $order = null, $dir = null)
     {
         $this->action = 'index';
+        if (Flight::request()->method == 'POST') {
+            if (! Security::validateCSRFToken(Flight::request()->data->token)) {
+                $this->redirect("/logout");
+                exit();
+            }
+            //handle a selection
+            $this->selection = Flight::request()->data->selection;
+            if ($this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
+                $this->redirect("/openitem/index");
+                exit();
+            }
+        }
         $this->getOpenBookables();
         $this->render();
     }

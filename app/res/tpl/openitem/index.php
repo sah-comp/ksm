@@ -133,6 +133,7 @@ $_colspan = 8;
             </tbody>
         </table>
         <div class="buttons">
+            <input type="text" name="payment_desc" value="" placeholder="<?php echo I18n::__('openitem_placeholder_payment_desc') ?>">
             <select name="next_action">
                 <?php foreach ($actions[$current_action] as $action): ?>
                 <option

@@ -79,7 +79,7 @@ $('body').ready(function() {
     if ($('.datatable').length) {
         dttables = $('.datatable').DataTable({
             "paging": false,
-            "stateSave": true,
+            "stateSave": false,
             "language": dtlang
         });
     }

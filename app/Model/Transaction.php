@@ -51,7 +51,7 @@ class Model_Transaction extends Model
         switch ($switch) {
             case 'openitem':
                 return [
-                    'index' => ['idle', 'cancel'],
+                    'index' => ['idle', 'paid', 'cancel'],
                     'add' => ['add', 'edit', 'index'],
                     'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
                     'delete' => ['index']
@@ -160,6 +160,26 @@ class Model_Transaction extends Model
     {
         $templates = Flight::get('templates');
         return strftime($templates['date'], strtotime($this->bean->getDateOfPayment()));
+    }
+
+    /**
+     * Book this transaction as paid.
+     *
+     * @see Openitem_Controller::applyToSelection()
+     * @see Transaction_Model::getActions()
+     */
+    public function paid()
+    {
+        $payment = R::dispense('payment');
+
+        $payment->desc = Flight::request()->data->payment_desc;
+        $payment->transaction_id = $this->bean->getId();
+        $payment->bookingdate = date('Y-m-d');
+        $payment->amount = $this->bean->balance;
+        $payment->closingpayment = true;
+
+        R::store($payment);
+        return true;
     }
 
     /**
