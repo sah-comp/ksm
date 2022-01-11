@@ -753,6 +753,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'openitem_th_bookingdate' => 'Datum',
   'openitem_th_duedate' => 'Fälligkeit',
   'openitem_th_dunninglevel' => 'Mahnstufe',
+  'openitem_th_grace' => 'Frist',
   'openitem_th_gros' => 'Rechnungsbetrag',
   'openitem_th_number' => 'Nummer',
   'openitem_th_overdueindays' => '',

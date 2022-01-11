@@ -723,6 +723,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'openitem_th_bookingdate' => 'Date',
   'openitem_th_duedate' => 'Duedate',
   'openitem_th_dunninglevel' => 'Dunninglevel',
+  'openitem_th_grace' => 'openitem_th_grace',
   'openitem_th_gros' => 'Gros',
   'openitem_th_number' => 'Number',
   'openitem_th_overdueindays' => '',

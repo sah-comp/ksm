@@ -70,13 +70,15 @@
     <table class="transaction" width="100%">
         <thead>
             <tr>
-                <th width="10%"><?php echo I18n::__('transaction_label_number') ?></th>
-                <th width="10%"><?php echo I18n::__('transaction_label_bookingdate') ?></th>
-                <th width="10%"><?php echo I18n::__('transaction_label_duedate') ?></th>
-                <th width="40%"><?php echo I18n::__('transaction_label_person') ?></th>
-                <th width="10%" class="number"><?php echo I18n::__('transaction_label_net') ?></th>
-                <th width="10%" class="number"><?php echo I18n::__('transaction_label_vat') ?></th>
-                <th width="10%" class="number"><?php echo I18n::__('transaction_label_gros') ?></th>
+                <th width="10%"><?php echo I18n::__('openitem_th_number') ?></th>
+                <th width="10%"><?php echo I18n::__('openitem_th_bookingdate') ?></th>
+                <th width="10%"><?php echo I18n::__('openitem_th_duedate') ?></th>
+                <th width="10%"><?php echo I18n::__('openitem_th_dunninglevel') ?></th>
+                <th width="10%"><?php echo I18n::__('openitem_th_grace') ?></th>
+                <th width="20%"><?php echo I18n::__('openitem_th_person') ?></th>
+                <th width="10%" class="number"><?php echo I18n::__('openitem_th_gros') ?></th>
+                <th width="10%" class="number"><?php echo I18n::__('openitem_th_paid') ?></th>
+                <th width="10%" class="number"><?php echo I18n::__('openitem_th_balance') ?></th>
             </tr>
         </thead>
         <tbody>
@@ -85,17 +87,19 @@
                 <td><?php echo htmlspecialchars($_record->number) ?></td>
                 <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
                 <td><?php echo htmlspecialchars($_record->localizedDate('duedate')) ?></td>
+                <td><?php echo htmlspecialchars($_record->getDunning()->level) ?></td>
+                <td><?php echo htmlspecialchars($_record->localizedDate('dunningdate')) ?></td>
                 <td><?php echo htmlspecialchars($_record->getPerson()->name) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
-                <td class="number"><?php echo htmlspecialchars($_record->decimal('vat')) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
+                <td class="number"><?php echo htmlspecialchars($_record->decimal('totalpaid')) ?></td>
+                <td class="number"><?php echo htmlspecialchars($_record->decimal('balance')) ?></td>
             </tr>
         <?php endforeach ?>
             <tr>
-                <td class="bt bb emphasize" colspan="4"><?php echo I18n::__('transaction_label_totals') ?></td>
-                <td class="bb bt number emphasize"><?php echo htmlspecialchars(Flight::nformat($totals['totalnet'])) ?></td>
-                <td class="bb bt number emphasize"><?php echo htmlspecialchars(Flight::nformat($totals['totalvat'])) ?></td>
+                <td class="bt bb emphasize" colspan="6"><?php echo I18n::__('transaction_label_totals') ?></td>
                 <td class="bb bt number emphasize"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
+                <td class="bb bt number emphasize"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid'])) ?></td>
+                <td class="bb bt number emphasize"><?php echo htmlspecialchars(Flight::nformat($totals['totalbalance'])) ?></td>
             </tr>
         </tbody>
     </table>
