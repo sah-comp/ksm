@@ -27,6 +27,18 @@
             value="<?php echo htmlspecialchars($record->name) ?>"
             required="required" />
     </div>
+    <div class="row <?php echo ($record->hasError('level')) ? 'error' : ''; ?>">
+        <label
+            for="dunning-level">
+            <?php echo I18n::__('dunning_label_level') ?>
+        </label>
+        <input
+            id="dunning-level"
+            type="text"
+            name="dialog[level]"
+            value="<?php echo htmlspecialchars($record->level) ?>"
+            required="required" />
+    </div>
     <div class="row <?php echo ($record->hasError('sequence')) ? 'error' : ''; ?>">
         <label
             for="dunning-sequence">

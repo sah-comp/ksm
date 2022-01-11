@@ -115,11 +115,11 @@
                         <td>&nbsp;<br /><br /></td>
                     </tr>
                     <tr>
-                        <td class="label"><?php echo I18n::__('transaction_label_dunningprintedon') ?></td>
+                        <td class="label"><?php echo I18n::__('dunning_label_printedon') ?></td>
                         <td class="value"><?php echo $record->localizedDate('dunningprintedon') ?></td>
                     </tr>
                     <tr>
-                        <td class="label"><?php echo I18n::__('transaction_label_account') ?></td>
+                        <td class="label"><?php echo I18n::__('dunning_label_account') ?></td>
                         <td class="value"><?php echo $record->getPerson()->account ?></td>
                     </tr>
                 </table>

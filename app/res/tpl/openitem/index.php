@@ -47,7 +47,7 @@ $_colspan = 8;
                     <th class="paid number"><?php echo I18n::__('openitem_th_paid') ?></th>
                     <th class="balance number"><?php echo I18n::__('openitem_th_balance') ?></th>
                     <th class="dunninglevel"><?php echo I18n::__('openitem_th_dunninglevel') ?></th>
-                    <th class="accumulate"><?php echo I18n::__('openitem_th_accumulate') ?></th>
+                    <th class="accumulate">&nbsp;</th>
                     <th class="pdf">&nbsp;</th>
                 </tr>
             </thead>
@@ -105,7 +105,8 @@ $_colspan = 8;
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/%s/?callback=?', [$_type, $_id, 'dunning_id', 'dunning']) ?>"
-                            class="enpassant autowidth"
+                            class="enpassant showhide autowidth"
+                            data-showhide="dunning-pdf-<?php echo $_record->getId() ?>"
                             name="dunning_id">
                             <option value=""><?php echo I18n::__('transaction_dunning_none') ?></option>
                             <?php foreach ($_record->getDunnings() as $_id_level => $_level): ?>
@@ -125,7 +126,7 @@ $_colspan = 8;
                             <?php echo ($_record->accumulate) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td>
-                        <a href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
+                        <a id="dunning-pdf-<?php echo $_record->getId() ?>" class="<?php echo $_record->getDunning()->getId() ? '' : 'hidden' ?>" href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

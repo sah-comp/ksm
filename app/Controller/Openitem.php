@@ -89,7 +89,7 @@ class Controller_Openitem extends Controller_Scaffold
 
             $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
 
-            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ?", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
+            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(penaltyfee), 2) AS totalfee, ROUND(SUM(balance), 2) AS totalbalance, ROUND(SUM(balance) + SUM(penaltyfee), 2) AS totalpayable FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ?", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
         } else {
             $this->records[$this->record->getId()] = $this->record; // there is only one transaction to enforce payment
 
@@ -98,7 +98,9 @@ class Controller_Openitem extends Controller_Scaffold
                 'totalvat' => $this->record->vat,
                 'totalgros' => $this->record->gros,
                 'totalpaid' => $this->record->totalpaid,
-                'totalbalance' => $this->record->balance
+                'totalfee' => $this->record->penaltyfee,
+                'totalbalance' => $this->record->balance,
+                'totalpayable' => round($this->record->balance + $this->record->penaltyfee, 2)
             ];
         }
         $layout = 'dunning';

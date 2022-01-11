@@ -363,6 +363,14 @@ td.duedays {
     font-size: smaller;
 }
 
+th.pdf {
+    width: 4rem;
+}
+
+th.accumulate {
+    width: 2rem;
+}
+
 a.in-table,
 a.in-form {
     display: block;

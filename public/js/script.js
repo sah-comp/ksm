@@ -334,6 +334,19 @@ $('body').ready(function() {
     });
 
     /**
+     * Changing a select value to null will hide a element, while
+     * changing the value to something not null will show the element.
+     */
+    $('body').on("change", '.showhide', function(event) {
+        var el = $(this).attr('data-showhide');
+        if ($(this).val()) {
+            $('#' + el).removeClass('hidden');
+        } else {
+            $('#' + el).addClass('hidden');
+        }
+    });
+
+    /**
      * All and future input fields with css class enpassant will make a ajax
      * call on update.
      * This is mostly used on the service page.

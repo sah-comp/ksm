@@ -174,6 +174,8 @@ class Model_Transaction extends Model
         //error_log('I am dunned');
         $dunning = $this->bean->getDunning();
         if (!$dunning->getId()) {
+            $this->bean->penaltyfee = 0;
+            $this->bean->dunningdate = null;
             return false;
         }
         $this->bean->penaltyfee = $dunning->penaltyfee;
@@ -805,6 +807,7 @@ SQL;
         $this->bean->duedays = 0;
         $this->bean->status = 'open';
         $this->bean->bookingdate = date('Y-m-d', time());
+        $this->bean->dunningprintedon = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('duedate', new Converter_Mysqldate());
         $this->addConverter('dunningprintedon', new Converter_Mysqldate());
