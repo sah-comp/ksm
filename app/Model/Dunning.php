@@ -108,7 +108,7 @@ class Model_Dunning extends Model
     public function getApplyToAttributes()
     {
         return [
-            'bookingdate',
+            'duedate',
             'dunningdate',
             'today'
         ];

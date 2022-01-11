@@ -45,7 +45,7 @@ class Controller_Openitem extends Controller_Scaffold
      *
      * @var array
      */
-    public $totals;
+    public $totals = [];
 
     /**
     * Constructor
@@ -84,6 +84,23 @@ class Controller_Openitem extends Controller_Scaffold
      */
     public function dunning()
     {
+        if ($this->record->accumulate) {
+            $bookable_types = $this->record->getBookables();
+
+            $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
+
+            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ?", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
+        } else {
+            $this->records[$this->record->getId()] = $this->record; // there is only one transaction to enforce payment
+
+            $this->totals = [
+                'totalnet' => $this->record->net,
+                'totalvat' => $this->record->vat,
+                'totalgros' => $this->record->gros,
+                'totalpaid' => $this->record->totalpaid,
+                'totalbalance' => $this->record->balance
+            ];
+        }
         $layout = 'dunning';
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilename()]);
@@ -97,6 +114,8 @@ class Controller_Openitem extends Controller_Scaffold
             'title' => $docname,
             'company' => $this->company,
             'record' => $this->record,
+            'records' => $this->records,
+            'totals' => $this->totals,
             'language' => Flight::get('language')
         ]);
         $html = ob_get_contents();

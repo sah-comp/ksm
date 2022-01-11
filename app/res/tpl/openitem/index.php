@@ -76,13 +76,14 @@ $_colspan = 8;
                         </a>
                     </td>
                     <td>
-                        <a
+                        &nbsp;
+                        <!--<a
                             href="<?php echo Url::build(sprintf('/transaction/bookaspaid/%d', $_record->getId())) ?>"
                             class="ir action action-finish finish"
                             title="<?php echo I18n::__('transaction_action_pay') ?>"
                             data-target="bean-<?php echo $_record->getId() ?>">
                             <?php echo I18n::__('transaction_action_pay') ?>
-                        </a>
+                        </a>-->
                     </td>
                     <td>
                         <input

@@ -123,6 +123,46 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns the dunning bean of this transaction.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getDunning()
+    {
+        if (! $this->bean->dunning) {
+            $this->bean->dunning = R::dispense('dunning');
+        }
+        return $this->bean->dunning;
+    }
+
+    /**
+     * Returns a string with the date of payment.
+     *
+     * Date of payment can be the normal duedate or the dunningdate, depending on the
+     * current dunning state.
+     *
+     * @return string
+     */
+    public function getDateOfPayment()
+    {
+        if ($this->getDunning()->getId()) {
+            return $this->bean->dunningdate;
+        }
+        return $this->bean->duedate;
+    }
+
+    /**
+     * Return the localized date of payment
+     *
+     * @return string
+     */
+    public function getLocalizedDateOfPayment()
+    {
+        $templates = Flight::get('templates');
+        return strftime($templates['date'], strtotime($this->bean->getDateOfPayment()));
+    }
+
+    /**
      * Evaluate dunning settings.
      *
      * This is eventually called by Controller_Enpassant::update() when user has
@@ -131,7 +171,15 @@ class Model_Transaction extends Model
      */
     public function dunning()
     {
-        error_log('I am dunned');
+        //error_log('I am dunned');
+        $dunning = $this->bean->getDunning();
+        if (!$dunning->getId()) {
+            return false;
+        }
+        $this->bean->penaltyfee = $dunning->penaltyfee;
+        $this->bean->dunningdate = date('Y-m-d', strtotime($this->bean->{$dunning->applyto} . ' +' . $dunning->grace . 'days'));
+        $this->bean->dunningprintedon = date('Y-m-d');
+        return true;
     }
 
     /**
@@ -310,11 +358,13 @@ class Model_Transaction extends Model
      */
     public function getOverdueDays()
     {
-        $duedate = date_create_from_format('Y-m-d', $this->bean->duedate);
+        //$paydate = $this->bean->getDateOfPayment();
+        $paydate = $this->bean->duedate;
+        $duedate = date_create_from_format('Y-m-d', $paydate);
         $today = date_create_from_format('Y-m-d', date('Y-m-d'));
         $diff = (array)date_diff($duedate, $today);
         $days = $diff['days'];
-        if (time() > strtotime($this->bean->duedate)) {
+        if (time() > strtotime($paydate)) {
             if ($days == 0) {
                 return I18n::__('transaction_due_today');
             } elseif ($days == 1) {
@@ -757,12 +807,15 @@ SQL;
         $this->bean->bookingdate = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('duedate', new Converter_Mysqldate());
+        $this->addConverter('dunningprintedon', new Converter_Mysqldate());
         $this->addConverter('duedays', new Converter_Decimal());
         $this->addConverter('net', new Converter_Decimal());
         $this->addConverter('vat', new Converter_Decimal());
         $this->addConverter('gros', new Converter_Decimal());
         $this->addConverter('totalpaid', new Converter_Decimal()); //saldo
         $this->addConverter('balance', new Converter_Decimal()); //saldo
+        $this->addConverter('dunningdate', new Converter_Mysqldate()); //last date this transaction was reinforced
+        $this->addConverter('penaltyfee', new Converter_Decimal());
     }
 
     /**

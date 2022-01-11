@@ -62,7 +62,7 @@
                     <table class="pagefooter" width="100%">
                         <tr>
                             <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_4')) ?>
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_4'))?>
                             </td>
                         </tr>
                     </table>
@@ -73,7 +73,7 @@
                     <table class="pagefooter legal" width="100%">
                         <tr>
                             <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_legal')) ?>
+                                <?php //echo Flight::textile(I18n::__('transaction_footer_block_legal'))?>
                             </td>
                         </tr>
                     </table>
@@ -115,20 +115,12 @@
                         <td>&nbsp;<br /><br /></td>
                     </tr>
                     <tr>
-                        <td style="vertical-align: center;" class="label"><?php echo $record->getContracttype()->name ?></td>
-                        <td class="value emphasize"><?php echo $record->number ?></td>
-                    </tr>
-                    <tr>
-                        <td class="label"><?php echo I18n::__('transaction_label_bookingdate') ?></td>
-                        <td class="value"><?php echo $record->localizedDate('bookingdate') ?></td>
+                        <td class="label"><?php echo I18n::__('transaction_label_dunningprintedon') ?></td>
+                        <td class="value"><?php echo $record->localizedDate('dunningprintedon') ?></td>
                     </tr>
                     <tr>
                         <td class="label"><?php echo I18n::__('transaction_label_account') ?></td>
                         <td class="value"><?php echo $record->getPerson()->account ?></td>
-                    </tr>
-                    <tr>
-                        <td class="label"><span class="payment-conditions"><?php echo I18n::__('transaction_label_duedate') ?></span></td>
-                        <td class="value"><span class="payment-conditions"><?php echo htmlspecialchars($record->localizedDate('duedate')) ?></span></td>
                     </tr>
                 </table>
             </td>
