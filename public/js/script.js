@@ -80,7 +80,12 @@ $('body').ready(function() {
         dttables = $('.datatable').DataTable({
             "paging": false,
             "stateSave": false,
-            "language": dtlang
+            "language": dtlang,
+            "order": [],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
         });
     }
 

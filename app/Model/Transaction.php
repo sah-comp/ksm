@@ -165,6 +165,7 @@ class Model_Transaction extends Model
     /**
      * Book this transaction as paid.
      *
+     * @uses Converter_Decimal to handle user input of amount
      * @see Openitem_Controller::applyToSelection()
      * @see Transaction_Model::getActions()
      */
@@ -175,8 +176,17 @@ class Model_Transaction extends Model
         $payment->desc = Flight::request()->data->payment_desc;
         $payment->transaction_id = $this->bean->getId();
         $payment->bookingdate = date('Y-m-d');
+
         $payment->amount = $this->bean->balance;
-        $payment->closingpayment = true;
+        if (Flight::request()->data->payment_amount) {
+            $converter = new Converter_Decimal();
+            $user_amount = $converter->convert(Flight::request()->data->payment_amount);
+            $payment->amount = $user_amount;
+        }
+        $payment->closingpayment = false;
+        if ($payment->amount == $this->bean->balance) {
+            $payment->closingpayment = true;
+        }
 
         R::store($payment);
         return true;
@@ -202,6 +212,21 @@ class Model_Transaction extends Model
         $this->bean->dunningdate = date('Y-m-d', strtotime($this->bean->{$dunning->applyto} . ' +' . $dunning->grace . 'days'));
         $this->bean->dunningprintedon = date('Y-m-d');
         return true;
+    }
+
+    /**
+     * Set fields after the bean was copied.
+     *
+     * @see Transaction_Controller()
+     * @return RedBeanPHP\OODBBean
+     */
+    public function resetAfterCopy()
+    {
+        $this->bean->status = 'open';
+        $this->bean->header = '';
+        $this->bean->footer = '';
+        $this->bean->locked = false;
+        return $this->bean;
     }
 
     /**

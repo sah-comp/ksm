@@ -154,6 +154,7 @@
             id="treaty-serialnumber"
             name="dialog[serialnumber]"
             value="<?php echo htmlspecialchars($record->serialnumber) ?>" />
+        <p class="info"><?php echo I18n::__('treaty_info_serialnumber') ?></p>
     </div>
 </fieldset>
 <div class="tab-container">

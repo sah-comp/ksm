@@ -47,8 +47,7 @@ class Controller_Transaction extends Controller_Scaffold
                 $copy = R::duplicate($this->record);
                 $copy->contracttype_id = Flight::request()->query->copyas;
                 $copy->mytransactionid = $this->record->getId();
-                $copy->status = 'open';
-                $copy->locked = false;
+                $copy->resetAfterCopy();
                 R::store($copy);
                 R::commit();
                 Flight::get('user')->notify(I18n::__('transaction_success_copy', null, [$this->record->number, $copy->contracttype->name]), 'success');

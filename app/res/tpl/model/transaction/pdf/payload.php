@@ -19,36 +19,6 @@
             <th width="16%" class="bb number"><?php echo I18n::__('position_label_total') ?></th>
         </tr>
     </thead>
-    <?php if (!$record->getContracttype()->hidetotal): ?>
-    <tfoot>
-        <tr class="lofty">
-            <td colspan="<?php echo $_colspan_lft ?>" class="bt">&nbsp;</td>
-            <td class="bt number"><?php echo I18n::__('transaction_label_total_net') ?></td>
-            <td class="bt number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
-        </tr>
-        <?php if (!$record->getContracttype()->hidesome): ?>
-        <?php $vats = $record->getVatSentences(); ?>
-        <?php foreach ($vats as $_id => $_vat): ?>
-        <tr class="lofty">
-            <td colspan="<?php echo $_colspan_lft ?>" class="number"></td>
-            <td class="bt number"><?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?></td>
-            <td class="bt number"><?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?></td>
-        </tr>
-        <?php endforeach ?>
-        <tr class="lofty">
-            <td colspan="<?php echo $_colspan_lft ?>" class="">&nbsp;</td>
-            <td class="bt bb bold number"><?php echo $record->getWordingGros() ?></td>
-            <td class="bt bb bold number"><?php echo htmlspecialchars($record->decimal('gros')) ?></td>
-        </tr>
-        <?php endif; ?>
-    </tfoot>
-    <?php else: ?>
-    <tfoot>
-        <tr class="lofty">
-            <td colspan="<?php echo($_colspan_lft + $_colspan_rtg) ?>" class="bt">&nbsp;</td>
-        </tr>
-    </tfoot>
-    <?php endif; ?>
     <tbody>
         <?php
         /**
@@ -81,7 +51,7 @@
                         $_subtotal += $_position->total;//adding up this position total to our subtotal, in case
                     }
                     ?>
-                    <td class="nan"><?php echo htmlspecialchars($_position->decimal('sequence', 0)) ?></td>
+                    <td class="number cushion-right"><?php echo htmlspecialchars($_position->decimal('sequence', 0)) ?></td>
                     <td><?php echo htmlspecialchars($_position->getProduct()->number) ?></td>
                     <td><?php echo Flight::textile($_position->desc) ?></td>
                     <td class="number cushion-right"><?php echo htmlspecialchars($_position->count) ?></td>
@@ -103,6 +73,36 @@
         <?php endif; ?>
         <?php endforeach ?>
     </tbody>
+    <?php if (!$record->getContracttype()->hidetotal): ?>
+    <tbody class="foot">
+        <tr class="lofty">
+            <td colspan="<?php echo $_colspan_lft ?>" class="bt">&nbsp;</td>
+            <td class="bt number"><?php echo I18n::__('transaction_label_total_net') ?></td>
+            <td class="bt number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
+        </tr>
+        <?php if (!$record->getContracttype()->hidesome): ?>
+        <?php $vats = $record->getVatSentences(); ?>
+        <?php foreach ($vats as $_id => $_vat): ?>
+        <tr class="lofty">
+            <td colspan="<?php echo $_colspan_lft ?>" class="number"></td>
+            <td class="bt number"><?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?></td>
+            <td class="bt number"><?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?></td>
+        </tr>
+        <?php endforeach ?>
+        <tr class="lofty">
+            <td colspan="<?php echo $_colspan_lft ?>" class="">&nbsp;</td>
+            <td class="bt bb bold number"><?php echo $record->getWordingGros() ?></td>
+            <td class="bt bb bold number"><?php echo htmlspecialchars($record->decimal('gros')) ?></td>
+        </tr>
+        <?php endif; ?>
+    </tbody>
+    <?php else: ?>
+    <tbody class="foot">
+        <tr class="lofty">
+            <td colspan="<?php echo($_colspan_lft + $_colspan_rtg) ?>" class="bt">&nbsp;</td>
+        </tr>
+    </tbody>
+    <?php endif; ?>
 </table>
 <?php if ($record->getContracttype()->hideall): ?>
 <?php elseif (!$record->getContracttype()->hidesome): ?>

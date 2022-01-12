@@ -381,12 +381,14 @@ SQL;
      */
     public function update()
     {
+        /*
         if ($this->bean->email) {
             $this->addValidator('email', array(
                 new Validator_IsEmail(),
                 new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'email'))
             ));
         }
+        */
 
         if ($this->bean->billingemail) {
             $this->addValidator('billingemail', array(

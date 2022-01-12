@@ -579,6 +579,17 @@ $_personkinds = $record->sharedPersonkind;
                 name="dialog[billingemail]"
                 value="<?php echo htmlspecialchars($record->billingemail) ?>" />
         </div>
+        <div class="row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
+            <label
+                for="person-dunningemail">
+                <?php echo I18n::__('person_label_dunningemail') ?>
+            </label>
+            <input
+                id="person-dunningemail"
+                type="email"
+                name="dialog[dunningemail]"
+                value="<?php echo htmlspecialchars($record->dunningemail) ?>" />
+        </div>
         <div class="row <?php echo ($record->hasError('bankname')) ? 'error' : ''; ?>">
             <label
                 for="person-bankname">

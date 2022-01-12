@@ -202,6 +202,10 @@ th, td {
     text-align: right;
 }
 
+.panel .buttons p.info {
+    text-align: left;
+}
+
 /**
  * Service appointment table width settings.
  */
@@ -441,6 +445,10 @@ thead th.transaction-number {
     width: 12rem;
 }
 
+.openitem-amount {
+    /*float: right;*/
+}
+
 /**
  * Datatables stuff. From scratch.
  */
@@ -582,7 +590,8 @@ table.scaffold a.tooltip-open {
     background-size: 12px 12px;
 }
 
-table.service a.tooltip-open {
+table.service a.tooltip-open,
+table.openitem a.tooltip-open {
     float: left;
 }
 

@@ -20,17 +20,15 @@ $_colspan = 8;
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
 
-        <table
-            class="scaffold openitem datatable"
-            data-ordering="false">
+        <table class="scaffold openitem datatable">
             <caption>
                 <?php echo I18n::__('scaffold_caption_index', null, [count($records)]) ?>
             </caption>
             <thead>
                 <tr>
-                    <th class="edit">&nbsp;</th>
-                    <th class="edit">&nbsp;</th>
-                    <th class="switch">
+                    <th class="edit no-sort">&nbsp;</th>
+                    <th class="edit no-sort">&nbsp;</th>
+                    <th class="switch no-sort">
                         <input
                             class="all"
                             type="checkbox"
@@ -65,17 +63,19 @@ $_colspan = 8;
             <tbody>
             <?php foreach ($records as $_id => $_record):
                 $_type = $_record->getMeta('type');
+                $_person = $_record->getPerson();
             ?>
                 <tr
-                    id="bean-<?php echo $_record->getId() ?>">
-                    <td>
+                    id="bean-<?php echo $_record->getId() ?>"
+                    data-href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/openitem/#bean-' . $_record->getId()]) ?>">
+                    <td class="no-sort">
                         <a
                             class="ir action action-edit"
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/openitem/#bean-' . $_record->getId()]) ?>">
                             <?php echo I18n::__('scaffold_action_edit') ?>
                         </a>
                     </td>
-                    <td>
+                    <td class="no-sort">
                         &nbsp;
                         <!--<a
                             href="<?php echo Url::build(sprintf('/transaction/bookaspaid/%d', $_record->getId())) ?>"
@@ -85,7 +85,7 @@ $_colspan = 8;
                             <?php echo I18n::__('transaction_action_pay') ?>
                         </a>-->
                     </td>
-                    <td>
+                    <td class="no-sort">
                         <input
                             type="checkbox"
                             class="selector"
@@ -93,14 +93,46 @@ $_colspan = 8;
                             value="1"
                             <?php echo (isset($selection[$_record->getMeta('type')][$_record->getId()]) && $selection[$_record->getMeta('type')][$_record->getId()]) ? 'checked="checked"' : '' ?> />
                     </td>
-                    <td><?php echo htmlspecialchars($_record->number) ?></td>
-                    <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
-                    <td><?php echo htmlspecialchars($_record->localizedDate('duedate')) ?></td>
+                    <td
+                        data-sort="<?php echo htmlspecialchars($_record->number) ?>">
+                        <?php echo htmlspecialchars($_record->number) ?>
+                    </td>
+                    <td
+                        data-sort="<?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?>
+                    </td>
+                    <td
+                        data-sort="<?php echo htmlspecialchars($_record->localizedDate('duedate')) ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('duedate')) ?>
+                    </td>
                     <td class="duedays"><?php echo htmlspecialchars($_record->getOverdueDays()) ?></td>
-                    <td><?php echo htmlspecialchars($_record->getPerson()->name) ?></td>
-                    <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
-                    <td class="number"><?php echo htmlspecialchars($_record->decimal('totalpaid')) ?></td>
-                    <td class="number"><?php echo htmlspecialchars($_record->decimal('balance')) ?></td>
+                    <td
+                        data-sort="<?php echo htmlspecialchars($_person->name) ?>"
+                        data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_person->name) ?>">
+                        <?php
+                        Flight::render('model/person/tooltip/contactinfo', [
+                            'record' => $_person
+                        ]);
+                        ?>
+                        <a
+                            href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/openitem/#bean-' . $_record->getId()]) ?>"
+                            title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
+                            class="in-table">
+                            <?php echo htmlspecialchars($_person->name) ?>
+                        </a>
+                    </td>
+                    <td class="number"
+                        data-sort="<?php echo htmlspecialchars($_record->decimal('gros')) ?>">
+                        <?php echo htmlspecialchars($_record->decimal('gros')) ?>
+                    </td>
+                    <td class="number"
+                        data-sort="<?php echo htmlspecialchars($_record->decimal('totalpaid')) ?>">
+                        <?php echo htmlspecialchars($_record->decimal('totalpaid')) ?>
+                    </td>
+                    <td class="number"
+                        data-sort="<?php echo htmlspecialchars($_record->decimal('balance')) ?>">
+                        <?php echo htmlspecialchars($_record->decimal('balance')) ?>
+                    </td>
                     <td>
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
@@ -133,18 +165,28 @@ $_colspan = 8;
             </tbody>
         </table>
         <div class="buttons">
-            <input type="text" name="payment_desc" value="" placeholder="<?php echo I18n::__('openitem_placeholder_payment_desc') ?>">
-            <select name="next_action">
-                <?php foreach ($actions[$current_action] as $action): ?>
-                <option
-                    value="<?php echo $action ?>"><?php echo I18n::__("action_{$action}_select") ?></option>
-                <?php endforeach ?>
-            </select>
-            <input
-                type="submit"
-                name="submit"
-                accesskey="s"
-                value="<?php echo I18n::__('scaffold_submit_apply_action') ?>" />
+            <div class="row">
+                <div class="span8">
+                    <input type="text" class="autowidth" name="payment_desc" value="" placeholder="<?php echo I18n::__('openitem_placeholder_payment_desc') ?>">
+                </div>
+                <div class="span2">
+                    <input type="text" class="openitem-amount autowidth number" name="payment_amount" value="" placeholder="<?php echo I18n::__('openitem_placeholder_payment_amount') ?>">
+                    <p class="info"><?php echo I18n::__('openitem_info_payment_amount') ?></p>
+                </div>
+                <div class="span2">
+                    <select name="next_action">
+                        <?php foreach ($actions[$current_action] as $action): ?>
+                        <option
+                            value="<?php echo $action ?>"><?php echo I18n::__("action_{$action}_select") ?></option>
+                        <?php endforeach ?>
+                    </select>
+                    <input
+                        type="submit"
+                        name="submit"
+                        accesskey="s"
+                        value="<?php echo I18n::__('scaffold_submit_apply_action') ?>" />
+                </div>
+            </div>
         </div>
     </form>
 
