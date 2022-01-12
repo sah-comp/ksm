@@ -224,9 +224,6 @@ class Model_Ledger extends Model
         $this->bean->cash = 0;
         $this->bean->fy = date('Y');
         $this->bean->month = date('m');
-        $this->addValidator('name', array(
-            new Validator_HasValue()
-        ));
         $this->addConverter('fy', new Converter_Decimal());
         $this->addConverter('month', new Converter_Decimal());
         $this->addConverter('cash', new Converter_Decimal());
