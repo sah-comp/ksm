@@ -5,6 +5,35 @@
  * copy it to default.css if everything works out fine
  * and you like to have in your base stylesheet.
  */
+/**
+ * Make negative table data red.
+ *
+ * @see https://stackoverflow.com/questions/1824266/colorize-negative-positive-numbers-jquery
+ */
+td[data-monetary-amount^="-"] {
+    color: red;
+}
+
+.panel .container {
+    /*overflow: visible;*/
+}
+
+.drag-handle {
+    width: 16px;
+    height: 16px;
+    /*1em font-size + 2 x 0.222em padding in input fields*/
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+    background-image: url(/img/glyphicons/glyphicons_319_sort.png);
+    background-size: 16px 16px;
+    position: absolute;
+    left: -28px;
+    top: 50%;
+    margin-top: -8px;
+    cursor: move;
+}
+
 article.main {
     min-height: 100vh;
 }

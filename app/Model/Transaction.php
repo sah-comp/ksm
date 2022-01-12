@@ -60,7 +60,7 @@ class Model_Transaction extends Model
 
             default:
                 return [
-                    'index' => ['idle', 'cancel', 'expunge'],
+                    'index' => ['idle', 'cancel', 'toggleArchived', 'expunge'],
                     'add' => ['add', 'edit', 'index'],
                     'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
                     'delete' => ['index']
@@ -337,6 +337,19 @@ class Model_Transaction extends Model
                     'tag' => 'number'
                 ],
                 'width' => '8rem'
+            ],
+            [
+                'name' => 'archived',
+                'sort' => [
+                    'name' => 'transaction.archived'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '4rem'
             ]
         ];
     }
@@ -500,7 +513,7 @@ class Model_Transaction extends Model
      */
     public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT ROUND(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT SUM(total) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -517,7 +530,7 @@ class Model_Transaction extends Model
      */
     public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT ROUND(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT SUM(gros) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -685,6 +698,17 @@ SQL;
     }
 
     /**
+     * Toggle the archived attribute and store the bean.
+     *
+     * @return void
+     */
+    public function toggleArchived()
+    {
+        $this->bean->archived = ! $this->bean->archived;
+        R::store($this->bean);
+    }
+
+    /**
      * Cancels this transaction.
      *
      * @return mixed false if not canceled or RedBeanPHP\OODBBean when canceld
@@ -733,6 +757,26 @@ SQL;
         }
         parent::expunge();
     }
+
+    /**
+     * Preset the filter (for scaffold list view) on inital request or reset.
+     *
+     * We want to see only non-archived transactions initally.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return bool
+     */
+    public function presetFilter(RedBeanPHP\OODBBean $filter): bool
+    {
+        $criteria = R::dispense('criteria');
+        $criteria->op = 'eq';
+        $criteria->tag = 'bool';
+        $criteria->attribute = 'transaction.archived';
+        $criteria->value = false;
+        $filter->ownCriteria[] = $criteria;
+        return true;
+    }
+
 
     /**
      * Returns a transaction bean if this bean has derived from a former one or false if not.
@@ -845,6 +889,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->archived = 0;
         $this->bean->locked = false;
         $this->bean->accumulate = false;//flag to be used for dunning, if true all open items will be combinded in a pdf
         $this->bean->number = '';//I18n::__('transaction_placeholder_number');

@@ -124,6 +124,17 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Preset the filter (for scaffold list view) on inital request or reset.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return bool
+     */
+    public function presetFilter(RedBeanPHP\OODBBean $filter): bool
+    {
+        return null;
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout

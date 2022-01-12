@@ -32,6 +32,14 @@ $contacts = $record->with("ORDER BY name")->ownContact;
                 <td><?php echo htmlspecialchars($record->email) ?></td>
             </tr>
             <tr>
+                <td><?php echo I18n::__('person_label_billingemail') ?></td>
+                <td><?php echo htmlspecialchars($record->billingemail) ?></td>
+            </tr>
+            <tr>
+                <td><?php echo I18n::__('person_label_dunningemail') ?></td>
+                <td><?php echo htmlspecialchars($record->dunningemail) ?></td>
+            </tr>
+            <tr>
                 <td><?php echo I18n::__('person_label_fax') ?></td>
                 <td><?php echo htmlspecialchars($record->fax) ?></td>
             </tr>

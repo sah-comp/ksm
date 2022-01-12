@@ -12,6 +12,7 @@
 <fieldset
     id="transaction-<?php echo $record->getId() ?>-ownPosition-<?php echo $index ?>">
     <legend class="verbose"><?php echo I18n::__('transaction_legend_position') ?></legend>
+
     <a
     	href="<?php echo Url::build(sprintf('/admin/transaction/detach/position/%d', $_position->getId())) ?>"
     	class="ir detach"
@@ -69,6 +70,7 @@
         <div class="span1">
             <div class="row flex-center">
                 <div class="span6">
+                    <h2 class="ir drag-handle"><?php echo I18n::__('ui_action_drag_handle') ?></h2>
                     <select
                         id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-kind"
                         name="dialog[ownPosition][<?php echo $index ?>][kind]">
@@ -105,13 +107,13 @@
         <div class="span1">
             <input
                 type="text"
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-number"
-                name="dialog[ownPosition][<?php echo $index ?>][product][number]"
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-ska"
+                name="dialog[ownPosition][<?php echo $index ?>][ska]"
                 class="autocomplete"
                 data-source="<?php echo Url::build('/autocomplete/product/number/?callback=?') ?>"
                 data-spread='<?php
                     echo json_encode([
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-number' => 'ska',
+                        'transaction-'.$record->getId().'-position-'.$index.'-product-ska' => 'ska',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-desc' => 'value',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-count' => 'count',
                         'transaction-'.$record->getId().'-position-'.$index.'-product-id' => 'id',
@@ -122,7 +124,7 @@
                         'transaction-'.$record->getId().'-position-'.$index.'-product-costunittype-id' => 'costunittype_id',
                         'transaction-'.$record->getId().'-position-'.$index.'-vatpercentage' => 'vatpercentage'
                     ]); ?>'
-                value="<?php echo htmlspecialchars($_position->getProduct()->number) ?>" />
+                value="<?php echo htmlspecialchars($_position->ska) ?>" />
         </div>
         <div class="span3">
             <textarea

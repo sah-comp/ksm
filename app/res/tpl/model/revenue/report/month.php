@@ -52,11 +52,11 @@
             <td>
                 <a href="<?php echo Url::build('/admin/person/edit/%d/', [$_record->getPerson()->getId()]) ?>" title="<?php echo htmlspecialchars($_record->getPerson()->name) ?>" class="in-table"><?php echo htmlspecialchars($_record->getPerson()->name) ?></a>
             </td>
-            <td class="number"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
-            <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
+            <td class="number" data-monetary-amount="<?php echo htmlspecialchars($_record->decimal('net')) ?>"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
+            <td class="number" data-monetary-amount="<?php echo htmlspecialchars($_record->decimal('gros')) ?>"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
             <?php foreach ($costunittypes as $_id => $_cut): ?>
-            <td class="number"><?php echo htmlspecialchars(Flight::nformat($_record->netByCostunit($_cut))) ?></td>
-            <td class="number"><?php echo htmlspecialchars(Flight::nformat($_record->grosByCostunit($_cut))) ?></td>
+            <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_record->netByCostunit($_cut))) ?>"><?php echo htmlspecialchars(Flight::nformat($_record->netByCostunit($_cut))) ?></td>
+            <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_record->grosByCostunit($_cut))) ?>"><?php echo htmlspecialchars(Flight::nformat($_record->grosByCostunit($_cut))) ?></td>
             <?php endforeach; ?>
         </tr>
         <?php endforeach; ?>

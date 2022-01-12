@@ -95,7 +95,11 @@ $_colspan = 8;
                     </td>
                     <td
                         data-sort="<?php echo htmlspecialchars($_record->number) ?>">
-                        <?php echo htmlspecialchars($_record->number) ?>
+                        <a
+                            href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/openitem/#bean-' . $_record->getId()]) ?>"
+                            class="in-table">
+                            <?php echo htmlspecialchars($_record->number) ?>
+                        </a>
                     </td>
                     <td
                         data-sort="<?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?>">

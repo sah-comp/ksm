@@ -223,6 +223,7 @@ class Controller_Scaffold extends Controller
         $this->stylesheets = array_merge($this->stylesheets, $this->record->injectCSS());
 
         $this->actions = $this->record->getActions();
+
         if (! isset($_SESSION['scaffold'][$this->type])) {
             $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
             // next action
@@ -231,7 +232,18 @@ class Controller_Scaffold extends Controller
             $_SESSION['scaffold'][$this->type]['edit']['next_action'] = 'edit';
             $_SESSION['scaffold'][$this->type]['delete']['next_action'] = 'index';
         }
-        $this->filter = R::load('filter', $_SESSION['scaffold'][$this->type]['filter']['id']);
+
+        if ($_SESSION['scaffold'][$this->type]['filter']['id'] == 0) {
+            // if there is not alreay a filter, create it
+            $this->filter = R::dispense('filter');
+            $this->filter->model = $this->type;
+            // preset it with what the model wants
+            $this->record->presetFilter($this->filter);
+            $filter_id = R::store($this->filter);
+            $_SESSION['scaffold'][$this->type]['filter']['id'] = $filter_id;
+        } else {
+            $this->filter = R::load('filter', $_SESSION['scaffold'][$this->type]['filter']['id']);
+        }
     }
 
     /**

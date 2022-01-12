@@ -57,19 +57,35 @@ $('body').ready(function() {
 
     /**
      * Sortable containers.
+     *
+     * When the container was scrolled the "shadow" element is way of the cursor.
+     * The only solution was to set scroll: false and recalculate css top when sorting.
+     *
+     * @see https://stackoverflow.com/questions/11365783/jquery-sortable-with-scrolling
      */
     $('.ui-sortable').sortable({
         "axis": "y",
+        "scroll": false,
         "containment": "parent",
+        "tolerance": "pointer",
+        "helper": "clone",
         "cursor": "move",
         "items": "> fieldset",
+        "handle": "h2",
         "opacity": 0.8,
-        "stop": function() {
+        "start": function(event, ui) {
+            //ui.item.css('margin-top', 0);
+        },
+        "sort": function (event, ui) {
+            ui.helper.css({ 'top': ui.position.top + $(window).scrollTop() + 'px' });
+        },
+        "stop": function(event, ui) {
+            //ui.item.css('margin-top', $(window).scrollTop());
             $('.currentindex').each(function(i) {
                 $(this).val(i);
             });
         }
-    });
+    }).disableSelection();
 
     /**
      * Activate datatables.
