@@ -777,6 +777,17 @@ SQL;
         return true;
     }
 
+    /**
+     * Returns an array with person beans that have unpaid revenue relevant transactions.
+     *
+     * @return array
+     */
+    public function getCustomersWithOpenItems()
+    {
+        $bookable_types = $this->bean->getBookables();
+        $sql = "SELECT person.id, person.name FROM transaction AS trans LEFT JOIN person ON person.id = trans.person_id WHERE trans.contracttype_id IN (".R::genSlots($bookable_types).") AND trans.status IN (?) AND trans.locked = 1 GROUP BY person.id ORDER BY person.name";
+        return $result = R::getAssoc($sql, array_merge($bookable_types, ['open']));
+    }
 
     /**
      * Returns a transaction bean if this bean has derived from a former one or false if not.

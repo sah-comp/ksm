@@ -131,7 +131,7 @@ class Model extends RedBean_SimpleModel
      */
     public function presetFilter(RedBeanPHP\OODBBean $filter): bool
     {
-        return null;
+        return false;
     }
 
     /**

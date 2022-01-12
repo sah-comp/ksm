@@ -61,6 +61,9 @@ class Controller_Openitem extends Controller_Scaffold
         $this->type = $type;
         $this->record = R::load('transaction', $id);
         $this->actions = $this->record->getActions('openitem');
+        if (!isset($_SESSION['openitem']['person_id'])) {
+            $_SESSION['openitem']['person_id'] = null;
+        }
     }
 
     /*
@@ -81,6 +84,14 @@ class Controller_Openitem extends Controller_Scaffold
                 $this->redirect("/logout");
                 exit();
             }
+
+            if (Flight::request()->data->submit == I18n::__('openitem_action_print_statement')) {
+                $_SESSION['openitem']['person_id'] = Flight::request()->data->person_id;
+                $this->pdf($_SESSION['openitem']['person_id']);
+                //$this->redirect("/openitem"); // I never get there, PDF download needs exit
+                exit();
+            }
+
             //handle a selection
             $this->selection = Flight::request()->data->selection;
             if ($this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
@@ -145,10 +156,12 @@ class Controller_Openitem extends Controller_Scaffold
 
     /**
      * Generate a PDF with all (filtered) records.
+     *
+     * @param int optional id of person bean
      */
-    public function pdf()
+    public function pdf(int $person_id = null)
     {
-        $this->getOpenBookables();
+        $this->getOpenBookables($person_id);
 
         if (count($this->records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
             Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
@@ -184,15 +197,24 @@ class Controller_Openitem extends Controller_Scaffold
     /**
      * Find all transactions that are bookable and open.
      *
+     * @param int optional id of person bean
+     *
      * @uses $records array to store all bookable open transaction beans
      * @uses $totals
      */
-    public function getOpenBookables()
+    public function getOpenBookables(int $person_id = null)
     {
         $bookable_types = $this->record->getBookables();
-        $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
 
-        $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
+        if ($person_id === null) {
+            $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
+
+            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
+        } else {
+            $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$person_id]));
+
+            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$person_id]));
+        }
     }
 
     /**
@@ -207,7 +229,8 @@ class Controller_Openitem extends Controller_Scaffold
         Flight::render('shared/navigation', [], 'navigation');
         Flight::render('openitem/toolbar', [
             'hasRecords' => count($this->records),
-            'record' => $this->record
+            'record' => $this->record,
+            'person_id' => $_SESSION['openitem']['person_id']
         ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');

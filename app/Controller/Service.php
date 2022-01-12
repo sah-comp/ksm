@@ -78,7 +78,7 @@ class Controller_Service extends Controller_Scaffold
             if (Flight::request()->data->submit == I18n::__('service_action_print_day')) {
                 $_SESSION['service']['pday'] = Flight::request()->data->pday;
                 $this->pdf($_SESSION['service']['pday']);
-                $this->redirect("/service"); // I never get there, PDF download needs exit
+                //$this->redirect("/service"); // I never get there, PDF download needs exit
                 exit();
             }
             //handle a selection
