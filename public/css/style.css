@@ -679,6 +679,10 @@ article.main>p {
     margin: 0;
 }
 
+article.main>header h1 {
+    display: inline-block;
+}
+
 /* Main navigation */
 body>header,
 header#header-toolbar {
@@ -856,6 +860,11 @@ form.inline-add {
 
 form.page-add {
     padding: 0;
+}
+
+form.quickfilter {
+    display: inline-flex;
+    width: auto;
 }
 
 .page-meta,

@@ -181,6 +181,67 @@ class Model_Treaty extends Model
     }
 
     /**
+     * Returns true if the bean has a quick filter attribute.
+     *
+     * @return bool
+     */
+    public function hasQuickFilter(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Returns an array of RedBeanPHP\OODBBean objects.
+     *
+     * @return array
+     */
+    public function getQuickFilterValues(): array
+    {
+        return R::find('contracttype', "enabled = 1 AND service = 1 ORDER BY name");
+    }
+
+    /**
+     * Returns the QF bean option value, e.g. the id.
+     *
+     * @see getAttributes()
+     * @return mixed
+     */
+    public function getQuickFilterOptionValue(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return $bean->name; //we need the name as value, because our filter tag is text
+    }
+
+    /**
+     * Returns the QF bean option label, e.g. the name or number.
+     *
+     * @return mixed
+     */
+    public function getQuickFilterLabel(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return $bean->name;
+    }
+
+    /**
+     * Preset the filter (for scaffold list view) on inital request or reset.
+     *
+     * We want to see only non-archived transactions initally.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @param mixed $value of the attribute to filter
+     * @return bool
+     */
+    public function quickFilterSetup(RedBeanPHP\OODBBean $filter, $value = null): bool
+    {
+        $criteria = R::dispense('criteria');
+        $criteria->op = 'eq';
+        $criteria->tag = 'text';
+        $criteria->attribute = 'contracttype.name';
+        $criteria->value = $value;
+        $filter->ownCriteria[] = $criteria;
+        return true;
+    }
+
+    /**
      * Return localized unit.
      *
      * @param string $void

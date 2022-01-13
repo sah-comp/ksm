@@ -265,6 +265,20 @@ $('body').ready(function() {
     });
 
     /**
+     * submit a form when changing an input element with class submitOnChange.
+     *
+     * If you want to use this with jQuery and the class name be aware, that
+     * you MUST NOT HAVE another element named submit in the form.
+     *
+     * @see https://stackoverflow.com/questions/833032/submit-is-not-a-function-error-in-javascript/834197#834197
+     *
+     * @see app/res/tpl/scaffold/quickfilter.php
+     */
+    $('body').on('change', '.submitOnChange', function(){
+        $(this).closest('form').submit();
+    });
+
+    /**
 	 * all and future detach links send a post request and then
 	 * fade out and finally detach the element.
 	 */

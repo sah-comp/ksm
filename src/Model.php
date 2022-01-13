@@ -135,6 +135,46 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Returns true if the bean has a quick filter attribute.
+     *
+     * @return bool
+     */
+    public function hasQuickFilter(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Returns an array of RedBeanPHP\OODBBean objects.
+     *
+     * @return array
+     */
+    public function getQuickFilterValues(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns the QF bean option value, e.g. the id.
+     *
+     * @return mixed
+     */
+    public function getQuickFilterOptionValue(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return null;
+    }
+
+    /**
+     * Returns the QF bean option label, e.g. the name or number.
+     *
+     * @return mixed
+     */
+    public function getQuickFilterLabel(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return null;
+    }
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
