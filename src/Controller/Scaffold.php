@@ -111,7 +111,7 @@ class Controller_Scaffold extends Controller
      *
      * @var array
      */
-    public $records = array();
+    public $records = [];
 
     /**
      * Holds the maximum number of records per page.
