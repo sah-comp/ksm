@@ -979,6 +979,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'scaffold_head_title_index' => 'Blättern in %s',
   'scaffold_no_records_add_denied' => 'Es sind keine Einträge vorhanden',
   'scaffold_no_records_add_one' => 'Es sind noch keine Einträge vorhanden. Erstellen Sie den ersten',
+  'scaffold_quickfilter_choose_value' => 'Vertragsart auswählen &hellip;',
   'scaffold_select_all' => 'Markierung für alle setzen oder aufheben',
   'scaffold_submit_apply_action' => 'Anwenden',
   'scaffold_success_add' => 'Ein Eintrag wurde erfolgreich hinzugefügt',

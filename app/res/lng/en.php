@@ -949,6 +949,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'scaffold_head_title_index' => 'Browse',
   'scaffold_no_records_add_denied' => 'No items found',
   'scaffold_no_records_add_one' => 'Go ahead and add the first item',
+  'scaffold_quickfilter_choose_value' => 'scaffold_quickfilter_choose_value',
   'scaffold_select_all' => 'Select or deselect items',
   'scaffold_submit_apply_action' => 'Run',
   'scaffold_success_add' => 'Added a new item successfully',
