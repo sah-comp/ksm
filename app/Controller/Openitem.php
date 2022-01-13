@@ -129,8 +129,8 @@ class Controller_Openitem extends Controller_Scaffold
         }
         $layout = 'dunning';
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilename()]);
-        $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocname()]);
+        $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilenameDunning()]);
+        $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocnameDunning()]);
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
@@ -168,9 +168,11 @@ class Controller_Openitem extends Controller_Scaffold
             $this->redirect('/openitem');
             exit();
         }
-        $ts = date('Y-m-d');
+        //$ts = date('Y-m-d');
+        $templates = Flight::get('templates');
+        $ts = strftime($templates['date'], time());
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('openitem_pdf_list_filename', null, [$ts]);
+        $filename = I18n::__('openitem_pdf_list_filename', null, [date('Y-m-d')]);
         $docname = I18n::__('openitem_pdf_list_docname', null, [$ts]);
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
         $mpdf->SetTitle($docname);

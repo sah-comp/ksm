@@ -370,13 +370,33 @@ class Model_Transaction extends Model
     }
 
     /**
-     * Returns a string that will work as a title of treaty.
+     * Returns a string that will be the filename for a transaction dunned as PDF.
+     */
+    public function getFilenameDunning()
+    {
+        $fn = $this->getFilename();
+        $fn = $this->bean->getDunning()->level . '-' . $fn;
+        return $fn;
+    }
+
+    /**
+     * Returns a string that will work as a title of transaction.
      *
      * @return string
      */
     public function getDocname()
     {
         return $this->bean->getFilename();
+    }
+
+    /**
+     * Returns a string that will be the docname for a transaction dunned as PDF.
+     */
+    public function getDocnameDunning()
+    {
+        $fn = $this->getDocname();
+        $fn = $this->bean->getDunning()->level . '-' . $fn;
+        return $fn;
     }
 
     /**
