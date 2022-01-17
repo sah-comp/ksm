@@ -81,7 +81,8 @@ class Model_Revenue extends Model
                     'name' => 'fy, month'
                 ],
                 'filter' => [
-                    'tag' => 'number'
+                    'tag' => 'number',
+                    'name' => 'fy'
                 ],
                 'width' => '8rem'
             ],

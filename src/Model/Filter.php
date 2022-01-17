@@ -77,17 +77,21 @@ class Model_Filter extends Model
      * Returns a criteria bean for a certain filter attribute or presets it from $attribute.
      *
      * @param array $attribute
-     * @return RedBean_OODBBean
+     * @return RedBeanPHP\OODBBean
      */
     public function getCriteria(array $attribute)
     {
-        if (! $criteria = R::findOne('criteria', ' filter_id = ? AND attribute = ?', array($this->bean->getId(), $attribute['sort']['name']))) {
+        $attrfiltername = $attribute['sort']['name'];
+        if (isset($attribute['filter']['name'])) {
+            $attrfiltername = $attribute['filter']['name'];
+        }
+        if (! $criteria = R::findOne('criteria', ' filter_id = ? AND attribute = ?', array($this->bean->getId(), $attrfiltername))) {
             $criteria = R::dispense('criteria');
             $criteria->tag = $attribute['filter']['tag'];
             if ($attribute['filter']['tag'] == 'in') {
                 $criteria->postvar = $attribute['filter']['postvar'];
             }
-            $criteria->attribute = $attribute['sort']['name'];
+            $criteria->attribute = $attrfiltername;
             $operators = $criteria->operators();
             $criteria->op = $operators[0];
         }

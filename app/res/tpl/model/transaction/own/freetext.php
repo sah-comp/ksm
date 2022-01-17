@@ -51,6 +51,7 @@
         <div class="span1">
             <div class="row flex-center">
                 <div class="span12">
+                    <h2 class="ir drag-handle"><?php echo I18n::__('ui_action_drag_handle') ?></h2>
                     <select
                         id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-kind"
                         name="dialog[ownPosition][<?php echo $index ?>][kind]">

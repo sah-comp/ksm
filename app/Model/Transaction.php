@@ -222,10 +222,16 @@ class Model_Transaction extends Model
      */
     public function resetAfterCopy()
     {
+        $this->bean->bookingdate = date('Y-m-d');
         $this->bean->status = 'open';
-        $this->bean->header = '';
-        $this->bean->footer = '';
+        if ($this->bean->getContracttype()->resetheader) {
+            $this->bean->header = '';
+        }
+        if ($this->bean->getContracttype()->resetfooter) {
+            $this->bean->footer = '';
+        }
         $this->bean->locked = false;
+        $this->bean->ownPayment = [];
         return $this->bean;
     }
 
@@ -692,6 +698,10 @@ SQL;
                 $bordercolor = 'orange';
                 break;
 
+            case 'closed':
+                $bordercolor = 'blue';
+                break;
+
             case 'paid':
                 $bordercolor = 'green';
                 break;
@@ -720,12 +730,31 @@ SQL;
     /**
      * Toggle the archived attribute and store the bean.
      *
+     * When the bean is archived its former status is saved, just in case
+     * it will eventually be unarchived once again later on.
+     *
+     * This is performed by a raw SQL query because we dont want to mess with
+     * the RB update cylce.
+     *
      * @return void
      */
     public function toggleArchived()
     {
-        $this->bean->archived = ! $this->bean->archived;
-        R::store($this->bean);
+        $archived = ! $this->bean->archived;
+        if ($archived && $this->bean->getContracttype()->closeonarchive) {
+            $oldstatus = $this->bean->status;
+            $status = 'closed';
+        } else {
+            $oldstatus = '';
+            $status = $this->bean->oldstatus;
+        }
+        R::exec('UPDATE transaction SET oldstatus = :oldstatus, status = :status, archived = :archived WHERE id = :id', [
+            ':oldstatus' => $oldstatus,
+            ':status' => $status,
+            ':archived' => $archived,
+            ':id' => $this->bean->getId()
+        ]);
+        //R::store($this->bean);
     }
 
     /**
@@ -788,6 +817,10 @@ SQL;
      */
     public function presetFilter(RedBeanPHP\OODBBean $filter): bool
     {
+        return false;
+        // delete line above and uncomment the following lines to have a filter preset to show only
+        // unarchived transaction beans
+        /*
         $criteria = R::dispense('criteria');
         $criteria->op = 'eq';
         $criteria->tag = 'bool';
@@ -795,6 +828,7 @@ SQL;
         $criteria->value = false;
         $filter->ownCriteria[] = $criteria;
         return true;
+        */
     }
 
     /**

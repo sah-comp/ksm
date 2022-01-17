@@ -444,6 +444,8 @@ SQL;
     public function dispense()
     {
         $this->bean->mytreatyid = 0;
+        $this->bean->bookingdate = date('Y-m-d');
+        $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
         $this->addConverter('signdate', new Converter_Mysqldate());
@@ -474,7 +476,7 @@ SQL;
             // This is a new bean, we want to stamp its number
             $number = $this->bean->contracttype->nextnumber;
             $this->bean->contracttype->nextnumber++;
-            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, Flight::setting()->companyyear, $number);
+            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
         }
 
         //if ($this->bean->ctext == '') {

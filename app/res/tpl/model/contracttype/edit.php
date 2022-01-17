@@ -245,6 +245,57 @@
                 value="<?php echo htmlspecialchars($record->wordgros) ?>">
             <p class="info"><?php echo I18n::__('contracttype_info_wordgros') ?></p>
         </div>
+        <div class="row <?php echo ($record->hasError('resetheader')) ? 'error' : ''; ?>">
+            <input
+                type="hidden"
+                name="dialog[resetheader]"
+                value="0" />
+            <input
+                id="contracttype-resetheader"
+                type="checkbox"
+                name="dialog[resetheader]"
+                <?php echo ($record->resetheader) ? 'checked="checked"' : '' ?>
+                value="1" />
+            <label
+                for="contracttype-resetheader"
+                class="cb">
+                <?php echo I18n::__('contracttype_label_resetheader') ?>
+            </label>
+        </div>
+        <div class="row <?php echo ($record->hasError('resetfooter')) ? 'error' : ''; ?>">
+            <input
+                type="hidden"
+                name="dialog[resetfooter]"
+                value="0" />
+            <input
+                id="contracttype-resetfooter"
+                type="checkbox"
+                name="dialog[resetfooter]"
+                <?php echo ($record->resetfooter) ? 'checked="checked"' : '' ?>
+                value="1" />
+            <label
+                for="contracttype-resetfooter"
+                class="cb">
+                <?php echo I18n::__('contracttype_label_resetfooter') ?>
+            </label>
+        </div>
+        <div class="row <?php echo ($record->hasError('closeonarchive')) ? 'error' : ''; ?>">
+            <input
+                type="hidden"
+                name="dialog[closeonarchive]"
+                value="0" />
+            <input
+                id="contracttype-closeonarchive"
+                type="checkbox"
+                name="dialog[closeonarchive]"
+                <?php echo ($record->closeonarchive) ? 'checked="checked"' : '' ?>
+                value="1" />
+            <label
+                for="contracttype-closeonarchive"
+                class="cb">
+                <?php echo I18n::__('contracttype_label_closeonarchive') ?>
+            </label>
+        </div>
     </fieldset>
     <fieldset
         id="contracttype-limb"
