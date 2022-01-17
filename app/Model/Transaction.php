@@ -748,7 +748,7 @@ SQL;
             $oldstatus = '';
             $status = $this->bean->oldstatus;
         }
-        R::exec('UPDATE transaction SET oldstatus = :oldstatus, status = :status, archived = :archived WHERE id = :id', [
+        R::exec('UPDATE transaction SET oldstatus = :oldstatus, status = :status, archived = :archived WHERE id = :id LIMIT 1', [
             ':oldstatus' => $oldstatus,
             ':status' => $status,
             ':archived' => $archived,

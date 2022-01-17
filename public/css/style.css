@@ -1119,7 +1119,7 @@ th.label {
 }
 
 select.filter-select {
-    margin-top: 0.333em;
+    /*margin-top: 0.333em;*/
 }
 
 .panel input[type=number],
@@ -1389,7 +1389,7 @@ input[type=submit].danger {
 
 .panel thead tr.filter th {
     color: inherit;
-    ;
+    vertical-align: middle;
 }
 
 .panel thead tr.filter input[type=text].filter {

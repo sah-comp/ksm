@@ -62,6 +62,20 @@ class Model_Treaty extends Model
                 'width' => '12rem'
             ],
             [
+                'name' => 'folder',
+                'sort' => [
+                    'name' => 'treaty.folder'
+                ],
+                'callback' => [
+                    'name' => 'folderReadable'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'values' => $this->bean->getFolders()
+                ],
+                'width' => 'auto'
+            ],
+            [
                 'name' => 'contracttype.name',
                 'sort' => [
                     'name' => 'contracttype.name'
@@ -70,9 +84,23 @@ class Model_Treaty extends Model
                     'name' => 'contracttypeName'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'select',
+                    'sql' => 'getContracttypes'
                 ],
                 'width' => '12rem'
+            ],
+            [
+                'name' => 'bookingdate',
+                'sort' => [
+                    'name' => 'treaty.bookingdate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'prospect',
@@ -129,9 +157,33 @@ class Model_Treaty extends Model
                     'name' => 'localizedDate'
                 ],
                 'width' => '8rem'
+            ],
+            [
+                'name' => 'archived',
+                'sort' => [
+                    'name' => 'treaty.archived'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '4rem'
             ]
         ];
     }
+
+    /**
+     * Constructor.
+     *
+     * Set actions for list views.
+     */
+    public function __construct()
+    {
+        $this->setAction('index', array('idle', 'toggleArchived', 'expunge'));
+    }
+
 
     /**
      * Returns special css classes depending on the type of treaty.
@@ -144,6 +196,23 @@ class Model_Treaty extends Model
             return 'visuallyhidden';
         }
         return '';
+    }
+
+    /**
+     * Toggle the archived attribute and store the bean.
+     *
+     * When the bean is archived its former status is saved, just in case
+     * it will eventually be unarchived once again later on.
+     *
+     * This is performed by a raw SQL query because we dont want to mess with
+     * the RB update cylce.
+     *
+     * @return void
+     */
+    public function toggleArchived()
+    {
+        $this->bean->archived = ! $this->bean->archived;
+        R::store($this->bean);
     }
 
     /**
@@ -187,7 +256,7 @@ class Model_Treaty extends Model
      */
     public function hasQuickFilter(): bool
     {
-        return true;
+        return false;// true to have a select menu after the header h1 allowing users to quickly select by contracttype
     }
 
     /**
@@ -355,6 +424,41 @@ class Model_Treaty extends Model
     public function contracttypeName()
     {
         return $this->bean->getContracttype()->name;
+    }
+
+    /**
+     * Returns associated array of contracttype beans for use in scaffold filter.
+     *
+     * @return array
+     */
+    public function getContracttypes(): array
+    {
+        $sql = "SELECT name, name FROM contracttype WHERE service = 1 AND enabled = 1 ORDER BY name";
+        return R::getAssoc($sql);
+    }
+
+    /**
+     * Returns an array with folders, aka. where to "store" treaty beans.
+     *
+     * @return array
+     */
+    public function getFolders(): array
+    {
+        return [
+            '100' => I18n::__('treaty_folder_100'),
+            '200' => I18n::__('treaty_folder_200'),
+            '300' => I18n::__('treaty_folder_300')
+        ];
+    }
+
+    /**
+     * Returns a string with a readable folder name.
+     *
+     * @return string
+     */
+    public function folderReadable(): string
+    {
+        return I18n::__('treaty_folder_' . $this->bean->folder);
     }
 
     /**

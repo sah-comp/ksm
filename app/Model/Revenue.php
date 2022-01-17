@@ -81,8 +81,9 @@ class Model_Revenue extends Model
                     'name' => 'fy, month'
                 ],
                 'filter' => [
-                    'tag' => 'number',
-                    'name' => 'fy'
+                    'tag' => 'select',
+                    'name' => 'fy',
+                    'sql' => 'getAllPossibleFiscalYears'
                 ],
                 'width' => '8rem'
             ],
@@ -92,7 +93,22 @@ class Model_Revenue extends Model
                     'name' => 'month'
                 ],
                 'filter' => [
-                    'tag' => 'number'
+                    'tag' => 'select',
+                    'values' => [
+                        0 => I18n::__('month_label_0'),
+                        1 => I18n::__('month_label_1'),
+                        2 => I18n::__('month_label_2'),
+                        3 => I18n::__('month_label_3'),
+                        4 => I18n::__('month_label_4'),
+                        5 => I18n::__('month_label_5'),
+                        6 => I18n::__('month_label_6'),
+                        7 => I18n::__('month_label_7'),
+                        8 => I18n::__('month_label_8'),
+                        9 => I18n::__('month_label_9'),
+                        10 => I18n::__('month_label_10'),
+                        11 => I18n::__('month_label_11'),
+                        12 => I18n::__('month_label_12')
+                    ]
                 ],
                 'callback' => [
                     'name' => 'monthname'
@@ -143,6 +159,17 @@ class Model_Revenue extends Model
             11,
             12
         ];
+    }
+
+    /**
+     * Returns an associated array for scaffold filter.
+     *
+     * @return array
+     */
+    public function getAllPossibleFiscalYears(): array
+    {
+        $sql = "SELECT fy, fy FROM revenue GROUP BY fy ORDER BY fy";
+        return R::getAssoc($sql);
     }
 
     /**

@@ -18,20 +18,38 @@
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
         <div class="span3">
+            <div class="row">
+                <div class="span6">
+                    <label
+                        for="treaty-folder"
+                        class="<?php echo ($record->hasError('folder')) ? 'error' : ''; ?>">
+                        <?php echo I18n::__('treaty_label_folder') ?>
+                    </label>
+                </div>
+                <div class="span6">
+                    <label
+                        for="treaty-number"
+                        class="<?php echo ($record->hasError('number')) ? 'error' : ''; ?>">
+                        <?php echo I18n::__('treaty_label_number') ?>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="span2">
             <label
-                for="treaty-number"
-                class="<?php echo ($record->hasError('number')) ? 'error' : ''; ?>">
-                <?php echo I18n::__('treaty_label_number') ?>
+                for="treaty-bookingdate"
+                class="<?php echo ($record->hasError('bookingdate')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('treaty_label_bookingdate') ?>
             </label>
         </div>
-        <div class="span3 <?php echo $record->classesCss() ?>">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <label
                 for="treaty-startdate"
                 class="<?php echo ($record->hasError('startdate')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('treaty_label_startdate') ?>
             </label>
         </div>
-        <div class="span3 <?php echo $record->classesCss() ?>">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <label
                 for="treaty-enddate"
                 class="<?php echo ($record->hasError('enddate')) ? 'error' : ''; ?>">
@@ -56,18 +74,45 @@
             </select>
         </div>
         <div class="span3">
-            <input
-                id="treaty-number"
-                class="autowidth"
-                type="text"
-                name="dialog[number]"
-                readonly="readonly"
-                value="<?php echo htmlspecialchars($record->number) ?>" />
-                <?php if ($_parent = $record->hasParent()): ?>
-                <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
-                <?php endif; ?>
+            <div class="row">
+                <div class="span6">
+                    <select
+                        id="treaty-folder"
+                        class="autowidth"
+                        type="text"
+                        name="dialog[folder]"
+                        required="required">
+                        <option value=""><?php echo I18n::__('treaty_label_folder_please_select') ?></option>
+                        <?php foreach ($record->getFolders() as $_value => $_label): ?>
+                        <option value="<?php echo $_value ?>" <?php echo $record->folder == $_value ? 'selected="selected"' : '' ?>><?php echo $_label ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="span6">
+                    <input
+                        id="treaty-number"
+                        class="autowidth"
+                        type="text"
+                        name="dialog[number]"
+                        readonly="readonly"
+                        value="<?php echo htmlspecialchars($record->number) ?>" />
+                        <?php if ($_parent = $record->hasParent()): ?>
+                        <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
+                        <?php endif; ?>
+                </div>
+            </div>
         </div>
-        <div class="span3 <?php echo $record->classesCss() ?>">
+        <div class="span2">
+            <input
+                id="treaty-bookingdate"
+                class="autowidth"
+                type="date"
+                name="dialog[bookingdate]"
+                readonly="readonly"
+                placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+                value="<?php echo htmlspecialchars($record->bookingdate) ?>"/>
+        </div>
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <input
                 id="treaty-startdate"
                 class="autowidth"
@@ -76,7 +121,7 @@
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->startdate) ?>" />
         </div>
-        <div class="span3 <?php echo $record->classesCss() ?>">
+        <div class="span2 <?php echo $record->classesCss() ?>">
             <input
                 id="treaty-enddate"
                 class="autowidth"
