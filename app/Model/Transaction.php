@@ -263,7 +263,8 @@ class Model_Transaction extends Model
                     'name' => 'contracttypeName'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'select',
+                    'sql' => 'getContracttypes'
                 ],
                 'width' => '6rem'
             ],
@@ -287,6 +288,10 @@ class Model_Transaction extends Model
                 ],
                 'callback' => [
                     'name' => 'statusReadable'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'values' => $this->getStati()
                 ],
                 'width' => '6rem'
             ],
@@ -357,6 +362,32 @@ class Model_Transaction extends Model
                 ],
                 'width' => '4rem'
             ]
+        ];
+    }
+
+    /**
+     * Returns associated array of contracttype beans for use in scaffold filter.
+     *
+     * @return array
+     */
+    public function getContracttypes(): array
+    {
+        $sql = "SELECT name, name FROM contracttype WHERE ledger = 1 AND enabled = 1 ORDER BY name";
+        return R::getAssoc($sql);
+    }
+
+    /**
+     * Returns an array with stati.
+     *
+     * @return array
+     */
+    public function getStati(): array
+    {
+        return [
+            'open' => I18n::__('transaction_status_readable_open'),
+            'paid' => I18n::__('transaction_status_readable_paid'),
+            'canceled' => I18n::__('transaction_status_readable_canceled'),
+            'closed' =>  I18n::__('transaction_status_readable_closed')
         ];
     }
 
