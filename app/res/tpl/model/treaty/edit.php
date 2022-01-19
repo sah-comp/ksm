@@ -21,9 +21,9 @@
             <div class="row">
                 <div class="span6">
                     <label
-                        for="treaty-folder"
-                        class="<?php echo ($record->hasError('folder')) ? 'error' : ''; ?>">
-                        <?php echo I18n::__('treaty_label_folder') ?>
+                        for="treaty-treatygroup"
+                        class="<?php echo ($record->hasError('treatygroup_id')) ? 'error' : ''; ?>">
+                        <?php echo I18n::__('treaty_label_treatygroup') ?>
                     </label>
                 </div>
                 <div class="span6">
@@ -77,15 +77,17 @@
             <div class="row">
                 <div class="span6">
                     <select
-                        id="treaty-folder"
+                        id="treaty-treatygroup"
                         class="autowidth"
-                        type="text"
-                        name="dialog[folder]"
+                        name="dialog[treatygroup_id]"
                         required="required">
-                        <option value=""><?php echo I18n::__('treaty_label_folder_please_select') ?></option>
-                        <?php foreach ($record->getFolders() as $_value => $_label): ?>
-                        <option value="<?php echo $_value ?>" <?php echo $record->folder == $_value ? 'selected="selected"' : '' ?>><?php echo $_label ?></option>
-                        <?php endforeach; ?>
+                        <option value=""><?php echo I18n::__('treaty_label_treatygroup_please_select') ?></option>
+                        <?php foreach (R::find('treatygroup', "ORDER BY sequence") as $_id => $_treatygroup): ?>
+                        <option
+                            value="<?php echo $_treatygroup->getId() ?>"
+                            <?php echo ($record->treatygroup_id == $_treatygroup->getId()) ? 'selected="selected"' : '' ?>><?php echo $_treatygroup->name ?>
+                        </option>
+                        <?php endforeach ?>
                     </select>
                 </div>
                 <div class="span6">

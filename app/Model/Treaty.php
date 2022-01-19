@@ -62,18 +62,18 @@ class Model_Treaty extends Model
                 'width' => '12rem'
             ],
             [
-                'name' => 'folder',
+                'name' => 'treatygroup.name',
                 'sort' => [
-                    'name' => 'treaty.folder'
+                    'name' => 'treatygroup.name'
                 ],
                 'callback' => [
-                    'name' => 'folderReadable'
+                    'name' => 'treatygroupName'
                 ],
                 'filter' => [
                     'tag' => 'select',
-                    'values' => $this->bean->getFolders()
+                    'sql' => 'getTreatygroups'
                 ],
-                'width' => 'auto'
+                'width' => '14rem'
             ],
             [
                 'name' => 'contracttype.name',
@@ -438,17 +438,37 @@ class Model_Treaty extends Model
     }
 
     /**
-     * Returns an array with folders, aka. where to "store" treaty beans.
+     * Return the treatygroup bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getTreatygroup()
+    {
+        if (! $this->bean->treatygroup) {
+            $this->bean->treatygroup = R::dispense('treatygroup');
+        }
+        return $this->bean->treatygroup;
+    }
+
+    /**
+     * Returns the name of the treatygroup.
+     *
+     * @return string
+     */
+    public function treatygroupName()
+    {
+        return $this->bean->getTreatygroup()->name;
+    }
+
+    /**
+     * Returns an array with treatygroup beans, aka. "folders" where to "store" treaty beans.
      *
      * @return array
      */
-    public function getFolders(): array
+    public function getTreatygroups(): array
     {
-        return [
-            '100' => I18n::__('treaty_folder_100'),
-            '200' => I18n::__('treaty_folder_200'),
-            '300' => I18n::__('treaty_folder_300')
-        ];
+        $sql = "SELECT name, name FROM treatygroup ORDER BY sequence";
+        return R::getAssoc($sql);
     }
 
     /**
@@ -468,10 +488,10 @@ class Model_Treaty extends Model
      */
     public function scaffoldStyle()
     {
-        if (! $this->bean->appointmenttype) {
+        if (! $this->bean->getTreatygroup()->getId()) {
             return "style=\"border-left: 5px solid inherit;\"";
         }
-        return "style=\"border-left: 5px solid {$this->bean->appointmenttype->color};\"";
+        return "style=\"border-left: 5px solid {$this->bean->getTreatygroup()->color};\"";
         //return "style=\"box-shadow: inset 0 0 0 4px coral;;\"";
     }
 
@@ -508,6 +528,8 @@ class Model_Treaty extends Model
                 {$this->bean->getMeta('type')}
             LEFT JOIN
                 contracttype ON contracttype.id = treaty.contracttype_id
+            LEFT JOIN
+                treatygroup ON treatygroup.id = treaty.treatygroup_id
             LEFT JOIN
                 person ON person.id = treaty.person_id
             LEFT JOIN
@@ -564,6 +586,10 @@ SQL;
             if (!$this->bean->contracttype_id) {
                 $this->bean->contracttype_id = null;
                 unset($this->bean->contracttype);
+            }
+            if (!$this->bean->treatygroup_id) {
+                $this->bean->treatygroup_id = null;
+                unset($this->bean->treatygroup);
             }
             if (!$this->bean->location_id) {
                 $this->bean->location_id = null;
