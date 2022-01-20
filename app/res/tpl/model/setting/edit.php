@@ -46,6 +46,7 @@ $appointmenttypes = R::findAll('appointmenttype');
             name="dialog[companyyear]"
             value="<?php echo htmlspecialchars($record->companyyear) ?>"
             required="required" />
+        <p class="info"><?php echo I18n::__('setting_info_companyyear') ?></p>
     </div>
 
     <div class="row">

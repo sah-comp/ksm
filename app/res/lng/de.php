@@ -1003,6 +1003,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'setting_homepage_info' => 'Ohne Startseite erscheint die Standard Willkommen-Seite',
   'setting_homepage_none' => 'Ohne',
   'setting_info_appointmenttypeservice' => 'Legen Sie fest welche Terminart ein <em>Servicetermin</em> ist.<br />Diese Art von Terminen werden auf einem speziellen Bildschirm bearbeitet und entsprechend dieser Vorauswahl selektiert.',
+  'setting_info_companyyear' => 'Diese Einstellung wird zur Zeit nicht verwendet.',
   'setting_label_appointmenttypeservice' => 'Servicetermin',
   'setting_label_basecurrency' => 'Basiswährung',
   'setting_label_blessedfolder' => 'Systemordner',

@@ -973,6 +973,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'setting_homepage_info' => 'If no homepage is set the welcome controller will run',
   'setting_homepage_none' => 'None',
   'setting_info_appointmenttypeservice' => 'setting_info_appointmenttypeservice',
+  'setting_info_companyyear' => 'setting_info_companyyear',
   'setting_label_appointmenttypeservice' => 'setting_label_appointmenttypeservice',
   'setting_label_basecurrency' => 'Base Currency',
   'setting_label_blessedfolder' => 'Blessed Folder',
