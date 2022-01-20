@@ -73,7 +73,7 @@ class Model_Treaty extends Model
                     'tag' => 'select',
                     'sql' => 'getTreatygroups'
                 ],
-                'width' => '14rem'
+                'width' => '23rem'
             ],
             [
                 'name' => 'contracttype.name',
@@ -87,7 +87,7 @@ class Model_Treaty extends Model
                     'tag' => 'select',
                     'sql' => 'getContracttypes'
                 ],
-                'width' => '12rem'
+                'width' => '14rem'
             ],
             [
                 'name' => 'bookingdate',
@@ -109,7 +109,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '6rem'
             ],
             [
                 'name' => 'person.name',
@@ -121,7 +122,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'serialnumber',
@@ -130,7 +132,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '6rem'
             ],
             [
                 'name' => 'startdate',

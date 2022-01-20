@@ -34,7 +34,7 @@ class Model_Treatygroup extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '20rem'
+                'width' => 'auto'
             ],
             [
                 'name' => 'contracttype.name',
@@ -48,7 +48,7 @@ class Model_Treatygroup extends Model
                     'tag' => 'select',
                     'sql' => 'getContracttypes'
                 ],
-                'width' => '12rem'
+                'width' => 'auto'
             ],
             [
                 'name' => 'color',
@@ -57,7 +57,8 @@ class Model_Treatygroup extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'sequence',

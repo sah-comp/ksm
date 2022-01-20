@@ -775,7 +775,8 @@ SQL;
         if ($archived && $this->bean->getContracttype()->closeonarchive) {
             $oldstatus = $this->bean->status;
             $status = 'closed';
-        } else {
+        } elseif (!$archived) {
+            // un-archived, reset status
             $oldstatus = '';
             $status = $this->bean->oldstatus;
         }
