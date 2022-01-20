@@ -25,7 +25,7 @@
             required="required">
             <option value=""><?php echo I18n::__('treaty_copy_as') ?></option>
             <?php foreach (R::find('contracttype', ' enabled = 1 AND service = 1 ORDER BY name') as $_id => $_contracttype): ?>
-            <option value="<?php echo $_id ?>"><?php echo $_contracttype->name ?></option>
+            <option value="<?php echo $_id ?>" <?php echo $record->getTreatygroup()->getContracttype()->getId() == $_id ? 'selected="selected"' : '' ?>><?php echo $_contracttype->name ?></option>
             <?php endforeach; ?>
         </select>
         <input

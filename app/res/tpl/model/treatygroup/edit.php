@@ -38,6 +38,24 @@
             value="<?php echo htmlspecialchars($record->name) ?>"
             required="required" />
     </div>
+    <div class="row">
+        <label
+            for="treatygroup-contracttype">
+            <?php echo I18n::__('treatygroup_label_contracttype') ?>
+        </label>
+        <select
+            id="treatygroup-contracttype"
+            name="dialog[contracttype_id]">
+            <option value=""><?php echo I18n::__('treatygroup_contracttype_none') ?></option>
+            <?php foreach (R::find('contracttype', "enabled = 1 AND service = 1 ORDER BY name") as $_id => $_contracttype): ?>
+            <option
+                value="<?php echo $_contracttype->getId() ?>"
+                <?php echo ($record->contracttype_id == $_contracttype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_contracttype->name ?>
+            </option>
+            <?php endforeach ?>
+        </select>
+        <p class="info"><?php echo I18n::__('treatygroup_contracttype_info') ?></p>
+    </div>
     <div class="row <?php echo ($record->hasError('color')) ? 'error' : ''; ?>">
         <label
             for="treatygroup-color">
