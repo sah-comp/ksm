@@ -34,6 +34,7 @@
 	<?php
     if (isset($record) && $record->hasMenu()):
         Flight::render("model/{$type}/toolbar/items.php", [
+            'hasRecords' => $hasRecords,
             'record' => $record,
             'type' => $type,
             'base_url' => $base_url,

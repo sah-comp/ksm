@@ -983,6 +983,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'scaffold_head_title_index' => 'Blättern in %s',
   'scaffold_no_records_add_denied' => 'Es sind keine Einträge vorhanden',
   'scaffold_no_records_add_one' => 'Es sind noch keine Einträge vorhanden. Erstellen Sie den ersten',
+  'scaffold_no_records_found_w_filter' => 'Mit diesen Kriterien werden keine Einträge gefunden. Ändern Sie die Filterkriterien oder setzen Sie den Filter zurück.',
   'scaffold_quickfilter_choose_value' => 'Alle anzeigen oder Vertragsart auswählen &hellip;',
   'scaffold_select_all' => 'Markierung für alle setzen oder aufheben',
   'scaffold_submit_apply_action' => 'Anwenden',

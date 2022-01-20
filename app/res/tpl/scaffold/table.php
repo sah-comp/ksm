@@ -266,4 +266,9 @@
     </tbody>
 
 </table>
+<?php if (!$hasRecords): ?>
+<div class="scaffold-filter-finds-no-records">
+    <p><?php echo I18n::__('scaffold_no_records_found_w_filter') ?></p>
+</div>
+<?php endif; ?>
 <!-- End of scaffold table -->

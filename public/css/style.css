@@ -1576,6 +1576,17 @@ img.media-preview-icon {
     font-size: small;
 }
 
+.scaffold-filter-finds-no-records {
+    width: 100%;
+    margin-top: 23rem;
+}
+
+.scaffold-filter-finds-no-records p {
+    text-align: center;
+    font-size: 1.2rem;
+    color: rgb(222, 222, 222);
+}
+
 /* ==|== non-semantic helper classes ========================================
    Please define your styles before this section.
    ========================================================================== */

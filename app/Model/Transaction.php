@@ -775,10 +775,17 @@ SQL;
         if ($archived && $this->bean->getContracttype()->closeonarchive) {
             $oldstatus = $this->bean->status;
             $status = 'closed';
+        } elseif ($archived) {
+            $oldstatus = $this->bean->status;
+            $status = $this->bean->status;
         } elseif (!$archived) {
             // un-archived, reset status
-            $oldstatus = '';
             $status = $this->bean->oldstatus;
+            $oldstatus = '';
+        } else {
+            // do nothing
+            $status = $this->bean->status;
+            $oldstatus = $this->bean->oldstatus;
         }
         R::exec('UPDATE transaction SET oldstatus = :oldstatus, status = :status, archived = :archived WHERE id = :id LIMIT 1', [
             ':oldstatus' => $oldstatus,

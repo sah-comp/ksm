@@ -56,11 +56,13 @@
             value="<?php echo I18n::__('transaction_action_pdf') ?>" />
     </form>
 </li>
-<?php else: ?>
+<?php elseif ($hasRecords): ?>
 <li>
     <a
         href="<?php echo Url::build("/transaction/pdf") ?>">
         <?php echo I18n::__('transaction_action_pdf_list') ?>
     </a>
 </li>
+<?php else: ?>
+<!-- There are no records -->
 <?php endif; ?>

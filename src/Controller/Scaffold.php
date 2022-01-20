@@ -760,6 +760,19 @@ class Controller_Scaffold extends Controller
     }
 
     /**
+     * Returns wether the records array has records or not.
+     *
+     * @return bool
+     */
+    public function hasRecords(): bool
+    {
+        if (isset($this->records) && count($this->records) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Displays page to edit an existing bean.
      *
      * On a GET request a form is presented to edit the bean. On a POST request the changed bean
@@ -839,6 +852,7 @@ class Controller_Scaffold extends Controller
         Flight::render('shared/navigation', array(), 'navigation');
         Flight::render('scaffold/toolbar', array(
             'record' => $this->record,
+            'hasRecords' => $this->hasRecords(),
             'base_url' => $this->base_url,
             'type' => $this->type,
             'layout' => $this->layout,
@@ -856,6 +870,7 @@ class Controller_Scaffold extends Controller
             'filter' => $this->filter,
             'record' => $this->record,
             'records' => $this->records,
+            'hasRecords' => $this->hasRecords(),
             'selection' => $this->selection,
             'total_records' => $this->total_records,
             'dir_map' => $this->dir_map
@@ -866,6 +881,7 @@ class Controller_Scaffold extends Controller
             'next_action' => $this->getNextAction(),
             'record' => $this->record,
             'records' => $this->records,
+            'hasRecords' => $this->hasRecords(),
             'goto' => $this->goto,
             'quickfilter_value' => $this->quickfilter_value
         ), 'content');
