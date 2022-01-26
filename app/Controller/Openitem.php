@@ -94,7 +94,11 @@ class Controller_Openitem extends Controller_Scaffold
 
             //handle a selection
             $this->selection = Flight::request()->data->selection;
-            if ($this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
+            if ($this->selection && $this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
+                $this->redirect("/openitem/index");
+                exit();
+            } else {
+                Flight::get('user')->notify(I18n::__('warning_no_selection'), 'warning');
                 $this->redirect("/openitem/index");
                 exit();
             }

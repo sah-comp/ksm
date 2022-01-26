@@ -1228,6 +1228,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'vehiclebrand_h1' => 'Vehiclebrands',
   'vehiclebrand_label_name' => 'Name',
   'vehiclebrand_legend' => '',
+  'warning_no_selection' => 'warning_no_selection',
   'warning_too_many_records_to_print' => 'warning_too_many_records_to_print',
   'welcome_head_title' => 'Welcome - This page is intenionally left blank',
 );
