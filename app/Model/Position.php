@@ -124,6 +124,16 @@ class Model_Position extends Model
     }
 
     /**
+     * returns the vatpercentage.
+     *
+     * @return float
+     */
+    public function getVatPercentage(): float
+    {
+        return (float)$this->bean->vatpercentage;
+    }
+
+    /**
      * Return the costunittype bean.
      *
      * @return RedbeanPHP\OODBBean

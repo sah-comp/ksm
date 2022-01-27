@@ -971,14 +971,14 @@ SQL;
                 $adjustment = $net * $converter->convert($position->adjustment) / 100;
                 $net = $net + $adjustment;
             }
-            $vatpercentage = $position->getVat()->value;
+            $vatpercentage = $position->getVatPercentage();
             $vat = $net * $vatpercentage / 100;
 
             //$net = $converter->convert($position->total);
             //$vatamount = $converter->convert($position->vatamount);
             $this->bean->net += $net;
             $this->bean->vat += $vat;
-            $this->bean->gros += $net + $vat;
+            $this->bean->gros += round($net + $vat, 2);
             //$this->bean->gros += $net + $vatamount;
         }
 
