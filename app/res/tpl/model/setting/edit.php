@@ -46,6 +46,7 @@ $appointmenttypes = R::findAll('appointmenttype');
             name="dialog[companyyear]"
             value="<?php echo htmlspecialchars($record->companyyear) ?>"
             required="required" />
+        <p class="info"><?php echo I18n::__('setting_info_companyyear') ?></p>
     </div>
 
     <div class="row">
@@ -73,7 +74,8 @@ $appointmenttypes = R::findAll('appointmenttype');
         'tabs' => array(
             'setting-folder' => I18n::__('setting_folder_tab'),
             'setting-currency' => I18n::__('setting_currency_tab'),
-            'setting-logo' => I18n::__('setting_logo_tab')
+            'setting-logo' => I18n::__('setting_logo_tab'),
+            'setting-csv' => I18n::__('setting_csv_tab')
         ),
         'default_tab' => 'setting-folder'
     )) ?>
@@ -215,6 +217,33 @@ $appointmenttypes = R::findAll('appointmenttype');
                 name="dialog[logoheight]"
                 value="<?php echo htmlspecialchars($record->logoheight) ?>"
                 required="required" />
+        </div>
+    </fieldset>
+    <fieldset
+        id="setting-csv"
+        class="tab">
+        <legend class="verbose"><?php echo I18n::__('setting_legend_csv') ?></legend>
+        <div class="row <?php echo ($record->hasError('encodinginput')) ? 'error' : ''; ?>">
+            <label
+                for="setting-encodinginput">
+                <?php echo I18n::__('setting_label_encodinginput') ?>
+            </label>
+            <input
+                id="setting-encodinginput"
+                type="text"
+                name="dialog[encodinginput]"
+                value="<?php echo htmlspecialchars($record->encodinginput) ?>" />
+        </div>
+        <div class="row <?php echo ($record->hasError('encodingoutput')) ? 'error' : ''; ?>">
+            <label
+                for="setting-encodingoutput">
+                <?php echo I18n::__('setting_label_encodingoutput') ?>
+            </label>
+            <input
+                id="setting-encodingoutput"
+                type="text"
+                name="dialog[encodingoutput]"
+                value="<?php echo htmlspecialchars($record->encodingoutput) ?>" />
         </div>
     </fieldset>
 </div>

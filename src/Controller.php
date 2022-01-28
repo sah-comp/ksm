@@ -35,13 +35,13 @@ class Controller
     public function __call($method, array $params = array())
     {
         $plugin_name = 'Plugin_'.ucfirst(strtolower($method));
-        if ( ! class_exists($plugin_name, true)) {
+        if (! class_exists($plugin_name, true)) {
             throw new Exception_Plugin('Missing plugin '.$plugin_name);
         }
         $plugin = new $plugin_name($this);
         return call_user_func_array(array($plugin, 'execute'), $params);
     }
-    
+
     /**
      * Go to a internal URL.
      *
@@ -49,12 +49,12 @@ class Controller
      * @param string $url
      * @param bool (optional) $raw defaults to false, if true the url will not be prefixed
      */
-    static public function redirect($url = null, $raw = false)
+    public static function redirect($url = null, $raw = false)
     {
-        if ( ! $raw && Flight::get('language') != Flight::get('default_language')) {
+        if (! $raw && Flight::get('language') != Flight::get('default_language')) {
             $url = '/'.Flight::get('language').$url; //prefix with language code
         }
         Flight::redirect($url);
-        exit;
+        exit();
     }
 }

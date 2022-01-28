@@ -163,9 +163,9 @@ class Model_Machine extends Model
     public function scaffoldStyle()
     {
         if (! $this->bean->appointmenttype) {
-            return "style=\"border-left: 3px solid inherit;\"";
+            return "style=\"border-left: 5px solid inherit;\"";
         }
-        return "style=\"border-left: 3px solid {$this->bean->appointmenttype->color};\"";
+        return "style=\"border-left: 5px solid {$this->bean->appointmenttype->color};\"";
         //return "style=\"box-shadow: inset 0 0 0 4px coral;;\"";
     }
 

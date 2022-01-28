@@ -142,7 +142,7 @@
             <td><?php echo htmlspecialchars($_record->localizedDate('receipt')) ?></td>
             <td><?php echo htmlspecialchars($_appointmenttype->name) ?></td>
             <td><?php echo htmlspecialchars($_user->getName()) ?></td>
-            <td class="number"><?php echo htmlspecialchars($_record->decimal('duration', 2)) ?></td>
+            <td class="number"><?php echo htmlspecialchars($_record->decimal('duration')) ?></td>
             <td><?php echo htmlspecialchars($_person->name) ?></td>
             <td><?php echo htmlspecialchars($_loca_name) ?></td>
             <td><?php echo htmlspecialchars($_machine->machinebrandName()) ?></td>

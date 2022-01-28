@@ -16,10 +16,11 @@
         <?php echo I18n::__('appointment_action_completed') ?>
     </a>
 </li>
-<?php endif; ?>
+<?php else: ?>
 <li>
     <a
         href="<?php echo Url::build("/appointment/pdf") ?>">
         <?php echo I18n::__('appointment_action_pdf') ?>
     </a>
 </li>
+<?php endif; ?>

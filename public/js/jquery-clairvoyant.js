@@ -12,7 +12,7 @@ function initAutocompletes() {
     $('.autocomplete').each(function(index, element) {
         //console.log('Init autocomplete');
         var spread = $(this).attr('data-spread'); // The URL to perform the search
-        var dynamic = $(this).attr('data-dynamic'); // Is there an ooption dynamic URL?
+        var dynamic = $(this).attr('data-dynamic'); // Is there an option dynamic URL?
         if (dynamic) {
             // there is a area which has to be updated by the HTML returned through an ajax call.
             var extra = $(this).attr('data-extra'); // the element which val has to be passed dynamically

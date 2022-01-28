@@ -68,6 +68,32 @@ class Model_Contracttype extends Model
                     'tag' => 'bool'
                 ],
                 'width' => '5rem'
+            ],
+            [
+                'name' => 'service',
+                'sort' => [
+                    'name' => 'contracttype.service'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '5rem'
+            ],
+            [
+                'name' => 'ledger',
+                'sort' => [
+                    'name' => 'contracttype.ledger'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '5rem'
             ]
         ];
     }

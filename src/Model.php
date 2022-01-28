@@ -20,17 +20,17 @@ class Model extends RedBean_SimpleModel
     /**
      * Defines the validation mode to throw an exception.
      */
-    const VALIDATION_MODE_EXCEPTION = 1;
+    public const VALIDATION_MODE_EXCEPTION = 1;
 
     /**
      * Defines the validation mode to store an valid or invalid state with the bean.
      */
-    const VALIDATION_MODE_IMPLICIT = 2;
+    public const VALIDATION_MODE_IMPLICIT = 2;
 
     /**
      * Defines the validation mode to simply return the result of a validation.
      */
-    const VALIDATION_MODE_EXPLICIT = 4;
+    public const VALIDATION_MODE_EXPLICIT = 4;
 
     /**
      * Container for the validators.
@@ -121,6 +121,57 @@ class Model extends RedBean_SimpleModel
     public function getDefaultSortDir()
     {
         return 0;
+    }
+
+    /**
+     * Preset the filter (for scaffold list view) on inital request or reset.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return bool
+     */
+    public function presetFilter(RedBeanPHP\OODBBean $filter): bool
+    {
+        return false;
+    }
+
+    /**
+     * Returns true if the bean has a quick filter attribute.
+     *
+     * @return bool
+     */
+    public function hasQuickFilter(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Returns an array of RedBeanPHP\OODBBean objects.
+     *
+     * @return array
+     */
+    public function getQuickFilterValues(): array
+    {
+        return [];
+    }
+
+    /**
+     * Returns the QF bean option value, e.g. the id.
+     *
+     * @return mixed
+     */
+    public function getQuickFilterOptionValue(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return null;
+    }
+
+    /**
+     * Returns the QF bean option label, e.g. the name or number.
+     *
+     * @return mixed
+     */
+    public function getQuickFilterLabel(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return null;
     }
 
     /**
@@ -257,7 +308,7 @@ class Model extends RedBean_SimpleModel
      */
     public function decimal($attribute, $decimals = CINNEBAR_DECIMAL_PLACES, $decimal_point = ',', $thousands_separator = '.')
     {
-        if (! $this->bean->{$attribute}) {
+        if ((float)$this->bean->{$attribute} === 0.0) {
             return '';
         }
         return number_format((float)$this->bean->{$attribute}, $decimals, $decimal_point, $thousands_separator);
@@ -383,6 +434,9 @@ SQL;
 
     /**
      * Expunge is an alias of R::trash().
+     *
+     * The UI uses "expunge" to give models the option to handle trash differntly.
+     * E.g. a invoice may never be trashed, instead it will be stored as canceled.
      */
     public function expunge()
     {
@@ -476,6 +530,7 @@ SQL;
      */
     public function update()
     {
+        //DEBUG:error_log('Updating ' . $this->bean->getMeta('type') . ' #' . $this->bean->getId());
         if (CINNEBAR_MODEL_CONVERT_AND_VALIDATE) {
             $this->convert();
             $this->validate();

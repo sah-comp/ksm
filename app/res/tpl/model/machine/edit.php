@@ -441,6 +441,13 @@
                     <?php echo I18n::__('machine_label_shutdownvalve') ?>
                 </label>
             </div>
+            <div class="span3">
+                <label
+                    for="machine-charger"
+                    class="<?php echo ($record->hasError('charger')) ? 'error' : ''; ?>">
+                    <?php echo I18n::__('machine_label_charger') ?>
+                </label>
+            </div>
         </div>
         <div class="row">
             <div class="span3">&nbsp;</div>
@@ -459,6 +466,14 @@
                     type="text"
                     name="dialog[shutdownvalve]"
                     value="<?php echo htmlspecialchars($record->shutdownvalve) ?>"/>
+            </div>
+            <div class="span3">
+                <input
+                    id="machine-charger"
+                    class="autowidth"
+                    type="text"
+                    name="dialog[charger]"
+                    value="<?php echo htmlspecialchars($record->charger) ?>"/>
             </div>
         </div>
         <!-- /second block -->

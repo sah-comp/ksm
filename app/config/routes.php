@@ -37,6 +37,7 @@ Flight::route('(/[a-z]{2})/', function () {
         // This is what will run if you are not logged in a open the top level page.
         $ksmController = new Controller_Welcome();
         $ksmController->redirect('/admin/appointment');
+        exit();
     }
 });
 
@@ -97,9 +98,9 @@ Flight::route('(/[a-z]{2})/autocomplete/@type:[a-z]+/@query:[a-z]+', function ($
  * Route to enpassant for updating single attributes of a bean after ajax post requests.
  */
 
-Flight::route('POST (/[a-z]{2})/enpassant/@type:[a-z]+/@id:[0-9]+/@attr:[a-z_]+', function ($type, $id, $attr) {
+Flight::route('POST (/[a-z]{2})/enpassant/@type:[a-z]+/@id:[0-9]+/@attr:[a-z_]+(/@afterburn:[a-z_]+)', function ($type, $id, $attr, $afterburn = null) {
     $enpassantController = new Controller_Enpassant();
-    $enpassantController->update($type, $id, $attr);
+    $enpassantController->update($type, $id, $attr, $afterburn);
 });
 
 
@@ -207,6 +208,20 @@ Flight::route('POST /api/update/@type:[a-z]+/@id:[0-9]+', function ($type, $id) 
 });
 
 /**
+ * Route to the openitem controller.
+ */
+Flight::route('(/[a-z]{2})/openitem(/@method:[a-z]+(/@id:[0-9]+))', function ($method, $id) {
+    if ($method === null) {
+        $method = 'index';
+    }
+    if ($id === null) {
+        $id = 0;
+    }
+    $controller = new Controller_Openitem('/openitem', 'transaction', $id);
+    $controller->$method();
+});
+
+/**
  * Routes to the contract controller to download a contract as PDF to the client.
  *
  * @deprecated since we have the Treaty controller.
@@ -220,7 +235,7 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
  * Routes to the treaty controller to download a treaty as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
-    $treatyController = new Controller_Treaty($id);
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->pdf();
 });
 
@@ -228,7 +243,7 @@ Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
  * Routes to the treaty controller to display a treaty as a HTML page to the client.
  */
 Flight::route('(/[a-z]{2})/treaty/form/@id:[0-9]+', function ($id) {
-    $treatyController = new Controller_Treaty($id);
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->form();
 });
 
@@ -236,8 +251,24 @@ Flight::route('(/[a-z]{2})/treaty/form/@id:[0-9]+', function ($id) {
  * Routes to the treaty controller to duplicate the given bean as a new type.
  */
 Flight::route('GET (/[a-z]{2})/treaty/copy/@id:[0-9]+', function ($id) {
-    $treatyController = new Controller_Treaty($id);
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->copy();
+});
+
+/**
+ * Routes to the transaction controller to duplicate the given bean as a new type.
+ */
+Flight::route('GET (/[a-z]{2})/transaction/copy/@id:[0-9]+', function ($id) {
+    $transactionController = new Controller_Transaction(null, 'transaction', $id);
+    $transactionController->copy();
+});
+
+/**
+ * Routes to the transaction controller to download a transaction as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/transaction/pdf(/@id:[0-9]+)', function ($id) {
+    $transactionController = new Controller_Transaction(null, 'transaction', $id);
+    $transactionController->pdf();
 });
 
 /**
@@ -295,7 +326,7 @@ Flight::route('POST (/[a-z]{2})/@type:[a-z]+/@id:[0-9]+/person/changed(/)', func
  * Display the servie index page.
  */
 Flight::route('(/[a-z]{2})/service(/index)', function () {
-    $serviceController = new Controller_Service();
+    $serviceController = new Controller_Service('/service', 'appointment', null);
     $serviceController->index();
 });
 
@@ -305,7 +336,7 @@ Flight::route('(/[a-z]{2})/service(/index)', function () {
  * The service page toolbar template initiates a interval via js.
  */
 Flight::route('(/[a-z]{2})/service/recheck', function () {
-    $serviceController = new Controller_Service();
+    $serviceController = new Controller_Service('/service', 'appointment', null);
     $serviceController->recheck();
 });
 
@@ -315,6 +346,42 @@ Flight::route('(/[a-z]{2})/service/recheck', function () {
 Flight::route('(/[a-z]{2})/cockpit(/index)', function () {
     $cockpitController = new Controller_Cockpit();
     $cockpitController->index();
+});
+
+/**
+ * Display the Accounting index page.
+ */
+Flight::route('(/[a-z]{2})/accounting(/index)', function () {
+    $accountingController = new Controller_Accounting();
+    $accountingController->index();
+});
+
+/**
+ * Route to the revenue controller to download csv or pdf documents.
+ */
+Flight::route('(/[a-z]{2})/revenue/@method:[a-z]+/@id:[0-9]+', function ($method, $id) {
+    if ($method === null) {
+        $method = 'index';
+    }
+    if ($id === null) {
+        $id = 0;
+    }
+    $controller = new Controller_Revenue($id);
+    $controller->$method();
+});
+
+/**
+ * Routes to the ledger controller to download csv or pdf documents.
+ */
+Flight::route('(/[a-z]{2})/ledger/@method:[a-z]+/@id:[0-9]+', function ($method, $id) {
+    if ($method === null) {
+        $method = 'index';
+    }
+    if ($id === null) {
+        $id = 0;
+    }
+    $controller = new Controller_Ledger($id);
+    $controller->$method();
 });
 
 /**

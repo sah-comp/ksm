@@ -35,7 +35,7 @@
                 name="dialog[contracttype_id]"
                 required="required">
                 <option value=""><?php echo I18n::__('treaty_contracttype_none') ?></option>
-                <?php foreach (R::find('contracttype', "enabled = 1 ORDER BY name") as $_id => $_contracttype): ?>
+                <?php foreach (R::find('contracttype', "enabled = 1 AND service = 1 ORDER BY name") as $_id => $_contracttype): ?>
                 <option
                     value="<?php echo $_contracttype->getId() ?>"
                     <?php echo ($record->contracttype_id == $_contracttype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_contracttype->name ?>

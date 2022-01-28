@@ -332,18 +332,57 @@
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('company_legend_serial_tab') ?></legend>
-        <div class="row <?php echo ($record->hasError('nextbillingnumber')) ? 'error' : ''; ?>">
+        <div class="row <?php echo ($record->hasError('conditiondiscount')) ? 'error' : ''; ?>">
             <label
-                for="company-nextbillingnumber">
-                <?php echo I18n::__('company_label_nextbillingnumber') ?>
+                for="company-conditiondiscount">
+                <?php echo I18n::__('company_label_conditiondiscount') ?>
             </label>
-            <input
-                id="company-nextbillingnumber"
-                type="number"
-                step="1"
-                name="dialog[nextbillingnumber]"
-                value="<?php echo htmlspecialchars($record->nextbillingnumber) ?>"
-                required="required" />
+            <textarea
+                id="company-conditiondiscount"
+                class="scaleable"
+                name="dialog[conditiondiscount]"
+                cols="60"
+                rows="2"><?php echo htmlspecialchars($record->conditiondiscount) ?></textarea>
+            <p class="info"><?php echo I18n::__('company_info_conditiondiscount') ?></p>
+        </div>
+        <div class="row <?php echo ($record->hasError('conditionnodiscount')) ? 'error' : ''; ?>">
+            <label
+                for="company-conditionnodiscount">
+                <?php echo I18n::__('company_label_conditionnodiscount') ?>
+            </label>
+            <textarea
+                id="company-conditionnodiscount"
+                class="scaleable"
+                name="dialog[conditionnodiscount]"
+                cols="60"
+                rows="2"><?php echo htmlspecialchars($record->conditionnodiscount) ?></textarea>
+            <p class="info"><?php echo I18n::__('company_info_conditionnodiscount') ?></p>
+        </div>
+        <div class="row <?php echo ($record->hasError('conditionimmediately')) ? 'error' : ''; ?>">
+            <label
+                for="company-conditionimmediately">
+                <?php echo I18n::__('company_label_conditionimmediately') ?>
+            </label>
+            <textarea
+                id="company-conditionimmediately"
+                class="scaleable"
+                name="dialog[conditionimmediately]"
+                cols="60"
+                rows="2"><?php echo htmlspecialchars($record->conditionimmediately) ?></textarea>
+            <p class="info"><?php echo I18n::__('company_info_conditionimmediately') ?></p>
+        </div>
+        <div class="row <?php echo ($record->hasError('conditionother')) ? 'error' : ''; ?>">
+            <label
+                for="company-conditionother">
+                <?php echo I18n::__('company_label_conditionother') ?>
+            </label>
+            <textarea
+                id="company-conditionother"
+                class="scaleable"
+                name="dialog[conditionother]"
+                cols="60"
+                rows="2"><?php echo htmlspecialchars($record->conditionother) ?></textarea>
+            <p class="info"><?php echo I18n::__('company_info_conditionother') ?></p>
         </div>
     </fieldset>
 </div>

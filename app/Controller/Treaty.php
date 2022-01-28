@@ -17,7 +17,7 @@
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Treaty extends Controller
+class Controller_Treaty extends Controller_Scaffold
 {
     /**
      * Holds the company bean.
@@ -84,15 +84,18 @@ class Controller_Treaty extends Controller
     ];
 
     /**
-     * Constructor
+     * Constructs a new Scaffold controller.
      *
-     * @param int $id ID of the contract to output as PDF
+     * @todo get rid of eval and develop gestalt more
+     *
+     * @param string $base_url for scaffold links and redirects
+     * @param string $type of the bean to scaffold
+     * @param int (optional) $id of the bean to handle
      */
-    public function __construct($id)
+    public function __construct($base_url, $type, $id = null)
     {
-        session_start();
-        Auth::check();
-        $this->treaty = R::load('treaty', $id);
+        parent::__construct($base_url, $type, $id);
+        $this->treaty = $this->record;
     }
 
     /*
@@ -140,6 +143,7 @@ class Controller_Treaty extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             Permission::check(Flight::get('user'), $this->treaty->getMeta('type'), 'edit');
             $limb = Flight::request()->data->limb;
@@ -150,6 +154,7 @@ class Controller_Treaty extends Controller
                 R::commit();
                 Flight::get('user')->notify(I18n::__('scaffold_success_edit'), 'success');
                 $this->redirect('/admin/treaty/edit/' . $this->treaty->getId());
+                exit();
             } catch (Exception $e) {
                 R::rollback();
                 Flight::get('user')->notify(I18n::__('scaffold_error_edit'), 'error');
@@ -179,21 +184,30 @@ class Controller_Treaty extends Controller
      */
     public function copy()
     {
+        Permission::check(Flight::get('user'), 'treaty', 'add');
         if (Flight::request()->query->submit == I18n::__('treaty_action_copy_as')) {
+            if (! Security::validateCSRFToken(Flight::request()->query->token)) {
+                $this->redirect("/logout");
+                exit();
+            }
             R::begin();
             try {
                 $copy = R::duplicate($this->treaty);
                 $copy->contracttype_id = Flight::request()->query->copyas;
                 $copy->mytreatyid = $this->treaty->getId();
+                $copy->treatygroup_id = null;
+                $copy->treatygroup = null;
                 R::store($copy);
                 R::commit();
                 Flight::get('user')->notify(I18n::__('treaty_success_copy', null, [$this->treaty->number, $copy->contracttype->name]), 'success');
                 $this->redirect('/admin/treaty/edit/' . $copy->getId());
+                exit();
             } catch (\Exception $e) {
                 R::rollback();
                 error_log($e);
                 Flight::get('user')->notify(I18n::__('treaty_error_copy'), 'error');
                 $this->redirect('/admin/treaty/edit/' . $this->treaty->getId());
+                exit();
             }
         }
     }
@@ -291,7 +305,7 @@ HTML;
     }
 
     /**
-     * Rerenders the "person-dependent" part of an appointment form.
+     * Rerenders the "person-dependent" part of an treaty form.
      *
      * @return string
      */

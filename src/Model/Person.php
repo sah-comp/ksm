@@ -188,9 +188,12 @@ class Model_Person extends Model
                 SELECT
                     person.id AS id,
                     CONCAT(person.name, ' (', person.nickname, ', ', CONCAT(address.street, ' ', address.zip, ' ', address.city), ')') AS label,
+                    address.label AS addresslabel,
                     CONCAT(person.name, '\n', CONCAT(address.street, '\n', address.zip, ' ', address.city), '') AS postaladdress,
                     person.name AS value,
-                    person.note AS note
+                    person.note AS note,
+                    person.duedays AS duedays,
+                    person.discount_id AS discount_id
                 FROM
                     person
                 LEFT JOIN
@@ -366,6 +369,9 @@ SQL;
             new Validator_HasValue(),
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'nickname'))
         ));
+        $this->addConverter('duedays', [
+            new Converter_Decimal()
+        ]);
     }
 
     /**
@@ -375,11 +381,29 @@ SQL;
      */
     public function update()
     {
+        /*
         if ($this->bean->email) {
             $this->addValidator('email', array(
                 new Validator_IsEmail(),
                 new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'email'))
             ));
+        }
+        */
+
+        if ($this->bean->billingemail) {
+            $this->addValidator('billingemail', array(
+                new Validator_IsEmail(),
+                new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'billingemail'))
+            ));
+        }
+
+        if (!$this->bean->vat_id) {
+            $this->bean->vat_id = null;
+            unset($this->bean->vat);
+        }
+        if (!$this->bean->discount_id) {
+            $this->bean->discount_id = null;
+            unset($this->bean->discount);
         }
 
         // set the phonetic names

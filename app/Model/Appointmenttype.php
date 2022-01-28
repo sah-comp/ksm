@@ -54,7 +54,7 @@ class Model_Appointmenttype extends Model
      */
     public function scaffoldStyle()
     {
-        return "style=\"border-left: 3px solid {$this->bean->color};\"";
+        return "style=\"border-left: 5px solid {$this->bean->color};\"";
     }
 
     /**

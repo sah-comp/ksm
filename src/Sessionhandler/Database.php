@@ -27,7 +27,7 @@ class Sessionhandler_Database extends Sessionhandler
      * @param string $id
      * @return bool
      */
-    public function open($path, $id)
+    public function open(string $path, string $id): bool
     {
         return true;
     }
@@ -37,7 +37,7 @@ class Sessionhandler_Database extends Sessionhandler
      *
      * @return bool
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }
@@ -50,7 +50,7 @@ class Sessionhandler_Database extends Sessionhandler
      * @param string $id
      * @return string
      */
-    public function read($id)
+    public function read(string $id): string|false
     {
         if (! $session = R::findOne('session', ' token = ?', array($id))) {
             return '';
@@ -67,7 +67,7 @@ class Sessionhandler_Database extends Sessionhandler
      * @param string $data
      * @return bool
      */
-    public function write($id, $data)
+    public function write(string $id, string $data): bool
     {
         if (! $session = R::findOne('session', ' token = ?', array($id))) {
             $session = R::dispense('session');
@@ -92,7 +92,7 @@ class Sessionhandler_Database extends Sessionhandler
      * @param string $id
      * @return bool
      */
-    public function destroy($id)
+    public function destroy(string $id): bool
     {
         if (! $session = R::findOne('session', ' token = ?', array($id))) {
             return true;
@@ -112,7 +112,7 @@ class Sessionhandler_Database extends Sessionhandler
      * @param int $max_lifetime
      * @return bool
      */
-    public function gc($max_lifetime)
+    public function gc(int $max_lifetime): int|false
     {
         return true;
     }

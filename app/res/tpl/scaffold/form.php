@@ -11,6 +11,13 @@
 <article class="main">
     <header id="header-toolbar" class="fixable">
         <h1><?php echo I18n::__("{$type}_h1") ?></h1>
+        <?php if ($record->hasQuickFilter() && count($records)): ?>
+        <?php
+        Flight::render('scaffold/quickfilter', [
+            'record' => $record
+        ]);
+        ?>
+        <?php endif; ?>
         <nav>
             <?php echo $toolbar ?>
         </nav>

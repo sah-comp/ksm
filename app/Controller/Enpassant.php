@@ -26,17 +26,21 @@ class Controller_Enpassant extends Controller
      * @param string $type The bean type to search
      * @param int $id
      * @param string $attr(ibute)
+     * @param optional string $afterburn function to call after changeing the attribute
      * @return string $jsonEncodedArray JSON encoded response
      */
-    public function update($type, $id, $attribute)
+    public function update($type, $id, $attribute, $afterburn = null)
     {
         session_start();
         Auth::check();
         $bean = R::load($type, $id);
         $value = Flight::request()->data->value;
-        $bean->{$attribute} = $value;
         R::begin();
         try {
+            $bean->{$attribute} = $value;
+            if ($afterburn) {
+                $bean->{$afterburn}();
+            }
             R::store($bean);
             R::commit();
             $result = [

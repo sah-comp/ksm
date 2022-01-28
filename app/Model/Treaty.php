@@ -24,7 +24,7 @@ class Model_Treaty extends Model
      *
      * @var string
      */
-    const PATTERN = "%s-%02d-%02d-%04d";
+    public const PATTERN = "%s-%02d-%02d-%04d";
 
     /**
      * Returns an array with possible units.
@@ -62,6 +62,20 @@ class Model_Treaty extends Model
                 'width' => '12rem'
             ],
             [
+                'name' => 'treatygroup.name',
+                'sort' => [
+                    'name' => 'treatygroup.name'
+                ],
+                'callback' => [
+                    'name' => 'treatygroupName'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'sql' => 'getTreatygroups'
+                ],
+                'width' => '23rem'
+            ],
+            [
                 'name' => 'contracttype.name',
                 'sort' => [
                     'name' => 'contracttype.name'
@@ -70,9 +84,23 @@ class Model_Treaty extends Model
                     'name' => 'contracttypeName'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'select',
+                    'sql' => 'getContracttypes'
                 ],
-                'width' => '12rem'
+                'width' => '14rem'
+            ],
+            [
+                'name' => 'bookingdate',
+                'sort' => [
+                    'name' => 'treaty.bookingdate'
+                ],
+                'filter' => [
+                    'tag' => 'date'
+                ],
+                'callback' => [
+                    'name' => 'localizedDate'
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'prospect',
@@ -81,7 +109,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '6rem'
             ],
             [
                 'name' => 'person.name',
@@ -93,7 +122,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '8rem'
             ],
             [
                 'name' => 'serialnumber',
@@ -102,7 +132,8 @@ class Model_Treaty extends Model
                 ],
                 'filter' => [
                     'tag' => 'text'
-                ]
+                ],
+                'width' => '6rem'
             ],
             [
                 'name' => 'startdate',
@@ -129,9 +160,33 @@ class Model_Treaty extends Model
                     'name' => 'localizedDate'
                 ],
                 'width' => '8rem'
+            ],
+            [
+                'name' => 'archived',
+                'sort' => [
+                    'name' => 'treaty.archived'
+                ],
+                'callback' => [
+                    'name' => 'boolean'
+                ],
+                'filter' => [
+                    'tag' => 'bool'
+                ],
+                'width' => '4rem'
             ]
         ];
     }
+
+    /**
+     * Constructor.
+     *
+     * Set actions for list views.
+     */
+    public function __construct()
+    {
+        $this->setAction('index', array('idle', 'toggleArchived', 'expunge'));
+    }
+
 
     /**
      * Returns special css classes depending on the type of treaty.
@@ -144,6 +199,23 @@ class Model_Treaty extends Model
             return 'visuallyhidden';
         }
         return '';
+    }
+
+    /**
+     * Toggle the archived attribute and store the bean.
+     *
+     * When the bean is archived its former status is saved, just in case
+     * it will eventually be unarchived once again later on.
+     *
+     * This is performed by a raw SQL query because we dont want to mess with
+     * the RB update cylce.
+     *
+     * @return void
+     */
+    public function toggleArchived()
+    {
+        $this->bean->archived = ! $this->bean->archived;
+        R::store($this->bean);
     }
 
     /**
@@ -177,6 +249,67 @@ class Model_Treaty extends Model
      */
     public function hasMenu()
     {
+        return true;
+    }
+
+    /**
+     * Returns true if the bean has a quick filter attribute.
+     *
+     * @return bool
+     */
+    public function hasQuickFilter(): bool
+    {
+        return false;// true to have a select menu after the header h1 allowing users to quickly select by contracttype
+    }
+
+    /**
+     * Returns an array of RedBeanPHP\OODBBean objects.
+     *
+     * @return array
+     */
+    public function getQuickFilterValues(): array
+    {
+        return R::find('contracttype', "enabled = 1 AND service = 1 ORDER BY name");
+    }
+
+    /**
+     * Returns the QF bean option value, e.g. the id.
+     *
+     * @see getAttributes()
+     * @return mixed
+     */
+    public function getQuickFilterOptionValue(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return $bean->name; //we need the name as value, because our filter tag is text
+    }
+
+    /**
+     * Returns the QF bean option label, e.g. the name or number.
+     *
+     * @return mixed
+     */
+    public function getQuickFilterLabel(RedbeanPHP\OODBBean $bean): mixed
+    {
+        return $bean->name;
+    }
+
+    /**
+     * Preset the filter (for scaffold list view) on inital request or reset.
+     *
+     * We want to see only non-archived transactions initally.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @param mixed $value of the attribute to filter
+     * @return bool
+     */
+    public function quickFilterSetup(RedBeanPHP\OODBBean $filter, $value = null): bool
+    {
+        $criteria = R::dispense('criteria');
+        $criteria->op = 'eq';
+        $criteria->tag = 'text';
+        $criteria->attribute = 'contracttype.name';
+        $criteria->value = $value;
+        $filter->ownCriteria[] = $criteria;
         return true;
     }
 
@@ -297,16 +430,71 @@ class Model_Treaty extends Model
     }
 
     /**
+     * Returns associated array of contracttype beans for use in scaffold filter.
+     *
+     * @return array
+     */
+    public function getContracttypes(): array
+    {
+        $sql = "SELECT name, name FROM contracttype WHERE service = 1 AND enabled = 1 ORDER BY name";
+        return R::getAssoc($sql);
+    }
+
+    /**
+     * Return the treatygroup bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getTreatygroup()
+    {
+        if (! $this->bean->treatygroup) {
+            $this->bean->treatygroup = R::dispense('treatygroup');
+        }
+        return $this->bean->treatygroup;
+    }
+
+    /**
+     * Returns the name of the treatygroup.
+     *
+     * @return string
+     */
+    public function treatygroupName()
+    {
+        return $this->bean->getTreatygroup()->name;
+    }
+
+    /**
+     * Returns an array with treatygroup beans, aka. "folders" where to "store" treaty beans.
+     *
+     * @return array
+     */
+    public function getTreatygroups(): array
+    {
+        $sql = "SELECT name, name FROM treatygroup ORDER BY sequence";
+        return R::getAssoc($sql);
+    }
+
+    /**
+     * Returns a string with a readable folder name.
+     *
+     * @return string
+     */
+    public function folderReadable(): string
+    {
+        return I18n::__('treaty_folder_' . $this->bean->folder);
+    }
+
+    /**
      * Returns a string with styling information of a scaffold table row.
      *
      * @return string
      */
     public function scaffoldStyle()
     {
-        if (! $this->bean->appointmenttype) {
-            return "style=\"border-left: 3px solid inherit;\"";
+        if (! $this->bean->getTreatygroup()->getId()) {
+            return "style=\"border-left: 5px solid inherit;\"";
         }
-        return "style=\"border-left: 3px solid {$this->bean->appointmenttype->color};\"";
+        return "style=\"border-left: 5px solid {$this->bean->getTreatygroup()->color};\"";
         //return "style=\"box-shadow: inset 0 0 0 4px coral;;\"";
     }
 
@@ -343,6 +531,8 @@ class Model_Treaty extends Model
                 {$this->bean->getMeta('type')}
             LEFT JOIN
                 contracttype ON contracttype.id = treaty.contracttype_id
+            LEFT JOIN
+                treatygroup ON treatygroup.id = treaty.treatygroup_id
             LEFT JOIN
                 person ON person.id = treaty.person_id
             LEFT JOIN
@@ -383,6 +573,8 @@ SQL;
     public function dispense()
     {
         $this->bean->mytreatyid = 0;
+        $this->bean->bookingdate = date('Y-m-d');
+        $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
         $this->addConverter('signdate', new Converter_Mysqldate());
@@ -397,6 +589,10 @@ SQL;
             if (!$this->bean->contracttype_id) {
                 $this->bean->contracttype_id = null;
                 unset($this->bean->contracttype);
+            }
+            if (!$this->bean->treatygroup_id) {
+                $this->bean->treatygroup_id = null;
+                unset($this->bean->treatygroup);
             }
             if (!$this->bean->location_id) {
                 $this->bean->location_id = null;
@@ -413,7 +609,7 @@ SQL;
             // This is a new bean, we want to stamp its number
             $number = $this->bean->contracttype->nextnumber;
             $this->bean->contracttype->nextnumber++;
-            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, Flight::setting()->companyyear, $number);
+            $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
         }
 
         //if ($this->bean->ctext == '') {

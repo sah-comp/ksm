@@ -72,6 +72,13 @@ class Controller_Scaffold extends Controller
     public $action;
 
     /**
+     * Holds the name of the next action that was requested.
+     *
+     * @var string
+     */
+    public $next_action;
+
+    /**
      * Holds the name of the layout to use.
      *
      * @var string
@@ -104,7 +111,7 @@ class Controller_Scaffold extends Controller
      *
      * @var array
      */
-    public $records = array();
+    public $records = [];
 
     /**
      * Holds the maximum number of records per page.
@@ -154,6 +161,13 @@ class Controller_Scaffold extends Controller
      * @var int
      */
     public $dir = 0;
+
+    /**
+     * Holds the current quickfilter value.
+     *
+     * @var mixed
+     */
+    public $quickfilter_value = null;
 
     /**
      * Container for order dir(ections).
@@ -216,19 +230,37 @@ class Controller_Scaffold extends Controller
         $this->stylesheets = array_merge($this->stylesheets, $this->record->injectCSS());
 
         $this->actions = $this->record->getActions();
+
         if (! isset($_SESSION['scaffold'][$this->type])) {
             $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
+
             // next action
             $_SESSION['scaffold'][$this->type]['index']['next_action'] = 'idle';
             $_SESSION['scaffold'][$this->type]['add']['next_action'] = 'edit';
             $_SESSION['scaffold'][$this->type]['edit']['next_action'] = 'edit';
             $_SESSION['scaffold'][$this->type]['delete']['next_action'] = 'index';
         }
-        $this->filter = R::load('filter', $_SESSION['scaffold'][$this->type]['filter']['id']);
+
+        if ($_SESSION['scaffold'][$this->type]['filter']['id'] == 0) {
+            // if there is not alreay a filter, create it
+            $this->filter = R::dispense('filter');
+            $this->filter->model = $this->type;
+            // preset it with what the model wants
+            $this->record->presetFilter($this->filter);
+            $filter_id = R::store($this->filter);
+            $_SESSION['scaffold'][$this->type]['filter']['id'] = $filter_id;
+        } else {
+            $this->filter = R::load('filter', $_SESSION['scaffold'][$this->type]['filter']['id']);
+        }
+
+        if (!isset($_SESSION['scaffold'][$this->type]['quickfilter']['value'])) {
+            $_SESSION['scaffold'][$this->type]['quickfilter']['value'] = null;
+        }
+        $this->quickfilter_value = $_SESSION['scaffold'][$this->type]['quickfilter']['value'];
     }
 
     /**
-     * Delete the current bean and.
+     * Delete the current bean.
      *
      * @return void
      */
@@ -280,7 +312,7 @@ class Controller_Scaffold extends Controller
      */
     public function attach($prefix, $subtype, $id = 0)
     {
-        $index = md5(microtime(true));
+        $index = $this->randIndex();
         $_subrecord = R::dispense($subtype);
         Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
             'record' => $this->record,
@@ -307,7 +339,7 @@ class Controller_Scaffold extends Controller
      */
     public function attachattach($prefix, $subtype, $id, $main, $mainid, $sindex, $index)
     {
-        $_index = md5(microtime(true));
+        $_index = $this->randIndex();
         $_subrecord = R::dispense($subtype);
         $main = R::load($main, $mainid);
         Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
@@ -318,6 +350,24 @@ class Controller_Scaffold extends Controller
             '_index' => $_index
         ));
         return true;
+    }
+
+    /**
+     * Returns a (very high) number to be used as an array index.
+     *
+     * Why this? We have to make sure the index is higher than any sub record
+     * to not conflict with sorting and replacing existing bean that are owned or shared
+     * by the main bean.
+     *
+     * @return mixed
+     */
+    public function randIndex()
+    {
+        if (!isset($_SESSION['lastindex'])) {
+            $_SESSION['lastindex'] = 100000;
+        }
+        $rand = $_SESSION['lastindex']++;
+        return $rand;
     }
 
     /**
@@ -358,6 +408,7 @@ class Controller_Scaffold extends Controller
     {
         R::begin();
         try {
+            $this->record->{$this->next_action}();//execute the next action (can be a dummy)
             R::$redbeanAction($this->record);//store or trash -- nothing else works here
             R::commit();
             $this->notifyAbout('success');
@@ -491,6 +542,7 @@ class Controller_Scaffold extends Controller
      */
     protected function setNextAction($action)
     {
+        $this->next_action = $action;
         $_SESSION['scaffold'][$this->type][$this->action]['next_action'] = $action;
     }
 
@@ -537,6 +589,25 @@ class Controller_Scaffold extends Controller
     }
 
     /**
+     * Clears the filter criterias and sets the first and only criteria as a
+     * new filter using the beans quickFilterSetup();
+     *
+     * @uses Model::quickFilterSetup()
+     *
+     * @param mixed $value of the quickfilter attribute
+     *
+     * @return void
+     */
+    public function clearFilterViaQuickfilter($value = null): void
+    {
+        $this->filter->ownCriteria = []; //clear former criterias
+        $this->record->quickFilterSetup($this->filter, $value);
+        R::store($this->filter);
+        $_SESSION['scaffold'][$this->type]['quickfilter']['value'] = $value;
+        return;
+    }
+
+    /**
      * Displays the index page of a given type.
      *
      * On a GET request a list view of the beans is represented where on a POST request
@@ -563,12 +634,15 @@ class Controller_Scaffold extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
+
             //clear filter?
             if (Flight::request()->data->submit == I18n::__('filter_submit_clear')) {
                 R::trash($this->filter);
                 $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+                exit();
             }
             //refresh filter
             if (Flight::request()->data->submit == I18n::__('filter_submit_refresh')) {
@@ -577,18 +651,27 @@ class Controller_Scaffold extends Controller
                     R::store($this->filter);
                     $_SESSION['scaffold'][$this->type]['filter']['id'] = $this->filter->getId();
                     $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+                    exit();
                 } catch (Exception $e) {
                     error_log($e);
                     Flight::get('user')->notify(I18n::__('action_filter_error', null, array(), 'error'));
                 }
             }
+            // clear filter via quickfilter
+            if (Flight::request()->data->submit == I18n::__('scaffold_quickfilter_submit_refresh')) {
+                $this->clearFilterViaQuickfilter(Flight::request()->data->qf_value);
+                $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+                exit();
+            }
+
             //handle a selection
             $this->selection = Flight::request()->data->selection;
-            if ($this->applyToSelection(
-                $this->selection[$this->type],
-                Flight::request()->data->next_action
-            )) {
-                $this->redirect("{$this->base_url}/{$this->type}/");
+            if ($this->selection !== null && count($this->selection)) {
+                // there is a selection, do stuff
+                if ($this->applyToSelection($this->selection[$this->type], Flight::request()->data->next_action)) {
+                    $this->redirect("{$this->base_url}/{$this->type}/");
+                    exit();
+                }
             }
         }
         $this->getCollection();
@@ -597,6 +680,7 @@ class Controller_Scaffold extends Controller
                 Flight::get('user')->notify(I18n::__('scaffold_no_records_add_one'));
                 //return $this->add($this->layout);//this would not work because we dont set form action
                 $this->redirect("{$this->base_url}/{$this->type}/add/{$this->layout}");
+                exit();
             }
         }
 
@@ -638,6 +722,7 @@ class Controller_Scaffold extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             $this->record = R::graph(Flight::request()->data->dialog, true);
             $this->setNextAction(Flight::request()->data->next_action);
@@ -646,13 +731,17 @@ class Controller_Scaffold extends Controller
                 if (Flight::request()->data->goto) {
                     // Yes, then we want to return where we came from.
                     $this->redirect(Flight::request()->data->goto);
+                    exit();
                 }
                 if ($this->getNextAction() == 'add') {
                     $this->redirect("{$this->base_url}/{$this->type}/add/{$this->layout}/");
+                    exit();
                 } elseif ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/1/0/0/");
+                    exit();
                 }
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}/");
+                exit();
             }
         } else {
             if ($this->record->getId()) {
@@ -668,6 +757,19 @@ class Controller_Scaffold extends Controller
             }
         }
         $this->render();
+    }
+
+    /**
+     * Returns wether the records array has records or not.
+     *
+     * @return bool
+     */
+    public function hasRecords(): bool
+    {
+        if (isset($this->records) && count($this->records) > 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -700,6 +802,7 @@ class Controller_Scaffold extends Controller
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             Permission::check(Flight::get('user'), $this->type, 'edit');//check for edit perm now
             $this->record = R::graph(Flight::request()->data->dialog, true);
@@ -709,19 +812,24 @@ class Controller_Scaffold extends Controller
                 if (Flight::request()->data->goto) {
                     // Yes, then we want to return where we came from.
                     $this->redirect(Flight::request()->data->goto);
+                    exit();
                 }
                 if ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/{$this->page}/{$this->order}/{$this->dir}/{$this->layout}/");
+                    exit();
                 } elseif ($this->getNextAction() == 'next_edit' &&
                                                 $next_id = $this->id_at_offset($this->page + 1)) {
                     $next_page = $this->page + 1;
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$next_id}/{$next_page}/{$this->order}/{$this->dir}/{$this->layout}/");
+                    exit();
                 } elseif ($this->getNextAction() == 'prev_edit' &&
                                                 $prev_id = $this->id_at_offset($this->page - 1)) {
                     $prev_page = $this->page - 1;
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$prev_id}/{$prev_page}/{$this->order}/{$this->dir}/{$this->layout}/");
+                    exit();
                 }
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}/");
+                exit();
             }
         }
         $this->render();
@@ -744,6 +852,7 @@ class Controller_Scaffold extends Controller
         Flight::render('shared/navigation', array(), 'navigation');
         Flight::render('scaffold/toolbar', array(
             'record' => $this->record,
+            'hasRecords' => $this->hasRecords(),
             'base_url' => $this->base_url,
             'type' => $this->type,
             'layout' => $this->layout,
@@ -761,6 +870,7 @@ class Controller_Scaffold extends Controller
             'filter' => $this->filter,
             'record' => $this->record,
             'records' => $this->records,
+            'hasRecords' => $this->hasRecords(),
             'selection' => $this->selection,
             'total_records' => $this->total_records,
             'dir_map' => $this->dir_map
@@ -771,7 +881,9 @@ class Controller_Scaffold extends Controller
             'next_action' => $this->getNextAction(),
             'record' => $this->record,
             'records' => $this->records,
-            'goto' => $this->goto
+            'hasRecords' => $this->hasRecords(),
+            'goto' => $this->goto,
+            'quickfilter_value' => $this->quickfilter_value
         ), 'content');
         Flight::render('html5', array(
             'title' => I18n::__("scaffold_head_title_{$this->action}", null, array(

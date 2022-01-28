@@ -56,6 +56,38 @@ $('body').ready(function() {
     $('form.checko').areYouSure();
 
     /**
+     * Sortable containers.
+     *
+     * When the container was scrolled the "shadow" element is way of the cursor.
+     * The only solution was to set scroll: false and recalculate css top when sorting.
+     *
+     * @see https://stackoverflow.com/questions/11365783/jquery-sortable-with-scrolling
+     */
+    $('.ui-sortable').sortable({
+        "axis": "y",
+        "scroll": false,
+        "containment": "parent",
+        "tolerance": "pointer",
+        "helper": "clone",
+        "cursor": "move",
+        "items": "> fieldset",
+        "handle": "h2",
+        "opacity": 0.8,
+        "start": function(event, ui) {
+            //ui.item.css('margin-top', 0);
+        },
+        "sort": function (event, ui) {
+            ui.helper.css({ 'top': ui.position.top + $(window).scrollTop() + 'px' });
+        },
+        "stop": function(event, ui) {
+            //ui.item.css('margin-top', $(window).scrollTop());
+            $('.currentindex').each(function(i) {
+                $(this).val(i);
+            });
+        }
+    }).disableSelection();
+
+    /**
      * Activate datatables.
      *
      * @see https://datatables.net
@@ -63,8 +95,13 @@ $('body').ready(function() {
     if ($('.datatable').length) {
         dttables = $('.datatable').DataTable({
             "paging": false,
-            "stateSave": true,
-            "language": dtlang
+            "stateSave": false,
+            "language": dtlang,
+            "order": [],
+            "columnDefs": [{
+                "targets": 'no-sort',
+                "orderable": false,
+            }]
         });
     }
 
@@ -108,7 +145,21 @@ $('body').ready(function() {
      */
     if ($(".tabs").length) {
         $(".tabs").each(function() {
-            $("#"+$(this).attr("id")+" ul").idTabs($(this).attr("data-default"));
+            if (localStorage.getItem("lastTab") && $("#" + localStorage.getItem("lastTab")).length) {
+                // choose lastTab from localStorage as default tabs when it is on the current page
+                var defaultid = localStorage.getItem("lastTab");
+            } else {
+                var defaultid = $(this).attr("data-default");
+            }
+            //alert('Default tab is ' + defaultid);
+            $("#"+$(this).attr("id")+" ul").idTabs({
+                start: defaultid,
+                click: function(id, all, container, settings) {
+                    localStorage.setItem("lastTab", id.substring(1));
+                    //alert('clicked ' + id);
+                    return true;
+                }
+            });
         });
     }
 
@@ -214,6 +265,20 @@ $('body').ready(function() {
     });
 
     /**
+     * submit a form when changing an input element with class submitOnChange.
+     *
+     * If you want to use this with jQuery and the class name be aware, that
+     * you MUST NOT HAVE another element named submit in the form.
+     *
+     * @see https://stackoverflow.com/questions/833032/submit-is-not-a-function-error-in-javascript/834197#834197
+     *
+     * @see app/res/tpl/scaffold/quickfilter.php
+     */
+    $('body').on('change', '.submitOnChange', function(){
+        $(this).closest('form').submit();
+    });
+
+    /**
 	 * all and future detach links send a post request and then
 	 * fade out and finally detach the element.
 	 */
@@ -301,6 +366,19 @@ $('body').ready(function() {
     $('body').on('focusout', '.blow-me-up', function(event) {
         $('#my-notes').removeClass('wider');
         return null;
+    });
+
+    /**
+     * Changing a select value to null will hide a element, while
+     * changing the value to something not null will show the element.
+     */
+    $('body').on("change", '.showhide', function(event) {
+        var el = $(this).attr('data-showhide');
+        if ($(this).val()) {
+            $('#' + el).removeClass('hidden');
+        } else {
+            $('#' + el).addClass('hidden');
+        }
     });
 
     /**

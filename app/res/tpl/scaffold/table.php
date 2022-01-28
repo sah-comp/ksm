@@ -168,6 +168,30 @@
                     <option value="<?php echo $_in_opt->{$_attribute['filter']['options']['id']} ?>" <?php echo (in_array($_in_opt->getId(), $_values)) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_in_opt->{$_attribute['filter']['options']['label']}) ?></option>
                     <?php endforeach; ?>
                 </select>
+                <?php
+                elseif ($_criteria->tag == 'select'):
+                ?>
+                <select
+                    class="autowidth"
+                    name="filter[ownCriteria][<?php echo $_i ?>][value]">
+                    <option value=""><?php echo I18n::__('scaffold_filter_select_none') ?></option>
+                    <?php
+                    if (isset($_attribute['filter']['values'])):
+                        $_values = $_attribute['filter']['values'];
+                    elseif (isset($_attribute['filter']['sql'])):
+                        $_values = $record->{$_attribute['filter']['sql']}();
+                    else:
+                        $_values = [
+                            '' => I18n::__('scaffold_filter_select_pleasedefinesource')
+                        ];
+                    endif;
+                    foreach ($_values as $_value => $_label):
+                    ?>
+                    <option value="<?php echo $_value ?>" <?php echo $_criteria->value == $_value ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_label) ?></option>
+                    <?php
+                    endforeach;
+                    ?>
+                </select>
                 <?php else: ?>
                 <input
                     type="text"
@@ -242,4 +266,9 @@
     </tbody>
 
 </table>
+<?php if (!$hasRecords): ?>
+<div class="scaffold-filter-finds-no-records">
+    <p><?php echo I18n::__('scaffold_no_records_found_w_filter') ?></p>
+</div>
+<?php endif; ?>
 <!-- End of scaffold table -->

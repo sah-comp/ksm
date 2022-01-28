@@ -41,9 +41,13 @@ class Controller_Service extends Controller_Scaffold
     public $users = [];
 
     /**
-     * Constructor
-     */
-    public function __construct()
+    * Constructor
+    *
+    * @param string $base_url for scaffold links and redirects
+    * @param string $type of the bean to scaffold
+    * @param int (optional) $id of the bean to handle
+    */
+    public function __construct($base_url, $type, $id = null)
     {
         session_start();
         Auth::check();
@@ -69,11 +73,13 @@ class Controller_Service extends Controller_Scaffold
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
+                exit();
             }
             if (Flight::request()->data->submit == I18n::__('service_action_print_day')) {
                 $_SESSION['service']['pday'] = Flight::request()->data->pday;
                 $this->pdf($_SESSION['service']['pday']);
-                $this->redirect("/service"); // I never get there, PDF download needs exit
+                //$this->redirect("/service"); // I never get there, PDF download needs exit
+                exit();
             }
             //handle a selection
             $this->selection = Flight::request()->data->selection;
@@ -82,6 +88,7 @@ class Controller_Service extends Controller_Scaffold
                 Flight::request()->data->next_action
             )) {
                 $this->redirect("/service");
+                exit();
             }
         }
         $this->records = $this->record->getConfirmedUndone();
@@ -126,6 +133,7 @@ class Controller_Service extends Controller_Scaffold
             error_log($e);
             $this->notifyAbout('error');
             $this->redirect('/service');
+            exit();
         }
     }
 
@@ -175,15 +183,6 @@ class Controller_Service extends Controller_Scaffold
                  ':yes' => 1
             ]
         );
-        /*
-        if ($count != $_SESSION['service']['appointments']) {
-            $new_count = $count - $_SESSION['service']['appointments'];
-            //$_SESSION['service']['appointments'] = $count;
-            echo '<span class="badge">' . $new_count . '</span>';
-        } else {
-            echo '';
-        }
-        */
         $lastupdated = $this->record->getLastUpdated();
         if ($lastupdated > $_SESSION['service']['updated'] || $count != $_SESSION['service']['appointments']) {
             $new_count = $count - $_SESSION['service']['appointments'];

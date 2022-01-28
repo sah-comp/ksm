@@ -39,6 +39,7 @@ class Permission extends Controller
             return true;
         }
         self::redirect('/forbidden/?goto'.urlencode(Flight::request()->url));
+        exit();
     }
 
     /**

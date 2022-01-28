@@ -5,12 +5,64 @@
  * copy it to default.css if everything works out fine
  * and you like to have in your base stylesheet.
  */
+/**
+ * Make negative table data red.
+ *
+ * @see https://stackoverflow.com/questions/1824266/colorize-negative-positive-numbers-jquery
+ */
+td[data-monetary-amount^="-"] {
+    color: red;
+}
+
+.panel .container {
+    /*overflow: visible;*/
+}
+
+.drag-handle {
+    width: 16px;
+    height: 16px;
+    /*1em font-size + 2 x 0.222em padding in input fields*/
+    padding: 0;
+    margin: 0;
+    z-index: 1;
+    background-image: url(/img/glyphicons/glyphicons_319_sort.png);
+    background-size: 16px 16px;
+    position: absolute;
+    left: -28px;
+    top: 50%;
+    margin-top: -8px;
+    cursor: move;
+}
+
+article.main {
+    min-height: 100vh;
+}
+
 select {
     font-size: inherit;
 }
 
+.panel table thead th.centered {
+    text-align: center;
+}
+
+.panel thead th.pastel {
+    color: black;
+}
+
+.panel table.revenue th,
+.panel table.revenue td {
+    padding-top: 0.333em;
+    padding-bottom: 0.333em;
+}
+
 .float-left {
     float: left;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
 }
 
 .panel label.salesprice {
@@ -51,6 +103,10 @@ a.logo {
 
 .appointment-completed {
     color: green;
+}
+
+.smaller-font {
+    font-size: 0.975rem;
 }
 
 /* Cockpit stuff */
@@ -148,6 +204,10 @@ ul.tab-navigation a.selected {
     background-color: rgb(252, 252, 252);
 }
 
+form.panel {
+    min-height: 100vh;
+}
+
 .autocomplete {}
 
 input[readonly=readonly],
@@ -167,6 +227,14 @@ th, td {
     animation: widerthanyou 7000ms ease-out;
 }
 */
+.panel td.tar {
+    text-align: right;
+}
+
+.panel .buttons p.info {
+    text-align: left;
+}
+
 /**
  * Service appointment table width settings.
  */
@@ -175,7 +243,7 @@ table.service {
 }
 
 table.service tbody tr {
-    border-left: 3px solid transparent;
+    border-left: 5px solid transparent;
 }
 
 /**
@@ -197,12 +265,12 @@ table.service tbody tr.coming-up {
     background-color: #c2eddb;
 }
 
-table.service thead th.edit,
-table.service thead th.switch {
+thead th.edit,
+thead th.switch {
     width: 10px;
 }
 
-table.service th.date {
+th.date {
     width: 6rem;
 }
 
@@ -315,6 +383,27 @@ input.num {
     text-align: right;
 }
 
+/* open item transaction table */
+th.gros, th.paid, th.balance {
+    width: 10rem;
+}
+
+th.duedays {
+    width: 8rem;
+}
+
+td.duedays {
+    font-size: smaller;
+}
+
+th.pdf {
+    width: 4rem;
+}
+
+th.accumulate {
+    width: 2rem;
+}
+
 a.in-table,
 a.in-form {
     display: block;
@@ -379,6 +468,14 @@ span.badge {
     width: auto;
     margin-left: 0;
     margin-right: 0;
+}
+
+thead th.transaction-number {
+    width: 12rem;
+}
+
+.openitem-amount {
+    /*float: right;*/
 }
 
 /**
@@ -522,7 +619,8 @@ table.scaffold a.tooltip-open {
     background-size: 12px 12px;
 }
 
-table.service a.tooltip-open {
+table.service a.tooltip-open,
+table.openitem a.tooltip-open {
     float: left;
 }
 
@@ -565,7 +663,13 @@ form.pform {
     border-right: 1px solid silver;
 }
 
-form.pform.within {
+li:last-child form.pform {
+    border-right: none;
+    margin-right: 0;
+    padding-right: 0;
+}
+
+form.pform {
     padding-left: 1em;
     border-left: 1px solid silver;
 }
