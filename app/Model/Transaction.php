@@ -570,7 +570,7 @@ class Model_Transaction extends Model
      */
     public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT SUM(total) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT round(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -587,7 +587,7 @@ class Model_Transaction extends Model
      */
     public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT SUM(gros) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT round(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -974,7 +974,7 @@ SQL;
                 $net = $net + $adjustment;
             }
             $vatpercentage = $position->getVatPercentage();
-            $vat = $net * $vatpercentage / 100;
+            $vat = round($net * $vatpercentage / 100, 2);
 
             //$net = $converter->convert($position->total);
             //$vatamount = $converter->convert($position->vatamount);
