@@ -279,9 +279,9 @@ SQL;
         }
         // calculate net, vat and gros
         if (!$this->bean->alternative && $this->bean->kind == self::KIND_POSITION) {
-            $this->bean->total = $this->bean->count * $this->bean->salesprice;
+            $this->bean->total = round($this->bean->count * $this->bean->salesprice, 2);
             if ($this->bean->adjustment) {
-                $this->bean->adjustval = $this->bean->total * $this->bean->adjustment / 100;
+                $this->bean->adjustval = round($this->bean->total * $this->bean->adjustment / 100, 2);
                 $this->bean->total = $this->bean->total + $this->bean->adjustval;
             }
             $this->bean->vatamount = $this->bean->total * $this->bean->vatpercentage / 100;
