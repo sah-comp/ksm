@@ -102,11 +102,11 @@ $_colspan = 8;
                         </a>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?>">
+                        data-sort="<?php echo htmlspecialchars($_record->bookingdate) ?>">
                         <?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->localizedDate('duedate')) ?>">
+                        data-sort="<?php echo htmlspecialchars($_record->duedate) ?>">
                         <?php echo htmlspecialchars($_record->localizedDate('duedate')) ?>
                     </td>
                     <td class="duedays"><?php echo htmlspecialchars($_record->getOverdueDays()) ?></td>
@@ -137,7 +137,8 @@ $_colspan = 8;
                         data-sort="<?php echo htmlspecialchars($_record->decimal('balance')) ?>">
                         <?php echo htmlspecialchars($_record->decimal('balance')) ?>
                     </td>
-                    <td>
+                    <td
+                        data-sort="<?php echo htmlspecialchars($_record->getDunning()->level) ?>">
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/%s/?callback=?', [$_type, $_id, 'dunning_id', 'dunning']) ?>"
