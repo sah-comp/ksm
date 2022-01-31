@@ -45,7 +45,7 @@ class Importer
     /**
      * Constructor.
      *
-     * @param mixed $language
+     * @param mixed $args
      */
     public function __construct($args)
     {
@@ -53,7 +53,7 @@ class Importer
     }
 
     /**
-     * Runs the token cache creator.
+     * Runs the importer.
      */
     public function run()
     {
