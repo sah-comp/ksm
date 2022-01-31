@@ -69,6 +69,9 @@ class Doctor
         $transactions = R::findAll('transaction');
         foreach ($transactions as $id => $transaction) {
             $transaction->stamp = 0;
+            foreach ($transaction->ownPosition as $id => $position) {
+                $position->calcPosition();
+            }
         }
         R::storeAll($transactions);
         return true;
