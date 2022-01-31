@@ -7,14 +7,11 @@
     <?php Flight::render('model/transaction/style/css', ['record' => $record]) ?>
     /* Extra styles are coming in dynamicly, depending on the transaction type */
     <?php echo $record->getContracttype()->css ?>
-    @page {
-        margin-top: 50mm;
-    }
     </style>
 </head>
 <body>
     <!--mpdf
-    <htmlpageheader name="ksmheader" style="display: none;">
+    <htmlpageheader name="ksmheader-firstpage" style="display: none;">
         <table width="100%">
             <tr>
                 <td class="centered" style="vertical-align: top; width: 100%;">
@@ -23,7 +20,15 @@
             </tr>
         </table>
     </htmlpageheader>
-    <htmlpagefooter name="ksmfooter" style="display: none;">
+    <htmlpageheader name="ksmheader" style="display: none;">
+        <table width="100%">
+            <tr>
+                <td class="bb moredinky" width="60%" style="text-align: left;"><?php echo htmlspecialchars($company->legalname) ?></td>
+                <td class="bb moredinky" width="40%" style="text-align: right;"><?php echo I18n::__('transaction_header_info', null, [$record->getContracttype()->name, $record->number]) ?></td>
+            </tr>
+        </table>
+    </htmlpageheader>
+    <htmlpagefooter name="ksmfooter-firstpage" style="display: none;">
         <table style="width: 100%">
             <tr>
                 <td style="vertical-align: top;" width="25%">
@@ -57,7 +62,7 @@
                     <table class="pagefooter" width="100%">
                         <tr>
                             <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_4')) ?>
+                                <?php echo Flight::textile(I18n::__('transaction_footer_block_4'))?>
                             </td>
                         </tr>
                     </table>
@@ -68,18 +73,7 @@
                     <table class="pagefooter legal" width="100%">
                         <tr>
                             <td style="vertical-align: top;">
-                                <?php echo Flight::textile(I18n::__('transaction_footer_block_legal')) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4" style="vertical-align: top;" width="100%">
-                    <table class="pagefooter pageno" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo I18n::__('transaction_text_page') ?> {PAGENO} <?php echo I18n::__('transaction_text_of') ?> {nbpg}
+                                <?php //echo Flight::textile(I18n::__('transaction_footer_block_legal'))?>
                             </td>
                         </tr>
                     </table>
@@ -87,10 +81,18 @@
             </tr>
         </table>
     </htmlpagefooter>
-    <sethtmlpageheader name="ksmheader" page="ALL" value="on" />
-    <sethtmlpagefooter name="ksmfooter" page="ALL" value="on" />
+    <htmlpagefooter name="ksmfooter" style="display: none;">
+        <div class="moredinky centered" style="border-top: 0.1mm solid #000000; padding-top: 3mm;">
+            <?php echo I18n::__('transaction_text_page') ?> {PAGENO} <?php echo I18n::__('transaction_text_of') ?> {nbpg}
+        </div>
+    </htmlpagefooter>
+    <sethtmlpageheader name="ksmheader-firstpage" value="on" show-this-page="1" />
+    <sethtmlpageheader name="ksmheader" value="on" />
+    <sethtmlpagefooter name="ksmfooter-firstpage" value="on" show-this-page="1" />
+    <sethtmlpagefooter name="ksmfooter" value="on" />
     mpdf-->
 
+    <div style="height: 33mm;"></div>
     <table width="100%">
         <tr>
             <td style="width: 60mm; vertical-align: top;">

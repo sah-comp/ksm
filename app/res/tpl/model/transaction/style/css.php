@@ -20,6 +20,10 @@ p, ul, ol {
     font-size: 4pt;
     text-align: center;
 }
+.pagefooter.pageno {
+    font-size: 6pt;
+    text-align: center;
+}
 tr.alternative th,
 tr.alternative td {
     font-style: italic;
