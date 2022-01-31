@@ -966,9 +966,11 @@ SQL;
                 continue;
             }
 
-            $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
+            $net = round($converter->convert($position->count) * $converter->convert($position->salesprice), 2);
+            //$net = $converter->convert($position->count) * $converter->convert($position->salesprice);
             if ($position->hasAdjustment()) {
-                $adjustment = $net * $converter->convert($position->adjustment) / 100;
+                //$adjustment = $net * $converter->convert($position->adjustment) / 100;
+                $adjustment = round($net * $converter->convert($position->adjustment) / 100, 2);
                 $net = $net + $adjustment;
             }
             $vatpercentage = $position->getVatPercentage();
@@ -978,14 +980,14 @@ SQL;
             //$vatamount = $converter->convert($position->vatamount);
             $this->bean->net += $net;
             $this->bean->vat += $vat;
-            $this->bean->gros += round($net + $vat, 2);
+            $this->bean->gros += $net + $vat;
             //$this->bean->gros += $net + $vatamount;
         }
 
         // rounding
-        $this->bean->net = round($this->bean->net, 2);
-        $this->bean->vat = round($this->bean->vat, 2);
-        $this->bean->gros = round($this->bean->gros, 2);
+        //$this->bean->net = round($this->bean->net, 2);
+        //$this->bean->vat = round($this->bean->vat, 2);
+        //$this->bean->gros = round($this->bean->gros, 2);
     }
 
     /**
