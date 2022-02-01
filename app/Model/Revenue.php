@@ -362,8 +362,8 @@ class Model_Revenue extends Model
                 'bookingdate' => $transaction->localizedDate('bookingdate'),
                 'number' => $transaction->number,
                 'account' => $transaction->getPerson()->name,
-                'totalnet' => Flight::nformat($transaction->net),
-                'totalgros' => Flight::nformat($transaction->gros)
+                'totalnet' => Flight::nformat($transaction->net, 4),
+                'totalgros' => Flight::nformat($transaction->gros, 4)
             ];
             // add total for each cost unit type
             foreach ($report['costunittypes'] as $cut_id => $cut) {

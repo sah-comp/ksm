@@ -570,7 +570,7 @@ class Model_Transaction extends Model
      */
     public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT round(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT ROUND(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -587,7 +587,7 @@ class Model_Transaction extends Model
      */
     public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT round(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT ROUND(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -950,6 +950,7 @@ SQL;
      */
     public function calcSums(Converter_Decimal $converter)
     {
+        //error_log('Calc sums of #' . $this->bean->getId());
         // calculate totals
         $this->bean->net = 0;
         $this->bean->vat = 0;
@@ -974,13 +975,14 @@ SQL;
                 $net = $net + $adjustment;
             }
             $vatpercentage = $position->getVatPercentage();
-            $vat = round($net * $vatpercentage / 100, 2);
+            //$vat = round($net * $vatpercentage / 100, 2);
+            $vat = $net * $vatpercentage / 100;
 
             //$net = $converter->convert($position->total);
             //$vatamount = $converter->convert($position->vatamount);
             $this->bean->net += $net;
             $this->bean->vat += $vat;
-            $this->bean->gros += $net + $vat;
+            $this->bean->gros += ($net + $vat);
             //$this->bean->gros += $net + $vatamount;
         }
 
