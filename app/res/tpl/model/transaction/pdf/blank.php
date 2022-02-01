@@ -8,7 +8,7 @@
     /* Extra styles are coming in dynamicly, depending on the transaction type */
     <?php echo $record->getContracttype()->css ?>
     @page {
-        margin-top: 50mm;
+        margin-top: 55mm;
     }
     </style>
 </head>
@@ -24,19 +24,6 @@
         </table>
     </htmlpageheader>
     <htmlpagefooter name="ksmfooter" style="display: none;">
-        <table style="width: 100%">
-            <tr>
-                <td colspan="4" style="vertical-align: top;" width="100%">
-                    <table class="pagefooter pageno" width="100%">
-                        <tr>
-                            <td style="vertical-align: top;">
-                                <?php echo I18n::__('transaction_text_page') ?> {PAGENO} <?php echo I18n::__('transaction_text_of') ?> {nbpg}
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
     </htmlpagefooter>
     <sethtmlpageheader name="ksmheader" page="ALL" value="on" />
     <sethtmlpagefooter name="ksmfooter" page="ALL" value="on" />
@@ -46,7 +33,6 @@
         <tr>
             <td style="width: 60mm; vertical-align: top;">
                 <div class="senderline">
-                    <br />
                     <br /><br />
                 </div>
                 <div class="name">
