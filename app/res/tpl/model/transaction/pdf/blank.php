@@ -7,6 +7,9 @@
     <?php Flight::render('model/transaction/style/css', ['record' => $record]) ?>
     /* Extra styles are coming in dynamicly, depending on the transaction type */
     <?php echo $record->getContracttype()->css ?>
+    @page :first {
+        margin-top: 50mm;
+    }
     @page {
         margin-top: 55mm;
     }
@@ -14,17 +17,13 @@
 </head>
 <body>
     <!--mpdf
+    <htmlpageheader name="ksmheader-firstpage" style="display: none;">
+    </htmlpageheader>
     <htmlpageheader name="ksmheader" style="display: none;">
-        <table width="100%">
-            <tr>
-                <td class="centered" style="vertical-align: top; width: 100%;">
-                    &nbsp;
-                </td>
-            </tr>
-        </table>
     </htmlpageheader>
     <htmlpagefooter name="ksmfooter" style="display: none;">
     </htmlpagefooter>
+    <sethtmlpageheader name="ksmheader-firstpage" value="on" show-this-page="1" />
     <sethtmlpageheader name="ksmheader" page="ALL" value="on" />
     <sethtmlpagefooter name="ksmfooter" page="ALL" value="on" />
     mpdf-->
