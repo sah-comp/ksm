@@ -31,19 +31,16 @@
             <?php endforeach; ?>
         </tr>
     </thead>
-    <tfoot>
-        <tr>
-            <td colspan="3"><?php echo I18n::__('revenue_totals') ?></td>
-            <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalnet'])) ?></td>
-            <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
-            <?php foreach ($costunittypes as $_id => $_cut): ?>
-                <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals[$_cut->getId()]['totalnet'])) ?></td>
-                <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals[$_cut->getId()]['totalgros'])) ?></td>
-            <?php endforeach; ?>
-        </tr>
-    </tfoot>
+
     <tbody>
-        <?php foreach ($records as $_id => $_record): ?>
+        <?php
+        $_sums = [];
+        foreach ($costunittypes as $_id => $_cut):
+            $_sums['net'][$_id] = 0;
+            $_sums['gros'][$_id] = 0;
+        endforeach;
+        foreach ($records as $_id => $_record):
+        ?>
         <tr <?php echo $_record->scaffoldStyle() ?>>
             <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
             <td>
@@ -54,11 +51,32 @@
             </td>
             <td class="number" data-monetary-amount="<?php echo htmlspecialchars($_record->decimal('net')) ?>"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
             <td class="number" data-monetary-amount="<?php echo htmlspecialchars($_record->decimal('gros')) ?>"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>
-            <?php foreach ($costunittypes as $_id => $_cut): ?>
-            <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_record->netByCostunit($_cut))) ?>"><?php echo htmlspecialchars(Flight::nformat($_record->netByCostunit($_cut))) ?></td>
-            <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_record->grosByCostunit($_cut))) ?>"><?php echo htmlspecialchars(Flight::nformat($_record->grosByCostunit($_cut))) ?></td>
+            <?php foreach ($costunittypes as $_id => $_cut):
+                $_net = $_record->netByCostunit($_cut);
+                $_gros = $_record->grosByCostunit($_cut);
+                $_sums['net'][$_id] += $_net;
+                $_sums['gros'][$_id] += $_gros;
+            ?>
+            <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_net)) ?>">
+                <?php echo htmlspecialchars(Flight::nformat($_net)) ?>
+            </td>
+            <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_gros)) ?>">
+                <?php echo htmlspecialchars(Flight::nformat($_gros)) ?>
+            </td>
             <?php endforeach; ?>
         </tr>
         <?php endforeach; ?>
     </tbody>
+
+    <tfoot>
+        <tr>
+            <td colspan="3"><?php echo I18n::__('revenue_totals') ?></td>
+            <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalnet'])) ?></td>
+            <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
+            <?php foreach ($costunittypes as $_id => $_cut): ?>
+                <td class="number"><?php echo htmlspecialchars(Flight::nformat($_sums['net'][$_id])) ?></td>
+                <td class="number"><?php echo htmlspecialchars(Flight::nformat($_sums['gros'][$_id])) ?></td>
+            <?php endforeach; ?>
+        </tr>
+    </tfoot>
 </table>

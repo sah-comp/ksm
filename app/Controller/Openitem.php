@@ -117,7 +117,7 @@ class Controller_Openitem extends Controller_Scaffold
 
             $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
 
-            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(penaltyfee), 2) AS totalfee, ROUND(SUM(balance), 2) AS totalbalance, ROUND(SUM(balance) + SUM(penaltyfee), 2) AS totalpayable FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ?", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
+            $this->totals = R::getRow("SELECT CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat, CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(totalpaid) AS DECIMAL(10, 2)) AS totalpaid, CAST(SUM(penaltyfee) AS DECIMAL(10, 2)) AS totalfee, CAST(SUM(balance) AS DECIMAL(10, 2)) AS totalbalance, CAST((SUM(balance) + SUM(penaltyfee)) AS DECIMAL(10, 2)) AS totalpayable FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ?", array_merge($bookable_types, ['open'], [$this->record->getPerson()->getId()]));
         } else {
             $this->records[$this->record->getId()] = $this->record; // there is only one transaction to enforce payment
 
@@ -215,11 +215,11 @@ class Controller_Openitem extends Controller_Scaffold
         if ($person_id === null) {
             $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
 
-            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
+            $this->totals = R::getRow("SELECT CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat, CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(totalpaid) AS DECIMAL(10, 2)) AS totalpaid, CAST(SUM(balance) AS DECIMAL(10, 2)) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 ORDER BY duedate", array_merge($bookable_types, ['open']));
         } else {
             $this->records = R::find('transaction', " contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$person_id]));
 
-            $this->totals = R::getRow("SELECT ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat, ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(totalpaid), 2) AS totalpaid, ROUND(SUM(balance), 2) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$person_id]));
+            $this->totals = R::getRow("SELECT CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat, CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(totalpaid) AS DECIMAL(10, 2)) AS totalpaid, CAST(SUM(balance) AS DECIMAL(10, 2)) AS totalbalance FROM transaction WHERE contracttype_id IN (".R::genSlots($bookable_types).") AND status IN (?) AND locked = 1 AND person_id = ? ORDER BY duedate", array_merge($bookable_types, ['open'], [$person_id]));
         }
     }
 

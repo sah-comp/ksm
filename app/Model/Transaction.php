@@ -570,7 +570,7 @@ class Model_Transaction extends Model
      */
     public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT ROUND(SUM(total), 2) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT CAST(SUM(total) AS DECIMAL(10, 2)) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -587,7 +587,7 @@ class Model_Transaction extends Model
      */
     public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT ROUND(SUM(gros), 2) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql = "SELECT CAST(SUM(total + total * vatpercentage / 100) AS DECIMAL(10, 2)) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
             ':trans_id' => $this->bean->getId(),
             ':cut_id' => $costunittype->getId(),
@@ -696,8 +696,8 @@ SQL;
         $sql = <<<SQL
             SELECT
                 vatpercentage,
-                sum(total) AS net,
-                (sum(total) * vatpercentage / 100) AS vatvalue
+                CAST(SUM(total) AS DECIMAL(10, 2)) AS net,
+                CAST((SUM(total) * vatpercentage / 100) AS DECIMAL(10, 2)) AS vatvalue
             FROM
                 position
             WHERE
@@ -967,14 +967,18 @@ SQL;
                 continue;
             }
 
-            $net = round($converter->convert($position->count) * $converter->convert($position->salesprice), 2);
-            //$net = $converter->convert($position->count) * $converter->convert($position->salesprice);
+            //$net = round($converter->convert($position->count) * $converter->convert($position->salesprice), 2);
+            $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
+
             if ($position->hasAdjustment()) {
+
                 //$adjustment = $net * $converter->convert($position->adjustment) / 100;
                 $adjustment = round($net * $converter->convert($position->adjustment) / 100, 2);
+
                 $net = $net + $adjustment;
             }
             $vatpercentage = $position->getVatPercentage();
+
             //$vat = round($net * $vatpercentage / 100, 2);
             $vat = $net * $vatpercentage / 100;
 

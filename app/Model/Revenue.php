@@ -291,10 +291,10 @@ class Model_Revenue extends Model
 
         $this->revenues = R::find('transaction', " (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1 ORDER BY bookingdate " . $order_dir . ", number " . $order_dir, array_merge([$startdate, $enddate], $this->bookable_types));
 
-        $this->totals = R::getRow(" SELECT count(id) AS count, SUM(net) AS totalnet, SUM(gros) AS totalgros, SUM(vat) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1", array_merge([$startdate, $enddate], $this->bookable_types));
+        $this->totals = R::getRow(" SELECT count(id) AS count, CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1", array_merge([$startdate, $enddate], $this->bookable_types));
 
         foreach ($this->costunittypes as $id => $cut) {
-            $this->totals[$cut->getId()] = R::getRow("SELECT SUM(pos.total) AS totalnet, SUM(pos.gros) AS totalgros, SUM(pos.vatamount) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN ? AND ?) AND trans.contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = ?", array_merge([$startdate, $enddate], $this->bookable_types, [$cut->getId()]));
+            $this->totals[$cut->getId()] = R::getRow("SELECT CAST(SUM(pos.total) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(pos.gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(pos.vatamount) AS DECIMAL(10, 2)) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN ? AND ?) AND trans.contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = ?", array_merge([$startdate, $enddate], $this->bookable_types, [$cut->getId()]));
         }
 
         return [
@@ -317,20 +317,20 @@ class Model_Revenue extends Model
         $enddate = $this->getEndDate();
         $this->gatherCostunitsAndBookables();
 
-        $this->totals = R::getRow(" SELECT count(id) AS count, SUM(net) AS totalnet, SUM(gros) AS totalgros, SUM(vat) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1", array_merge([$startdate, $enddate], $this->bookable_types));
+        $this->totals = R::getRow(" SELECT count(id) AS count, CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (" . R::genSlots($this->bookable_types) . ") AND status IN (" . $this->stati . ") AND locked = 1", array_merge([$startdate, $enddate], $this->bookable_types));
 
         foreach ($this->costunittypes as $id => $cut) {
-            $this->totals['cut'][$cut->getId()] = R::getRow("SELECT SUM(pos.total) AS totalnet, SUM(pos.gros) AS totalgros, SUM(pos.vatamount) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN ? AND ?) AND trans.contracttype_id IN (".R::genSlots($this->bookable_types).") AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = ?", array_merge([$startdate, $enddate], $this->bookable_types, [$cut->getId()]));
+            $this->totals['cut'][$cut->getId()] = R::getRow("SELECT CAST(SUM(pos.total) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(pos.total + pos.total * pos.vatpercentage / 100) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(pos.vatamount) AS DECIMAL(10, 2)) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN ? AND ?) AND trans.contracttype_id IN (".R::genSlots($this->bookable_types).") AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = ?", array_merge([$startdate, $enddate], $this->bookable_types, [$cut->getId()]));
         }
 
         foreach ($this->months as $month) {
             $startdate = date('Y-m-01', strtotime($this->bean->fy . '-' . $month . '-01'));
             $enddate = date('Y-m-t', strtotime($this->bean->fy . '-' . $month . '-01'));
 
-            $this->totals['month'][$month] = R::getRow(" SELECT count(id) AS count, SUM(net) AS totalnet, SUM(gros) AS totalgros, SUM(vat) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (".R::genSlots($this->bookable_types).") AND status IN (" . $this->stati . ") AND locked = 1", array_merge([$startdate, $enddate], $this->bookable_types));
+            $this->totals['month'][$month] = R::getRow(" SELECT count(id) AS count, CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat FROM transaction AS trans WHERE (bookingdate BETWEEN ? AND ?) AND contracttype_id IN (".R::genSlots($this->bookable_types).") AND status IN (" . $this->stati . ") AND locked = 1", array_merge([$startdate, $enddate], $this->bookable_types));
 
             foreach ($this->costunittypes as $id => $cut) {
-                $this->totals['month'][$month][$cut->getId()] = R::getRow("SELECT SUM(pos.total) AS totalnet, SUM(pos.gros) AS totalgros, SUM(pos.vatamount) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN ? AND ?) AND trans.contracttype_id IN (".R::genSlots($this->bookable_types).") AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = ?", array_merge([$startdate, $enddate], $this->bookable_types, [$cut->getId()]));
+                $this->totals['month'][$month][$cut->getId()] = R::getRow("SELECT CAST(SUM(pos.total) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(pos.total + pos.total * pos.vatpercentage / 100) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(pos.vatamount) AS DECIMAL(10, 2)) AS totalvat, pos.costunittype_id AS cut_id FROM position AS pos RIGHT JOIN transaction AS trans ON trans.id = pos.transaction_id AND (trans.bookingdate BETWEEN ? AND ?) AND trans.contracttype_id IN (".R::genSlots($this->bookable_types).") AND status IN (" . $this->stati . ") AND locked = 1 WHERE pos.costunittype_id = ?", array_merge([$startdate, $enddate], $this->bookable_types, [$cut->getId()]));
             }
         }
 
@@ -362,8 +362,8 @@ class Model_Revenue extends Model
                 'bookingdate' => $transaction->localizedDate('bookingdate'),
                 'number' => $transaction->number,
                 'account' => $transaction->getPerson()->name,
-                'totalnet' => Flight::nformat($transaction->net, 4),
-                'totalgros' => Flight::nformat($transaction->gros, 4)
+                'totalnet' => Flight::nformat($transaction->net),
+                'totalgros' => Flight::nformat($transaction->gros)
             ];
             // add total for each cost unit type
             foreach ($report['costunittypes'] as $cut_id => $cut) {

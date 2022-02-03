@@ -174,7 +174,7 @@ class Controller_Transaction extends Controller_Scaffold
     public function getTotals()
     {
         $where = $this->filter->buildWhereClause();
-        $sql = "SELECT ROUND(SUM(gros), 2) AS totalgros, ROUND(SUM(net), 2) AS totalnet, ROUND(SUM(vat), 2) AS totalvat FROM transaction LEFT JOIN contracttype ON contracttype.id = transaction.contracttype_id LEFT JOIN person ON person.id = transaction.person_id WHERE " . $where;
+        $sql = "SELECT CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat FROM transaction LEFT JOIN contracttype ON contracttype.id = transaction.contracttype_id LEFT JOIN person ON person.id = transaction.person_id WHERE " . $where;
         R::debug(true);
         $this->totals = R::getRow($sql, $this->filter->getFilterValues());
         R::debug(false);
