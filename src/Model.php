@@ -315,6 +315,19 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Returns either an integer or a decimal formatted number.
+     *
+     * @param string $attribute
+     */
+    public function fancyNumber($attribute)
+    {
+        if (floor($this->bean->{$attribute}) == $this->bean->{$attribute}) {
+            return (int)$this->bean->{$attribute};
+        }
+        return $this->bean->decimal($attribute);
+    }
+
+    /**
      * Returns the root bean of a hierarchy.
      *
      * If the optional parameter is set the last bean before the parent bean with

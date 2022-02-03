@@ -54,7 +54,7 @@
                     <td class="number cushion-right"><?php echo htmlspecialchars($_position->decimal('sequence', 0)) ?></td>
                     <td><?php echo htmlspecialchars($_position->ska) ?></td>
                     <td><?php echo Flight::textile($_position->desc) ?></td>
-                    <td class="number cushion-right"><?php echo htmlspecialchars($_position->count) ?></td>
+                    <td class="number cushion-right"><?php echo htmlspecialchars($_position->fancyNumber('count')) ?></td>
                     <td><?php echo htmlspecialchars($_position->unit) ?></td>
                     <td class="number"><?php echo htmlspecialchars($_position->decimal('salesprice')) ?></td>
                     <td class="number"><?php echo htmlspecialchars($_position->decimal('total')) ?></td>
