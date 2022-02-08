@@ -117,7 +117,7 @@
             <input
                 type="text"
                 id="appointment-transaction-number"
-                name="dialog[transaction][number]"
+                name="dialog[transactionnumber]"
                 class="autocomplete autowidth"
                 data-source="<?php echo Url::build('/autocomplete/transaction/number/?callback=?') ?>"
                 data-spread='<?php
@@ -126,7 +126,7 @@
                         'appointment-transaction-id' => 'id',
                         'appointment-transaction-id-shadow' => 'id'
                     ]); ?>'
-                value="<?php echo htmlspecialchars($record->getTransaction()->number) ?>" />
+                value="<?php echo htmlspecialchars($record->transactionnumber) ?>" />
                 <a
                     href="#scratch-item"
                     title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
