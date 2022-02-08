@@ -197,6 +197,7 @@ class Controller_Treaty extends Controller_Scaffold
                 $copy->mytreatyid = $this->treaty->getId();
                 $copy->treatygroup_id = null;
                 $copy->treatygroup = null;
+                $copy->bookingdate = date('Y-m-d');
                 R::store($copy);
                 R::commit();
                 Flight::get('user')->notify(I18n::__('treaty_success_copy', null, [$this->treaty->number, $copy->contracttype->name]), 'success');

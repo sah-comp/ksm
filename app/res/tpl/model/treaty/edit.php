@@ -110,7 +110,6 @@
                 class="autowidth"
                 type="date"
                 name="dialog[bookingdate]"
-                readonly="readonly"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->bookingdate) ?>"/>
         </div>
