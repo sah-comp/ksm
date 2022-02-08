@@ -659,7 +659,6 @@ SQL;
                 WHERE
                     transaction.number LIKE ? AND
                     transaction.locked = 1 AND
-                    transaction.status IN ('canceled', 'paid') AND
                     transaction.contracttype_id IN ($slots)
                 ORDER BY
                     transaction.number
