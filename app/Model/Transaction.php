@@ -230,6 +230,7 @@ class Model_Transaction extends Model
         if ($this->bean->getContracttype()->resetfooter) {
             $this->bean->footer = '';
         }
+        $this->bean->archived = false;
         $this->bean->locked = false;
         $this->bean->ownPayment = [];
         return $this->bean;
@@ -785,6 +786,11 @@ SQL;
             // do nothing
             $status = $this->bean->status;
             $oldstatus = $this->bean->oldstatus;
+        }
+        if (!$archived) {
+            $archived = 0;
+        } else {
+            $archived = 1;
         }
         R::exec('UPDATE transaction SET oldstatus = :oldstatus, status = :status, archived = :archived WHERE id = :id LIMIT 1', [
             ':oldstatus' => $oldstatus,
