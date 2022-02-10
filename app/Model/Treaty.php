@@ -110,7 +110,7 @@ class Model_Treaty extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '6rem'
+                'width' => 'auto'
             ],
             [
                 'name' => 'person.name',
@@ -124,6 +124,19 @@ class Model_Treaty extends Model
                     'tag' => 'text'
                 ],
                 'width' => '8rem'
+            ],
+            [
+                'name' => 'payload',
+                'sort' => [
+                    'name' => 'treaty.payload'
+                ],
+                'callback' => [
+                    'name' => 'payloadProduct'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => 'auto'
             ],
             [
                 'name' => 'serialnumber',
@@ -427,6 +440,31 @@ class Model_Treaty extends Model
     public function contracttypeName()
     {
         return $this->bean->getContracttype()->name;
+    }
+
+    /**
+     * Returns the value of the limb "product" of payload
+     *
+     * @return string
+     */
+    public function payloadProduct(): string
+    {
+        return $this->payloadLimb('product');
+    }
+
+    /**
+     * Returns the value of the limb "$attribute" of payload
+     *
+     * @param string
+     * @return string
+     */
+    public function payloadLimb($attribute): string
+    {
+        $payload = json_decode($this->bean->payload, true);
+        if (isset($payload[$attribute])) {
+            return $payload[$attribute];
+        }
+        return '';
     }
 
     /**
