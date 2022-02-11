@@ -978,7 +978,7 @@ textarea {
 
 .panel {
     padding: 0.5em 1em;
-    border-top: 1px solid silver;
+    /*border-top: 1px solid silver;*/
     position: relative;
 }
 
@@ -1585,6 +1585,23 @@ img.media-preview-icon {
     text-align: center;
     font-size: 1.2rem;
     color: rgb(222, 222, 222);
+}
+
+#header-top {
+    position: sticky;
+    top: 0;
+}
+
+#header-toolbar {
+    position: sticky;
+    top: 79px;
+    border-bottom: 1px solid silver;
+    z-index: 999995;
+}
+
+table thead {
+    position: sticky;
+    top: 118px;
 }
 
 /* ==|== non-semantic helper classes ========================================

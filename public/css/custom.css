@@ -14,6 +14,10 @@ td[data-monetary-amount^="-"] {
     color: red;
 }
 
+table.revenue tfoot {
+    display: table-row-group;
+}
+
 .panel .container {
     /*overflow: visible;*/
 }

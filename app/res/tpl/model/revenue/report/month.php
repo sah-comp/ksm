@@ -3,6 +3,25 @@
  * revenue table pivoting cost unit types.
  */
 ?>
+<?php
+/**
+ * Calculate the totals and totals per costunittype beforehand,
+ * because we have to have those already before printing the table.
+ */
+$_sums = [];
+foreach ($costunittypes as $_id => $_cut):
+    $_sums['net'][$_id] = 0;
+    $_sums['gros'][$_id] = 0;
+endforeach;
+foreach ($records as $_id => $_record):
+    foreach ($costunittypes as $_id => $_cut):
+        $_net = $_record->netByCostunit($_cut);
+        $_gros = $_record->grosByCostunit($_cut);
+        $_sums['net'][$_id] += $_net;
+        $_sums['gros'][$_id] += $_gros;
+    endforeach;
+endforeach;
+?>
 <table class="revenue">
     <caption><?php echo I18n::__('revenue_head_title') ?></caption>
     <colgroup>
@@ -32,13 +51,20 @@
         </tr>
     </thead>
 
+    <tfoot>
+        <tr>
+            <td colspan="3"><?php echo I18n::__('revenue_totals') ?></td>
+            <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalnet'])) ?></td>
+            <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
+            <?php foreach ($costunittypes as $_id => $_cut): ?>
+                <td class="number"><?php echo htmlspecialchars(Flight::nformat($_sums['net'][$_id])) ?></td>
+                <td class="number"><?php echo htmlspecialchars(Flight::nformat($_sums['gros'][$_id])) ?></td>
+            <?php endforeach; ?>
+        </tr>
+    </tfoot>
+
     <tbody>
         <?php
-        $_sums = [];
-        foreach ($costunittypes as $_id => $_cut):
-            $_sums['net'][$_id] = 0;
-            $_sums['gros'][$_id] = 0;
-        endforeach;
         foreach ($records as $_id => $_record):
         ?>
         <tr <?php echo $_record->scaffoldStyle() ?>>
@@ -54,8 +80,8 @@
             <?php foreach ($costunittypes as $_id => $_cut):
                 $_net = $_record->netByCostunit($_cut);
                 $_gros = $_record->grosByCostunit($_cut);
-                $_sums['net'][$_id] += $_net;
-                $_sums['gros'][$_id] += $_gros;
+                //$_sums['net'][$_id] += $_net;
+                //$_sums['gros'][$_id] += $_gros;
             ?>
             <td class="number" data-monetary-amount="<?php echo htmlspecialchars(Flight::nformat($_net)) ?>">
                 <?php echo htmlspecialchars(Flight::nformat($_net)) ?>
@@ -66,9 +92,6 @@
             <?php endforeach; ?>
         </tr>
         <?php endforeach; ?>
-    </tbody>
-
-    <tfoot>
         <tr>
             <td colspan="3"><?php echo I18n::__('revenue_totals') ?></td>
             <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalnet'])) ?></td>
@@ -78,5 +101,6 @@
                 <td class="number"><?php echo htmlspecialchars(Flight::nformat($_sums['gros'][$_id])) ?></td>
             <?php endforeach; ?>
         </tr>
-    </tfoot>
+    </tbody>
+
 </table>
