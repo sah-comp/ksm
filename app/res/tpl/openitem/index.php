@@ -39,7 +39,7 @@ $_colspan = 8;
                     <th class="transaction-number"><?php echo I18n::__('openitem_th_number') ?></th>
                     <th class="date"><?php echo I18n::__('openitem_th_bookingdate') ?></th>
                     <th class="date"><?php echo I18n::__('openitem_th_duedate') ?></th>
-                    <th class="duedays"><?php echo I18n::__('openitem_th_overdueindays') ?></th>
+                    <th class="grace"><?php echo I18n::__('openitem_th_grace') ?></th>
                     <th class="person"><?php echo I18n::__('openitem_th_person') ?></th>
                     <th class="gros number"><?php echo I18n::__('openitem_th_gros') ?></th>
                     <th class="paid number"><?php echo I18n::__('openitem_th_paid') ?></th>
@@ -109,7 +109,10 @@ $_colspan = 8;
                         data-sort="<?php echo htmlspecialchars($_record->duedate) ?>">
                         <?php echo htmlspecialchars($_record->localizedDate('duedate')) ?>
                     </td>
-                    <td class="duedays"><?php echo htmlspecialchars($_record->getOverdueDays()) ?></td>
+                    <td
+                        data-sort="<?php echo htmlspecialchars($_record->dunningdate) ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('dunningdate')) ?>
+                    </td>
                     <td
                         data-sort="<?php echo htmlspecialchars($_person->name) ?>"
                         data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_person->name) ?>">
