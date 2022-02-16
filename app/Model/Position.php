@@ -126,11 +126,11 @@ class Model_Position extends Model
     /**
      * returns the vatpercentage.
      *
-     * @return float
+     * @return string
      */
-    public function getVatPercentage(): float
+    public function getVatPercentage()
     {
-        return (float)$this->bean->vatpercentage;
+        return $this->bean->vatpercentage;
     }
 
     /**
