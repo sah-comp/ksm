@@ -955,50 +955,43 @@ SQL;
      */
     public function calcSums(Converter_Decimal $converter)
     {
-        //error_log('Calc sums of #' . $this->bean->getId());
         // calculate totals
         $this->bean->net = 0;
         $this->bean->vat = 0;
         $this->bean->gros = 0;
         $seq = 0;
+
+        // make buckets for each vat percentage
+        $bucket = [];
+        foreach (R::findAll('vat', " ORDER BY value") as $id => $vat) {
+            $bucket[$vat->value] = 0;//preset this vat bucket with zero
+        }
+
         foreach ($this->bean->ownPosition as $id => $position) {
             if ($position->kind == Model_Position::KIND_POSITION) {
-                // count me
-                $seq++;
-                //$position->sequence = $seq;
+                $seq++;//count me
             }
             if ($position->alternative || $position->kind != Model_Position::KIND_POSITION) {
                 // skip this position if it is an alternative position
                 continue;
             }
 
-            //$net = round($converter->convert($position->count) * $converter->convert($position->salesprice), 2);
-            $net = $converter->convert($position->count) * $converter->convert($position->salesprice);
-
+            $total = $converter->convert($position->count) * $converter->convert($position->salesprice);
             if ($position->hasAdjustment()) {
-
-                //$adjustment = $net * $converter->convert($position->adjustment) / 100;
-                $adjustment = round($net * $converter->convert($position->adjustment) / 100, 2);
-
-                $net = $net + $adjustment;
+                $adjustment = $total * $converter->convert($position->adjustment) / 100;
+                $total = $total + $adjustment;
             }
-            $vatpercentage = $position->getVatPercentage();
-
-            //$vat = round($net * $vatpercentage / 100, 2);
-            $vat = $net * $vatpercentage / 100;
-
-            //$net = $converter->convert($position->total);
-            //$vatamount = $converter->convert($position->vatamount);
-            $this->bean->net += $net;
-            $this->bean->vat += $vat;
-            $this->bean->gros += ($net + $vat);
-            //$this->bean->gros += $net + $vatamount;
+            $bucket[$position->vatpercentage] += $total;
+            $this->bean->net += $total;
         }
 
-        // rounding
-        //$this->bean->net = round($this->bean->net, 2);
-        //$this->bean->vat = round($this->bean->vat, 2);
-        //$this->bean->gros = round($this->bean->gros, 2);
+        $this->bean->net = round($this->bean->net, 2);
+
+        foreach ($bucket as $vatpercentage => $totalnet) {
+            $this->bean->vat += $totalnet * $vatpercentage / 100;
+        }
+
+        $this->bean->gros = $this->bean->net + $this->bean->vat;
     }
 
     /**
