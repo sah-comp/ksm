@@ -981,6 +981,9 @@ SQL;
                 $adjustment = $total * $converter->convert($position->adjustment) / 100;
                 $total = $total + $adjustment;
             }
+            if (!isset($bucket[$position->vatpercentage])) {
+                $bucket[$position->vatpercentage] = 0;
+            }
             $bucket[$position->vatpercentage] += $total;
             $this->bean->net += $total;
         }
