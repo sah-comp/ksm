@@ -99,7 +99,7 @@
                     <br /><br />
                 </div>
                 <div class="name">
-                    <?php echo htmlspecialchars($record->getPerson()->name) ?>
+                    <?php echo nl2br($record->getPerson()->name) ?>
                 </div>
                 <div class="postal">
                     <p>
