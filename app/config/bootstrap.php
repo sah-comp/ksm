@@ -207,3 +207,18 @@ register_shutdown_function('session_write_close');
  * the session name to ensure that older sessions are no longer used.
  */
 session_name(CINNEBAR_SESSION_COOKIE_NAME);
+
+/**
+ * Check for freeze flag.
+ *
+ * When the database is not frozen we log changes made to the database
+ * in log files to keep track of migration.
+ */
+if (!CINNEBAR_DB_FREEZE_FLAG) {
+    $ml = new Logger_Migration(sprintf(__DIR__ . '/../../logs/migration_%s.sql', date('Y-m-d')));
+
+    R::getDatabaseAdapter()
+        ->getDatabase()
+        ->setLogger($ml)
+        ->setEnableLogging(true);
+}
