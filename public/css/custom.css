@@ -726,6 +726,15 @@ fieldset.sub>.attach {
     background-image: url(/img/glyphicons/glyphicons_191_circle_minus.png);
 }
 
+/* quill */
+.quill-wrapper {
+    margin-left: 25.404255317%;
+}
+
+.ql-container {
+    font-size: 99%;
+}
+
 /*
 hr.person-contact-divider:after {
     content: '\002702';

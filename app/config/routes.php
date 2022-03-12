@@ -280,6 +280,14 @@ Flight::route('(/[a-z]{2})/appointment/pdf', function () {
 });
 
 /**
+ * Routes to the correspondence controller to download a correspondence as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/correspondence/pdf(/@id:[0-9]+)', function ($id) {
+    $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
+    $correspondenceController->pdf();
+});
+
+/**
  * Routes to the article controller to get json encoded chart data.
  */
 Flight::route('(/[a-z]{2})/article/chartdata/@id:[0-9]+', function ($id) {
