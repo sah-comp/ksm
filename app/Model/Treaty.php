@@ -52,28 +52,27 @@ class Model_Treaty extends Model
     {
         return [
             [
-                'name' => 'number',
+                'name' => 'person.name',
                 'sort' => [
-                    'name' => 'treaty.number'
+                    'name' => 'person.name'
+                ],
+                'callback' => [
+                    'name' => 'personName'
                 ],
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '12rem'
+                'width' => '8rem'
             ],
             [
-                'name' => 'treatygroup.name',
+                'name' => 'prospect',
                 'sort' => [
-                    'name' => 'treatygroup.name'
-                ],
-                'callback' => [
-                    'name' => 'treatygroupName'
+                    'name' => 'prospect'
                 ],
                 'filter' => [
-                    'tag' => 'select',
-                    'sql' => 'getTreatygroups'
+                    'tag' => 'text'
                 ],
-                'width' => '23rem'
+                'width' => 'auto'
             ],
             [
                 'name' => 'contracttype.name',
@@ -90,6 +89,20 @@ class Model_Treaty extends Model
                 'width' => '14rem'
             ],
             [
+                'name' => 'treatygroup.name',
+                'sort' => [
+                    'name' => 'treatygroup.name'
+                ],
+                'callback' => [
+                    'name' => 'treatygroupName'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'sql' => 'getTreatygroups'
+                ],
+                'width' => '23rem'
+            ],
+            [
                 'name' => 'bookingdate',
                 'sort' => [
                     'name' => 'treaty.bookingdate'
@@ -99,29 +112,6 @@ class Model_Treaty extends Model
                 ],
                 'callback' => [
                     'name' => 'localizedDate'
-                ],
-                'width' => '8rem'
-            ],
-            [
-                'name' => 'prospect',
-                'sort' => [
-                    'name' => 'prospect'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ],
-                'width' => 'auto'
-            ],
-            [
-                'name' => 'person.name',
-                'sort' => [
-                    'name' => 'person.name'
-                ],
-                'callback' => [
-                    'name' => 'personName'
-                ],
-                'filter' => [
-                    'tag' => 'text'
                 ],
                 'width' => '8rem'
             ],
@@ -147,6 +137,16 @@ class Model_Treaty extends Model
                     'tag' => 'text'
                 ],
                 'width' => '6rem'
+            ],
+            [
+                'name' => 'number',
+                'sort' => [
+                    'name' => 'treaty.number'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '12rem'
             ],
             [
                 'name' => 'startdate',
