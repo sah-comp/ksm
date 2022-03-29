@@ -114,6 +114,19 @@ class Controller_Treaty extends Controller_Scaffold
         $docname = I18n::__('treaty_pdf_docname', null, [$this->treaty->getDocname()]);
         $this->text = $this->substitute();
         $this->text = $this->substituteLimb();
+        $mpdf = $this->generatePDF($docname);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
+     * Generates a PDF.
+     *
+     * @param string $docname
+     * @return \Mpdf\Mpdf
+     */
+    private function generatePDF($docname)
+    {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
@@ -131,8 +144,7 @@ class Controller_Treaty extends Controller_Scaffold
         //echo $html;
         //return;
         $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, 'D');
-        exit;
+        return $mpdf;
     }
 
     /*

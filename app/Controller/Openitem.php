@@ -135,6 +135,20 @@ class Controller_Openitem extends Controller_Scaffold
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilenameDunning()]);
         $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocnameDunning()]);
+        $mpdf = $this->generatePDF($layout, $docname);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
+     * Generate a PDF.
+     *
+     * @param string $layout which template to render the dunning
+     * @param string $docname
+     * @return \Mpdf\Mpdf
+     */
+    private function generatePDF($layout, $docname)
+    {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
@@ -154,8 +168,7 @@ class Controller_Openitem extends Controller_Scaffold
         //echo $html;
         //exit;
         $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, 'D');
-        exit;
+        return $mpdf;
     }
 
     /**

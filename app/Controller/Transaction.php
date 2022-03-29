@@ -135,14 +135,30 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /*
-     * Generate a PDF with data deriving from the addressed transaction bean.
+     * Output the PDF.
+     *
+     * @uses generatePDF()
      */
     public function pdfSingleTransaction()
     {
-        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $filename = I18n::__('transaction_pdf_filename', null, [$this->record->getFilename()]);
         $docname = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf = $this->generatePDF($layout, $docname);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
+     * Generates a PDF using the mpdf library.
+     *
+     * @param string $layout which template to use for rendering
+     * @param string $docname name of the template
+     * @return \Mpdf\Mpdf
+     */
+    private function generatePDF($layout = 'letterhead', $docname = 'Transaction')
+    {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
@@ -160,8 +176,7 @@ class Controller_Transaction extends Controller_Scaffold
         //echo $html;
         //exit;
         $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, 'D');
-        exit;
+        return $mpdf;
     }
 
     /**
