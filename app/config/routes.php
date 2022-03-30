@@ -272,6 +272,14 @@ Flight::route('(/[a-z]{2})/transaction/pdf(/@id:[0-9]+)', function ($id) {
 });
 
 /**
+ * Routes to the transaction controller to mail the given bean.
+ */
+Flight::route('GET (/[a-z]{2})/transaction/mail/@id:[0-9]+', function ($id) {
+    $transactionController = new Controller_Transaction(null, 'transaction', $id);
+    $transactionController->mail();
+});
+
+/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {

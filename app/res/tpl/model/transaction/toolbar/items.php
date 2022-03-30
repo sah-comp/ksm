@@ -10,6 +10,12 @@
 ?>
 <?php if ($record->getId()): ?>
 <li>
+    <a
+        href="<?php echo Url::build("/transaction/mail/%d", [$record->getId()]) ?>">
+        <?php echo I18n::__('transaction_action_mail') ?>
+    </a>
+</li>
+<li>
     <form
         id="copyform"
         name="copyform"
