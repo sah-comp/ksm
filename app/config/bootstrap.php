@@ -24,6 +24,16 @@ date_default_timezone_set(CINNEBAR_DATE_TIMEZONE);
 define('CINNEBAR_INSTALL_PASS', password_hash(CINNEBAR_INSTALL_PASSWORD, PASSWORD_DEFAULT));
 
 /**
+ * Define a test email address.
+ */
+define('KSM_EMAIL_TESTADDRESS', 'stephan@hombergs.org');
+
+/**
+ * Define a test email name.
+ */
+define('KSM_EMAIL_TESTNAME', 'SAH COMPANY');
+
+/**
  * Error logging on.
  */
 Flight::set('flight.log_errors', true);
