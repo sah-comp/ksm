@@ -26,7 +26,7 @@ $('body').ready(function() {
     var options = {
         debug: 'info',
         modules: {
-            toolbar: toolbarOptions
+            toolbar: '#quill-toolbar'
         },
         placeholder: '',
         readOnly: false,

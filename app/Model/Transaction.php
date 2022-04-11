@@ -518,6 +518,32 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns wether the transaction can be emailed or not.
+     *
+     * @return bool
+     */
+    public function hasEmail(): bool
+    {
+        if ($this->bean->billingemail) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns a string that can be used as a CSS class signaling if the transaction was emailed or not.
+     *
+     * @return string
+     */
+    public function wasEmailed(): string
+    {
+        if ($this->bean->sent) {
+            return 'sent';
+        }
+        return 'pending';
+    }
+
+    /**
      * Return the contracttype bean.
      *
      * @return RedbeanPHP\OODBBean

@@ -193,7 +193,9 @@ class Model_Person extends Model
                     person.name AS value,
                     person.note AS note,
                     person.duedays AS duedays,
-                    person.discount_id AS discount_id
+                    person.discount_id AS discount_id,
+                    if (person.billingemail != '', billingemail, email) AS billingemail,
+                    if (person.dunningemail != '', dunningemail, email) AS dunningemail
                 FROM
                     person
                 LEFT JOIN

@@ -9,12 +9,15 @@
  */
 ?>
 <?php if ($record->getId()): ?>
+    <?php if ($record->hasEmail()): ?>
 <li>
     <a
-        href="<?php echo Url::build("/transaction/mail/%d", [$record->getId()]) ?>">
+        href="<?php echo Url::build("/transaction/mail/%d", [$record->getId()]) ?>"
+        class="mail <?php echo $record->wasEmailed() ?>">
         <?php echo I18n::__('transaction_action_mail') ?>
     </a>
 </li>
+    <?php endif; ?>
 <li>
     <form
         id="copyform"

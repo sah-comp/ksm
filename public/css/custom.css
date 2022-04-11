@@ -723,6 +723,14 @@ fieldset.sub>.attach {
     background-image: url(/img/glyphicons/glyphicons_191_circle_minus.png);
 }
 
+.mail.pending {
+    color: #ce838f;
+}
+
+.mail.sent {
+    color: #54b646;
+}
+
 /* quill */
 .quill-wrapper {
     margin-left: 25.404255317%;
@@ -730,6 +738,11 @@ fieldset.sub>.attach {
 
 .ql-container {
     font-size: 99%;
+}
+
+.quill-spacer {
+    display: inline-block;
+    padding: 0 1rem;
 }
 
 /*

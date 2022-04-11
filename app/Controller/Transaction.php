@@ -144,6 +144,7 @@ class Controller_Transaction extends Controller_Scaffold
         }
 
         $mail->CharSet = 'UTF-8';
+        $mail->AddEmbeddedImage(__DIR__ . '/../../public/img/ksm-email-signature-icon.jpg', 'ksm-mascot');
         $mail->setFrom($this->company->emailnoreply, $this->company->legalname);
         $mail->addReplyTo($this->company->email, $this->company->legalname);
         $mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
@@ -155,13 +156,15 @@ class Controller_Transaction extends Controller_Scaffold
         ob_start();
         Flight::render('model/transaction/mail/html', array(
             'record' => $this->record,
-            'company' => $this->company
+            'company' => $this->company,
+            'user' => $user
         ));
         $html = ob_get_clean();
         ob_start();
         Flight::render('model/transaction/mail/text', array(
             'record' => $this->record,
-            'company' => $this->company
+            'company' => $this->company,
+            'user' => $user
         ));
         $text = ob_get_clean();
         $mail->Body = $html;
@@ -170,10 +173,13 @@ class Controller_Transaction extends Controller_Scaffold
 
         $mail->addStringAttachment($attachment, $filename);
         if ($mail->send()) {
+            $this->record->sent = true;
             Flight::get('user')->notify(I18n::__("transaction_mail_done"), 'success');
         } else {
+            $this->record->sent = false;
             Flight::get('user')->notify(I18n::__("transaction_mail_fail"), 'error');
         }
+        R::store($this->record);
         $this->redirect("/admin/transaction/edit/{$this->record->getId()}");
         exit();
     }

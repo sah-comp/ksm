@@ -94,12 +94,18 @@
                     </p>
                 </div>
             </td>
-            <td style="width: 65mm; vertical-align: top;">
-                <table class="info" width="100%">
-                    <tr>
-                        <td class="value"><?php echo $record->localizedDate('bookingdate') ?></td>
-                    </tr>
-                </table>
+        </tr>
+    </table>
+
+    <div style="height: 18mm;"></div>
+
+    <table width="100%">
+        <tr>
+            <td style="width: 60%; vertical-align: top;">
+                <?php echo $record->subject ?>
+            </td>
+            <td style="width: 40%; vertical-align: top; text-align: right;">
+                <?php echo $record->localizedDate('writtenon') ?>
             </td>
         </tr>
     </table>
