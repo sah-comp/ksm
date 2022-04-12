@@ -367,6 +367,7 @@ SQL;
     public function dispense()
     {
         $this->autoTag(true);
+        $this->bean->duedays = 8;
         $this->addValidator('nickname', array(
             new Validator_HasValue(),
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'nickname'))
