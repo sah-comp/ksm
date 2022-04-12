@@ -98,13 +98,8 @@
                     <?php echo htmlspecialchars($company->getSenderline()) ?>
                     <br /><br />
                 </div>
-                <div class="name">
-                    <?php echo nl2br($record->getPerson()->name) ?>
-                </div>
-                <div class="postal">
-                    <p>
-                        <?php echo nl2br(htmlspecialchars($record->getPerson()->getAddress('billing')->getFormattedAddress())) ?>
-                    </p>
+                <div class="name postal">
+                    <?php echo Flight::textile($record->postaladdress) ?>
                 </div>
             </td>
             <td style="width: 65mm; vertical-align: top;">

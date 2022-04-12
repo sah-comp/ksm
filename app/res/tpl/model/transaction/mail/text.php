@@ -1,10 +1,10 @@
-<?php echo I18n::__('transaction_text_mail_invoice', null, [
+<?php echo nl2br(strip_tags(Flight::textile(vsprintf($record->getContracttype()->emailtext, [
     $record->getContracttype()->name,
     $record->number,
     $record->localizedDate('bookingdate'),
     $user->email,
     $user->name
-]) ?>
+])))) ?>
 --
 <?php echo htmlspecialchars($company->legalname) ?>
 <?php echo htmlspecialchars($company->street) ?>

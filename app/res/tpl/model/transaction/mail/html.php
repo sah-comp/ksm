@@ -1,4 +1,4 @@
-<?php echo Flight::textile(I18n::__('transaction_html_mail_invoice', null, [
+<?php echo Flight::textile(vsprintf($record->getContracttype()->emailtext, [
     $record->getContracttype()->name,
     $record->number,
     $record->localizedDate('bookingdate'),

@@ -194,7 +194,8 @@
             'contracttype-detail' => I18n::__('contracttype_detail_tab'),
             'contracttype-limb' => I18n::__('contracttype_limb_tab'),
             'contracttype-style' => I18n::__('contracttype_style_tab'),
-            'contracttype-wording' => I18n::__('contracttype_wording_tab')
+            'contracttype-wording' => I18n::__('contracttype_wording_tab'),
+            'contracttype-email' => I18n::__('contracttype_email_tab')
         ),
         'default_tab' => 'contracttype-detail'
     )) ?>
@@ -295,6 +296,21 @@
                 class="cb">
                 <?php echo I18n::__('contracttype_label_closeonarchive') ?>
             </label>
+        </div>
+    </fieldset>
+    <fieldset id="contracttype-email" class="tab" style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('contracttype_emailtext_legend') ?></legend>
+        <div class="row <?php echo ($record->hasError('css')) ? 'error' : ''; ?>">
+            <label
+                for="contracttype-emailtext">
+                <?php echo I18n::__('contracttype_label_emailtext') ?>
+            </label>
+            <textarea
+                id="contracttype-emailtext"
+                name="dialog[emailtext]"
+                rows="10"
+                cols="60"><?php echo htmlspecialchars($record->emailtext) ?></textarea>
+            <p class="info"><?php echo I18n::__('contracttype_info_emailtext') ?></p>
         </div>
     </fieldset>
     <fieldset
