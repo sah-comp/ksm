@@ -197,7 +197,8 @@ class Model_Treaty extends Model
      */
     public function __construct()
     {
-        $this->setAction('index', array('idle', 'toggleArchived', 'expunge'));
+        //$this->setAction('index', array('idle', 'toggleArchived', 'expunge'));
+        $this->setAction('index', array('idle', 'expunge'));
     }
 
 
