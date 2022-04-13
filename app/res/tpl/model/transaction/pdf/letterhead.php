@@ -9,6 +9,7 @@
     <?php echo $record->getContracttype()->css ?>
     @page {
         margin-top: 50mm;
+        margin-bottom: 50mm;
     }
     </style>
 </head>

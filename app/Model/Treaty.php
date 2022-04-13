@@ -27,6 +27,13 @@ class Model_Treaty extends Model
     public const PATTERN = "%s-%02d-%02d-%04d";
 
     /**
+     * Flag to differentiate between POST request with payload and without.
+     *
+     * @var boolean
+     */
+    public $semaphore_payload = false;
+
+    /**
      * Returns an array with possible units.
      *
      * @return array
@@ -228,6 +235,7 @@ class Model_Treaty extends Model
     public function toggleArchived()
     {
         $this->bean->archived = ! $this->bean->archived;
+        $this->semaphore_payload = true;
         R::store($this->bean);
     }
 
@@ -657,8 +665,10 @@ SQL;
         $this->bean->updated = time();
         if (Flight::request()->method == 'POST') {
             //error_log('POST treaty');
-            $limb = Flight::request()->data->limb;
-            $this->bean->payload = json_encode($limb);
+            if (!$this->semaphore_payload) {
+                $limb = Flight::request()->data->limb;
+                $this->bean->payload = json_encode($limb);
+            }
             //error_log($this->bean->payload);
         }
         parent::update();
