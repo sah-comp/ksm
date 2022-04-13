@@ -9,3 +9,4 @@ app/config/config.php
 public/upload/
 app/res/tpl/cache/
 docs/
+logs/
