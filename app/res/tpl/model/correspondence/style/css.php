@@ -3,7 +3,7 @@ body, pre, h1, h2, h3 {
     font-size: 9pt;
 }
 p, ul, ol {
-    margin: 2.5mm 0;
+    margin: 0;
     padding: 0;
 }
 .payment-conditions {

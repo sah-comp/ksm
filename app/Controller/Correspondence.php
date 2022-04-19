@@ -123,9 +123,6 @@ class Controller_Correspondence extends Controller_Scaffold
         ]);
         $html = ob_get_contents();
         ob_end_clean();
-        //DEBUG:
-        //echo $html;
-        //exit;
         $mpdf->WriteHTML($html);
         $mpdf->Output($filename, 'D');
         exit;
