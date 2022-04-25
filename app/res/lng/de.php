@@ -437,6 +437,8 @@ $_tokens = array (
   'dunning_label_totalpaid' => 'Bezahlt',
   'dunning_label_totals' => 'Gesamt',
   'dunning_legend' => '',
+  'dunning_mail_done' => 'Die Mahnung wurde erfolgreich als E-Mail versandt.',
+  'dunning_mail_fail' => 'Die Mahnung konnte nicht als E-Mail versandt werden. Versuchen Sie es erneut.',
   'dunning_option_duedate' => 'Rechnungsdatum',
   'dunning_option_dunningdate' => 'Das letzte Mahnungsdatum',
   'dunning_option_today' => 'Aktuelles Datum',
@@ -467,6 +469,13 @@ $_tokens = array (
   'installedpart_label_purchaseprice' => 'Einkaufspreis',
   'installedpart_label_salesprice' => 'Verkaufspreis',
   'installedpart_label_stamp' => 'Installiert am',
+  'ksm_transaction_signature' => 'USt-Id-Nr.  %1$s
+Steuer-Nr.   %2$s
+HRB Duisburg 11357
+
+Geschäftsführer:
+Udo Mösch
+Oliver Mösch',
   'language_de' => 'Deutsch',
   'language_en' => 'Englisch',
   'language_h1' => 'Sprachen',
@@ -764,9 +773,12 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'newsletter_template_please_select' => 'Auswählen&hellip;',
   'newsletter_test_failed' => 'Testversand ist fehlgeschlagen. Prüfen Sie die Daten des Mailservers und versuchen Sie es erneut.',
   'notfound_head_title' => 'Seite nicht gefunden',
+  'openitem_action_dunning_mail' => 'E-Mail',
   'openitem_action_dunning_pdf' => 'PDF',
   'openitem_action_pdf' => 'PDF',
   'openitem_action_print_statement' => 'Kontoauszug',
+  'openitem_action_title_dunning_mail' => 'Erstellt ein PDF und sendet es als E-Mail an die entsprechende E-Mailadresse',
+  'openitem_action_title_dunning_pdf' => 'Erstellt ein PDF und lädt es auf Ihren Computer',
   'openitem_head_title' => 'Offene Posten',
   'openitem_info_payment_amount' => 'Leereingabe bucht automatisch die ausstehende Summe.',
   'openitem_label_sums' => 'Summen',
@@ -1129,6 +1141,14 @@ BIC COBADEFFXXX',
   'transaction_footer_block_legal' => 'Bei Zahlungsverzug berechnen wir 0,05%% Zinsen pro Tag. Lieferungen erfolgen grundsätzlich unter Eigentumsvorbehalt.',
   'transaction_h1' => 'Faktura',
   'transaction_header_info' => '%s %s',
+  'transaction_html_mail_invoice' => 'Sehr geehrte Damen und Herren,
+
+anbei erhalten Sie %s %s vom %s als PDF.
+
+Mit freundlichen Grüßen
+
+<a href="mailto:%s">%s</a>
+',
   'transaction_info_footer' => 'Der Fußteil wird unter den <em>Positionen</em> und <em>Zahlungsmodalitäten</em> ausgegeben.',
   'transaction_info_header' => 'Der Kopfteil wird über den <em>Positionen</em> ausgegeben.',
   'transaction_info_parent' => 'Entstanden aus <a href="/admin/transaction/edit/%d">%s %s</a>',
@@ -1137,13 +1157,14 @@ BIC COBADEFFXXX',
   'transaction_label_account' => 'Kundennummer',
   'transaction_label_archived' => 'Archiv',
   'transaction_label_balance' => 'Ausstehender Betrag',
-  'transaction_label_billingemail' => 'E–Mailadresse',
+  'transaction_label_billingemail' => 'Mailadresse Rechnungen',
   'transaction_label_bookingdate' => 'Datum',
   'transaction_label_contracttype' => 'Art',
   'transaction_label_contracttype.name' => 'Art',
   'transaction_label_discount' => 'Skonto',
   'transaction_label_duedate' => 'Fälligkeit',
   'transaction_label_duedays' => 'Zahlziel in Tagen',
+  'transaction_label_dunningemail' => 'Mailadresse Mahnungen',
   'transaction_label_footer' => 'Fußteil',
   'transaction_label_gros' => 'Brutto',
   'transaction_label_gros_to_pay' => 'Zu zahlender Betrag',
@@ -1191,8 +1212,11 @@ BIC COBADEFFXXX',
 
 anbei erhalten Sie %s %s vom %s als PDF.
 
-Mit freundlichen Grüßen,
-Ihr KSM-Team',
+Mit freundlichen Grüßen
+
+%s
+%s
+',
   'transaction_text_of' => 'von',
   'transaction_text_page' => 'Seite',
   'transaction_title_accumulate' => 'Alle offenen Posten gesammelt mahnen oder als Kontoauszug ausgeben',

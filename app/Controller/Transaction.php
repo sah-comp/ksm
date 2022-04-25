@@ -96,7 +96,7 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /**
-     * Sends a email to the transaction receipient, cc to sending user account.
+     * Sends a email to the transaction recipient, cc to user who clicked button.
      */
     public function mail()
     {

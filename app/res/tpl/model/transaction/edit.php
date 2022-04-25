@@ -110,6 +110,7 @@
                     'transaction-person-id-shadow' => 'id',
                     'transaction-postaladdress' => 'postaladdress',
                     'transaction-billingemail' => 'billingemail',
+                    'transaction-dunningemail' => 'dunningemail',
                     'transaction-duedays' => 'duedays',
                     'transaction-discount-id' => 'discount_id'
                 ]); ?>'
@@ -350,7 +351,7 @@
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('transaction_legend_email') ?></legend>
-        <div class="row <?php echo ($record->hasError('postaladdress')) ? 'error' : ''; ?>">
+        <div class="row <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
             <label
                 for="transaction-billingemail">
                 <?php echo I18n::__('transaction_label_billingemail') ?>
@@ -360,6 +361,17 @@
                 type="email"
                 name="dialog[billingemail]"
                 value="<?php echo htmlspecialchars($record->billingemail) ?>">
+        </div>
+        <div class="row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-dunningemail">
+                <?php echo I18n::__('transaction_label_dunningemail') ?>
+            </label>
+            <input
+                id="transaction-dunningemail"
+                type="email"
+                name="dialog[dunningemail]"
+                value="<?php echo htmlspecialchars($record->dunningemail) ?>">
         </div>
     </fieldset>
     <fieldset

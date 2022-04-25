@@ -48,6 +48,12 @@ $('body').ready(function() {
         $('#' + tippsy).hide();
     });
 
+    $('body').on('click', '.empty-container', function(event) {
+        event.preventDefault();
+        var container = '#' + $(this).attr("data-container");
+        $(container).empty();
+    });
+
     initAutocompletes();
 
     /**
@@ -322,6 +328,20 @@ $('body').ready(function() {
 				$('#'+target).detach();
                 $('table caption').addClass('scratched');
 			});
+	    });
+	});
+
+    /**
+	 * Load additional data into a container.
+	 */
+	$('body').on("click", ".additional-info", function(event) {
+	    event.preventDefault();
+		var target = '#' + $(this).attr("data-target");
+		var url = $(this).attr("href");
+		$.get(url, function(data) {
+            $(target).empty();
+	        $(target).append(data);
+            $(target).addClass('active');
 	    });
 	});
 

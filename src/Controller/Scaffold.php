@@ -773,6 +773,16 @@ class Controller_Scaffold extends Controller
     }
 
     /**
+     * Outputs HTML requested by an .additional-info a href.
+     *
+     * @return string
+     */
+    public function additional($info)
+    {
+        $this->record->renderAdditional($info);
+    }
+
+    /**
      * Displays page to edit an existing bean.
      *
      * On a GET request a form is presented to edit the bean. On a POST request the changed bean

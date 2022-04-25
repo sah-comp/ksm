@@ -253,6 +253,11 @@ class Model_Transaction extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
+                'prefix' => [
+                    'callback' => [
+                        'name' => 'linkAdditionalInfoPosition'
+                    ]
+                ],
                 'width' => '12rem'
             ],
             [
@@ -303,6 +308,11 @@ class Model_Transaction extends Model
                 ],
                 'callback' => [
                     'name' => 'personName'
+                ],
+                'prefix' => [
+                    'callback' => [
+                        'name' => 'linkAdditionalInfoPerson'//'prefixContact'
+                    ]
                 ],
                 'filter' => [
                     'tag' => 'text'
@@ -375,6 +385,56 @@ class Model_Transaction extends Model
     {
         $sql = "SELECT name, name FROM contracttype WHERE ledger = 1 AND enabled = 1 ORDER BY name";
         return R::getAssoc($sql);
+    }
+
+    /**
+     * Outputs a link that will load additional information about the bean into a area
+     * on the screen. Make sure to have that place covered, as well as the callback routine.
+     *
+     * @return string
+     */
+    public function linkAdditionalInfoPosition()
+    {
+        return '<a href="' . Url::build(sprintf('/admin/transaction/additional/%d/position', $this->bean->getId())) . '" class="additional-info ir position" data-target="additional-info-container">PI</a>';
+    }
+
+    /**
+     * Outputs a link that will load additional information about the bean into a area
+     * on the screen. Make sure to have that place covered, as well as the callback routine.
+     *
+     * @return string
+     */
+    public function linkAdditionalInfoPerson()
+    {
+        return '<a href="' . Url::build(sprintf('/admin/transaction/additional/%d/contactinfo', $this->bean->getId())) . '" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>';
+    }
+
+    /**
+     * Renders additional info.
+     *
+     * @return void
+     */
+    public function renderAdditional($info): void
+    {
+        switch ($info) {
+            case 'contactinfo':
+                $layout = 'model/person/additional/contactinfo';
+                $record = $this->bean->getPerson();
+                break;
+
+            case 'position':
+                $layout = 'model/transaction/additional/position';
+                $record = $this->bean;
+                break;
+
+            default:
+                echo 'None';
+                return;
+                break;
+        }
+        Flight::render($layout, [
+            'record' => $record
+        ]);
     }
 
     /**
@@ -520,11 +580,12 @@ class Model_Transaction extends Model
     /**
      * Returns wether the transaction can be emailed or not.
      *
+     * @param string $emailtype
      * @return bool
      */
-    public function hasEmail(): bool
+    public function hasEmail($emailtype = 'billingemail'): bool
     {
-        if ($this->bean->billingemail) {
+        if ($this->bean->{$emailtype}) {
             return true;
         }
         return false;

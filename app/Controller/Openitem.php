@@ -108,9 +108,42 @@ class Controller_Openitem extends Controller_Scaffold
     }
 
     /**
-     * Generate a PDF showing the dunning (mahnung) layout.
+     * Generate a PDF and email it to the dunningemail address.
+     */
+    public function mail()
+    {
+        $proof = false;
+        if ($proof) {
+            $this->record->sent = true;
+            Flight::get('user')->notify(I18n::__("dunning_mail_done"), 'success');
+        } else {
+            $this->record->sent = false;
+            Flight::get('user')->notify(I18n::__("dunning_mail_fail"), 'error');
+        }
+        $this->redirect("/openitem/#bean-{$this->record->getId()}");
+        exit();
+    }
+
+    /**
+     * Generate a PDF and download it to the client.
      */
     public function dunning()
+    {
+        $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilenameDunning()]);
+        $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocnameDunning()]);
+        $mpdf = $this->dunningWorkhorse($docname);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
+     * Generate a PDF showing the dunning (mahnung) layout.
+     *
+     * @param string $docname
+     * @param string $layout which template to render the dunning
+     * @return \Mpdf\Mpdf
+     */
+    private function dunningWorkhorse($docname, $layout = 'dunning')
     {
         if ($this->record->accumulate) {
             $bookable_types = $this->record->getBookables();
@@ -131,23 +164,19 @@ class Controller_Openitem extends Controller_Scaffold
                 'totalpayable' => round($this->record->balance + $this->record->penaltyfee, 2)
             ];
         }
-        $layout = 'dunning';
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilenameDunning()]);
-        $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocnameDunning()]);
-        $mpdf = $this->generatePDF($layout, $docname);
-        $mpdf->Output($filename, 'D');
-        exit;
+        $mpdf = $this->generatePDF($docname, $layout);
+        return $mpdf;
     }
 
     /**
      * Generate a PDF.
      *
-     * @param string $layout which template to render the dunning
      * @param string $docname
+     * @param string $layout which template to render the dunning
      * @return \Mpdf\Mpdf
      */
-    private function generatePDF($layout, $docname)
+    private function generatePDF($docname, $layout)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);

@@ -116,11 +116,7 @@ $_colspan = 8;
                     <td
                         data-sort="<?php echo htmlspecialchars($_person->name) ?>"
                         data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_person->name) ?>">
-                        <?php
-                        Flight::render('model/person/tooltip/contactinfo', [
-                            'record' => $_person
-                        ]);
-                        ?>
+                        <a href="<?php echo Url::build(sprintf('/admin/transaction/additional/%d/contactinfo', $_record->getId())) ?>" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/openitem/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
@@ -166,7 +162,12 @@ $_colspan = 8;
                             <?php echo ($_record->accumulate) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td>
-                        <a id="dunning-pdf-<?php echo $_record->getId() ?>" class="<?php echo $_record->getDunning()->getId() ? '' : 'hidden' ?>" href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
+                        <span id="dunning-pdf-<?php echo $_record->getId() ?>" class="<?php echo $_record->getDunning()->getId() ? '' : 'hidden' ?>">
+                            <a href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>" class="ir dunning-pdf" title="<?php echo I18n::__('openitem_action_title_dunning_pdf') ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
+                            <?php if ($_record->hasEmail('dunningemail')): ?>
+                                <a href="<?php echo Url::build('/openitem/mail/%s', [$_record->getId()]) ?>" class="ir dunning-mail" title="<?php echo I18n::__('openitem_action_title_dunning_mail') ?>"><?php echo I18n::__('openitem_action_dunning_mail') ?></a>
+                            <?php endif; ?>
+                        </span>
                     </td>
                 </tr>
             <?php endforeach; ?>

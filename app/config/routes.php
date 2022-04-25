@@ -164,6 +164,14 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+(/@layout:[a-z]+)(/@page:[0-9]+)(/@
 });
 
 /**
+ * Route to additionally load bean information.
+ */
+Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/additional/@id:[0-9]+/@info:[a-z]+', function ($type, $id, $info) {
+    $scaffoldController = new Controller_Scaffold('/admin', $type, $id);
+    $scaffoldController->additional($info);
+});
+
+/**
  * Route to delete a related bean from another bean.
  */
 Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/detach/@subtype:[a-z]+(/@id:[0-9]+)', function ($type, $subtype, $id) {

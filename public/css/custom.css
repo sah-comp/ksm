@@ -22,6 +22,25 @@ table.revenue tfoot {
     /*overflow: visible;*/
 }
 
+table.scaffold a.dunning-pdf, table.scaffold a.dunning-mail {
+    display: inline-block;
+}
+
+.dunning-pdf,
+.dunning-mail {
+    width: 20px;
+    height: 20px;
+    background-size: 16px 16px;
+}
+
+.dunning-pdf {
+    background-image: url(/img/glyphicons/glyphicons_135_inbox_out.png);
+}
+
+.dunning-mail {
+    background-image: url(/img/glyphicons/glyphicons_062_paperclip.png);
+}
+
 .drag-handle {
     width: 16px;
     height: 16px;
@@ -596,24 +615,31 @@ a.venetianblinds.active {
  *
  * @see http://jsfiddle.net/Xotic750/9kBVu/
  */
-.tooltip {
-    width: 50%;
+.tooltip,
+.additional-box {
+    position: absolute;
+    width: 60%;
     min-height: 10em;
     padding: 1em;
     border: 1px solid gray;
     border-top: 0;
-    position: absolute;
     background-color: white;
     top: -1px;
-    left: 25%;
+    left: calc((40% - 1em) / 2);
     display: none;
+}
+
+.tooltip.open,
+.additional-box.open {
+    display: block;
 }
 
 .tooltip {
     z-index: 10000;
 }
 
-table.scaffold a.tooltip-open {
+table.scaffold a.tooltip-open,
+table.scaffold a.additional-info {
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -624,12 +650,23 @@ table.scaffold a.tooltip-open {
 }
 
 table.service a.tooltip-open,
-table.openitem a.tooltip-open {
+table.service a.additional-info,
+table.openitem a.tooltip-open,
+table.openitem a.additional-info {
     float: left;
 }
 
+a.empty-container,
 a.tooltip-close {
-    color: orange;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 20px;
+    height: 20px;
+    background: url(/img/glyphicons/glyphicons_192_circle_remove.png);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
 }
 
 /*
@@ -641,20 +678,51 @@ a.tooltip-close {
     display: block;
 }
 */
+article.main>header .tooltip h1,
+article.main>header .tooltip h2 {
+    padding: 0;
+}
+
+article.main>header .tooltip h2 {
+    padding: 1rem 0;
+}
+
 .tooltip table {
     table-layout: fixed;
     border-collapse: collapse;
     width: 100%;
 }
 
+.tooltip th {
+    text-align: left;
+}
+
+.tooltip table tr {
+    border-bottom: 1px solid grey;
+}
+
+.tooltip table tr:last-child {
+    border-bottom: none;
+}
+
 .tooltip table td {
     vertical-align: top;
-    padding: 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.tooltip th.number,
+.tooltip td.number {
+    text-align: right;
+}
+
+.cushion-right {
+    padding-right: 4px;
 }
 
 .spacer {
     font-size: small;
-    text-align: center;
+    text-align: left;
     padding-bottom: 2em;
 }
 

@@ -395,8 +395,13 @@ SQL;
 
         if ($this->bean->billingemail) {
             $this->addValidator('billingemail', array(
-                new Validator_IsEmail(),
-                new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'billingemail'))
+                new Validator_IsEmail()
+            ));
+        }
+
+        if ($this->bean->dunningemail) {
+            $this->addValidator('dunningemail', array(
+                new Validator_IsEmail()
             ));
         }
 

@@ -8,6 +8,7 @@
  * @version $Id$
  */
 ?>
+<div id="additional-info-container" class=""></div>
 <ul class="panel-navigation">
     <li>
 		<a
