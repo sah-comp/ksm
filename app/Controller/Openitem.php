@@ -108,16 +108,87 @@ class Controller_Openitem extends Controller_Scaffold
     }
 
     /**
-     * Generate a PDF and email it to the dunningemail address.
+     * Sends a email to the transaction recipient, cc to user who clicked button.
      */
     public function mail()
     {
-        $proof = false;
-        if ($proof) {
-            $this->record->sent = true;
+        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $user = Flight::get('user');
+
+        $filename = I18n::__('openitem_pdf_filename', null, [$this->record->getFilenameDunning()]);
+        $docname = I18n::__('openitem_pdf_docname', null, [$this->record->getDocnameDunning()]);
+        $mpdf = $this->dunningWorkhorse($docname);
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+
+        if ($smtp = $this->company->smtp()) {
+            $mail->SMTPDebug = 4;                                 // Set debug mode, 1 = err/msg, 2 = msg
+            /**
+             * uncomment this block to get verbose error logging in your error log file
+             */
+
+            $mail->Debugoutput = function ($str, $level) {
+                error_log("debug level $level; message: $str");
+            };
+
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = $smtp['host'];                          // Specify main and backup server
+            if ($smtp['auth']) {
+                $mail->SMTPAuth = true;                           // Enable SMTP authentication
+            } else {
+                $mail->SMTPAuth = false;                          // Disable SMTP authentication
+            }
+            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Username = $smtp['user'];                      // SMTP username
+            $mail->Password = $smtp['password'];                  // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+
+            /**
+             * @see https://stackoverflow.com/questions/30371910/phpmailer-generates-php-warning-stream-socket-enable-crypto-peer-certificate
+             */
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
+
+        $mail->CharSet = 'UTF-8';
+        $mail->AddEmbeddedImage(__DIR__ . '/../../public/img/ksm-email-signature-icon.jpg', 'ksm-mascot');
+        $mail->setFrom($this->company->emailnoreply, $this->company->legalname);
+        $mail->addReplyTo($this->company->email, $this->company->legalname);
+        $mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
+        $mail->addBCC($user->email, $user->name);
+        $mail->WordWarp = 50;
+        $mail->isHTML(true);
+        $mail->Subject = $docname;
+
+        ob_start();
+        Flight::render('openitem/mail/html', array(
+            'record' => $this->record,
+            'company' => $this->company,
+            'user' => $user
+        ));
+        $html = ob_get_clean();
+        ob_start();
+        Flight::render('openitem/mail/text', array(
+            'record' => $this->record,
+            'company' => $this->company,
+            'user' => $user
+        ));
+        $text = ob_get_clean();
+        $mail->Body = $html;
+        $mail->AltBody = $text;
+        $attachment = $mpdf->Output('', 'S');
+
+        $mail->addStringAttachment($attachment, $filename);
+        if ($mail->send()) {
+            //$this->record->sent = true;
             Flight::get('user')->notify(I18n::__("dunning_mail_done"), 'success');
         } else {
-            $this->record->sent = false;
+            //$this->record->sent = false;
             Flight::get('user')->notify(I18n::__("dunning_mail_fail"), 'error');
         }
         $this->redirect("/openitem/#bean-{$this->record->getId()}");
