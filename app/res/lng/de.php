@@ -299,7 +299,7 @@ $_tokens = array (
   'contracttype_email_tab' => 'Texte für E-Mails',
   'contracttype_h1' => 'Vertrags- und Vorgangsarten',
   'contracttype_info_css' => 'CSS(CascadingStyleSheet) für diese Vorgangsart hier eintragen.',
-  'contracttype_info_emailtext' => 'Ihr E-Mailtext benötigt fünf Platzhalter. Diese schreiben Sie wie folgt: <em>%s</em>.',
+  'contracttype_info_emailtext' => 'Ihr E-Mailtext benötigt fünf Platzhalter.',
   'contracttype_info_note' => 'Beschreiben Sie Besonderheiten dieser Vertragsart.',
   'contracttype_info_text' => 'Hinterlegen Sie hier den Vertragstext.<br />Platzhalter für Informationsfelder schreiben Sie in der Form <code>{{person.name}}</code>.<br />Diese Platzhalter werden mit Informationen aus der Vertragsverwaltung gemischt.',
   'contracttype_info_wordgros' => 'Bezeichnung für den Gesamtbetrag dieser Vorgangsart. Wenn Sie das Feld leer lassen wird <em>Gesamtbrutto</em> verwendet.',
@@ -416,6 +416,14 @@ $_tokens = array (
   'dt_thousands' => '.',
   'dt_zerorecords' => 'Keine Objekte gefunden',
   'dunning_h1' => 'Mahnstufen',
+  'dunning_html_mail' => 'Sehr geehrte Damen und Herren,
+
+anbei erhalten Sie %s vom %s als PDF.
+
+Mit freundlichen Grüßen
+
+<a href="mailto:%s">%s</a>
+',
   'dunning_info_foot' => 'Der Fussteil wird per Textile ausgegeben.',
   'dunning_info_head' => 'Der Kopfteil wird per Textile ausgegeben.',
   'dunning_label_account' => 'Kundennummer',
@@ -445,6 +453,15 @@ $_tokens = array (
   'dunning_option_duedate' => 'Rechnungsdatum',
   'dunning_option_dunningdate' => 'Das letzte Mahnungsdatum',
   'dunning_option_today' => 'Aktuelles Datum',
+  'dunning_text_mail' => 'Sehr geehrte Damen und Herren,
+
+anbei erhalten Sie %s vom %s als PDF.
+
+Mit freundlichen Grüßen
+
+%s
+%s
+',
   'email_h1' => 'Mailingadressen',
   'email_label_email' => 'E-Mail',
   'email_legend' => '',
@@ -1144,14 +1161,6 @@ BIC COBADEFFXXX',
   'transaction_footer_block_legal' => 'Bei Zahlungsverzug berechnen wir 0,05%% Zinsen pro Tag. Lieferungen erfolgen grundsätzlich unter Eigentumsvorbehalt.',
   'transaction_h1' => 'Faktura',
   'transaction_header_info' => '%s %s',
-  'transaction_html_mail_invoice' => 'Sehr geehrte Damen und Herren,
-
-anbei erhalten Sie %s %s vom %s als PDF.
-
-Mit freundlichen Grüßen
-
-<a href="mailto:%s">%s</a>
-',
   'transaction_info_footer' => 'Der Fußteil wird unter den <em>Positionen</em> und <em>Zahlungsmodalitäten</em> ausgegeben.',
   'transaction_info_header' => 'Der Kopfteil wird über den <em>Positionen</em> ausgegeben.',
   'transaction_info_parent' => 'Entstanden aus <a href="/admin/transaction/edit/%d">%s %s</a>',
@@ -1211,15 +1220,6 @@ Mit freundlichen Grüßen
   'transaction_tab_head' => 'Kopf',
   'transaction_tab_pos' => 'Positionen',
   'transaction_tab_position' => 'Positionen',
-  'transaction_text_mail_invoice' => 'Sehr geehrte Damen und Herren,
-
-anbei erhalten Sie %s %s vom %s als PDF.
-
-Mit freundlichen Grüßen
-
-%s
-%s
-',
   'transaction_text_of' => 'von',
   'transaction_text_page' => 'Seite',
   'transaction_title_accumulate' => 'Alle offenen Posten gesammelt mahnen oder als Kontoauszug ausgeben',
