@@ -1,6 +1,8 @@
 <div class="tooltip open">
     <h1><?php echo $record->getContracttype()->name . ' ' . $record->number ?></h1>
     <p class="spacer">&nbsp;</p>
+    <?php echo Flight::textile($record->header) ?>
+    <p class="spacer">&nbsp;</p>
     <?php
     Flight::render('model/transaction/pdf/table', [
         'record' => $record
