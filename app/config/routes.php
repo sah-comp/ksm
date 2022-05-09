@@ -304,6 +304,14 @@ Flight::route('(/[a-z]{2})/correspondence/pdf(/@id:[0-9]+)', function ($id) {
 });
 
 /**
+ * Routes to the correspondence controller to send a correspondence by email.
+ */
+Flight::route('(/[a-z]{2})/correspondence/mail(/@id:[0-9]+)', function ($id) {
+    $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
+    $correspondenceController->mail();
+});
+
+/**
  * Routes to the article controller to get json encoded chart data.
  */
 Flight::route('(/[a-z]{2})/article/chartdata/@id:[0-9]+', function ($id) {
@@ -337,12 +345,12 @@ Flight::route('POST (/[a-z]{2})/appointment/set/location/person/@person_id:[0-9]
 });
 
 /**
- * Routes to the appointment controller to re-render a part of the appointment edit form,
+ * Routes to the @type controller to re-render a part of the @type edit form,
  * depending on the person selected in the autocomplete field.
  */
 Flight::route('POST (/[a-z]{2})/@type:[a-z]+/@id:[0-9]+/person/changed(/)', function ($type, $id) {
     $ctrl = 'Controller_'.ucfirst($type);
-    $controller = new $ctrl($id);
+    $controller = new $ctrl(null, $type, $id);
     $controller->dependent();
 });
 

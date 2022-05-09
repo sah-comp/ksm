@@ -62,6 +62,19 @@ class Model_Person extends Model
     }
 
     /**
+     * Returns wether the record has a email address or not.
+     *
+     * @return bool
+     */
+    public function hasEmail(): bool
+    {
+        if ($this->bean->email) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @return bool

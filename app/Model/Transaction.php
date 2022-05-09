@@ -585,6 +585,9 @@ class Model_Transaction extends Model
      */
     public function hasEmail($emailtype = 'billingemail'): bool
     {
+        if (!$this->bean->person->{$emailtype.'enabled'}) {
+            return false;//if person has not checked billingemail or dunningemail enabled
+        }
         if ($this->bean->{$emailtype}) {
             return true;
         }

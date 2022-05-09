@@ -1207,6 +1207,9 @@ fieldset.tab fieldset:last-child .attach {
     position: static;
     left: auto;
     width: auto;
+    float: left;
+    top: auto;
+    margin-right: 0.5rem;
 }
 
 input[required=required] {
@@ -1610,6 +1613,11 @@ img.media-preview-icon {
 table:not(.notsticky) thead {
     position: sticky;
     top: 118px;
+}
+
+.flexi {
+    display: flex;
+    align-items: center;
 }
 
 /* ==|== non-semantic helper classes ========================================

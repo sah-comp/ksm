@@ -9,6 +9,15 @@
  */
 ?>
 <?php if ($record->getId()): ?>
+    <?php if ($record->hasEmail()): ?>
+<li>
+    <a
+        href="<?php echo Url::build("/correspondence/mail/%d", [$record->getId()]) ?>"
+        class="confirm mail <?php echo $record->wasEmailed() ?>">
+        <?php echo I18n::__('correspondence_action_mail') ?>
+    </a>
+</li>
+    <?php endif; ?>
 <li>
     <form
         id="printform"

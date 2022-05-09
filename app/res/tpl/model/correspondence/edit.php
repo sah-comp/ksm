@@ -53,6 +53,9 @@
             id="correspondence-person-name"
             name="dialog[person][name]"
             class="autocomplete"
+            data-target="person-dependent"
+            data-extra="correspondence-person-id"
+            data-dynamic="<?php echo Url::build('/correspondence/%d/person/changed/?callback=?', [$record->getId()]) ?>"
             data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
             data-spread='<?php
                 echo json_encode([
@@ -85,6 +88,32 @@
             cols="60"
             required="required"><?php echo htmlspecialchars($record->postaladdress) ?></textarea>
     </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('correspondence_legend_contact_location') ?></legend>
+    <div
+        id="person-dependent"
+        class="autodafe">
+
+        <?php
+        if ($record->getPerson()->getId()):
+            // The customer of this appointment is already set. No autodafe needed.
+            $_dependents = $record->getDependents($record->getPerson());
+            Flight::render('model/correspondence/contact', [
+                'person' => $record->getPerson(),
+                'record' => $record,
+                'contacts' => $_dependents['contacts']
+            ]);
+        else:
+            // lazy load, after hunting that heretic.
+        ?>
+        <div class="heretic"><?php echo I18n::__('correspondence_person_select_before_me') ?></div>
+        <?php endif; ?>
+
+    </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"></legend>
     <div class="row <?php echo ($record->hasError('writtenon')) ? 'error' : '' ?>">
         <label for="correspondence-writtenon">
             <?php echo I18n::__('correspondence_label_writtenon') ?>

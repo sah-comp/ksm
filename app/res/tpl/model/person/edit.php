@@ -568,28 +568,89 @@ $_personkinds = $record->sharedPersonkind;
                 rows="3"
                 cols="60"><?php echo htmlspecialchars($record->paymentnote) ?></textarea>
         </div>
-        <div class="row <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
-            <label
-                for="person-billingemail">
-                <?php echo I18n::__('person_label_billingemail') ?>
-            </label>
-            <input
-                id="person-billingemail"
-                type="email"
-                name="dialog[billingemail]"
-                value="<?php echo htmlspecialchars($record->billingemail) ?>" />
+        <div class="row nomargins">
+            <div class="span3">&nbsp;</div>
+            <div class="span4">
+                <label
+                    for="person-billingemail">
+                    <?php echo I18n::__('person_label_billingemail') ?>
+                </label>
+            </div>
+            <div class="span4">
+                &nbsp;
+            </div>
         </div>
-        <div class="row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
-            <label
-                for="person-dunningemail">
-                <?php echo I18n::__('person_label_dunningemail') ?>
-            </label>
-            <input
-                id="person-dunningemail"
-                type="email"
-                name="dialog[dunningemail]"
-                value="<?php echo htmlspecialchars($record->dunningemail) ?>" />
+        <div class="nomargins row <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
+            <div class="span3">
+                &nbsp;
+            </div>
+            <div class="span4">
+                <input
+                    id="person-billingemail"
+                    type="email"
+                    name="dialog[billingemail]"
+                    value="<?php echo htmlspecialchars($record->billingemail) ?>" />
+            </div>
+            <div class="span4 flexi">
+                <input
+                    type="hidden"
+                    name="dialog[billingemailenabled]"
+                    value="0" />
+                <input
+                    id="person-billingemailenabled"
+                    type="checkbox"
+                    name="dialog[billingemailenabled]"
+                    <?php echo ($record->billingemailenabled) ? 'checked="checked"' : '' ?>
+                    value="1" />
+                <label
+                    for="person-billingemailenabled">
+                    <?php echo I18n::__('person_label_billingemailenabled') ?>
+                </label>
+            </div>
         </div>
+
+        <div class="row nomargins">
+            <div class="span3">&nbsp;</div>
+            <div class="span4">
+                <label
+                    for="person-dunningemail">
+                    <?php echo I18n::__('person_label_dunningemail') ?>
+                </label>
+            </div>
+            <div class="span4">
+                &nbsp;
+            </div>
+        </div>
+
+        <div class="nomargins row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
+            <div class="span3">
+                &nbsp;
+            </div>
+            <div class="span4">
+                <input
+                    id="person-dunningemail"
+                    type="email"
+                    name="dialog[dunningemail]"
+                    value="<?php echo htmlspecialchars($record->dunningemail) ?>" />
+            </div>
+            <div class="span4 flexi">
+                <input
+                    type="hidden"
+                    name="dialog[dunningemailenabled]"
+                    value="0" />
+                <input
+                    id="person-dunningemailenabled"
+                    type="checkbox"
+                    name="dialog[dunningemailenabled]"
+                    <?php echo ($record->dunningemailenabled) ? 'checked="checked"' : '' ?>
+                    value="1" />
+                <label
+                    for="person-dunningemailenabled">
+                    <?php echo I18n::__('person_label_dunningemailenabled') ?>
+                </label>
+            </div>
+        </div>
+
         <div class="row <?php echo ($record->hasError('bankname')) ? 'error' : ''; ?>">
             <label
                 for="person-bankname">
