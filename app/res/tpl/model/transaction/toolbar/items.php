@@ -13,7 +13,7 @@
 <li>
     <a
         href="<?php echo Url::build("/transaction/mail/%d", [$record->getId()]) ?>"
-        class="mail <?php echo $record->wasEmailed() ?>">
+        class="confirm mail <?php echo $record->wasEmailed() ?>">
         <?php echo I18n::__('transaction_action_mail') ?>
     </a>
 </li>

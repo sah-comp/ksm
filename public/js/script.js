@@ -54,6 +54,18 @@ $('body').ready(function() {
         $(container).empty();
     });
 
+    /**
+     * Confirm if a link really should open (e.g. send email)
+     */
+    $('body').on('click', '.confirm', function(event) {
+        event.preventDefault();
+        var isConfirmed = confirm('Möchten Sie die Aktion tatsächlich durchführen?');
+        if (!isConfirmed) {
+            return false;
+        }
+        return true;
+    });
+
     initAutocompletes();
 
     /**

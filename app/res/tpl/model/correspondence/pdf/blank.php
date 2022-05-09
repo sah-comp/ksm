@@ -5,12 +5,6 @@
     <title><?php echo $title ?></title>
     <style>
     <?php Flight::render('model/correspondence/style/css', ['record' => $record]) ?>
-    @page :first {
-        margin-top: 50mm;
-    }
-    @page {
-        margin-top: 55mm;
-    }
     </style>
 </head>
 <body>

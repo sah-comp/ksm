@@ -108,9 +108,12 @@ table.pageheader td.value {
     header: ksmheader;
     footer: ksmfooter;
     margin-left: 20mm;
+    margin-top: 50mm;
+    margin-bottom: 30mm;
 }
 @page :first {
     header: ksmheader-firstpage;
     footer: ksmfooter-firstpage;
-    margin-bottom: 4cm;
+    margin-top: 55mm;
+    margin-bottom: 30mm;
 }

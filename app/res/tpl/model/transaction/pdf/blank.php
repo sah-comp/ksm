@@ -7,14 +7,6 @@
     <?php Flight::render('model/transaction/style/css', ['record' => $record]) ?>
     /* Extra styles are coming in dynamicly, depending on the transaction type */
     <?php echo $record->getContracttype()->css ?>
-    @page :first {
-        margin-top: 50mm;
-        margin-bottom: 50mm;
-    }
-    @page {
-        margin-top: 55mm;
-        margin-bottom: 50mm;
-    }
     </style>
 </head>
 <body>
