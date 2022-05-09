@@ -29,18 +29,11 @@ $_personkinds = $record->sharedPersonkind;
     <!-- grid based header -->
     <div class="row nomargins">
         <div class="span3">&nbsp;</div>
-        <div class="span3">
+        <div class="span2">
             <label
                 for="person-nickname"
                 class="<?php echo ($record->hasError('nickname')) ? 'error' : ''; ?>">
                 <?php echo I18n::__('person_label_nickname') ?>
-            </label>
-        </div>
-        <div class="span2">
-            <label
-                for="person-language"
-                class="<?php echo ($record->hasError('language')) ? 'error' : ''; ?>">
-                <?php echo I18n::__('person_label_language') ?>
             </label>
         </div>
         <div class="span2">
@@ -57,12 +50,37 @@ $_personkinds = $record->sharedPersonkind;
                 <?php echo I18n::__('person_label_vatid') ?>
             </label>
         </div>
+        <div class="span1">
+            <label
+                for="person-personkind"
+                class="<?php echo ($record->hasError('personkind_id')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('person_label_personkind') ?>
+            </label>
+        </div>
+        <div class="span2">
+            <label
+                for="person-language"
+                class="<?php echo ($record->hasError('language')) ? 'error' : ''; ?>">
+                <?php echo I18n::__('person_label_language') ?>
+            </label>
+        </div>
     </div>
     <!-- end of grid based header -->
     <!-- grid based data -->
-    <div class="row">
+    <div class="row nomargins">
         <div class="span3">&nbsp;</div>
-        <div class="span3">
+        <div class="span2">
+            <input
+                type="hidden"
+                name="dialog[enabled]"
+                value="0" />
+            <input
+                id="person-enabled"
+                type="checkbox"
+                name="dialog[enabled]"
+                title="<?php echo I18n::__('person_label_enabled') ?>"
+                <?php echo ($record->enabled) ? 'checked="checked"' : '' ?>
+                value="1" />
             <input
                 id="person-nickname"
                 class="autowidth"
@@ -71,21 +89,6 @@ $_personkinds = $record->sharedPersonkind;
                 placeholder="<?php echo I18n::__('person_placeholder_nickname') ?>"
                 value="<?php echo htmlspecialchars($record->nickname) ?>"
                 required="required" />
-        </div>
-        <div class="span2">
-            <select
-                id="person-language"
-                class="autowidth"
-                name="dialog[language]">
-                <option value=""><?php echo I18n::__('person_language_select') ?></option>
-                <?php foreach (R::findAll('language') as $_lang_id => $_lang): ?>
-                <option
-                    value="<?php echo $_lang->iso ?>"
-                    <?php echo ($record->language == $_lang->iso) ? 'selected="selected"' : '' ?>>
-                    <?php echo htmlspecialchars($_lang->name) ?>
-                </option>
-                <?php endforeach ?>
-            </select>
         </div>
         <div class="span2">
             <input
@@ -103,49 +106,38 @@ $_personkinds = $record->sharedPersonkind;
                 name="dialog[vatid]"
                 value="<?php echo htmlspecialchars($record->vatid) ?>" />
         </div>
-    </div>
-    <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
-        <input
-            type="hidden"
-            name="dialog[enabled]"
-            value="0" />
-        <input
-            id="person-enabled"
-            type="checkbox"
-            name="dialog[enabled]"
-            <?php echo ($record->enabled) ? 'checked="checked"' : '' ?>
-            value="1" />
-        <label
-            for="person-enabled"
-            class="cb">
-            <?php echo I18n::__('person_label_enabled') ?>
-        </label>
+        <div class="span1">
+            <select
+                id="person-personkind"
+                class="autowidth"
+                name="dialog[personkind_id]">
+                <option value=""><?php echo I18n::__('person_personkind_select') ?></option>
+                <?php foreach (R::findAll('personkind') as $_pk_id => $_pk): ?>
+                <option
+                    value="<?php echo $_pk->getId() ?>"
+                    <?php echo ($record->personkind_id == $_pk->getId()) ? 'selected="selected"' : '' ?>>
+                    <?php echo htmlspecialchars($_pk->name) ?>
+                </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+        <div class="span2">
+            <select
+                id="person-language"
+                class="autowidth"
+                name="dialog[language]">
+                <option value=""><?php echo I18n::__('person_language_select') ?></option>
+                <?php foreach (R::findAll('language') as $_lang_id => $_lang): ?>
+                <option
+                    value="<?php echo $_lang->iso ?>"
+                    <?php echo ($record->language == $_lang->iso) ? 'selected="selected"' : '' ?>>
+                    <?php echo htmlspecialchars($_lang->name) ?>
+                </option>
+                <?php endforeach ?>
+            </select>
+        </div>
     </div>
     <!-- end of grid based data -->
-</fieldset>
-<fieldset>
-    <legend class="verbose"><?php echo I18n::__('person_legend_kind') ?></legend>
-    <?php foreach (R::findAll('personkind') as $_id => $_personkind): ?>
-    <div class="row">
-        <input
-            type="hidden"
-            name="dialog[sharedPersonkind][<?php echo $_personkind->getId() ?>][type]"
-            value="personkind" />
-        <input
-            type="hidden"
-            name="dialog[sharedPersonkind][<?php echo $_personkind->getId() ?>][id]"
-            value="0" />
-        <label
-            for="person-personkind-<?php echo $_personkind->getId() ?>"
-            class="cb"><?php echo htmlspecialchars($_personkind->name) ?></label>
-        <input
-            type="checkbox"
-            id="person-personkind-<?php echo $_personkind->getId() ?>"
-            name="dialog[sharedPersonkind][<?php echo $_personkind->getId() ?>][id]"
-            value="<?php echo $_personkind->getId() ?>"
-            <?php echo (isset($_personkinds[$_personkind->getId()])) ? 'checked="checked"' : '' ?> />
-    </div>
-    <?php endforeach ?>
 </fieldset>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('person_legend_email') ?></legend>
@@ -368,7 +360,8 @@ $_personkinds = $record->sharedPersonkind;
             'person-machine' => I18n::__('person_machine_tab'),
             'person-treaty' => I18n::__('person_treaty_tab'),
             'person-bankaccount' => I18n::__('person_bankaccount_tab'),
-            'person-transaction' => I18n::__('person_transaction_tab')
+            'person-transaction' => I18n::__('person_transaction_tab'),
+            'person-correspondence' => I18n::__('person_correspondence_tab')
         ),
         'default_tab' => 'person-address'
     )) ?>
@@ -489,6 +482,19 @@ $_personkinds = $record->sharedPersonkind;
             id="person-<?php echo $record->getId() ?>-transaction-container"
             class="container attachable detachable sortable">
             <?php Flight::render('model/person/tables/transaction', array(
+                'record' => $record
+            )) ?>
+        </div>
+    </fieldset>
+    <fieldset
+        id="person-correspondence"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('person_legend_correspondence_tab') ?></legend>
+        <div
+            id="person-<?php echo $record->getId() ?>-correspondence-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/person/tables/correspondence', array(
                 'record' => $record
             )) ?>
         </div>

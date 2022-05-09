@@ -53,6 +53,16 @@ class Model_Correspondence extends Model
                 'width' => '15rem'
             ],
             [
+                'name' => 'confidential',
+                'sort' => [
+                    'name' => 'confidential'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '15rem'
+            ],
+            [
                 'name' => 'subject',
                 'sort' => [
                     'name' => 'subject'
@@ -213,6 +223,16 @@ class Model_Correspondence extends Model
     }
 
     /**
+     * Returns the name of the person (customer)
+     *
+     * @return string
+     */
+    public function personName()
+    {
+        return $this->bean->getPerson()->name;
+    }
+
+    /**
      * Return the contact bean.
      *
      * @return $contact
@@ -223,16 +243,6 @@ class Model_Correspondence extends Model
             $this->bean->contact = R::dispense('contact');
         }
         return $this->bean->contact;
-    }
-
-    /**
-     * Returns the name of the person (customer)
-     *
-     * @return string
-     */
-    public function personName()
-    {
-        return $this->bean->getPerson()->name;
     }
 
     /**

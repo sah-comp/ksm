@@ -394,6 +394,52 @@ class Model_Treaty extends Model
         return $this->bean->getPerson()->name;
     }
 
+
+
+    /**
+     * Return the contact bean.
+     *
+     * @return $contact
+     */
+    public function getContact()
+    {
+        if (! $this->bean->contact) {
+            $this->bean->contact = R::dispense('contact');
+        }
+        return $this->bean->contact;
+    }
+
+    /**
+     * Returns wether the correspondence can be emailed or not.
+     *
+     * @param string $emailtype
+     * @return bool
+     */
+    public function hasEmail(): bool
+    {
+        if ($this->bean->getContact()->getId()) {
+            return true;
+        } else {
+            if ($this->bean->getPerson()->hasEmail()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a string that can be used as a CSS class signaling if the transaction was emailed or not.
+     *
+     * @return string
+     */
+    public function wasEmailed(): string
+    {
+        if ($this->bean->sent) {
+            return 'sent';
+        }
+        return 'pending';
+    }
+
     /**
      * Return the machine bean.
      *
@@ -552,7 +598,16 @@ class Model_Treaty extends Model
      */
     public function getDependents($person)
     {
+        if (!$person->getId()) {
+            return [
+                'contacts' => [],
+                'locations' => []
+            ];
+        }
+        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id AND ci.label = 'email' WHERE c.person_id = :pid";
+        $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
         $result = [
+            'contacts' => $contacts, //$person->with("ORDER BY name")->ownContact
             'locations' => $person->with("ORDER BY name")->ownLocation
         ];
         return $result;
@@ -649,6 +704,10 @@ SQL;
         if (!$this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
+        }
+        if (!$this->bean->contact_id) {
+            $this->bean->contact_id = null;
+            unset($this->bean->contact);
         }
 
         if (!$this->bean->getId()) {

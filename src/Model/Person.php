@@ -113,6 +113,20 @@ class Model_Person extends Model
                 ),
                 'width' => '5rem'
             ),
+            [
+                'name' => 'personkind.name',
+                'sort' => [
+                    'name' => 'personkind.name'
+                ],
+                'callback' => [
+                    'name' => 'personkindName'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'sql' => 'getPersonkinds'
+                ],
+                'width' => '8rem'
+            ],
             array(
                 'name' => 'organization',
                 'sort' => array(
@@ -256,6 +270,8 @@ SQL;
 		    {$this->bean->getMeta('type')}
         LEFT JOIN
             address ON address.person_id = person.id AND address.label = 'billing'
+        LEFT JOIN
+            personkind ON personkind.id = person.personkind_id
 		WHERE
 		    {$where}
 SQL;
@@ -268,6 +284,40 @@ SQL;
             $sql .= " LIMIT {$offset}, {$limit}";
         }
         return $sql;
+    }
+
+    /**
+     * Returns associated array of personkind beans for use in scaffold filter.
+     *
+     * @return array
+     */
+    public function getPersonkinds(): array
+    {
+        $sql = "SELECT name, name FROM personkind ORDER BY name";
+        return R::getAssoc($sql);
+    }
+
+    /**
+     * Return the personkind bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getPersonkind()
+    {
+        if (! $this->bean->personkind) {
+            $this->bean->personkind = R::dispense('personkind');
+        }
+        return $this->bean->personkind;
+    }
+
+    /**
+     * Returns the name of the personkind.
+     *
+     * @return string
+     */
+    public function personkindName()
+    {
+        return $this->bean->getPersonkind()->name;
     }
 
     /**
@@ -425,6 +475,10 @@ SQL;
         if (!$this->bean->discount_id) {
             $this->bean->discount_id = null;
             unset($this->bean->discount);
+        }
+        if (!$this->bean->personkind_id) {
+            $this->bean->personkind_id = null;
+            unset($this->bean->personkind);
         }
 
         // set the phonetic names

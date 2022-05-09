@@ -98,10 +98,102 @@ class Controller_Treaty extends Controller_Scaffold
         $this->treaty = $this->record;
     }
 
+    /**
+     * Sends a email to the treaty recipient, cc to user who clicked button.
+     */
+    public function mail()
+    {
+        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $user = Flight::get('user');
+
+        $filename = I18n::__('treaty_pdf_filename', null, [$this->record->getFilename()]);
+        $docname = I18n::__('treaty_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf = $this->pdf(true);
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+
+        if ($smtp = $this->company->smtp()) {
+            $mail->SMTPDebug = 4;                                 // Set debug mode, 1 = err/msg, 2 = msg
+            /**
+             * uncomment this block to get verbose error logging in your error log file
+             */
+
+            $mail->Debugoutput = function ($str, $level) {
+                error_log("debug level $level; message: $str");
+            };
+
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = $smtp['host'];                          // Specify main and backup server
+            if ($smtp['auth']) {
+                $mail->SMTPAuth = true;                           // Enable SMTP authentication
+            } else {
+                $mail->SMTPAuth = false;                          // Disable SMTP authentication
+            }
+            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Username = $smtp['user'];                      // SMTP username
+            $mail->Password = $smtp['password'];                  // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+
+            /**
+             * @see https://stackoverflow.com/questions/30371910/phpmailer-generates-php-warning-stream-socket-enable-crypto-peer-certificate
+             */
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
+
+        $mail->CharSet = 'UTF-8';
+        $mail->AddEmbeddedImage(__DIR__ . '/../../public/img/ksm-email-signature-icon.jpg', 'ksm-mascot');
+        $mail->setFrom($this->company->emailnoreply, $this->company->legalname);
+        $mail->addReplyTo($this->company->email, $this->company->legalname);
+        $mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
+        $mail->addBCC($user->email, $user->name);
+        $mail->WordWarp = 50;
+        $mail->isHTML(true);
+        $mail->Subject = $docname;
+
+        ob_start();
+        Flight::render('model/treaty/mail/html', array(
+            'record' => $this->record,
+            'company' => $this->company,
+            'user' => $user
+        ));
+        $html = ob_get_clean();
+        ob_start();
+        Flight::render('model/treaty/mail/text', array(
+            'record' => $this->record,
+            'company' => $this->company,
+            'user' => $user
+        ));
+        $text = ob_get_clean();
+        $mail->Body = $html;
+        $mail->AltBody = $text;
+        $attachment = $mpdf->Output('', 'S');
+
+        $mail->addStringAttachment($attachment, $filename);
+        if ($mail->send()) {
+            $this->record->sent = true;
+            Flight::get('user')->notify(I18n::__("treaty_mail_done"), 'success');
+        } else {
+            $this->record->sent = false;
+            Flight::get('user')->notify(I18n::__("treaty_mail_fail"), 'error');
+        }
+        R::store($this->record);
+        $this->redirect("/admin/treaty/edit/{$this->record->getId()}");
+        exit();
+    }
+
     /*
      * Generate a PDF with data deriving from the addressed contract bean.
+     *
+     * @param bool $returnAsAttachment
+     * @return mixed
      */
-    public function pdf()
+    public function pdf($returnMpdf = false)
     {
         $this->treaty->signdate = date('Y-m-d');
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
@@ -115,6 +207,9 @@ class Controller_Treaty extends Controller_Scaffold
         $this->text = $this->substitute();
         $this->text = $this->substituteLimb();
         $mpdf = $this->generatePDF($docname);
+        if ($returnMpdf) {
+            return $mpdf;
+        }
         $mpdf->Output($filename, 'D');
         exit;
     }
@@ -319,26 +414,25 @@ HTML;
     }
 
     /**
-     * Rerenders the "person-dependent" part of an treaty form.
+     * Rerenders the "person-dependent" part of an correspondence form.
      *
-     * @return string
+     * @todo documentation
+     * Requires the following data-* in your html:
+     *  - data-extra="correspondence-person-id"
+     *  - data-dynamic="URL TO THIS FUNCTION"
+     *
+     * @return JSONP
      */
     public function dependent()
     {
         $person = R::load('person', Flight::request()->data->person_id);
-        //error_log('Person ' . $person->nickname);
-        $dependents = $this->treaty->getDependents($person);
-        if ($person->getId() && $this->treaty->getId()) {
-            // This is intended to helo "Live-Editor" a little, but does it? Not really.
-            R::exec("UPDATE treaty SET person_id = :person_id WHERE id = :treaty_id LIMIT 1", [
-                'person_id' => $person->getId(),
-                'treaty_id' => $this->treaty->getId()
-            ]);
-        }
+        $dependents = $this->record->getDependents($person);
+        $this->record->person = $person;
         ob_start();
-        Flight::render('model/treaty/location', [
-            'record' => $this->treaty,
-            'locations' => $dependents['locations']
+        Flight::render('model/treaty/contact', [
+            'person' => $person,
+            'record' => $this->record,
+            'contacts' => $dependents['contacts']
         ]);
         $html = ob_get_contents();
         ob_end_clean();
