@@ -138,44 +138,73 @@
             value="<?php echo htmlspecialchars($record->subject) ?>"
             required="required" />
     </div>
-    <div class="row <?php echo ($record->hasError('payload')) ? 'error' : ''; ?>">
-        <input id="correspondence-payload" type="hidden" name="dialog[payload]" value="">
-        <div class="quill-wrapper">
-            <!-- Create toolbar container -->
-            <div id="quill-toolbar">
-                <span class="quill-spacer">
-                    <select class="ql-size" title="<?php echo I18n::__('quill-font-size') ?>">
-                        <option value="small"><?php echo I18n::__('quill-font-size-small') ?></option>
-                        <option selected><?php echo I18n::__('quill-font-size-normal') ?></option>
-                        <option value="large"><?php echo I18n::__('quill-font-size-large') ?></option>
-                        <option value="huge"><?php echo I18n::__('quill-font-size-huge') ?></option>
-                    </select>
-                </span>
-
-                <span class="quill-spacer">
-                    <button class="ql-bold" title="<?php echo I18n::__('quill-font-weight-bold') ?>"></button>
-                    <button class="ql-italic" title="<?php echo I18n::__('quill-font-style-italic') ?>"></button>
-                    <button class="ql-underline" title="<?php echo I18n::__('quill-font-decoration-underline') ?>"></button>
-                    <button class="ql-strike" title="<?php echo I18n::__('quill-font-decoration-strike') ?>"></button>
-                </span>
-
-                <span class="quill-spacer">
-                    <button class="ql-header" value="1" title="<?php echo I18n::__('quill-headline-1') ?>"></button>
-                    <button class="ql-header" value="2" title="<?php echo I18n::__('quill-headline-2') ?>"></button>
-                </span>
-
-                <span class="quill-spacer">
-                    <button class="ql-list" value="ordered" title="<?php echo I18n::__('quill-list-ordered') ?>"></button>
-                    <button class="ql-list" value="bullet" title="<?php echo I18n::__('quill-list-unordered') ?>"></button>
-                </span>
-
-                <span class="quill-spacer">
-                    <select class="ql-color" title="<?php echo I18n::__('quill-font-color') ?>"></select>
-                    <select class="ql-background" title="<?php echo I18n::__('quill-background-color') ?>"></select>
-                </span>
-            </div>
-            <div id="correspondence-payload-editor"><?php echo nl2br($record->payload) ?></div>
-        </div>
-    </div>
 </fieldset>
+<div class="tab-container">
+    <?php Flight::render('shared/navigation/tabs', [
+        'tab_id' => 'correspondence-tabs',
+        'tabs' => [
+            'correspondence-mail' => I18n::__('correspondence_mail_tab'),
+            'correspondence-artifact' => I18n::__('correspondence_artifact_tab')
+        ],
+        'default_tab' => 'correspondence-mail'
+    ]) ?>
+    <fieldset
+        id="correspondence-mail"
+        class="tab"
+        style="display: block;">
+        <legend class="verbose"><?php echo I18n::__('correspondence_legend_mail') ?></legend>
+        <div class="row <?php echo ($record->hasError('payload')) ? 'error' : ''; ?>">
+            <input id="correspondence-payload" type="hidden" name="dialog[payload]" value="">
+            <div class="quill-wrapper">
+                <!-- Create toolbar container -->
+                <div id="quill-toolbar">
+                    <span class="quill-spacer">
+                        <select class="ql-size" title="<?php echo I18n::__('quill-font-size') ?>">
+                            <option value="small"><?php echo I18n::__('quill-font-size-small') ?></option>
+                            <option selected><?php echo I18n::__('quill-font-size-normal') ?></option>
+                            <option value="large"><?php echo I18n::__('quill-font-size-large') ?></option>
+                            <option value="huge"><?php echo I18n::__('quill-font-size-huge') ?></option>
+                        </select>
+                    </span>
+
+                    <span class="quill-spacer">
+                        <button class="ql-bold" title="<?php echo I18n::__('quill-font-weight-bold') ?>"></button>
+                        <button class="ql-italic" title="<?php echo I18n::__('quill-font-style-italic') ?>"></button>
+                        <button class="ql-underline" title="<?php echo I18n::__('quill-font-decoration-underline') ?>"></button>
+                        <button class="ql-strike" title="<?php echo I18n::__('quill-font-decoration-strike') ?>"></button>
+                    </span>
+
+                    <span class="quill-spacer">
+                        <button class="ql-header" value="1" title="<?php echo I18n::__('quill-headline-1') ?>"></button>
+                        <button class="ql-header" value="2" title="<?php echo I18n::__('quill-headline-2') ?>"></button>
+                    </span>
+
+                    <span class="quill-spacer">
+                        <button class="ql-list" value="ordered" title="<?php echo I18n::__('quill-list-ordered') ?>"></button>
+                        <button class="ql-list" value="bullet" title="<?php echo I18n::__('quill-list-unordered') ?>"></button>
+                    </span>
+
+                    <span class="quill-spacer">
+                        <select class="ql-color" title="<?php echo I18n::__('quill-font-color') ?>"></select>
+                        <select class="ql-background" title="<?php echo I18n::__('quill-background-color') ?>"></select>
+                    </span>
+                </div>
+                <div id="correspondence-payload-editor"><?php echo nl2br($record->payload) ?></div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset
+        id="correspondence-artifact"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('correspondence_legend_artifact') ?></legend>
+        <div
+            id="correspondence-<?php echo $record->getId() ?>-contract-container"
+            class="container attachable detachable sortable">
+            <?php Flight::render('model/correspondence/tables/artifact', array(
+                'record' => $record
+            )) ?>
+        </div>
+    </fieldset>
+</div>
 <!-- end of correspondence edit form -->

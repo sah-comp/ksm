@@ -160,10 +160,12 @@ class Controller_Correspondence extends Controller_Scaffold
         $text = ob_get_clean();
         $mail->Body = $html;
         $mail->AltBody = $text;
-        /*
-        $attachment = $mpdf->Output('', 'S');
-        $mail->addStringAttachment($attachment, $filename);
-        */
+
+        // add artifact(s) as attachment
+        foreach ($this->record->ownArtifact as $id => $artifact) {
+            $mail->AddAttachment(Flight::get('upload_dir') . '/' . $artifact->filename, $artifact->name);
+        }
+
         if ($mail->send()) {
             $this->record->sent = true;
             Flight::get('user')->notify(I18n::__("correspondence_mail_done"), 'success');

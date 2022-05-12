@@ -1,10 +1,16 @@
-<?php echo nl2br(strip_tags(Flight::textile(vsprintf($record->getContracttype()->emailtext, [
-    $record->getContracttype()->name,
-    $record->number,
-    $record->localizedDate('bookingdate'),
-    $user->email,
-    $user->name
-])))) ?>
+<?php
+if ($record->mailbody == ''):
+    echo nl2br(strip_tags(Flight::textile(vsprintf($record->getContracttype()->emailtext, [
+        $record->getContracttype()->name,
+        $record->number,
+        $record->localizedDate('bookingdate'),
+        $user->email,
+        $user->name
+    ]))));
+else:
+    echo strip_tags($record->mailbody);
+endif;
+?>
 --
 <?php echo htmlspecialchars($company->legalname) ?>
 <?php echo htmlspecialchars($company->street) ?>

@@ -110,7 +110,8 @@ class Model_Correspondence extends Model
     {
         return [
             '/js/quill.min',
-            '/js/correspondence'
+            '/js/correspondence',
+            '/js/datatables.min'
         ];
     }
 
@@ -302,6 +303,25 @@ SQL;
     }
 
     /**
+     * Returns a the given string safely to use as filename or url.
+     *
+     * @link http://stackoverflow.com/questions/2668854/sanitizing-strings-to-make-them-url-and-filename-safe
+     *
+     * What it does:
+     * - Replace all weird characters with dashes
+     * - Only allow one dash separator at a time (and make string lowercase)
+     *
+     * @param string $string the string to clean
+     * @param bool $is_filename false will allow additional filename characters
+     * @return string
+     */
+    public function sanitizeFilename($string = '', $is_filename = false)
+    {
+        $string = preg_replace('/[^\w\-'. ($is_filename ? '~_\.' : ''). ']+/u', '-', $string);
+        return mb_strtolower(preg_replace('/--+/u', '-', $string));
+    }
+
+    /**
      * Dispense.
      */
     public function dispense()
@@ -319,6 +339,27 @@ SQL;
     public function update()
     {
         parent::update();
+        $files = reset(Flight::request()->files);
+        $file = reset($files);
+        if (!empty($file) && !$file['error']) {
+            if ($file['error']) {
+                $this->addError($file['error'], 'file');
+                throw new Exception('fileupload error ' . $file['error']);
+            }
+            $file_parts = pathinfo($file['name']);
+            $orgname = $file['name'];
+            $extension = strtolower($file_parts['extension']);
+            $sanename = $this->sanitizeFilename($file_parts['filename']);
+            $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
+            if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
+                $this->addError('move_upload_file_failed', 'file');
+                throw new Exception('move_upload_file_failed');
+            }
+            $artifact = R::dispense('artifact');
+            $artifact->name = $orgname;
+            $artifact->filename = $filename;
+            $this->bean->ownArtifact[] = $artifact;
+        }
         // customer (person)
         if (!$this->bean->person_id) {
             $this->bean->person_id = null;
