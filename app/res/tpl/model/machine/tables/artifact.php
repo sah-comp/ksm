@@ -1,6 +1,6 @@
 <?php
 /**
- * List all appointments
+ * List all artifacts
  */
 Flight::render('script/datatable_config');
 // load our contracts from which the machines are taken
