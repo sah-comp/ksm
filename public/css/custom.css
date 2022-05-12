@@ -645,10 +645,15 @@ table.scaffold a.additional-info {
     display: inline-block;
     width: 16px;
     height: 16px;
-    background: url(/img/glyphicons/glyphicons_088_adress_book.png);
+    background-image: url(/img/glyphicons/glyphicons_088_adress_book.png);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: 12px 12px;
+    margin-right: 0.25rem;
+}
+
+table.scaffold a.additional-info.position {
+    background-image: url(/img/glyphicons/glyphicons_119_table.png);
 }
 
 table.service a.tooltip-open,

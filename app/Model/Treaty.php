@@ -604,7 +604,7 @@ class Model_Treaty extends Model
                 'locations' => []
             ];
         }
-        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id AND ci.label = 'email' WHERE c.person_id = :pid";
+        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
         $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
         $result = [
             'contacts' => $contacts, //$person->with("ORDER BY name")->ownContact

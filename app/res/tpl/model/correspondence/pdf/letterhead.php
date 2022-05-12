@@ -94,7 +94,7 @@
     <table width="100%">
         <tr>
             <td style="width: 60%; vertical-align: top;">
-                <?php echo $record->subject ?>
+                <b><?php echo $record->subject ?></b>
             </td>
             <td style="width: 40%; vertical-align: top; text-align: right;">
                 <?php echo $record->localizedDate('writtenon') ?>

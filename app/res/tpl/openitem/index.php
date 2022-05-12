@@ -165,7 +165,7 @@ $_colspan = 8;
                         <span id="dunning-pdf-<?php echo $_record->getId() ?>" class="<?php echo $_record->getDunning()->getId() ? '' : 'hidden' ?>">
                             <a href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>" class="ir dunning-pdf" title="<?php echo I18n::__('openitem_action_title_dunning_pdf') ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
                             <?php if ($_record->hasEmail('dunningemail')): ?>
-                                <a href="<?php echo Url::build('/openitem/mail/%s', [$_record->getId()]) ?>" class="ir dunning-mail" title="<?php echo I18n::__('openitem_action_title_dunning_mail') ?>"><?php echo I18n::__('openitem_action_dunning_mail') ?></a>
+                                <a href="<?php echo Url::build('/openitem/mail/%s', [$_record->getId()]) ?>" class="ir confirm dunning-mail" title="<?php echo I18n::__('openitem_action_title_dunning_mail') ?>"><?php echo I18n::__('openitem_action_dunning_mail') ?></a>
                             <?php endif; ?>
                         </span>
                     </td>
