@@ -247,6 +247,33 @@ class Model_Correspondence extends Model
     }
 
     /**
+     * Returns the email address of the contact or of the (person) customer.
+     *
+     * @return string
+     */
+    public function toAddress()
+    {
+        if ($this->bean->contact->getId()) {
+            return $this->bean->contact->getEmailaddress();
+        }
+        return $this->bean->person->email;
+        ;
+    }
+
+    /**
+     * Returns the name of the contact or of the (person) customer.
+     *
+     * @return string
+     */
+    public function toName()
+    {
+        if ($this->bean->contact->getId()) {
+            return $this->bean->contact->name;
+        }
+        return $this->bean->person->name;
+    }
+
+    /**
      * Returns a string that can be used as a CSS class signaling if the transaction was emailed or not.
      *
      * @return string

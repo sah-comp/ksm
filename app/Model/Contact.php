@@ -59,6 +59,18 @@ class Model_Contact extends Model
     }
 
     /**
+     * Returns the first email address of this contact.
+     *
+     * @return string
+     */
+    public function getEmailaddress()
+    {
+        $sql = "SELECT value AS email FROM contactinfo WHERE contact_id = :cid AND label = 'email' LIMIT 1";
+        $email = R::getCell($sql, [':cid' => $this->bean->getId()]);
+        return $email;
+    }
+
+    /**
      * Returns a concated string of all contactinfo beans.
      *
      * @return string

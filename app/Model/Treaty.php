@@ -394,7 +394,32 @@ class Model_Treaty extends Model
         return $this->bean->getPerson()->name;
     }
 
+    /**
+     * Returns the email address of the contact or of the (person) customer.
+     *
+     * @return string
+     */
+    public function toAddress()
+    {
+        if ($this->bean->contact->getId()) {
+            return $this->bean->contact->getEmailaddress();
+        }
+        return $this->bean->person->email;
+        ;
+    }
 
+    /**
+     * Returns the name of the contact or of the (person) customer.
+     *
+     * @return string
+     */
+    public function toName()
+    {
+        if ($this->bean->contact->getId()) {
+            return $this->bean->contact->name;
+        }
+        return $this->bean->person->name;
+    }
 
     /**
      * Return the contact bean.
