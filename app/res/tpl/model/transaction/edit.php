@@ -109,6 +109,8 @@
                     'transaction-person-id' => 'id',
                     'transaction-person-id-shadow' => 'id',
                     'transaction-postaladdress' => 'postaladdress',
+                    'transaction-billingemail' => 'billingemail',
+                    'transaction-dunningemail' => 'dunningemail',
                     'transaction-duedays' => 'duedays',
                     'transaction-discount-id' => 'discount_id'
                 ]); ?>'
@@ -129,7 +131,8 @@
             'transaction-head' => I18n::__('transaction_tab_head'),
             'transaction-position' => I18n::__('transaction_tab_position'),
             'transaction-foot' => I18n::__('transaction_tab_foot'),
-            'transaction-booking' => I18n::__('transaction_tab_booking')
+            'transaction-booking' => I18n::__('transaction_tab_booking'),
+            'transaction-email' => I18n::__('transaction_tab_email')
         ),
         'default_tab' => 'transaction-head'
     )) ?>
@@ -341,6 +344,34 @@
                     readonly="readonly"
                     value="<?php echo htmlspecialchars($record->decimal('gros')) ?>">
             </div>
+        </div>
+    </fieldset>
+    <fieldset
+        id="transaction-email"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('transaction_legend_email') ?></legend>
+        <div class="row <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-billingemail">
+                <?php echo I18n::__('transaction_label_billingemail') ?>
+            </label>
+            <input
+                id="transaction-billingemail"
+                type="email"
+                name="dialog[billingemail]"
+                value="<?php echo htmlspecialchars($record->billingemail) ?>">
+        </div>
+        <div class="row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-dunningemail">
+                <?php echo I18n::__('transaction_label_dunningemail') ?>
+            </label>
+            <input
+                id="transaction-dunningemail"
+                type="email"
+                name="dialog[dunningemail]"
+                value="<?php echo htmlspecialchars($record->dunningemail) ?>">
         </div>
     </fieldset>
     <fieldset

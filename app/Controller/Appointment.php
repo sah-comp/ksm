@@ -29,7 +29,7 @@ class Controller_Appointment extends Controller
      *
      * @param int $id ID of the contract to output as PDF
      */
-    public function __construct($id = null)
+    public function __construct($base_url, $type, $id = null)
     {
         session_start();
         Auth::check();

@@ -96,6 +96,95 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /**
+     * Sends a email to the transaction recipient, cc to user who clicked button.
+     */
+    public function mail()
+    {
+        $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $user = Flight::get('user');
+
+        $filename = I18n::__('transaction_pdf_filename', null, [$this->record->getFilename()]);
+        $docname = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf = $this->generatePDF('letterhead', $docname); //when sending email, it can only be letterhead
+
+        $mail = new PHPMailer\PHPMailer\PHPMailer();
+
+        if ($smtp = $this->company->smtp()) {
+            $mail->SMTPDebug = 4;                                 // Set debug mode, 1 = err/msg, 2 = msg
+            /**
+             * uncomment this block to get verbose error logging in your error log file
+             */
+
+            $mail->Debugoutput = function ($str, $level) {
+                error_log("debug level $level; message: $str");
+            };
+
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = $smtp['host'];                          // Specify main and backup server
+            if ($smtp['auth']) {
+                $mail->SMTPAuth = true;                           // Enable SMTP authentication
+            } else {
+                $mail->SMTPAuth = false;                          // Disable SMTP authentication
+            }
+            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Username = $smtp['user'];                      // SMTP username
+            $mail->Password = $smtp['password'];                  // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+
+            /**
+             * @see https://stackoverflow.com/questions/30371910/phpmailer-generates-php-warning-stream-socket-enable-crypto-peer-certificate
+             */
+            $mail->SMTPOptions = array(
+                'ssl' => array(
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                    'allow_self_signed' => true
+                )
+            );
+        }
+
+        $mail->CharSet = 'UTF-8';
+        $mail->AddEmbeddedImage(__DIR__ . '/../../public/img/ksm-email-signature-icon.jpg', 'ksm-mascot');
+        $mail->setFrom($this->company->emailnoreply, $this->company->legalname);
+        $mail->addReplyTo($this->company->email, $this->company->legalname);
+        $mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
+        $mail->addBCC($user->email, $user->name);
+        $mail->WordWarp = 50;
+        $mail->isHTML(true);
+        $mail->Subject = $docname;
+
+        ob_start();
+        Flight::render('model/transaction/mail/html', array(
+            'record' => $this->record,
+            'company' => $this->company,
+            'user' => $user
+        ));
+        $html = ob_get_clean();
+        ob_start();
+        Flight::render('model/transaction/mail/text', array(
+            'record' => $this->record,
+            'company' => $this->company,
+            'user' => $user
+        ));
+        $text = ob_get_clean();
+        $mail->Body = $html;
+        $mail->AltBody = $text;
+        $attachment = $mpdf->Output('', 'S');
+
+        $mail->addStringAttachment($attachment, $filename);
+        if ($mail->send()) {
+            $this->record->sent = true;
+            Flight::get('user')->notify(I18n::__("transaction_mail_done"), 'success');
+        } else {
+            $this->record->sent = false;
+            Flight::get('user')->notify(I18n::__("transaction_mail_fail"), 'error');
+        }
+        R::store($this->record);
+        $this->redirect("/admin/transaction/edit/{$this->record->getId()}");
+        exit();
+    }
+
+    /**
      * Generate a PDF with all (filtered) records.
      */
     public function pdfList()
@@ -135,14 +224,30 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /*
-     * Generate a PDF with data deriving from the addressed transaction bean.
+     * Output the PDF.
+     *
+     * @uses generatePDF()
      */
     public function pdfSingleTransaction()
     {
-        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $filename = I18n::__('transaction_pdf_filename', null, [$this->record->getFilename()]);
         $docname = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf = $this->generatePDF($layout, $docname);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /**
+     * Generates a PDF using the mpdf library.
+     *
+     * @param string $layout which template to use for rendering
+     * @param string $docname name of the template
+     * @return \Mpdf\Mpdf
+     */
+    private function generatePDF($layout = 'letterhead', $docname = 'Transaction')
+    {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
@@ -160,8 +265,7 @@ class Controller_Transaction extends Controller_Scaffold
         //echo $html;
         //exit;
         $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, 'D');
-        exit;
+        return $mpdf;
     }
 
     /**

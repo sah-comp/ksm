@@ -24,6 +24,16 @@ date_default_timezone_set(CINNEBAR_DATE_TIMEZONE);
 define('CINNEBAR_INSTALL_PASS', password_hash(CINNEBAR_INSTALL_PASSWORD, PASSWORD_DEFAULT));
 
 /**
+ * Define a test email address.
+ */
+define('KSM_EMAIL_TESTADDRESS', 'stephan@hombergs.org');
+
+/**
+ * Define a test email name.
+ */
+define('KSM_EMAIL_TESTNAME', 'SAH COMPANY');
+
+/**
  * Error logging on.
  */
 Flight::set('flight.log_errors', true);
@@ -207,3 +217,18 @@ register_shutdown_function('session_write_close');
  * the session name to ensure that older sessions are no longer used.
  */
 session_name(CINNEBAR_SESSION_COOKIE_NAME);
+
+/**
+ * Check for freeze flag.
+ *
+ * When the database is not frozen we log changes made to the database
+ * in log files to keep track of migration.
+ */
+if (!CINNEBAR_DB_FREEZE_FLAG) {
+    $ml = new Logger_Migration(sprintf(__DIR__ . '/../../logs/migration_%s.sql', date('Y-m-d')));
+
+    R::getDatabaseAdapter()
+        ->getDatabase()
+        ->setLogger($ml)
+        ->setEnableLogging(true);
+}

@@ -160,11 +160,7 @@ Flight::render('script/datatable_config');
                     </td>
                     <td
                         data-filter="<?php echo htmlspecialchars($_person->name) ?>">
-                        <?php
-                        Flight::render('model/person/tooltip/contactinfo', [
-                            'record' => $_person
-                        ]);
-                        ?>
+                        <a href="<?php echo Url::build(sprintf('/admin/appointment/additional/%d/contactinfo', $_record->getId())) ?>" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                             title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"

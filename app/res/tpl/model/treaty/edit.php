@@ -190,6 +190,32 @@
                 data-scratch="treaty-person-id-shadow"
                 class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
     </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('treaty_legend_contact_location') ?></legend>
+    <div
+        id="person-dependent"
+        class="autodafe">
+
+        <?php
+        if ($record->getPerson()->getId()):
+            // The customer of this appointment is already set. No autodafe needed.
+            $_dependents = $record->getDependents($record->getPerson());
+            Flight::render('model/treaty/contact', [
+                'person' => $record->getPerson(),
+                'record' => $record,
+                'contacts' => $_dependents['contacts']
+            ]);
+        else:
+            // lazy load, after hunting that heretic.
+        ?>
+        <div class="heretic"><?php echo I18n::__('treaty_person_select_before_me') ?></div>
+        <?php endif; ?>
+
+    </div>
+</fieldset>
+<fieldset>
+    <legend class="verbose"><?php echo I18n::__('treaty_serialnumber_legend') ?></legend>
     <div class="row <?php echo ($record->hasError('serialnumber')) ? 'error' : ''; ?>">
         <label
             for="treaty-serialnumber">
@@ -208,7 +234,8 @@
         'tab_id' => 'treaty-tabs',
         'tabs' => array(
             'treaty-limb' => I18n::__('treaty_limb_tab'),
-            'treaty-note' => I18n::__('treaty_note_tab')
+            'treaty-note' => I18n::__('treaty_note_tab'),
+            'treaty-email' => I18n::__('treaty_email_tab')
         ),
         'default_tab' => 'treaty-limb'
     )) ?>
@@ -243,6 +270,24 @@
                 rows="5"
                 cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
             <p class="info"><?php echo I18n::__('treaty_info_note') ?></p>
+        </div>
+    </fieldset>
+    <fieldset
+        id="treaty-email"
+        class="tab"
+        style="display: none;">
+        <legend class="verbose"><?php echo I18n::__('treaty_legend_email') ?></legend>
+        <div class="row <?php echo ($record->hasError('mailbody')) ? 'error' : ''; ?>">
+            <label
+                for="treaty-mailbody">
+                <?php echo I18n::__('treaty_label_mailbody') ?>
+            </label>
+            <textarea
+                id="treaty-mailbody"
+                name="dialog[mailbody]"
+                rows="5"
+                cols="60"><?php echo htmlspecialchars($record->mailbody) ?></textarea>
+            <p class="info"><?php echo I18n::__('treaty_info_mailbody') ?></p>
         </div>
     </fieldset>
 </div>

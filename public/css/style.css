@@ -707,6 +707,14 @@ body>header>h1 {
     padding: 0;
 }
 
+#additional-info-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+}
+
 a.logo {
     display: block;
     width: 3em;
@@ -1199,6 +1207,9 @@ fieldset.tab fieldset:last-child .attach {
     position: static;
     left: auto;
     width: auto;
+    float: left;
+    top: auto;
+    margin-right: 0.5rem;
 }
 
 input[required=required] {
@@ -1328,6 +1339,10 @@ table.scaffold tr.invalid {
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
+}
+
+.panel td p {
+    white-space: normal;
 }
 
 .panel th.number,
@@ -1599,9 +1614,14 @@ img.media-preview-icon {
     z-index: 999995;
 }
 
-table thead {
+table:not(.notsticky) thead {
     position: sticky;
     top: 118px;
+}
+
+.flexi {
+    display: flex;
+    align-items: center;
 }
 
 /* ==|== non-semantic helper classes ========================================

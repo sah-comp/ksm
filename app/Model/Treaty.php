@@ -59,28 +59,27 @@ class Model_Treaty extends Model
     {
         return [
             [
-                'name' => 'number',
+                'name' => 'person.name',
                 'sort' => [
-                    'name' => 'treaty.number'
+                    'name' => 'person.name'
+                ],
+                'callback' => [
+                    'name' => 'personName'
                 ],
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '12rem'
+                'width' => '8rem'
             ],
             [
-                'name' => 'treatygroup.name',
+                'name' => 'prospect',
                 'sort' => [
-                    'name' => 'treatygroup.name'
-                ],
-                'callback' => [
-                    'name' => 'treatygroupName'
+                    'name' => 'prospect'
                 ],
                 'filter' => [
-                    'tag' => 'select',
-                    'sql' => 'getTreatygroups'
+                    'tag' => 'text'
                 ],
-                'width' => '23rem'
+                'width' => 'auto'
             ],
             [
                 'name' => 'contracttype.name',
@@ -97,6 +96,20 @@ class Model_Treaty extends Model
                 'width' => '14rem'
             ],
             [
+                'name' => 'treatygroup.name',
+                'sort' => [
+                    'name' => 'treatygroup.name'
+                ],
+                'callback' => [
+                    'name' => 'treatygroupName'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'sql' => 'getTreatygroups'
+                ],
+                'width' => '23rem'
+            ],
+            [
                 'name' => 'bookingdate',
                 'sort' => [
                     'name' => 'treaty.bookingdate'
@@ -106,29 +119,6 @@ class Model_Treaty extends Model
                 ],
                 'callback' => [
                     'name' => 'localizedDate'
-                ],
-                'width' => '8rem'
-            ],
-            [
-                'name' => 'prospect',
-                'sort' => [
-                    'name' => 'prospect'
-                ],
-                'filter' => [
-                    'tag' => 'text'
-                ],
-                'width' => 'auto'
-            ],
-            [
-                'name' => 'person.name',
-                'sort' => [
-                    'name' => 'person.name'
-                ],
-                'callback' => [
-                    'name' => 'personName'
-                ],
-                'filter' => [
-                    'tag' => 'text'
                 ],
                 'width' => '8rem'
             ],
@@ -154,6 +144,16 @@ class Model_Treaty extends Model
                     'tag' => 'text'
                 ],
                 'width' => '6rem'
+            ],
+            [
+                'name' => 'number',
+                'sort' => [
+                    'name' => 'treaty.number'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => '12rem'
             ],
             [
                 'name' => 'startdate',
@@ -394,6 +394,52 @@ class Model_Treaty extends Model
         return $this->bean->getPerson()->name;
     }
 
+
+
+    /**
+     * Return the contact bean.
+     *
+     * @return $contact
+     */
+    public function getContact()
+    {
+        if (! $this->bean->contact) {
+            $this->bean->contact = R::dispense('contact');
+        }
+        return $this->bean->contact;
+    }
+
+    /**
+     * Returns wether the correspondence can be emailed or not.
+     *
+     * @param string $emailtype
+     * @return bool
+     */
+    public function hasEmail(): bool
+    {
+        if ($this->bean->getContact()->getId()) {
+            return true;
+        } else {
+            if ($this->bean->getPerson()->hasEmail()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a string that can be used as a CSS class signaling if the transaction was emailed or not.
+     *
+     * @return string
+     */
+    public function wasEmailed(): string
+    {
+        if ($this->bean->sent) {
+            return 'sent';
+        }
+        return 'pending';
+    }
+
     /**
      * Return the machine bean.
      *
@@ -552,7 +598,16 @@ class Model_Treaty extends Model
      */
     public function getDependents($person)
     {
+        if (!$person->getId()) {
+            return [
+                'contacts' => [],
+                'locations' => []
+            ];
+        }
+        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
+        $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
         $result = [
+            'contacts' => $contacts, //$person->with("ORDER BY name")->ownContact
             'locations' => $person->with("ORDER BY name")->ownLocation
         ];
         return $result;
@@ -649,6 +704,10 @@ SQL;
         if (!$this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
+        }
+        if (!$this->bean->contact_id) {
+            $this->bean->contact_id = null;
+            unset($this->bean->contact);
         }
 
         if (!$this->bean->getId()) {

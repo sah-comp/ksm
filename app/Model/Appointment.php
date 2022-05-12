@@ -164,7 +164,7 @@ class Model_Appointment extends Model
                 ],
                 'prefix' => [
                     'callback' => [
-                        'name' => 'prefixContact'
+                        'name' => 'linkAdditionalInfo'//'prefixContact'
                     ]
                 ],
                 'width' => '8rem'
@@ -240,6 +240,29 @@ class Model_Appointment extends Model
     public function prefixContact()
     {
         Flight::render('model/person/tooltip/contactinfo', [
+            'record' => $this->bean->getPerson()
+        ]);
+    }
+
+    /**
+     * Outputs a link that will load additional information about the bean into a area
+     * on the screen. Make sure to have that place covered, as well as the callback routine.
+     *
+     * @return string
+     */
+    public function linkAdditionalInfo()
+    {
+        return '<a href="' . Url::build(sprintf('/admin/appointment/additional/%d/contactinfo', $this->bean->getId())) . '" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>';
+    }
+
+    /**
+     * Renders additional info.
+     *
+     * @return void
+     */
+    public function renderAdditional($info): void
+    {
+        Flight::render('model/person/additional/contactinfo', [
             'record' => $this->bean->getPerson()
         ]);
     }

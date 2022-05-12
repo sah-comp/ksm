@@ -7,14 +7,6 @@
     <?php Flight::render('model/transaction/style/css', ['record' => $record]) ?>
     /* Extra styles are coming in dynamicly, depending on the transaction type */
     <?php echo $record->getContracttype()->css ?>
-    @page :first {
-        margin-top: 50mm;
-        margin-bottom: 50mm;
-    }
-    @page {
-        margin-top: 55mm;
-        margin-bottom: 50mm;
-    }
     </style>
 </head>
 <body>
@@ -36,13 +28,8 @@
                 <div class="senderline">
                     <br /><br />
                 </div>
-                <div class="name">
-                    <?php echo nl2br($record->getPerson()->name) ?>
-                </div>
-                <div class="postal">
-                    <p>
-                        <?php echo nl2br(htmlspecialchars($record->getPerson()->getAddress('billing')->getFormattedAddress())) ?>
-                    </p>
+                <div class="name postal">
+                    <?php echo Flight::textile($record->postaladdress) ?>
                 </div>
             </td>
             <td style="width: 65mm; vertical-align: top;">

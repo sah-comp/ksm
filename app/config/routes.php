@@ -164,6 +164,14 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+(/@layout:[a-z]+)(/@page:[0-9]+)(/@
 });
 
 /**
+ * Route to additionally load bean information.
+ */
+Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/additional/@id:[0-9]+/@info:[a-z]+', function ($type, $id, $info) {
+    $scaffoldController = new Controller_Scaffold('/admin', $type, $id);
+    $scaffoldController->additional($info);
+});
+
+/**
  * Route to delete a related bean from another bean.
  */
 Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/detach/@subtype:[a-z]+(/@id:[0-9]+)', function ($type, $subtype, $id) {
@@ -226,10 +234,12 @@ Flight::route('(/[a-z]{2})/openitem(/@method:[a-z]+(/@id:[0-9]+))', function ($m
  *
  * @deprecated since we have the Treaty controller.
  */
+/*
 Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $contractController = new Controller_Contract($id);
     $contractController->pdf();
 });
+*/
 
 /**
  * Routes to the treaty controller to download a treaty as PDF to the client.
@@ -237,6 +247,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
 Flight::route('(/[a-z]{2})/treaty/pdf/@id:[0-9]+', function ($id) {
     $treatyController = new Controller_Treaty(null, 'treaty', $id);
     $treatyController->pdf();
+});
+
+/**
+ * Routes to the treaty controller to send a treaty PDF as email.
+ */
+Flight::route('(/[a-z]{2})/treaty/mail/@id:[0-9]+', function ($id) {
+    $treatyController = new Controller_Treaty(null, 'treaty', $id);
+    $treatyController->mail();
 });
 
 /**
@@ -272,11 +290,35 @@ Flight::route('(/[a-z]{2})/transaction/pdf(/@id:[0-9]+)', function ($id) {
 });
 
 /**
+ * Routes to the transaction controller to mail the given bean.
+ */
+Flight::route('GET (/[a-z]{2})/transaction/mail/@id:[0-9]+', function ($id) {
+    $transactionController = new Controller_Transaction(null, 'transaction', $id);
+    $transactionController->mail();
+});
+
+/**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
     $appointmentController = new Controller_Appointment(null);
     $appointmentController->pdf();
+});
+
+/**
+ * Routes to the correspondence controller to download a correspondence as PDF to the client.
+ */
+Flight::route('(/[a-z]{2})/correspondence/pdf(/@id:[0-9]+)', function ($id) {
+    $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
+    $correspondenceController->pdf();
+});
+
+/**
+ * Routes to the correspondence controller to send a correspondence by email.
+ */
+Flight::route('(/[a-z]{2})/correspondence/mail(/@id:[0-9]+)', function ($id) {
+    $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
+    $correspondenceController->mail();
 });
 
 /**
@@ -313,12 +355,12 @@ Flight::route('POST (/[a-z]{2})/appointment/set/location/person/@person_id:[0-9]
 });
 
 /**
- * Routes to the appointment controller to re-render a part of the appointment edit form,
+ * Routes to the @type controller to re-render a part of the @type edit form,
  * depending on the person selected in the autocomplete field.
  */
 Flight::route('POST (/[a-z]{2})/@type:[a-z]+/@id:[0-9]+/person/changed(/)', function ($type, $id) {
     $ctrl = 'Controller_'.ucfirst($type);
-    $controller = new $ctrl($id);
+    $controller = new $ctrl(null, $type, $id);
     $controller->dependent();
 });
 

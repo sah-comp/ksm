@@ -62,6 +62,19 @@ class Model_Person extends Model
     }
 
     /**
+     * Returns wether the record has a email address or not.
+     *
+     * @return bool
+     */
+    public function hasEmail(): bool
+    {
+        if ($this->bean->email) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @return bool
@@ -100,6 +113,20 @@ class Model_Person extends Model
                 ),
                 'width' => '5rem'
             ),
+            [
+                'name' => 'personkind.name',
+                'sort' => [
+                    'name' => 'personkind.name'
+                ],
+                'callback' => [
+                    'name' => 'personkindName'
+                ],
+                'filter' => [
+                    'tag' => 'select',
+                    'sql' => 'getPersonkinds'
+                ],
+                'width' => '8rem'
+            ],
             array(
                 'name' => 'organization',
                 'sort' => array(
@@ -193,7 +220,9 @@ class Model_Person extends Model
                     person.name AS value,
                     person.note AS note,
                     person.duedays AS duedays,
-                    person.discount_id AS discount_id
+                    person.discount_id AS discount_id,
+                    if (person.billingemail != '', billingemail, email) AS billingemail,
+                    if (person.dunningemail != '', dunningemail, email) AS dunningemail
                 FROM
                     person
                 LEFT JOIN
@@ -241,6 +270,8 @@ SQL;
 		    {$this->bean->getMeta('type')}
         LEFT JOIN
             address ON address.person_id = person.id AND address.label = 'billing'
+        LEFT JOIN
+            personkind ON personkind.id = person.personkind_id
 		WHERE
 		    {$where}
 SQL;
@@ -253,6 +284,40 @@ SQL;
             $sql .= " LIMIT {$offset}, {$limit}";
         }
         return $sql;
+    }
+
+    /**
+     * Returns associated array of personkind beans for use in scaffold filter.
+     *
+     * @return array
+     */
+    public function getPersonkinds(): array
+    {
+        $sql = "SELECT name, name FROM personkind ORDER BY name";
+        return R::getAssoc($sql);
+    }
+
+    /**
+     * Return the personkind bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getPersonkind()
+    {
+        if (! $this->bean->personkind) {
+            $this->bean->personkind = R::dispense('personkind');
+        }
+        return $this->bean->personkind;
+    }
+
+    /**
+     * Returns the name of the personkind.
+     *
+     * @return string
+     */
+    public function personkindName()
+    {
+        return $this->bean->getPersonkind()->name;
     }
 
     /**
@@ -365,6 +430,7 @@ SQL;
     public function dispense()
     {
         $this->autoTag(true);
+        $this->bean->duedays = 8;
         $this->addValidator('nickname', array(
             new Validator_HasValue(),
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'nickname'))
@@ -392,8 +458,13 @@ SQL;
 
         if ($this->bean->billingemail) {
             $this->addValidator('billingemail', array(
-                new Validator_IsEmail(),
-                new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'billingemail'))
+                new Validator_IsEmail()
+            ));
+        }
+
+        if ($this->bean->dunningemail) {
+            $this->addValidator('dunningemail', array(
+                new Validator_IsEmail()
             ));
         }
 
@@ -404,6 +475,10 @@ SQL;
         if (!$this->bean->discount_id) {
             $this->bean->discount_id = null;
             unset($this->bean->discount);
+        }
+        if (!$this->bean->personkind_id) {
+            $this->bean->personkind_id = null;
+            unset($this->bean->personkind);
         }
 
         // set the phonetic names

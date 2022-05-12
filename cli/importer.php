@@ -69,6 +69,16 @@ class Importer
                 $this->importProduct();
                 break;
 
+            case 'billingemail':
+                echo "Importing billing email addresses\n";
+                $this->importMailaddressesPerson('billingemail');
+                break;
+
+            case 'dunningemail':
+                echo "Importing dunning email addresses\n";
+                $this->importMailaddressesPerson('dunningemail');
+                break;
+
             default:
                 // code...
                 break;
@@ -95,6 +105,40 @@ class Importer
                 $product->description = $row[1];
                 $product->salesprice = $row[2];
                 R::store($product);
+                echo ".";
+            }
+            R::commit();
+            return true;
+        } catch (\Exception $e) {
+            echo $e . "\n";
+            R::rollback();
+            return false;
+        }
+    }
+
+    /**
+     * Import email addresses into billing email address by customer number.
+     *
+     * @uses Model_Person
+     *
+     * @param string $attribute
+     */
+    public function importMailaddressesPerson($attribute = 'billingemail')
+    {
+        R::begin();
+        try {
+            foreach ($this->csv->data as $key => $row) {
+                //analyse csv data
+                //is there a valid email address?
+                //no: skip that record (log it into a logfile with reason)
+                //yes:
+                //analyse customer number
+                //is there a valid customer number?
+                //no: skip that record (log it into a logfile with reason)
+                //yes:
+                //find person by $row[0]
+                //sql: update person $attribute with value of $row[1]
+                //and print a dot
                 echo ".";
             }
             R::commit();
@@ -146,7 +190,7 @@ Usage:
 
 Options:
   FILE          A CSV formatted file.
-  -b BEAN       The bean or table to import the CSV file to.
+  -b BEAN       The bean to import the CSV file to. Currently supported are product, billingemail and dunningemail
   -h --help     Show this screen.
   --version     Show version.
 

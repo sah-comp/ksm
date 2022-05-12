@@ -18,6 +18,7 @@
         ]);
         ?>
         <?php endif; ?>
+        <div id="additional-info-container" class=""></div>
         <nav>
             <?php echo $toolbar ?>
         </nav>
