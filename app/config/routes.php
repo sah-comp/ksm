@@ -301,7 +301,7 @@ Flight::route('GET (/[a-z]{2})/transaction/mail/@id:[0-9]+', function ($id) {
  * Routes to the appointment controller to download a list as PDF to the client.
  */
 Flight::route('(/[a-z]{2})/appointment/pdf', function () {
-    $appointmentController = new Controller_Appointment(null);
+    $appointmentController = new Controller_Appointment();
     $appointmentController->pdf();
 });
 
@@ -341,7 +341,7 @@ Flight::route('POST (/[a-z]{2})/article/install/into/machine/@id:[0-9]+(/)', fun
  * Routes to the appointment controller to complete it (store as finished).
  */
 Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {
-    $appointmentController = new Controller_Appointment($id);
+    $appointmentController = new Controller_Appointment('', 'appointment', $id);
     $appointmentController->completed();
 });
 
@@ -350,7 +350,7 @@ Flight::route('(/[a-z]{2})/appointment/completed/@id:[0-9]+', function ($id) {
  * given in the URL and the machine_id given in the POST request.
  */
 Flight::route('POST (/[a-z]{2})/appointment/set/location/person/@person_id:[0-9]+(/)', function ($person_id) {
-    $appointmentController = new Controller_Appointment(null);
+    $appointmentController = new Controller_Appointment();
     $appointmentController->contractLocationByMachineWith($person_id);
 });
 
