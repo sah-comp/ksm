@@ -447,6 +447,11 @@ SQL;
      */
     public function update()
     {
+        /**
+         * Validating email addresses not possible, because customer wants to
+         * store more that one emailaddress into the *email fields separated by
+         * semicolon to address multiple receivers.
+         */
         /*
         if ($this->bean->email) {
             $this->addValidator('email', array(
@@ -455,7 +460,7 @@ SQL;
             ));
         }
         */
-
+        /*
         if ($this->bean->billingemail) {
             $this->addValidator('billingemail', array(
                 new Validator_IsEmail()
@@ -467,7 +472,7 @@ SQL;
                 new Validator_IsEmail()
             ));
         }
-
+        */
         if (!$this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);

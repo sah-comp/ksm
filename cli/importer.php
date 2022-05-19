@@ -117,7 +117,7 @@ class Importer
     }
 
     /**
-     * Import email addresses into billing email address by customer number.
+     * Import email addresses into billing or dunning *email address by customer number.
      *
      * @uses Model_Person
      *
@@ -125,23 +125,49 @@ class Importer
      */
     public function importMailaddressesPerson($attribute = 'billingemail')
     {
+        $filename = __DIR__ . '/../logs/log-' . $attribute . '.log';
+        $logtxt = "";
+        $attrname = $attribute . 'enabled';
+        $count_mail = 0;
+        $count_mail_use = 0;
         R::begin();
         try {
             foreach ($this->csv->data as $key => $row) {
-                //analyse csv data
-                //is there a valid email address?
-                //no: skip that record (log it into a logfile with reason)
-                //yes:
-                //analyse customer number
-                //is there a valid customer number?
-                //no: skip that record (log it into a logfile with reason)
-                //yes:
-                //find person by $row[0]
-                //sql: update person $attribute with value of $row[1]
-                //and print a dot
                 echo ".";
+                $paccount = trim($row[0]);
+                $pname = trim($row[1]);
+                $pemail = trim($row[2]);
+                $pflag = strtolower(trim($row[3]));
+                $person = R::findOne('person', "account = ? LIMIT 1", [$paccount]);
+                if ($person === null || !$person->getId()) {
+                    $logtxt .= sprintf("Person account %s was not found.\n", $paccount);
+                    continue;
+                } else {
+                    if ($pemail == '' && $pflag == 'per mail') {
+                        $logtxt .= sprintf("Person account %s found, but no emailaddress provided.\n", $paccount);
+                        continue;
+                    }
+                    $person->{$attribute} = $pemail;
+                    $count_mail++;
+                    if ($pemail && $pflag == 'per mail') {
+                        $person->{$attrname} = true;
+                        $count_mail_use++;
+                    }
+                    R::store($person);
+                }
             }
             R::commit();
+            $sql = "UPDATE transaction AS t LEFT JOIN person AS p ON t.person_id = p.id SET t.$attribute = p.$attribute WHERE p.$attrname = 1";
+            $result = R::exec($sql);
+            echo "\n";
+            echo "Ready.\n";
+            echo sprintf("%d emailaddresses have been synchronized and %d are now set to receive transactions by email.\n", $count_mail, $count_mail_use);
+            echo "\n";
+            if ($logtxt !==  '') {
+                echo "Report:\n";
+                echo $logtxt;
+            }
+            //file_put_contents($filename, $logtxt);
             return true;
         } catch (\Exception $e) {
             echo $e . "\n";

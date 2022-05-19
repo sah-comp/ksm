@@ -358,7 +358,7 @@
             </label>
             <input
                 id="transaction-billingemail"
-                type="email"
+                type="text"
                 name="dialog[billingemail]"
                 value="<?php echo htmlspecialchars($record->billingemail) ?>">
         </div>
@@ -369,7 +369,7 @@
             </label>
             <input
                 id="transaction-dunningemail"
-                type="email"
+                type="text"
                 name="dialog[dunningemail]"
                 value="<?php echo htmlspecialchars($record->dunningemail) ?>">
         </div>

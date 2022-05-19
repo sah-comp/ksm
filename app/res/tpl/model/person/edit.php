@@ -593,7 +593,7 @@ $_personkinds = $record->sharedPersonkind;
             <div class="span4">
                 <input
                     id="person-billingemail"
-                    type="email"
+                    type="text"
                     name="dialog[billingemail]"
                     value="<?php echo htmlspecialchars($record->billingemail) ?>" />
             </div>
@@ -635,7 +635,7 @@ $_personkinds = $record->sharedPersonkind;
             <div class="span4">
                 <input
                     id="person-dunningemail"
-                    type="email"
+                    type="text"
                     name="dialog[dunningemail]"
                     value="<?php echo htmlspecialchars($record->dunningemail) ?>" />
             </div>

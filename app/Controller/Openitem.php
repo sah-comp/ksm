@@ -158,10 +158,18 @@ class Controller_Openitem extends Controller_Scaffold
         $mail->CharSet = 'UTF-8';
         $mail->AddEmbeddedImage(__DIR__ . '/../../public/img/ksm-email-signature-icon.jpg', 'ksm-mascot');
         $mail->setFrom($this->company->emailnoreply, $this->company->legalname);
-        $mail->addReplyTo($this->company->email, $this->company->legalname);
+        $mail->addReplyTo($user->email, $user->name);
 
         //$mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
-        $mail->addAddress($this->record->dunningemail, $this->record->person->name);
+        $pos = strpos($this->record->dunningemail, ';');
+        if ($pos === false) {
+            $mail->addAddress($this->record->dunningemail, $this->record->person->name);
+        } else {
+            $emails = explode(';', $this->record->dunningemail);
+            foreach ($emails as $email) {
+                $mail->addAddress($email, $this->record->person->name);
+            }
+        }
 
         $mail->addBCC($user->email, $user->name);
         $mail->WordWarp = 50;
