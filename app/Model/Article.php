@@ -50,15 +50,15 @@ class Model_Article extends Model
                 'width' => '12rem'
             ],
             [
-                'name' => 'supplier.name',
+                'name' => 'person.name',
                 'sort' => [
-                    'name' => 'supplier.name'
+                    'name' => 'person.name'
                 ],
                 'filter' => [
                     'tag' => 'text'
                 ],
                 'callback' => [
-                    'name' => 'supplierName'
+                    'name' => 'personName'
                 ],
                 'width' => '12rem'
             ],
@@ -157,11 +157,22 @@ class Model_Article extends Model
     /**
      * Returns the name of the supplier.
      *
+     * @deprecated since supplier bean is person bean, 2022-05-31
      * @return string
      */
     public function supplierName()
     {
         return $this->bean->getSupplier()->name;
+    }
+
+    /**
+     * Returns the name of the person.
+     *
+     * @return string
+     */
+    public function personName()
+    {
+        return $this->bean->getPerson()->name;
     }
 
     /**
@@ -231,6 +242,8 @@ SQL;
                 {$this->bean->getMeta('type')}
             LEFT JOIN
                 supplier ON supplier.id = article.supplier_id
+            LEFT JOIN
+                person ON person.id = article.person_id
             WHERE
                 {$where}
 SQL;
@@ -243,6 +256,19 @@ SQL;
             $sql .= " LIMIT {$offset}, {$limit}";
         }
         return $sql;
+    }
+
+    /**
+     * Loads the person or dispenses an empty person.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getPerson()
+    {
+        if (!$this->bean->person) {
+            $this->bean->person = R::dispense('person');
+        }
+        return $this->bean->person;
     }
 
     /**
@@ -262,6 +288,12 @@ SQL;
     public function update()
     {
         parent::update();
+
+        if (!$this->bean->person_id) {
+            $this->bean->person_id = null;
+            unset($this->bean->person);
+        }
+
         if (! $this->bean->salesprice) {
             if ($this->bean->isfilter) {
                 $this->bean->salesprice = (float)$this->bean->purchaseprice * 5 * 1.15;

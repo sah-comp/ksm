@@ -21,8 +21,9 @@
         </div>
         <div class="span3">
             <label
-                for="article-supplier"
-                class="<?php echo ($record->hasError('supplier_id')) ? 'error' : ''; ?>">
+                for="article-person"
+                class="<?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
+                <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getPerson()->getMeta('type'), $record->getPerson()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
                 <?php echo I18n::__('article_label_supplier') ?>
             </label>
         </div>
@@ -52,30 +53,45 @@
         <div class="span3">
             &nbsp;
         </div>
-        <div class="span3">
-            <div class="row <?php echo ($record->hasError('supplier_id')) ? 'error' : ''; ?>">
-                <input
-                    type="hidden"
-                    name="dialog[supplier][type]"
-                    value="supplier" />
-                <input
-                    id="article-supplier-id"
-                    type="hidden"
-                    name="dialog[supplier][id]"
-                    value="<?php echo $record->getSupplier()->getId() ?>" />
-                <input
-                    type="text"
-                    id="article-supplier-name"
-                    name="dialog[supplier][name]"
-                    class="autowidth autocomplete"
-                    data-source="<?php echo Url::build('/autocomplete/supplier/name/?callback=?') ?>"
-                    data-spread='<?php
-                        echo json_encode([
-                            'article-supplier-name' => 'value',
-                            'article-supplier-id' => 'id'
-                        ]); ?>'
-                    value="<?php echo htmlspecialchars($record->getSupplier()->name) ?>" />
-            </div>
+        <div class="span3 badge-container">
+            <input
+                type="hidden"
+                id="article-person-id-shadow"
+                name="dialog[person_id]"
+                value="<?php echo $record->getPerson()->getId() ?>" />
+            <input
+                type="hidden"
+                name="dialog[person][type]"
+                value="person" />
+            <input
+                id="article-person-id"
+                type="hidden"
+                name="dialog[person][id]"
+                value="<?php echo $record->getPerson()->getId() ?>" />
+            <input
+                type="text"
+                id="article-person-name"
+                name="dialog[person][name]"
+                class="autocomplete"
+                data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?&attr=%s&value=%d', [Model_Person::ATTR_PERSONKIND_ID, Model_Person::PERSONKIND_ID_SUPPLIER]) ?>"
+                data-spread='<?php
+                    echo json_encode([
+                        'article-person-name' => 'value',
+                        'article-person-id' => 'id',
+                        'article-person-id-shadow' => 'id',
+                        'article-postaladdress' => 'postaladdress',
+                        'article-billingemail' => 'billingemail',
+                        'article-dunningemail' => 'dunningemail',
+                        'article-duedays' => 'duedays',
+                        'article-discount-id' => 'discount_id'
+                    ]); ?>'
+                value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+                <a
+                    href="#scratch-item"
+                    title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
+                    data-clear="article-person-name"
+                    data-scratch="article-person-id-shadow"
+                    class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
         </div>
         <div class="span2">
             <input

@@ -18,6 +18,16 @@
 class Model_Person extends Model
 {
     /**
+     * Defines the attribute that describes if the person is a supplier.
+     */
+    public const ATTR_PERSONKIND_ID = 'personkind_id';
+
+    /**
+     * ID of the personkind that determines a supplier.
+     */
+    public const PERSONKIND_ID_SUPPLIER = 3;
+
+    /**
      * Constructor.
      *
      * Set actions for list views.
@@ -203,12 +213,28 @@ class Model_Person extends Model
     /**
      * Lookup a searchterm and return the resultset as an array.
      *
+     * @todo allow more freedom with the additional query parameter.
+     *
      * @param string $searchtext
      * @param string (optional) $query The prepared query or SQL to use for search
      * @return array
      */
     public function clairvoyant($searchtext, $query = 'default', $limit = 10)
     {
+        /**
+         * When the query has a parameter attr and value set it gets added to the SQL.
+         *
+         * When search for a person we sometimes only want customers or suppliers.
+         * Per definition a supplier is every person that has a personkind_id equal 3 (three)
+         * and every other person is NOT a supplier.
+         *
+         * @see tpl/model/article/edit.php
+         */
+        if (isset(Flight::request()->query->attr) && Flight::request()->query->attr != '') {
+            $additionalAttribute = ' AND person.' . Flight::request()->query->attr . ' = ' . Flight::request()->query->value;
+        } else {
+            $additionalAttribute = ' AND person.' . Model_Person::ATTR_PERSONKIND_ID . ' != ' . Model_Person::PERSONKIND_ID_SUPPLIER;
+        }
         switch ($query) {
             default:
             $sql = <<<SQL
@@ -228,15 +254,16 @@ class Model_Person extends Model
                 LEFT JOIN
                     address ON address.person_id = person.id AND address.label = 'billing'
                 WHERE
-                    person.nickname LIKE :searchtext OR
+                    (person.nickname LIKE :searchtext OR
                     person.account LIKE :searchtext OR
                     person.name LIKE :searchtext OR
-                    person.email LIKE :searchtext
+                    person.email LIKE :searchtext) {$additionalAttribute}
                 ORDER BY
                     person.name
                 LIMIT {$limit}
 SQL;
         }
+        error_log(str_replace(["\n", ""], ["", " "], $sql));
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
         return $result;
     }

@@ -562,6 +562,19 @@ $_personkinds = $record->sharedPersonkind;
             </div>
         </div>
         <!-- end of grid based data -->
+
+        <div class="row <?php echo ($record->hasError('reference')) ? 'error' : ''; ?>">
+            <label
+                for="person-reference">
+                <?php echo I18n::__('person_label_reference') ?>
+            </label>
+            <input
+                id="person-reference"
+                type="text"
+                name="dialog[reference]"
+                value="<?php echo htmlspecialchars($record->reference) ?>" />
+        </div>
+
         <div class="row <?php echo ($record->hasError('paymentnote')) ? 'error' : ''; ?>">
             <label
                 for="person-paymentnote">

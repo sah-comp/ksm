@@ -128,24 +128,125 @@ class Importer
      */
     public function importSupplier()
     {
+        $countries = [
+            'B' => 21,
+            'CH' => 42,
+            'DE' => 56,
+            'DK' => 58,
+            'GB' => 76,
+            'L' => 133,
+            'NL' => 163,
+            '' => 0,
+            'Land' => 0
+        ];
+        $genders = [
+            'männlich' => 'male',
+            'weiblich' => 'female',
+            '' => 'unknown'
+        ];
+        $count = 0;
         R::begin();
         try {
             $lastAccount = '';
-            $persons = [];
             foreach ($this->csv->data as $key => $row) {
                 $account = $row[0];
                 if ($lastAccount != $account) {
-                    $lastAccount = $account;
-                    echo 'New Account ' . $account . "\n";
+                    // check for unique account
+                    if ($account_unique = R::findOne('person', "account = ? LIMIT 1", [$account])) {
+                        // account is already in the database
+                        echo "Skipped account " . $account;
+                        //continue;
+                    }
+                    $lastAccount = $account; // reset
+                    $person = R::dispense('person');
+                    $address = R::dispense('address');
+
+                    // defaults and internals
+                    $person->personkind_id = Model_Person::PERSONKIND_ID_SUPPLIER;
+                    $address->label = 'billing';
+                    $address->street = $row[6];
+                    $address->zip = $row[7];
+                    $address->city = $row[8];
+                    $address->country_id = $countries[$row[10]]; //value of csv as index to id table
+
+                    $person->ownAddress[] = $address;
+
+                    // person
+                    $person->account = $row[0];
+                    $person->nickname = $row[0];
+
+                    $person->vatid = $row[2];
+                    $person->attention = $row[3];
+                    $person->organization = $row[4];
+                    $person->owner = $row[5];
+
+                    // person com
+                    $person->note = $row[11];
+                    $person->phone = $row[13];
+                    $person->phonesec = $row[14];
+                    $person->cellphone = $row[15];
+                    $person->fax = $row[16];
+                    $person->email = $row[17];
+                    $person->url = $row[18];
+
+                    $person->reference = $row[12];
+
+                    $count++;
+                    R::store($person);
+                //echo 'New Account ' . $account . "\n";
                 } else {
-                    echo '    AP ' . $row[21] ."\n";
+                    // we have (active) person, add contact beans if there is one
+                    $contact = R::dispense('contact');
+
+                    $contact->gender = $genders[strtolower($row[19])];
+                    $contact->name = $row[21];
+                    $contact->jobdescription = $row[22];
+
+                    if ($row[23]) {
+                        // cellphone
+                        $ci01 = R::dispense('contactinfo');
+                        $ci01->label = 'mobile';
+                        $ci01->value = $row[23];
+                        $contact->ownContactinfo[] = $ci01;
+                    }
+                    if ($row[24]) {
+                        // cellphone
+                        $ci02 = R::dispense('contactinfo');
+                        $ci02->label = 'email';
+                        $ci02->value = $row[24];
+                        $contact->ownContactinfo[] = $ci02;
+                    }
+                    if ($row[25]) {
+                        // cellphone
+                        $ci03 = R::dispense('contactinfo');
+                        $ci03->label = 'telephone';
+                        $ci03->value = $row[25];
+                        $contact->ownContactinfo[] = $ci03;
+                    }
+                    if ($row[26]) {
+                        // cellphone
+                        $ci04 = R::dispense('contactinfo');
+                        $ci04->label = 'fax';
+                        $ci04->value = $row[26];
+                        $contact->ownContactinfo[] = $ci04;
+                    }
+                    if ($row[27]) {
+                        // cellphone
+                        $ci05 = R::dispense('contactinfo');
+                        $ci05->label = 'other';
+                        $ci05->value = $row[27];
+                        $contact->ownContactinfo[] = $ci05;
+                    }
+
+                    $contact->person = $person;
+                    R::store($contact);
                 }
                 echo ".";
             }
             R::commit();
             return true;
         } catch (\Exception $e) {
-            echo $e . "\n";
+            echo $e . " on account " . $lastAccount . "\n";
             R::rollback();
             return false;
         }
