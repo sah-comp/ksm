@@ -79,6 +79,11 @@ class Importer
                 $this->importMailaddressesPerson('dunningemail');
                 break;
 
+            case 'supplier':
+                echo "Importing into person as supplier\n";
+                $this->importSupplier();
+                break;
+
             default:
                 // code...
                 break;
@@ -105,6 +110,36 @@ class Importer
                 $product->description = $row[1];
                 $product->salesprice = $row[2];
                 R::store($product);
+                echo ".";
+            }
+            R::commit();
+            return true;
+        } catch (\Exception $e) {
+            echo $e . "\n";
+            R::rollback();
+            return false;
+        }
+    }
+
+    /**
+     * Import into person bean (as supplier).
+     *
+     * @uses Model_Product
+     */
+    public function importSupplier()
+    {
+        R::begin();
+        try {
+            $lastAccount = '';
+            $persons = [];
+            foreach ($this->csv->data as $key => $row) {
+                $account = $row[0];
+                if ($lastAccount != $account) {
+                    $lastAccount = $account;
+                    echo 'New Account ' . $account . "\n";
+                } else {
+                    echo '    AP ' . $row[21] ."\n";
+                }
                 echo ".";
             }
             R::commit();
