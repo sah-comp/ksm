@@ -763,6 +763,8 @@ SQL;
             $dup->date = date('Y-m-d', strtotime($this->bean->date . " + " . (int)$this->bean->interval . " days"));
             $dup->completed = false;
             $dup->confirmed = false;
+            $dup->transactionnumber = '';
+            $dup->transaction = null;
             $dup_id = R::store($dup);
             $this->bean->ownAppointment[] = $dup;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');

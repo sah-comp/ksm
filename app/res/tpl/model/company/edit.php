@@ -384,6 +384,20 @@
                 rows="2"><?php echo htmlspecialchars($record->conditionother) ?></textarea>
             <p class="info"><?php echo I18n::__('company_info_conditionother') ?></p>
         </div>
+
+        <div class="row <?php echo ($record->hasError('dunningemailtext')) ? 'error' : ''; ?>">
+            <label
+                for="company-dunningemailtext">
+                <?php echo I18n::__('company_label_dunningemailtext') ?>
+            </label>
+            <textarea
+                id="company-dunningemailtext"
+                class="scaleable"
+                name="dialog[dunningemailtext]"
+                cols="60"
+                rows="2"><?php echo htmlspecialchars($record->dunningemailtext) ?></textarea>
+            <p class="info"><?php echo I18n::__('company_info_dunningemailtext') ?></p>
+        </div>
     </fieldset>
 </div>
 <!-- end of company edit form -->

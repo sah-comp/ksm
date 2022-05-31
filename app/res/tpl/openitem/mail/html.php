@@ -1,9 +1,11 @@
-<?php echo Flight::textile(I18n::__('dunning_html_mail', null, [
+<?php
+echo Flight::textile(vsprintf($company->dunningemailtext, [
     $record->getDunning()->name,
     $record->localizedDate('dunningprintedon'),
     $user->email,
     $user->name
-])) ?>
+]));
+?>
 --<br />
 <p>
 <img src="cid:ksm-mascot" alt="<?php echo I18n::__('ksm_mascot') ?>" /><br />
