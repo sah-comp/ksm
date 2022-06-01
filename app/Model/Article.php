@@ -63,6 +63,19 @@ class Model_Article extends Model
                 'width' => '12rem'
             ],
             [
+                'name' => 'supplier.name',
+                'sort' => [
+                    'name' => 'supplier.name'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'callback' => [
+                    'name' => 'supplierName'
+                ],
+                'width' => '12rem'
+            ],
+            [
                 'name' => 'description',
                 'sort' => [
                     'name' => 'article.description'
