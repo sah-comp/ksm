@@ -41,7 +41,7 @@ $_artifacts = R::find('artifact', "machine_id = ? ORDER BY name DESC", [$record-
                     <?php echo htmlspecialchars($_artifact->name) ?>
                 </a>
                 <a
-                    class="ir action action-delete confirm"
+                    class="ir action action-delete"
                     href="<?php echo Url::build('/admin/artifact/kill/%d', [$_artifact->getId()]) ?>"
                     title="<?php echo I18n::__('action_tooltip_delete') ?>"
                     data-target="machine-<?php echo $record->getId() ?>-artifact-<?php echo $_artifact->getId() ?>">

@@ -367,6 +367,10 @@ $('body').ready(function() {
      */
     $('body').on("click", ".action-delete", function(event) {
         event.preventDefault();
+        var isConfirmed = confirm('Möchten Sie die Aktion tatsächlich durchführen?');
+        if (!isConfirmed) {
+            return false;
+        }
         var target = $(this).attr("data-target");
         var url = $(this).attr("href");
         $.get(url, function(data) {
