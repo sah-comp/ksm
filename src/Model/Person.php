@@ -263,7 +263,6 @@ class Model_Person extends Model
                 LIMIT {$limit}
 SQL;
         }
-        error_log(str_replace(["\n", ""], ["", " "], $sql));
         $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
         return $result;
     }
