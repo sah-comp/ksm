@@ -27,8 +27,8 @@ $_ip_allowed = Permission::validate(Flight::get('user'), 'machine', 'pricing');
         </a>
     </td>
     <td
-        data-sort="<?php echo htmlspecialchars($_article->getSupplier()->name) ?>">
-        <?php echo htmlspecialchars($_article->getSupplier()->name) ?>
+        data-sort="<?php echo htmlspecialchars($_article->getPerson()->name) ?>">
+        <?php echo htmlspecialchars($_article->getPerson()->name) ?>
     </td>
     <td
         class="number"
