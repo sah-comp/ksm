@@ -52,11 +52,70 @@ class Doctor
                 $this->doctorTransaction();
                 break;
 
+            case 'supplier':
+                echo "Try to migrate supplier beans to person beans.\n";
+                $this->doctorSupplier();
+                break;
+
             default:
                 // code...
                 break;
         }
         echo "\n";
+    }
+
+    /**
+     * Doctor supplier beans.
+     *
+     * @return bool
+     */
+    public function doctorSupplier(): bool
+    {
+        $records = R::find('supplier', "name != '' ORDER BY name");
+        foreach ($records as $id => $supplier) {
+            $stripped = trim(str_replace([
+                '  ',
+                '/',
+                '.',
+                ',',
+                'kg',
+                'gmbh',
+                'sell',
+                'co',
+                'van',
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+            ], [
+                ' ',
+                ' ',
+                ' ',
+                ' ',
+                '',
+                '',
+                '',
+                '',
+                '',
+                '', '', '', '', '', '', '', '', '', '', ''
+            ], mb_strtolower($supplier->name)));
+            $names = explode(' ', $stripped, 2);
+            $first = trim(reset($names));
+            if ($first !== '') {
+                $person = R::findOne('person', "name LIKE :name AND personkind_id = :pkid LIMIT 1", [
+                    ':name' => "%{$first}%",
+                    ':pkid' => 3
+                ]);
+                if ($person && $person->getId()) {
+                    //echo '<' . $first . '> => ' . $person->account . ' ' . $person->name . "\n";
+                    //echo '<' . $id . '> => ' . $person->getId() . "\n";
+                    R::exec("UPDATE article SET person_id = :pid WHERE supplier_id = :sid", [
+                        ':pid' => $person->getId(),
+                        ':sid' => $id
+                    ]);
+                    echo '.';
+                }
+            }
+        }
+        echo "Ready\n";
+        return true;
     }
 
     /**
