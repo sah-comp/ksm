@@ -401,7 +401,7 @@ class Model_Treaty extends Model
      */
     public function toAddress()
     {
-        if ($this->bean->contact->getId()) {
+        if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->getEmailaddress();
         }
         return $this->bean->person->email;
@@ -415,7 +415,7 @@ class Model_Treaty extends Model
      */
     public function toName()
     {
-        if ($this->bean->contact->getId()) {
+        if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->name;
         }
         return $this->bean->person->name;
