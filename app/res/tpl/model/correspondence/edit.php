@@ -111,6 +111,11 @@
         <?php endif; ?>
 
     </div>
+    <div class="row">
+        <label for="correspondence-cc"><?php echo I18n::__('correspondence_label_cc') ?></label>
+        <input id="correspondence-cc" type="text" name="dialog[cc]" value="<?php echo htmlspecialchars($record->cc) ?>">
+        <p class="info"><?php echo I18n::__('correspondence_info_cc') ?></p>
+    </div>
 </fieldset>
 <fieldset>
     <legend class="verbose"></legend>

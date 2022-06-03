@@ -213,6 +213,11 @@
         <?php endif; ?>
 
     </div>
+    <div class="row">
+        <label for="treaty-cc"><?php echo I18n::__('treaty_label_cc') ?></label>
+        <input id="treaty-cc" type="text" name="dialog[cc]" value="<?php echo htmlspecialchars($record->cc) ?>">
+        <p class="info"><?php echo I18n::__('treaty_info_cc') ?></p>
+    </div>
 </fieldset>
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('treaty_serialnumber_legend') ?></legend>

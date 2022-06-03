@@ -142,6 +142,18 @@ class Controller_Correspondence extends Controller_Scaffold
         //$mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
         $mail->addAddress($this->record->toAddress(), $this->record->toName());
 
+        if ($this->record->cc !== '') {
+            $pos = strpos($this->record->cc, ';');
+            if ($pos === false) {
+                $mail->addCC($this->record->cc);
+            } else {
+                $emails = explode(';', $this->record->cc);
+                foreach ($emails as $email) {
+                    $mail->addAddress(trim($email));
+                }
+            }
+        }
+
         $mail->addBCC($user->email, $user->name);
         $mail->WordWarp = 50;
         $mail->isHTML(true);
