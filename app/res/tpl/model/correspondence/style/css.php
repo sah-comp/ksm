@@ -6,6 +6,11 @@ p, ul, ol {
     margin: 0;
     padding: 0;
 }
+.footer p,
+.footer ul,
+.footer ol {
+    margin-bottom: 1em;
+}
 .payment-conditions {
 }
 .pagefooter,

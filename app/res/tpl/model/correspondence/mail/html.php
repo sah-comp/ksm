@@ -3,6 +3,7 @@
 </style>
 <?php echo $record->payload ?>
 --<br />
+<div class="footer">
 <p>
 <img src="cid:ksm-mascot" alt="<?php echo I18n::__('ksm_mascot') ?>" /><br />
 <strong><?php echo htmlspecialchars($company->legalname) ?></strong><br />
@@ -18,3 +19,4 @@ Web <a href="<?php echo $company->website ?>"><?php echo htmlspecialchars($compa
     $company->taxid,
     $company->vatid
 ])) ?>
+</div>
