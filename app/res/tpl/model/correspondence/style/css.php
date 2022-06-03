@@ -2,6 +2,15 @@ body, pre, h1, h2, h3 {
     font-family: sans-serif;
     font-size: 9pt;
 }
+.ql-size-huge {
+    font-size: 3rem;
+}
+.ql-size-large {
+    font-size: 2rem;
+}
+.ql-size-small {
+    font-size: 0.777rem;
+}
 p, ul, ol {
     margin: 0;
     padding: 0;
