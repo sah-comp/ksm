@@ -230,9 +230,16 @@ class Model_Transaction extends Model
         if ($this->bean->getContracttype()->resetfooter) {
             $this->bean->footer = '';
         }
+        $this->bean->sent = false; //reset sent mail status
         $this->bean->archived = false;
         $this->bean->locked = false;
         $this->bean->ownPayment = [];
+        //reset dunnings stuff
+        $this->bean->dunning = null;
+        $this->bean->accumulate = false;
+        $this->bean->penaltyfee = null;
+        $this->bean->dunningdate = null;
+        $this->bean->dunningprintedon = null;
         return $this->bean;
     }
 

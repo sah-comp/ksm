@@ -107,7 +107,7 @@ class Model_Treaty extends Model
                     'tag' => 'select',
                     'sql' => 'getTreatygroups'
                 ],
-                'width' => '23rem'
+                'width' => '10rem'
             ],
             [
                 'name' => 'bookingdate',
@@ -129,6 +129,19 @@ class Model_Treaty extends Model
                 ],
                 'callback' => [
                     'name' => 'payloadProduct'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => 'auto'
+            ],
+            [
+                'name' => 'payload2',
+                'sort' => [
+                    'name' => 'treaty.payload'
+                ],
+                'callback' => [
+                    'name' => 'payloadDeadweight'
                 ],
                 'filter' => [
                     'tag' => 'text'
@@ -529,6 +542,16 @@ class Model_Treaty extends Model
     public function payloadProduct(): string
     {
         return $this->payloadLimb('product');
+    }
+
+    /**
+     * Returns the value of the limb "deadweight" of payload
+     *
+     * @return string
+     */
+    public function payloadDeadweight(): string
+    {
+        return $this->payloadLimb('deadweight');
     }
 
     /**
