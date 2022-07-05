@@ -166,6 +166,7 @@ $_tokens = array (
   'article_label_number' => 'Nummer',
   'article_label_option_false' => 'Nein',
   'article_label_option_true' => 'Ja',
+  'article_label_person.name' => 'Lieferant',
   'article_label_purchaseprice' => 'Einkaufspreis',
   'article_label_salesprice' => 'Verkaufspreis',
   'article_label_stamp' => 'Installiert am',
