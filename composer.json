@@ -21,10 +21,15 @@
         "goodby/csv": "*",
         "mpdf/mpdf": "v8.0.*",
         "parsecsv/php-parsecsv": "v1.2.*",
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+		"phpcompatibility/php-compatibility": "*"
 	},
 	"suggest": {
         "intervention/image": "dev-master"
+	},
+	"scripts": {
+    	"post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",
+    	"post-update-cmd" : "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility"
 	},
 	"autoload": {
 		"psr-0": {
