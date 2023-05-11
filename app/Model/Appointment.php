@@ -766,6 +766,7 @@ SQL;
             $dup->transactionnumber = '';
             $dup->transaction = null;
             $dup_id = R::store($dup);
+            $dup->receipt = date('Y-m-d');
             $this->bean->ownAppointment[] = $dup;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
         }

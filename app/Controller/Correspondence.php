@@ -62,27 +62,21 @@ class Controller_Correspondence extends Controller_Scaffold
     public function copy()
     {
         Permission::check(Flight::get('user'), $this->type, 'add');
-        if (Flight::request()->query->submit == I18n::__('correspondence_action_copy_as')) {
-            if (! Security::validateCSRFToken(Flight::request()->query->token)) {
-                $this->redirect("/logout");
-                exit();
-            }
-            R::begin();
-            try {
-                $copy = R::duplicate($this->record);
-                $copy->resetAfterCopy();
-                R::store($copy);
-                R::commit();
-                Flight::get('user')->notify(I18n::__('correspondence_success_copy', null, [$this->record->number, $copy->contracttype->name]), 'success');
-                $this->redirect('/admin/correspondence/edit/' . $copy->getId());
-                exit();
-            } catch (\Exception $e) {
-                R::rollback();
-                error_log($e);
-                Flight::get('user')->notify(I18n::__('correspondence_error_copy'), 'error');
-                $this->redirect('/admin/correspondence/edit/' . $this->record->getId());
-                exit();
-            }
+        R::begin();
+        try {
+            $copy = R::duplicate($this->record);
+            $copy->resetAfterCopy();
+            R::store($copy);
+            R::commit();
+            Flight::get('user')->notify(I18n::__('correspondence_success_copy', null, [$this->record->number]), 'success');
+            $this->redirect('/admin/correspondence/edit/' . $copy->getId());
+            exit();
+        } catch (\Exception $e) {
+            R::rollback();
+            error_log($e);
+            Flight::get('user')->notify(I18n::__('correspondence_error_copy'), 'error');
+            $this->redirect('/admin/correspondence/edit/' . $this->record->getId());
+            exit();
         }
     }
 
@@ -117,7 +111,7 @@ class Controller_Correspondence extends Controller_Scaffold
             } else {
                 $mail->SMTPAuth = false;                          // Disable SMTP authentication
             }
-            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Port = $smtp['port'];                          // SMTP port
             $mail->Username = $smtp['user'];                      // SMTP username
             $mail->Password = $smtp['password'];                  // SMTP password
             $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted

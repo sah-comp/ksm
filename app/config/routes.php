@@ -321,6 +321,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $correspondenceController->mail();
  });
 
+ /**
+ * Routes to the correspondence controller to duplicate the given bean.
+ */
+ Flight::route('GET (/[a-z]{2})/correspondence/copy/@id:[0-9]+', function ($id) {
+    $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
+    $correspondenceController->copy();
+ });
+
 /**
  * Routes to the article controller to get json encoded chart data.
  */
