@@ -19,10 +19,15 @@
          */
         $_subtotal = 0;//adding up each (real) position (which is not alt.) to output a subtotal if wanted
         ?>
-        <?php foreach ($record->with(' ORDER BY currentindex ASC ')->ownPosition as $_id => $_position): ?>
+        <?php foreach ($record->with(' ORDER BY currentindex ASC ')->ownPosition as $_id => $_position) : ?>
         <tr class="<?php echo $_position->isAlternative() ? 'alternative' : '' ?> <?php echo $_position->kindAsCss() ?>">
             <?php
-            switch ($_position->kind):
+            switch ($_position->kind) :
+                case Model_Position::KIND_HR:
+                    ?>
+                    <td colspan="7"><hr /></td>
+                    <?php
+                    break;
                 case Model_Position::KIND_SUBTOTAL:
                     ?>
                     <td class="" colspan="<?php echo $_colspan_lft ?>">&nbsp;</td>
@@ -56,32 +61,32 @@
             endswitch;
             ?>
         </tr>
-        <?php if ($_position->hasAdjustment()): ?>
+            <?php if ($_position->hasAdjustment()) : ?>
         <tr>
             <td class="number cushion-right" colspan="4"><?php echo htmlspecialchars($_position->decimal('adjustment', 0)) ?></td>
             <td>% <?php echo ($_position->adjustment < 0) ? I18n::__('position_adjustment_rebate') : I18n::__('position_adjustment_additional') ?></td>
             <td class="number"><?php echo htmlspecialchars($_position->decimal('adjustval')) ?></td>
             <td>&nbsp;</td>
         </tr>
-        <?php endif; ?>
+            <?php endif; ?>
         <?php endforeach ?>
     </tbody>
-    <?php if (!$record->getContracttype()->hidetotal): ?>
+    <?php if (!$record->getContracttype()->hidetotal) : ?>
     <tbody class="foot">
         <tr class="lofty">
             <td colspan="<?php echo $_colspan_lft ?>" class="bt">&nbsp;</td>
             <td class="bt number"><?php echo I18n::__('transaction_label_total_net') ?></td>
             <td class="bt number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
         </tr>
-        <?php if (!$record->getContracttype()->hidesome): ?>
-        <?php $vats = $record->getVatSentences(); ?>
-        <?php foreach ($vats as $_id => $_vat): ?>
+        <?php if (!$record->getContracttype()->hidesome) : ?>
+            <?php $vats = $record->getVatSentences(); ?>
+            <?php foreach ($vats as $_id => $_vat) : ?>
         <tr class="lofty">
             <td colspan="<?php echo $_colspan_lft ?>" class="number"></td>
             <td class="bt number"><?php echo I18n::__('transaction_label_vatcode', null, [$_vat['vatpercentage']]) ?></td>
             <td class="bt number"><?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?></td>
         </tr>
-        <?php endforeach ?>
+            <?php endforeach ?>
         <tr class="lofty">
             <td colspan="<?php echo $_colspan_lft ?>" class="">&nbsp;</td>
             <td class="bt bb bold number"><?php echo $record->getWordingGros() ?></td>
@@ -89,7 +94,7 @@
         </tr>
         <?php endif; ?>
     </tbody>
-    <?php else: ?>
+    <?php else : ?>
     <tbody class="foot">
         <tr class="lofty">
             <td colspan="<?php echo($_colspan_lft + $_colspan_rtg) ?>" class="bt">&nbsp;</td>

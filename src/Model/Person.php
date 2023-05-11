@@ -28,6 +28,16 @@ class Model_Person extends Model
     public const PERSONKIND_ID_SUPPLIER = 3;
 
     /**
+     * Holds possible types to invoice way bills to this customer.
+     * @var array
+     */
+    public $paydrivetypes = [
+        'per_bulk',
+        'per_kilometer',
+        'per_time'
+    ];
+
+    /**
      * Constructor.
      *
      * Set actions for list views.
@@ -58,6 +68,15 @@ class Model_Person extends Model
     {
         return [];
         //return ['datatables.min'];
+    }
+
+    /**
+     * Returns an array with possible paydrive types.
+     * @return array
+     */
+    public function getPaydriveTypes():array
+    {
+        return $this->paydrivetypes;
     }
 
     /**
@@ -237,7 +256,7 @@ class Model_Person extends Model
         }
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     person.id AS id,
                     CONCAT(person.name, ' (', person.nickname, ', ', CONCAT(address.street, ' ', address.zip, ' ', address.city), ')') AS label,
@@ -248,7 +267,9 @@ class Model_Person extends Model
                     person.duedays AS duedays,
                     person.discount_id AS discount_id,
                     if (person.billingemail != '', billingemail, email) AS billingemail,
-                    if (person.dunningemail != '', dunningemail, email) AS dunningemail
+                    if (person.dunningemail != '', dunningemail, email) AS dunningemail,
+                    person.payhourly AS payhourly,
+                    person.paydrive AS paydrive
                 FROM
                     person
                 LEFT JOIN
@@ -462,6 +483,9 @@ SQL;
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'nickname'))
         ));
         $this->addConverter('duedays', [
+            new Converter_Decimal()
+        ]);
+        $this->addConverter('payhourly', [
             new Converter_Decimal()
         ]);
     }

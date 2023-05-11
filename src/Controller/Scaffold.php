@@ -750,6 +750,7 @@ class Controller_Scaffold extends Controller
                     Url::build("{$this->base_url}/{$this->type}/edit/{$this->id}/1/0/0/{$this->layout}/")
                 )));
             }
+            // preset fields from the query parameters
             if (Flight::request()->query) {
                 foreach (Flight::request()->query as $param => $val) {
                     $this->record->{$param} = $val;

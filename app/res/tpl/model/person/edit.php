@@ -15,13 +15,13 @@ $_personkinds = $record->sharedPersonkind;
 <div>
     <input type="hidden" name="dialog[type]" value="<?php echo $record->getMeta('type') ?>" />
     <input type="hidden" name="dialog[id]" value="<?php echo $record->getId() ?>" />
-    <?php if ($record->email): ?>
+    <?php if ($record->email) : ?>
     <img
-    	src="<?php echo Gravatar::src($record->email, 72) ?>"
-    	class="gravatar-account circular no-shadow"
-    	width="72"
-    	height="72"
-    	alt="<?php echo htmlspecialchars($record->name) ?>" />
+        src="<?php echo Gravatar::src($record->email, 72) ?>"
+        class="gravatar-account circular no-shadow"
+        width="72"
+        height="72"
+        alt="<?php echo htmlspecialchars($record->name) ?>" />
     <?php endif ?>
 </div>
 <fieldset>
@@ -112,7 +112,7 @@ $_personkinds = $record->sharedPersonkind;
                 class="autowidth"
                 name="dialog[personkind_id]">
                 <option value=""><?php echo I18n::__('person_personkind_select') ?></option>
-                <?php foreach (R::findAll('personkind') as $_pk_id => $_pk): ?>
+                <?php foreach (R::findAll('personkind') as $_pk_id => $_pk) : ?>
                 <option
                     value="<?php echo $_pk->getId() ?>"
                     <?php echo ($record->personkind_id == $_pk->getId()) ? 'selected="selected"' : '' ?>>
@@ -127,7 +127,7 @@ $_personkinds = $record->sharedPersonkind;
                 class="autowidth"
                 name="dialog[language]">
                 <option value=""><?php echo I18n::__('person_language_select') ?></option>
-                <?php foreach (R::findAll('language') as $_lang_id => $_lang): ?>
+                <?php foreach (R::findAll('language') as $_lang_id => $_lang) : ?>
                 <option
                     value="<?php echo $_lang->iso ?>"
                     <?php echo ($record->language == $_lang->iso) ? 'selected="selected"' : '' ?>>
@@ -363,7 +363,7 @@ $_personkinds = $record->sharedPersonkind;
             'person-transaction' => I18n::__('person_transaction_tab'),
             'person-correspondence' => I18n::__('person_correspondence_tab')
         ),
-        'default_tab' => 'person-address'
+                      'default_tab' => 'person-address'
     )) ?>
     <fieldset
         id="person-address"
@@ -374,14 +374,14 @@ $_personkinds = $record->sharedPersonkind;
             id="person-<?php echo $record->getId() ?>-address-container"
             class="container attachable detachable sortable">
             <?php
-            if (count($record->ownAddress) == 0):
+            if (count($record->ownAddress) == 0) :
                 $record->ownAddress[] = R::dispense('address');
             endif;
             ?>
             <?php $index = 0 ?>
-            <?php foreach ($record->ownAddress as $_address_id => $_address): ?>
-            <?php $index++ ?>
-            <?php Flight::render('model/person/own/address', array(
+            <?php foreach ($record->ownAddress as $_address_id => $_address) : ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/person/own/address', array(
                 'record' => $record,
                 '_address' => $_address,
                 'index' => $index
@@ -408,14 +408,14 @@ $_personkinds = $record->sharedPersonkind;
             id="person-<?php echo $record->getId() ?>-location-container"
             class="container attachable detachable sortable">
             <?php
-            if (count($record->ownLocation) == 0):
+            if (count($record->ownLocation) == 0) :
                 $record->ownLocation[] = R::dispense('location');
             endif;
             ?>
             <?php $index = 0 ?>
-            <?php foreach ($record->ownLocation as $_location_id => $_location): ?>
-            <?php $index++ ?>
-            <?php Flight::render('model/person/own/location', array(
+            <?php foreach ($record->ownLocation as $_location_id => $_location) : ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/person/own/location', array(
                 'record' => $record,
                 '_location' => $_location,
                 'index' => $index
@@ -432,14 +432,14 @@ $_personkinds = $record->sharedPersonkind;
             id="person-<?php echo $record->getId() ?>-contact-container"
             class="container attachable detachable sortable">
             <?php
-            if (count($record->ownContact) == 0):
+            if (count($record->ownContact) == 0) :
                 $record->ownContact[] = R::dispense('contact');
             endif;
             ?>
             <?php $index = 0 ?>
-            <?php foreach ($record->ownContact as $_contact_id => $_contact): ?>
-            <?php $index++ ?>
-            <?php Flight::render('model/person/own/contact', array(
+            <?php foreach ($record->ownContact as $_contact_id => $_contact) : ?>
+                <?php $index++ ?>
+                <?php Flight::render('model/person/own/contact', array(
                 'record' => $record,
                 '_contact' => $_contact,
                 'index' => $index
@@ -533,7 +533,7 @@ $_personkinds = $record->sharedPersonkind;
                     class="autowidth"
                     name="dialog[vat_id]">
                     <option value=""><?php echo I18n::__('person_vat_please_select') ?></option>
-                    <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat): ?>
+                    <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat) : ?>
                     <option
                         value="<?php echo $_vat->getId() ?>"
                         <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name) ?></option>
@@ -553,7 +553,7 @@ $_personkinds = $record->sharedPersonkind;
                     class="autowidth"
                     name="dialog[discount_id]">
                     <option value=""><?php echo I18n::__('person_discount_please_select') ?></option>
-                    <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount): ?>
+                    <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount) : ?>
                     <option
                         value="<?php echo $_discount->getId() ?>"
                         <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
@@ -587,6 +587,38 @@ $_personkinds = $record->sharedPersonkind;
                 rows="3"
                 cols="60"><?php echo htmlspecialchars($record->paymentnote) ?></textarea>
         </div>
+
+        <div class="row <?php echo ($record->hasError('payhourly')) ? 'error' : ''; ?>">
+            <label
+                for="person-payhourly">
+                <?php echo I18n::__('person_label_payhourly') ?>
+            </label>
+            <input
+                id="person-payhourly"
+                type="text"
+                name="dialog[payhourly]"
+                value="<?php echo htmlspecialchars($record->payhourly) ?>" />
+        </div>
+
+        <div class="row ">
+            <label
+                for="person-paydrive">
+                <?php echo I18n::__('person_label_paydrive') ?>        
+            </label>
+            <select
+                id="person-paydrive"
+                name="dialog[paydrive]">
+                <option value=""><?php echo I18n::__('person_paydrive_select') ?></option>
+                <?php foreach ($record->getPaydriveTypes() as $_paydrive) : ?>
+                <option
+                    value="<?php echo $_paydrive ?>"
+                    <?php echo ($record->paydrive == $_paydrive) ? 'selected="selected"' : '' ?>>
+                    <?php echo I18n::__('person_paydrive_type_' . $_paydrive) ?>
+                </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+
         <div class="row nomargins">
             <div class="span3">&nbsp;</div>
             <div class="span4">

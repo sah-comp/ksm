@@ -14,18 +14,18 @@
     <legend class="verbose"><?php echo I18n::__('transaction_legend_position') ?></legend>
 
     <a
-    	href="<?php echo Url::build(sprintf('/admin/transaction/detach/position/%d', $_position->getId())) ?>"
-    	class="ir detach"
-    	title="<?php echo I18n::__('scaffold_detach') ?>"
-    	data-target="transaction-<?php echo $record->getId() ?>-ownPosition-<?php echo $index ?>">
-    		<?php echo I18n::__('scaffold_detach') ?>
+        href="<?php echo Url::build(sprintf('/admin/transaction/detach/position/%d', $_position->getId())) ?>"
+        class="ir detach"
+        title="<?php echo I18n::__('scaffold_detach') ?>"
+        data-target="transaction-<?php echo $record->getId() ?>-ownPosition-<?php echo $index ?>">
+            <?php echo I18n::__('scaffold_detach') ?>
     </a>
     <a
-    	href="<?php echo Url::build(sprintf('/admin/transaction/attach/own/position/%d', $record->getId())) ?>"
-    	class="ir attach"
-    	title="<?php echo I18n::__('scaffold_attach') ?>"
-    	data-target="transaction-<?php echo $record->getId() ?>-position-container">
-    		<?php echo I18n::__('scaffold_attach') ?>
+        href="<?php echo Url::build(sprintf('/admin/transaction/attach/own/position/%d', $record->getId())) ?>"
+        class="ir attach"
+        title="<?php echo I18n::__('scaffold_attach') ?>"
+        data-target="transaction-<?php echo $record->getId() ?>-position-container">
+            <?php echo I18n::__('scaffold_attach') ?>
     </a>
 
     <div>
@@ -83,6 +83,9 @@
                         <option
                             value="<?php echo Model_Position::KIND_FREETEXT ?>"
                             <?php echo ($_position->kind == Model_Position::KIND_FREETEXT) ? 'selected="selected"' : '' ?>><?php echo I18n::__('position_kind_freetext') ?></option>
+                        <option
+                            value="<?php echo Model_Position::KIND_HR ?>"
+                            <?php echo ($_position->kind == Model_Position::KIND_HR) ? 'selected="selected"' : '' ?>><?php echo I18n::__('position_kind_hr') ?></option>
                     </select>
                 </div>
                 <div class="span4">
@@ -155,7 +158,7 @@
                         id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
                         name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]">
                         <option value=""><?php echo I18n::__('product_costunittype_none') ?></option>
-                        <?php foreach (R::findAll('costunittype') as $_id => $_costunittype): ?>
+                        <?php foreach (R::findAll('costunittype') as $_id => $_costunittype) : ?>
                         <option
                             value="<?php echo $_costunittype->getId() ?>"
                             <?php echo ($_position->getCostunittype()->getId() == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
@@ -172,7 +175,7 @@
                     <select
                         id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-vat-id"
                         name="dialog[ownPosition][<?php echo $index ?>][vat_id]">
-                        <?php foreach (R::findAll('vat') as $_id => $_vat): ?>
+                        <?php foreach (R::findAll('vat') as $_id => $_vat) : ?>
                         <option
                             value="<?php echo $_vat->getId() ?>"
                             <?php echo ($_position->getVat()->getId() == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo $_vat->name ?>

@@ -742,7 +742,7 @@ SQL;
         $slots = R::genSlots($this->bookable_types);
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     transaction.id AS id,
                     CONCAT(transaction.number, ' ', DATE_FORMAT(transaction.bookingdate, '%d.%m.%Y'), ' ', REPLACE(person.name, "\r\n", ' '), ' ', FORMAT(transaction.gros, 2, 'de_DE')) AS label,
@@ -1119,6 +1119,7 @@ SQL;
         $this->addConverter('balance', new Converter_Decimal()); //saldo
         $this->addConverter('dunningdate', new Converter_Mysqldate()); //last date this transaction was reinforced
         $this->addConverter('penaltyfee', new Converter_Decimal());
+        $this->addConverter('payhourly', new Converter_Decimal());
     }
 
     /**

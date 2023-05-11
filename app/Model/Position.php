@@ -39,6 +39,13 @@ class Model_Position extends Model
     public const KIND_FREETEXT = 'freetext';
 
     /**
+     * Define constant kind divider line.
+     *
+     * @const string
+     */
+    public const KIND_HR = 'ruler';
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -262,12 +269,10 @@ SQL;
     public function calcPosition()
     {
         if (!$this->bean->alternative && $this->bean->kind == self::KIND_POSITION) {
-
             //$this->bean->total = round($this->bean->count * $this->bean->salesprice, 2);
             $this->bean->total = $this->bean->count * $this->bean->salesprice;
 
             if ($this->bean->adjustment) {
-
                 //$this->bean->adjustval = round($this->bean->total * $this->bean->adjustment / 100, 2);
                 $this->bean->adjustval = $this->bean->total * $this->bean->adjustment / 100;
 
