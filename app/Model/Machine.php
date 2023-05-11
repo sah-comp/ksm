@@ -83,6 +83,19 @@ class Model_Machine extends Model
                 'width' => 'auto'
             ],
             [
+                'name' => 'location.name',
+                'sort' => [
+                    'name' => 'location.name'
+                ],
+                'callback' => [
+                    'name' => 'locationName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => 'auto'
+            ],
+            [
                 'name' => 'lastservice',
                 'sort' => [
                     'name' => 'machine.lastservice'
@@ -146,6 +159,22 @@ class Model_Machine extends Model
     }
 
     /**
+     * Return the location bean of the latest appointment of this machine.
+     *
+     * @return object
+     */
+    public function getLocation()
+    {
+        $appointment = R::findOne('appointment', " machine_id = ? ORDER BY date DESC LIMIT 1", [$this->bean->getId()]);
+        if ($appointment && $appointment->location) {
+            $location = $appointment->location;
+        } else {
+            $location = R::dispense('location');
+        }
+        return $location;
+    }
+
+    /**
      * Returns the name of the person (customer).
      *
      * @return string
@@ -153,6 +182,16 @@ class Model_Machine extends Model
     public function personName()
     {
         return $this->bean->getPerson()->name;
+    }
+
+    /**
+     * Returns the name of the location (of the latest appointment).
+     *
+     * @return string
+     */
+    public function locationName()
+    {
+        return $this->bean->getLocation()->name;
     }
 
     /**
@@ -202,6 +241,10 @@ class Model_Machine extends Model
                 contract ON contract.machine_id = machine.id
             LEFT JOIN
                 person ON person.id = contract.person_id
+            LEFT JOIN
+                appointment ON appointment.id = (SELECT appointment.id FROM appointment WHERE appointment.machine_id = machine.id ORDER BY appointment.date DESC LIMIT 1)
+            LEFT JOIN
+                location ON location.id = appointment.location_id
             WHERE
                 {$where}
 SQL;
@@ -227,7 +270,7 @@ SQL;
     {
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     machine.id AS id,
                     CONCAT(mb.name, ' ', machine.name, ' ', machine.serialnumber, ' ', machine.internalnumber) AS label,
@@ -254,8 +297,8 @@ SQL;
     public function dispense()
     {
         $this->addValidator('name', [
-            new Validator_HasValue(),
-            //new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
+        new Validator_HasValue(),
+        //new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
         ]);
         $this->addConverter(
             'lastservice',
