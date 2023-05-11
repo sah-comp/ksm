@@ -110,6 +110,16 @@ class Model_Treaty extends Model
                 'width' => '10rem'
             ],
             [
+                'name' => 'y',
+                'sort' => [
+                    'name' => 'treaty.y'
+                ],
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '6rem'
+            ],
+            [
                 'name' => 'bookingdate',
                 'sort' => [
                     'name' => 'treaty.bookingdate'
@@ -727,6 +737,9 @@ SQL;
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
         $this->addConverter('signdate', new Converter_Mysqldate());
+        $this->addConverter('y', new Converter_Decimal());
+        $this->addConverter('m', new Converter_Decimal());
+        $this->addConverter('d', new Converter_Decimal());
     }
 
     /**
@@ -778,6 +791,9 @@ SQL;
             }
             //error_log($this->bean->payload);
         }
+        $this->bean->y = date('Y', strtotime($this->bean->bookingdate));
+        $this->bean->m = date('m', strtotime($this->bean->bookingdate));
+        $this->bean->d = date('d', strtotime($this->bean->bookingdate));
         parent::update();
     }
 }
