@@ -10,7 +10,71 @@
 -------------------------------------------------------------------------------*/
 /* Let's default this puppy out
 -------------------------------------------------------------------------------*/
-html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, figure, footer, header, hgroup, menu, nav, section, time, mark, audio, video {
+html,
+body,
+body div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+abbr,
+address,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+samp,
+small,
+strong,
+sub,
+sup,
+var,
+b,
+i,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+time,
+mark,
+audio,
+video {
     margin: 0;
     padding: 0;
     border: 0;
@@ -20,7 +84,14 @@ html, body, body div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquot
     background: transparent;
 }
 
-article, aside, figure, footer, header, hgroup, nav, section {
+article,
+aside,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
     display: block;
 }
 
@@ -45,7 +116,8 @@ ul {
     list-style: none;
 }
 
-blockquote, q {
+blockquote,
+q {
     quotes: none;
 }
 
@@ -69,7 +141,8 @@ del {
     text-decoration: line-through;
 }
 
-abbr[title], dfn[title] {
+abbr[title],
+dfn[title] {
     border-bottom: 1px dotted #000;
     cursor: help;
 }
@@ -99,7 +172,8 @@ hr {
     padding: 0;
 }
 
-input, select {
+input,
+select {
     vertical-align: middle;
 }
 
@@ -127,7 +201,9 @@ input[type="checkbox"] {
     vertical-align: text-bottom;
 }
 
-select, input, textarea {
+select,
+input,
+textarea {
     font: 99% sans-serif;
 }
 
@@ -143,7 +219,8 @@ table {
 
 /* Accessible focus treatment
     people.opera.com/patrickl/experiments/keyboard/test */
-a:hover, a:active {
+a:hover,
+a:active {
     outline: none;
 }
 
@@ -151,17 +228,20 @@ small {
     font-size: 85%;
 }
 
-strong, th {
+strong,
+th {
     font-weight: bold;
 }
 
-td, td img {
+td,
+td img {
     vertical-align: top;
 }
 
 /* Make sure sup and sub don't screw with your line-heights
     gist.github.com/413930 */
-sub, sup {
+sub,
+sup {
     font-size: 75%;
     line-height: 0;
     position: relative;
@@ -176,7 +256,10 @@ sub {
 }
 
 /* standardize any monospaced elements */
-pre, code, kbd, samp {
+pre,
+code,
+kbd,
+samp {
     font-family: monospace, sans-serif;
 }
 
@@ -190,7 +273,10 @@ button {
 }
 
 /* Webkit browsers add a 2px margin outside the chrome of form elements */
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
     margin: 0;
 }
 
@@ -597,7 +683,15 @@ body>footer {
 }
 
 /* headlines */
-h1, h2, h3, h4, h5, h6, p, ul, ol {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol {
     margin-bottom: 1em;
 }
 
@@ -618,7 +712,10 @@ select {
 /* using local fonts? make sure to read up on Paul Irish's
     Bulletproof @font-face syntax: http://mky.be/font-face/bulletproof/ */
 /* we like off-black for text */
-body, select, input, textarea {
+body,
+select,
+input,
+textarea {
     color: #222;
 }
 
@@ -1290,6 +1387,33 @@ input.monetary {
     left: auto;
 }
 
+/**
+ * global search form in header nav
+ */
+form#gsearch {
+    display: inline;
+    float: right;
+    margin-top: -2.3rem;
+    margin-right: 1rem;
+}
+
+form#gsearch legend,
+form#gsearch label {
+    display: none;
+}
+
+form#gsearch fieldset,
+form#gsearch div.row {
+    margin: 0;
+    padding: 0;
+}
+
+form#gsearch input#q {
+    width: auto;
+    text-align: right;
+    border: 0;
+}
+
 table.scaffold a {
     display: block;
     text-decoration: none;
@@ -1663,7 +1787,8 @@ table:not(.notsticky) thead {
 }
 
 /* Extends the .visuallyhidden class to allow the element to be focusable when navigated to via the keyboard: h5bp.com/p */
-.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+.visuallyhidden.focusable:active,
+.visuallyhidden.focusable:focus {
     clip: auto;
     height: auto;
     margin: 0;
@@ -1678,7 +1803,8 @@ table:not(.notsticky) thead {
 }
 
 /* Contain floats: h5bp.com/q */
-.clearfix:before, .clearfix:after {
+.clearfix:before,
+.clearfix:after {
     content: "";
     display: table;
 }

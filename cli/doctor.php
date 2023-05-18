@@ -57,6 +57,11 @@ class Doctor
                 $this->doctorSupplier();
                 break;
 
+            case 'treaty-y-m-d':
+                echo "Update all treaty beans to have year, month and day single digits from bookingdate.\n";
+                $this->doctorTreatyYMD();
+                break;
+
             default:
                 // code...
                 break;
@@ -135,6 +140,18 @@ class Doctor
         R::storeAll($transactions);
         return true;
     }
+
+    /**
+     * Doctor treatyYMD beans.
+     *
+     * @return bool
+     */
+    public function doctorTreatyYMD(): bool
+    {
+        $sql = "UPDATE treaty SET y = YEAR(bookingdate), m = MONTH(bookingdate), d = DAY(bookingdate)";
+        $result = R::exec($sql);
+        return true;
+    }
 }
 
 /**
@@ -170,12 +187,12 @@ $doc = <<<DOC
 The doctor checks and repairs things.
 
 Usage:
-  doctor.php -b BEAN
+  doctor.php -b TASK
   doctor.php (-h | --help)
   doctor.php --version
 
 Options:
-  -b BEAN       The bean or table to repair.
+  -b TASK       The task to perform.
   -h --help     Show this screen.
   --version     Show version.
 

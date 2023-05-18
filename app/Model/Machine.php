@@ -123,6 +123,24 @@ class Model_Machine extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            'machine',
+            ' serialnumber LIKE :f ',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Return the machinebrand bean.
      *
      * @return object

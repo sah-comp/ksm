@@ -406,6 +406,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $filerController->index();
  });
 
+ /**
+ * Display the (global) search index page.
+ */
+ Flight::route('GET (/[a-z]{2})/search(/index)', function () {
+    $searchController = new Controller_Search();
+    $searchController->index();
+ });
+
 /**
  * Display the Accounting index page.
  */

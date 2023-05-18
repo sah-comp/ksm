@@ -94,7 +94,7 @@ class Model extends RedBean_SimpleModel
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return [];
     }
@@ -105,7 +105,7 @@ class Model extends RedBean_SimpleModel
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS()
+    public function injectCSS():array
     {
         return [];
     }
@@ -409,6 +409,26 @@ SQL;
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        return [];
+    }
+
+    /**
+     * Returns a string that represents a short and descriptive title for this bean.
+     * @return string
+     */
+    public function shortDescriptiveTitle():string
+    {
+        return $this->bean->getId();
+    }
+
+    /**
      * Returns an array of possible actions.
      *
      * Overwrite this function on your bean models.
@@ -574,7 +594,7 @@ SQL;
             return false;
         }
         $tags = array();
-        foreach ($this->keywords() as $n=>$keyword) {
+        foreach ($this->keywords() as $n => $keyword) {
             if (trim($keyword) == '') {
                 continue;
             }

@@ -9,15 +9,15 @@
  */
 
 /**
- * Filer controller.
+ * Search controller.
  *
- * Document Management, Finder, File- and Directory Browser.
+ * Global search.
  *
  * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Filer extends Controller
+class Controller_Search extends Controller
 {
     /**
      * Holds the records.
@@ -38,40 +38,22 @@ class Controller_Filer extends Controller
      *
      * @var string
      */
-    public $template = 'filer/index';
+    public $template = 'search/index';
 
     /**
-     * Holds the WebDAV Server address.
-     *
+     * Holds the current searchtext
      * @var string
      */
-    public $webdav_server = 'https://webdav.liso.local';
+    public $q;
 
     /**
-     * Holds the default path.
-     *
-     * @var string
-     */
-    public $path = "/Users/sah-comp/Documents/Kunden/Forum EDV/Kunden/KSM/Dokumentenmanagement/webdav-sim";
-
-    /**
-     * Holds the file types which will be prefixed with a special prefix to open directly in a desktop app.
+     * Holds the searchable beans.
      *
      * @var array
      */
-    public $filetypes = [
-        'xls' => [
-            'prefix' => 'ms-excel:ofe|u|'
-        ],
-        'xlsx' => [
-            'prefix' => 'ms-excel:ofe|u|'
-        ],
-        'doc' => [
-            'prefix' => 'ms-word:ofe|u|'
-        ],
-        'pdf' => [
-            'prefix' => ''
-        ]
+    public $types = [
+        'treaty',
+        'machine'
     ];
 
     /**
@@ -81,7 +63,6 @@ class Controller_Filer extends Controller
     {
         session_start();
         Auth::check();
-        $this->record = R::dispense('file');
     }
 
     /*
@@ -89,7 +70,14 @@ class Controller_Filer extends Controller
      */
     public function index()
     {
+        $this->q = trim(Flight::request()->query->q);
         $this->records = [];
+        if (!empty($this->q)) {
+            foreach ($this->types as $type) {
+                $bean = R::dispense($type);
+                $this->records[$type] = $bean->searchGlobal($this->q);
+            }
+        }
         $this->render();
     }
 
@@ -102,20 +90,20 @@ class Controller_Filer extends Controller
         //
         Flight::render('shared/navigation/account', [], 'navigation_account');
         Flight::render('shared/navigation/main', [], 'navigation_main');
-        Flight::render('shared/navigation', [], 'navigation');
-        Flight::render('filer/toolbar', [
+        Flight::render('shared/navigation', [
+            'q' => $this->q,
+        ], 'navigation');
+        Flight::render('search/toolbar', [
             'record' => $this->record
         ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => I18n::__("filer_head_title"),
-            'record' => $this->record,
+            'title' => I18n::__("search_head_title"),
             'records' => $this->records,
-            'path' => $this->path
         ], 'content');
         Flight::render('html5', [
-            'title' => I18n::__("filer_head_title"),
+            'title' => I18n::__("search_head_title"),
             'language' => Flight::get('language')
         ]);
     }

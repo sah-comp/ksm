@@ -53,7 +53,7 @@ class Model_Person extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return ['/js/datatables.min'];
     }
@@ -64,7 +64,7 @@ class Model_Person extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS()
+    public function injectCSS():array
     {
         return [];
         //return ['datatables.min'];

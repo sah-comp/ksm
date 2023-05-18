@@ -106,7 +106,7 @@ class Model_Correspondence extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return [
             '/js/quill.min',
@@ -121,7 +121,7 @@ class Model_Correspondence extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS()
+    public function injectCSS():array
     {
         return [
             'quill.core',

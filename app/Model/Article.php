@@ -149,7 +149,7 @@ class Model_Article extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return ['/js/Chart.bundle.min'];
     }
@@ -212,7 +212,7 @@ class Model_Article extends Model
     {
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     article.id AS id,
                     CONCAT(article.number, ' ', article.description, ' ', IF(article.isoriginal, 'Original', '')) AS label,
