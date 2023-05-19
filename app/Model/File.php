@@ -32,6 +32,9 @@ class Model_File extends Model
         'doc' => [
             'prefix' => "ms-word:ofe%7Cu%7C"
         ],
+        'docx' => [
+            'prefix' => "ms-word:ofe%7Cu%7C"
+        ],
         'pdf' => [
             'prefix' => ""
         ]
