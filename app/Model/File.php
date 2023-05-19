@@ -140,7 +140,7 @@ class Model_File extends Model
             error_log($extension);
             if (array_key_exists($extension, $this->filetypes)) {
                 $bridge = $this->filetypes[$extension];
-                $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.$file->getFilename());
+                $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.'/'.$file->getFilename());
                 //error_log($bridge['prefix']);
             } else {
                 $a->setAttribute('href', $file->getPathname());
