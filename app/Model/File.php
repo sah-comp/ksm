@@ -99,6 +99,11 @@ class Model_File extends Model
         $node = $list;
         $depth = 0;
         foreach ($objects as $name => $object) {
+            $pos = strpos($object->getFilename(), '.');
+            //error_log("Position " . $pos . " in " . $object->getFilename());
+            if (str_starts_with($object->getFilename(), '.')) {
+                continue;
+            }
             if ($objects->getDepth() == $depth) {
         //the depth hasnt changed so just add another li
                 //$li = $dom->createElement('li', $this->buildFileLink($object));
@@ -140,7 +145,7 @@ class Model_File extends Model
         
         if ($file->isFile()) {
             $extension = $file->getExtension();
-            error_log($extension);
+            //error_log($extension);
             if (array_key_exists($extension, $this->filetypes)) {
                 $bridge = $this->filetypes[$extension];
                 $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.'/'.$file->getFilename());
