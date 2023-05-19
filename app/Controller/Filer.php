@@ -41,40 +41,6 @@ class Controller_Filer extends Controller
     public $template = 'filer/index';
 
     /**
-     * Holds the WebDAV Server address.
-     *
-     * @var string
-     */
-    public $webdav_server = 'https://webdav.liso.local';
-
-    /**
-     * Holds the default path.
-     *
-     * @var string
-     */
-    public $path = "/Users/sah-comp/Documents/Kunden/Forum EDV/Kunden/KSM/Dokumentenmanagement/webdav-sim";
-
-    /**
-     * Holds the file types which will be prefixed with a special prefix to open directly in a desktop app.
-     *
-     * @var array
-     */
-    public $filetypes = [
-        'xls' => [
-            'prefix' => 'ms-excel:ofe|u|'
-        ],
-        'xlsx' => [
-            'prefix' => 'ms-excel:ofe|u|'
-        ],
-        'doc' => [
-            'prefix' => 'ms-word:ofe|u|'
-        ],
-        'pdf' => [
-            'prefix' => ''
-        ]
-    ];
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -111,7 +77,7 @@ class Controller_Filer extends Controller
         Flight::render($this->template, [
             'title' => I18n::__("filer_head_title"),
             'records' => $this->records,
-            'path' => $this->path
+            'path' => DMS_PATH
         ], 'content');
         Flight::render('html5', [
             'title' => I18n::__("filer_head_title"),

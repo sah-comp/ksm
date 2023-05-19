@@ -6,6 +6,6 @@
         </nav>
     </header>
     <div class="panel">
-        <?php echo $record->dir($path); ?>
+        <?php echo $record->dir(DMS_PATH); ?>
     </div>
 </article>

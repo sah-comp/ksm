@@ -18,6 +18,26 @@
 class Model_File extends Model
 {
     /**
+     * Holds the file types which will be prefixed with a special prefix to open directly in a desktop app.
+     *
+     * @var array
+     */
+    public $filetypes = [
+        'xls' => [
+            'prefix' => "ms-excel:ofe%7Cu%7C"
+        ],
+        'xlsx' => [
+            'prefix' => "ms-excel:ofe%7Cu%7C"
+        ],
+        'doc' => [
+            'prefix' => "ms-word:ofe%7Cu%7C"
+        ],
+        'pdf' => [
+            'prefix' => ""
+        ]
+    ];
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -114,8 +134,20 @@ class Model_File extends Model
     {
         $e = $dom->createElement('a', $file->getFilename());
         $a = $dom->appendChild($e);
-        $a->setAttribute('href', 'file:'.$file->getPathname());
-
+        
+        if ($file->isFile()) {
+            $extension = $file->getExtension();
+            error_log($extension);
+            if (array_key_exists($extension, $this->filetypes)) {
+                $bridge = $this->filetypes[$extension];
+                $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.$file->getPathname());
+                //error_log($bridge['prefix']);
+            } else {
+                $a->setAttribute('href', $file->getPathname());
+            }
+        } else {
+            $a->setAttribute('href', $file->getPathname());
+        }
         $li = $dom->createElement('li');
         $li->appendChild($e);
         return $li;
