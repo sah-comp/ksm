@@ -117,7 +117,7 @@ class Model_Machine extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return ['/js/datatables.min'];
     }
