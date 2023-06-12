@@ -78,7 +78,7 @@
             <td class="bt number"><?php echo I18n::__('transaction_label_total_net') ?></td>
             <td class="bt number"><?php echo htmlspecialchars($record->decimal('net')) ?></td>
         </tr>
-        <?php if (!$record->getContracttype()->hidesome) : ?>
+        <?php if (!$record->getContracttype()->hidesome || $record->donthidesome) : ?>
             <?php $vats = $record->getVatSentences(); ?>
             <?php foreach ($vats as $_id => $_vat) : ?>
         <tr class="lofty">

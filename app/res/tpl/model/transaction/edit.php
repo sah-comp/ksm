@@ -334,6 +334,30 @@
                     value="<?php echo htmlspecialchars($record->decimal('net')) ?>">
             </div>
         </div>
+        <?php if ($record->getContracttype()->hidesome) : ?>
+        <div class="row">
+            <div class="span9">
+                &nbsp;
+            </div>
+            <div class="span3">
+                <select
+                    id="transaction-donthidesome"
+                    class="autowidth"
+                    name="dialog[donthidesome]">
+                    <option
+                        value="0"
+                        <?php echo (!$record->donthidesome) ? 'selected="selected"' : '' ?>>
+                        <?php echo I18n::__('transaction_hidesome_default') ?>
+                    </option>
+                    <option
+                        value="1"
+                        <?php echo ($record->donthidesome) ? 'selected="selected"' : '' ?>>
+                        <?php echo I18n::__('transaction_hidesome_override') ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+        <?php endif ?>
         <?php $vats = $record->getVatSentences(); ?>
         <?php foreach ($vats as $_id => $_vat) : ?>
         <div class="row">
