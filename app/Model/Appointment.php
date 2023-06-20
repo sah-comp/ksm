@@ -29,7 +29,7 @@ class Model_Appointment extends Model
      */
     public function __construct()
     {
-        $this->setAction('index', ['idle', 'expunge', 'fix', 'complete', 'adjourn', 'adjournweekday']);
+        $this->setAction('index', ['idle', 'expunge', 'fix', 'complete', 'adjourn', 'adjournweekday', 'multiedit']);
     }
 
     /**
@@ -449,6 +449,23 @@ class Model_Appointment extends Model
     public function fix()
     {
         $this->bean->fix = true;
+        R::store($this->bean);
+    }
+
+    /**
+     * Update this appointment from the multiedit footer in tpl/service/index.
+     */
+    public function multiedit()
+    {
+        if (Flight::request()->data->multiedit_date) {
+            $this->bean->date = Flight::request()->data->multiedit_date;
+        }
+        if (Flight::request()->data->multiedit_time) {
+            $this->bean->starttime = Flight::request()->data->multiedit_starttime;
+        }
+        if (Flight::request()->data->multiedit_worker) {
+            $this->bean->user_id = Flight::request()->data->multiedit_worker;
+        }
         R::store($this->bean);
     }
 
