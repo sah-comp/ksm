@@ -297,6 +297,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $transactionController->mail();
  });
 
+ /**
+ * Routes to the transaction controller to begin or end booking session.
+ */
+ Flight::route('GET (/[a-z]{2})/transaction/booking', function () {
+    $transactionController = new Controller_Transaction(null, 'transaction', null);
+    $transactionController->booking();
+ });
+
 /**
  * Routes to the appointment controller to download a list as PDF to the client.
  */

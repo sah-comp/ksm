@@ -478,7 +478,8 @@ class Model_Appointment extends Model
     public function injectJS():array
     {
         return [
-            '/js/select2.min'
+            '/js/select2.min',
+            '/js/appointment'
         ];
     }
 

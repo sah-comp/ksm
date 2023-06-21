@@ -830,6 +830,14 @@ fieldset.sub>.attach {
     position: inherit !important;
 }
 
+.switch-start {
+    color: green;
+}
+
+.switch-stop {
+    color: red;
+}
+
 /*
 hr.person-contact-divider:after {
     content: '\002702';

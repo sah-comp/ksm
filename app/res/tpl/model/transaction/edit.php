@@ -75,6 +75,11 @@
                 required="required"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->bookingdate) ?>" />
+                <?php if (Flight::get('user')->isBooking()) : ?>
+                <div class="alert alert-warning">
+                    <?php echo Flight::textile(I18n::__('transaction_booking_in_progress')) ?>
+                </div>
+                <?php endif ?>
         </div>
     </div>
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">

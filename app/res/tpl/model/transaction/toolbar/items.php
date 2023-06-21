@@ -8,8 +8,15 @@
  * @version $Id$
  */
 ?>
-<?php if ($record->getId()): ?>
-    <?php if ($record->hasEmail()): ?>
+<li>
+    <?php if (Flight::get('user')->isBooking()) : ?>
+        <a href="<?php echo Url::build("/transaction/booking") ?>" class="switch-stop"><?php echo I18n::__('transaction_action_booking_stop') ?></a>
+    <?php else : ?>
+        <a href="<?php echo Url::build("/transaction/booking") ?>" class="switch-start"><?php echo I18n::__('transaction_action_booking_start') ?></a>
+    <?php endif ?>
+</li>
+<?php if ($record->getId()) : ?>
+    <?php if ($record->hasEmail()) : ?>
 <li>
     <a
         href="<?php echo Url::build("/transaction/mail/%d", [$record->getId()]) ?>"
@@ -33,7 +40,7 @@
             name="copyas"
             required="required">
             <option value=""><?php echo I18n::__('transaction_copy_as') ?></option>
-            <?php foreach (R::find('contracttype', ' enabled = 1 AND ledger = 1 ORDER BY name') as $_id => $_contracttype): ?>
+            <?php foreach (R::find('contracttype', ' enabled = 1 AND ledger = 1 ORDER BY name') as $_id => $_contracttype) : ?>
             <option value="<?php echo $_id ?>"><?php echo $_contracttype->name ?></option>
             <?php endforeach; ?>
         </select>
@@ -55,7 +62,7 @@
         enctype="multipart/form-data">
         <select
             name="layout">
-            <?php foreach ($record->getPrintLayouts() as $_layout => $_default): ?>
+            <?php foreach ($record->getPrintLayouts() as $_layout => $_default) : ?>
             <option value="<?php echo $_layout ?>" <?php echo ($_default) ? 'selected="selected"' : '' ?>><?php echo I18n::__('transaction_layout_' . $_layout) ?></option>
             <?php endforeach; ?>
         </select>
@@ -65,13 +72,13 @@
             value="<?php echo I18n::__('transaction_action_pdf') ?>" />
     </form>
 </li>
-<?php elseif ($hasRecords): ?>
+<?php elseif ($hasRecords) : ?>
 <li>
     <a
         href="<?php echo Url::build("/transaction/pdf") ?>">
         <?php echo I18n::__('transaction_action_pdf_list') ?>
     </a>
 </li>
-<?php else: ?>
+<?php else : ?>
 <!-- There are no records -->
 <?php endif; ?>

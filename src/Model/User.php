@@ -86,6 +86,19 @@ class Model_User extends Model
     }
 
     /**
+     * Returns true when the user session has the semaphore booking.
+     *
+     * @return bool
+     */
+    public function isBooking():bool
+    {
+        if (isset($_SESSION['user']['booking']) && $_SESSION['user']['booking'] === true) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Logout the user.
      */
     public function logout()
@@ -301,7 +314,7 @@ class Model_User extends Model
     {
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     user.id AS id,
                     CONCAT(user.name, ' (', user.shortname, ')') AS label,

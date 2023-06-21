@@ -96,6 +96,19 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /**
+     * Switch the booking semaphore of the current user session and redirects to the index page.
+     */
+    public function booking()
+    {
+        if (isset($_SESSION['user']['booking']) && $_SESSION['user']['booking'] === true) {
+            $_SESSION['user']['booking'] = false;
+        } else {
+            $_SESSION['user']['booking'] = true;
+        }
+        $this->redirect("/admin/transaction");
+    }
+
+    /**
      * Sends a email to the transaction recipient, cc to user who clicked button.
      */
     public function mail()
@@ -126,7 +139,7 @@ class Controller_Transaction extends Controller_Scaffold
             } else {
                 $mail->SMTPAuth = false;                          // Disable SMTP authentication
             }
-            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Port = $smtp['port'];                          // SMTP port
             $mail->Username = $smtp['user'];                      // SMTP username
             $mail->Password = $smtp['password'];                  // SMTP password
             $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
