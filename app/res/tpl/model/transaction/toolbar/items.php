@@ -8,13 +8,6 @@
  * @version $Id$
  */
 ?>
-<li>
-    <?php if (Flight::get('user')->isBooking()) : ?>
-        <a href="<?php echo Url::build("/transaction/booking") ?>" class="switch-stop"><?php echo I18n::__('transaction_action_booking_stop') ?></a>
-    <?php else : ?>
-        <a href="<?php echo Url::build("/transaction/booking") ?>" class="switch-start"><?php echo I18n::__('transaction_action_booking_start') ?></a>
-    <?php endif ?>
-</li>
 <?php if ($record->getId()) : ?>
     <?php if ($record->hasEmail()) : ?>
 <li>
@@ -73,6 +66,13 @@
     </form>
 </li>
 <?php elseif ($hasRecords) : ?>
+<li>
+    <?php if (Flight::get('user')->isBooking()) : ?>
+    <a href="<?php echo Url::build("/transaction/booking") ?>" class="switch-stop"><?php echo I18n::__('transaction_action_booking_stop') ?></a>
+    <?php else : ?>
+    <a href="<?php echo Url::build("/transaction/booking") ?>" class="switch-start"><?php echo I18n::__('transaction_action_booking_start') ?></a>
+    <?php endif ?>
+</li>
 <li>
     <a
         href="<?php echo Url::build("/transaction/pdf") ?>">
