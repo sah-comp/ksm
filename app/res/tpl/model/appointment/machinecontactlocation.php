@@ -8,7 +8,7 @@
         id="appointment-contact-name"
         name="dialog[contact_id]">
         <option value=""><?php echo I18n::__('appointment_contact_select') ?></option>
-        <?php foreach ($contacts as $_id => $_contact): ?>
+        <?php foreach ($contacts as $_id => $_contact) : ?>
         <option
             value="<?php echo $_contact->getId() ?>"
             <?php echo ($record->contact_id == $_contact->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_contact->name . ' ' . $_contact->getContactinfo()) ?>
@@ -25,13 +25,13 @@
     </label>
     <select
         id="appointment-machine-name"
-        class="<?php echo (!$record->machine_id) ? 'set-location-on-change' : ''  ?>"
+        class="select2basic <?php echo (!$record->machine_id) ? 'set-location-on-change' : ''  ?>"
         data-target="appointment-location-name"
         data-extra="appointment-machine-name"
         data-url="<?php echo Url::build('/appointment/set/location/person/%d/?callback=?', [$person->getId()]) ?>"
         name="dialog[machine_id]">
         <option value=""><?php echo I18n::__('appointment_machine_select') ?></option>
-        <?php foreach ($machines as $_id => $_machine): ?>
+        <?php foreach ($machines as $_id => $_machine) : ?>
         <option
             value="<?php echo $_machine->getId() ?>"
             <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_machine->getMachinebrand()->name . ' ' . $_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ')') ?>
@@ -50,7 +50,7 @@
         id="appointment-location-name"
         name="dialog[location_id]">
         <option value=""><?php echo I18n::__('appointment_location_select') ?></option>
-        <?php foreach ($locations as $_id => $_location): ?>
+        <?php foreach ($locations as $_id => $_location) : ?>
         <option
             value="<?php echo $_location->getId() ?>"
             <?php echo ($record->location_id == $_location->getId()) ? 'selected="selected"' : '' ?>><?php echo $_location->name ?>
@@ -58,3 +58,10 @@
         <?php endforeach ?>
     </select>
 </div>
+<script type="text/javascript">
+    /**
+     * Check for select inputs to be handled with select2 plugin
+     * @see https://select2.org
+     */
+    $('.select2basic').select2();
+</script>

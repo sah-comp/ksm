@@ -470,6 +470,32 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Returns an array of path to js files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectJS():array
+    {
+        return [
+            '/js/select2.min'
+        ];
+    }
+
+    /**
+     * Returns an array of path to css files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectCSS():array
+    {
+        return [
+            'select2.min'
+        ];
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @todo Really check for an existing template.
