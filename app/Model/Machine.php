@@ -314,9 +314,10 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->contracttype = R::load('contracttype', CINNEBAR_CONTRACTTYPE_MACHINE_BEAN_ID);
         $this->addValidator('name', [
-        new Validator_HasValue(),
-        //new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
+            new Validator_HasValue(),
+            //new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
         ]);
         $this->addConverter(
             'lastservice',
@@ -354,6 +355,7 @@ SQL;
      */
     public function update()
     {
+        //$this->bean->contracttype = R::load('contracttype', CINNEBAR_CONTRACTTYPE_MACHINE_BEAN_ID);
         $files = reset(Flight::request()->files);
         $file = reset($files);
         if (!empty($file) && !$file['error']) {
@@ -379,6 +381,10 @@ SQL;
             if (!$installedpart->getId() && !$installedpart->clairvoyant) {
                 unset($this->bean->ownInstalledpart[$id]); // this is most likely a blank article, just nill
             }
+        }
+        if (Flight::request()->method == 'POST') {
+            $limb = Flight::request()->data->limb;
+            $this->bean->payload = json_encode($limb);
         }
         parent::update();
     }

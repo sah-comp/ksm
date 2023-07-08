@@ -25,7 +25,7 @@ $_lastType = null;
         <h2><?php echo $_type ?></h2>
                     <?php if (count($_beans)) : ?>
                         <?php foreach ($_beans as $_id => $_bean) : ?>
-        <p><?php echo $_bean->shortDescriptiveTitle() ?></p>
+        <p><a href="<?php echo Url::build('/admin/%s/edit/%d', [$_bean->getMeta('type'), $_bean->getId()]) ?>"><?php echo $_bean->shortDescriptiveTitle() ?></a></p>
                         <?php endforeach ?>
                     <?php else : ?>
         <p><?php echo I18n::__('gsearch_no_records_of_type_found') ?></p>    

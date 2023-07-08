@@ -62,6 +62,11 @@ class Doctor
                 $this->doctorTreatyYMD();
                 break;
 
+            case 'mach-fields':
+                echo "Update all machine beans to use user-defined json fields instead of hardcoded fields.\n";
+                $this->doctorMachineFields();
+                break;
+
             default:
                 // code...
                 break;
@@ -150,6 +155,53 @@ class Doctor
     {
         $sql = "UPDATE treaty SET y = YEAR(bookingdate), m = MONTH(bookingdate), d = DAY(bookingdate)";
         $result = R::exec($sql);
+        return true;
+    }
+
+    /**
+     * Doctor machine beans fields.
+     *
+     * @return bool
+     */
+    public function doctorMachineFields(): bool
+    {
+        $machines = R::findAll('machine');
+        $sql = "UPDATE machine SET payload = :payload WHERE id = :id LIMIT 1";
+        echo "\nDoctoring " . count($machines) . " machines:\n";
+        foreach ($machines as $id => $machine) {
+            $data = [
+                'charger' => $machine->charger,
+                'lever' => $machine->lever,
+                'forks' => $machine->forks,
+                'weight' => $machine->weight,
+                'height' => $machine->height,
+                'maxload' => $machine->maxload,
+                'masttype' => $machine->masttype,
+                'mastserialnumber' => $machine->mastserialnumber,
+                'attachment' => $machine->attachment,
+                'attachmenttype' => $machine->attachmenttype,
+                'attachmentserialnumber' => $machine->attachmentserialnumber,
+                'motor' => $machine->motor,
+                'motorserialnumber' => $machine->motorserialnumber,
+                'controlvalve' => $machine->controlvalve,
+                'shutdownvalve' => $machine->shutdownvalve,
+                'mixer' => $machine->mixer,
+                'keynumber' => $machine->keynumber,
+                'fronttires' => $machine->fronttires,
+                'backtires' => $machine->backtires,
+                'controltype' => $machine->controltype,
+                'battery' => $machine->battery,
+                'hourlyrate' => $machine->hourlyrate,
+                'drivingcost' => $machine->drivingcost,
+                'forkmaxheight' => $machine->forkmaxheight
+            ];
+            $result = R::exec($sql, [
+                ':payload' => json_encode($data),
+                ':id' => $machine->getId()
+            ]);
+            echo '.';
+        }
+        //R::storeAll($machines);
         return true;
     }
 }

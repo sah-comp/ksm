@@ -61,7 +61,7 @@
                 class="autowidth"
                 name="dialog[machinebrand_id]">
                 <option value=""><?php echo I18n::__('machine_machinebrand_none') ?></option>
-                <?php foreach (R::findAll('machinebrand') as $_id => $_machinebrand): ?>
+                <?php foreach (R::findAll('machinebrand') as $_id => $_machinebrand) : ?>
                 <option
                     value="<?php echo $_machinebrand->getId() ?>"
                     <?php echo ($record->machinebrand_id == $_machinebrand->getId()) ? 'selected="selected"' : '' ?>><?php echo $_machinebrand->name ?>
@@ -187,14 +187,30 @@
     <?php Flight::render('shared/navigation/tabs', [
         'tab_id' => 'machine-tabs',
         'tabs' => [
+            'machine-limb' => I18n::__('machine_limb_tab'),
             'machine-details' => I18n::__('machine_detail_tab'),
             'machine-artifact' => I18n::__('machine_artifact_tab'),
             'machine-article' => I18n::__('machine_article_tab'),
             'machine-appointment' => I18n::__('machine_appointment_tab'),
             'machine-contract' => I18n::__('machine_contract_tab')
         ],
-        'default_tab' => 'machine-details'
+        'default_tab' => 'machine-limb'
     ]) ?>
+    <fieldset
+        id="machine-limb"
+        class="tab"
+        style="display: block;">
+        <legend class="verbose"><?php echo I18n::__('machine_legend_limb') ?></legend>
+        <?php $_payload = json_decode($record->payload, true) ?>
+        <?php
+        foreach ($record->contracttype->withCondition("active = 1 ORDER BY sequence")->ownLimb as $_id => $_limb) :
+            Flight::render('model/machine/part/limb', [
+                'payload' => $_payload,
+                'limb' => $_limb
+            ]);
+        endforeach;
+        ?>
+    </fieldset>
     <fieldset
         id="machine-details"
         class="tab"
