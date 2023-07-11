@@ -132,8 +132,8 @@ class Model_Machine extends Model
     {
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
-            'machine',
-            ' serialnumber LIKE :f ',
+            $this->bean->getMeta('type'),
+            ' serialnumber LIKE :f OR internalnumber LIKE :f OR buildyear LIKE :f OR lastservice = :f OR specialagreement LIKE :f',
             [
                 ':f' => $searchphrase,
             ]

@@ -429,6 +429,55 @@ SQL;
     }
 
     /**
+     * Returns a string with the default table thead of attributes.
+     * @return string
+     */
+    public function defaultTableHead():string
+    {
+        $type = $this->bean->getMeta('type');
+        $s = '';
+        foreach ($this->getAttributes() as $attribute) {
+            $s .= '<th class="';
+            if (isset($attribute['class'])) {
+                $s .= $attribute['class'];
+            }
+            if (isset($attribute['width'])) {
+                $s .= ' style="width: ' . $attribute['width'] . '"';
+            }
+            $s .= '">';
+            $s .= I18n::__($type.'_label_'.$attribute['name']);
+            $s .= '</th>';
+        }
+        return $s;
+    }
+
+    /**
+     * Returns a string with the default table tbody of attributes.
+     * @return string
+     */
+    public function defaultTableBody():string
+    {
+        $s = '';
+        foreach ($this->getAttributes() as $attribute) {
+            $s .= '<td class="';
+            if (isset($attribute['class'])) {
+                $s .= $attribute['class'];
+            }
+            $s .= '">';
+            if (isset($attribute['prefix'])) {
+                $s .= $this->bean->{$attribute['prefix']['callback']['name']}($attribute['name']);
+            }
+            if (isset($attribute['callback'])) {
+                $s .= htmlspecialchars($this->bean->{$attribute['callback']['name']}($attribute['name']));
+            } else {
+                $s .= htmlspecialchars($this->bean->{$attribute['name']});
+            }
+            $s .= '</td>';
+        }
+        return $s;
+    }
+
+    /**
      * Returns an array of possible actions.
      *
      * Overwrite this function on your bean models.
@@ -729,7 +778,7 @@ SQL;
             case self::VALIDATION_MODE_EXCEPTION:
                 $validators_with_errors_flat = implode(', ', $validators_with_errors);
                 throw new Exception_Validation("Invalid {$this->bean->getMeta('type')}#{$this->bean->getId()} because {$validators_with_errors_flat} on {$attribute}");
-                break;
+            break;
             case self::VALIDATION_MODE_IMPLICIT:
                 $this->bean->invalid = true;
                 break;

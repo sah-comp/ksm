@@ -230,6 +230,24 @@ class Model_Person extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' nickname LIKE :f OR account LIKE :f OR attention LIKE :f OR title LIKE :f OR firstname LIKE :f OR lastname LIKE :f OR suffix LIKE :f OR organization LIKE :f OR jobtile LIKE :f OR department LIKE :f OR email LIKE :f OR phone LIKE :f OR fax LIKE :f OR url LIKE :f OR phonesec LIKE :f OR owner LIKE :f OR note LIKE :f OR cellphone LIKE :f OR billingemail LIKE :f OR dunningemail LIKE :f OR bankname LIKE :f OR bankcode LIKE :f OR bankaccount LIKE :f OR bic LIKE :f OR iban LIKE :f OR reference LIKE :f',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Lookup a searchterm and return the resultset as an array.
      *
      * @todo allow more freedom with the additional query parameter.

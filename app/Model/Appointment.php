@@ -696,6 +696,24 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' transactionnumber LIKE :f OR date = :f',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select

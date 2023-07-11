@@ -27,6 +27,20 @@ table.scaffold a.dunning-mail {
     display: inline-block;
 }
 
+table.gsearch {
+    margin-bottom: 5rem;
+}
+
+p.none-found {
+    text-align: center;
+    font-size: small;
+    color: gray;
+}
+
+h2.some-found {
+    text-align: center;
+}
+
 .dunning-pdf,
 .dunning-mail {
     width: 20px;
@@ -836,6 +850,10 @@ fieldset.sub>.attach {
 
 .switch-stop {
     color: red;
+}
+
+p.gsearch span {
+    margin-right: 1rem;
 }
 
 /*

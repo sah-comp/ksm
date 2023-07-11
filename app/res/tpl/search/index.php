@@ -15,20 +15,43 @@ $_lastType = null;
     </header>
     <div class="panel">
         <?php if (empty($records)) : ?>
-        <p><?php echo I18n::__('gsearch_no_records_found') ?></p>    
+        <p class="none-found"><?php echo I18n::__('gsearch_no_records_found') ?></p>    
         <?php else : ?>
             <?php foreach ($records as $_type => $_beans) : ?>
                 <?php
                 if ($_lastType !== $_type) :
                     $_lastType = $_type;
                     ?>
-        <h2><?php echo $_type ?></h2>
-                    <?php if (count($_beans)) : ?>
+                    <?php $total_records = count($_beans); ?>
+                    <?php if ($total_records) :
+                                $_firstbean = reset($_beans);
+                        ?>
+                        <h2 class="some-found"><?php echo I18n::__($_type . '_h1') ?></h2>
+                        <table class="scaffold gsearch">
+                            <caption>
+                            <?php echo I18n::__('scaffold_caption_index', null, array($total_records)) ?>
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th class="edit"></th>
+                                    <?php echo $_firstbean->defaultTableHead() ?>
+                                </tr>
+                            </thead>
+                            <tbody>
                         <?php foreach ($_beans as $_id => $_bean) : ?>
-        <p><a href="<?php echo Url::build('/admin/%s/edit/%d', [$_bean->getMeta('type'), $_bean->getId()]) ?>"><?php echo $_bean->shortDescriptiveTitle() ?></a></p>
+                                <tr
+                                    data-href="<?php echo Url::build('/admin/%s/edit/%d', [$_bean->getMeta('type'), $_bean->getId()]) ?>">
+                                    <td>
+                                        <a 
+                                            class="ir action action-edit" 
+                                            href="<?php echo Url::build('/admin/%s/edit/%d', [$_bean->getMeta('type'), $_bean->getId()]) ?>">
+                                        </a>
+                                    </td>
+                                    <?php echo $_bean->defaultTableBody() ?>
+                                </tr>
                         <?php endforeach ?>
-                    <?php else : ?>
-        <p><?php echo I18n::__('gsearch_no_records_of_type_found') ?></p>    
+                            </tbody>
+                        </table>
                     <?php endif ?>
                 <?php endif ?>
             <?php endforeach ?>

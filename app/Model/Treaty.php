@@ -720,8 +720,8 @@ SQL;
     {
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
-            'treaty',
-            ' number LIKE :f OR serialnumber LIKE :f ',
+            $this->bean->getMeta('type'),
+            ' number LIKE :f OR serialnumber LIKE :f OR ctext LIKE :f OR startdate = :f OR enddate = :f OR note like :f OR prospect LIKE :f OR bookingdate = :f',
             [
                 ':f' => $searchphrase,
             ]
