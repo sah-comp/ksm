@@ -465,7 +465,7 @@ SQL;
             }
             $s .= '">';
             if (isset($attribute['prefix'])) {
-                $s .= $this->bean->{$attribute['prefix']['callback']['name']}($attribute['name']);
+                //$s .= $this->bean->{$attribute['prefix']['callback']['name']}($attribute['name']);
             }
             if (isset($attribute['callback'])) {
                 $s .= htmlspecialchars($this->bean->{$attribute['callback']['name']}($attribute['name']));

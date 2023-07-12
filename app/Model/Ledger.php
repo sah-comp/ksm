@@ -184,6 +184,22 @@ class Model_Ledger extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        $sql = 'SELECT ledger.* FROM ledger LEFT JOIN ledgeritem ON ledgeritem.ledger_id = ledger.id WHERE ledgeritem.desc LIKE :f';
+        $rows = R::getAll($sql, [
+            ':f' => $searchphrase
+        ]);
+        return R::convertToBeans('ledger', $rows);
+    }
+
+    /**
      * Generate an array with ledgeritem beans to be used in csv export.
      *
      * @return array

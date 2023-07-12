@@ -58,7 +58,9 @@ class Controller_Search extends Controller
         'correspondence',
         'article',
         'person',
-        'product'
+        'product',
+        'ledger',
+        'transaction'
     ];
 
     /**

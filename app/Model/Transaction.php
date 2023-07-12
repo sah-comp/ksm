@@ -695,6 +695,22 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        $sql = 'SELECT t.* FROM transaction AS t LEFT JOIN person ON t.person_id = person.id LEFT JOIN position ON t.id = position.transaction_id WHERE t.footer LIKE :f OR t.header LIKE :f OR t.billingemail LIKE :f OR t.dunningemail LIKE :f OR t.postaladdress LIKE :f OR (position.desc LIKE :f)';
+        $rows = R::getAll($sql, [
+            ':f' => $searchphrase
+        ]);
+        return R::convertToBeans($this->bean->getMeta('type'), $rows);
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select

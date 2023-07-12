@@ -706,7 +706,7 @@ class Model_Appointment extends Model
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
             $this->bean->getMeta('type'),
-            ' transactionnumber LIKE :f OR date = :f',
+            ' @joined.person.name LIKE :f OR @joined.contact.name LIKE :f OR (@joined.user.name LIKE :f OR @joined.user.email LIKE :f OR @joined.user.shortname LIKE :f OR @joined.user.screenname LIKE :f) OR @joined.appointmenttype.name LIKE :f OR (@joined.machine.name LIKE :f OR @joined.machine.name LIKE :f OR @joined.machine.serialnumber LIKE :f OR @joined.machine.internalnumber LIKE :f OR @joined.machine.note LIKE :f) OR @joined.location.name LIKE :f OR transactionnumber LIKE :f OR date = :f OR appointment.note LIKE :f',
             [
                 ':f' => $searchphrase,
             ]

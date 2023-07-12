@@ -238,13 +238,11 @@ class Model_Person extends Model
     public function searchGlobal($searchphrase):array
     {
         $searchphrase = '%'.$searchphrase.'%';
-        return R::find(
-            $this->bean->getMeta('type'),
-            ' nickname LIKE :f OR account LIKE :f OR attention LIKE :f OR title LIKE :f OR firstname LIKE :f OR lastname LIKE :f OR suffix LIKE :f OR organization LIKE :f OR jobtile LIKE :f OR department LIKE :f OR email LIKE :f OR phone LIKE :f OR fax LIKE :f OR url LIKE :f OR phonesec LIKE :f OR owner LIKE :f OR note LIKE :f OR cellphone LIKE :f OR billingemail LIKE :f OR dunningemail LIKE :f OR bankname LIKE :f OR bankcode LIKE :f OR bankaccount LIKE :f OR bic LIKE :f OR iban LIKE :f OR reference LIKE :f',
-            [
-                ':f' => $searchphrase,
-            ]
-        );
+        $sql = 'SELECT p.* FROM person AS p LEFT JOIN address ON address.person_id = p.id LEFT JOIN contact ON contact.person_id = p.id WHERE p.nickname LIKE :f OR p.account LIKE :f OR p.attention LIKE :f OR p.title LIKE :f OR p.firstname LIKE :f OR p.lastname LIKE :f OR p.suffix LIKE :f OR p.organization LIKE :f OR p.jobtitle LIKE :f OR p.department LIKE :f OR p.email LIKE :f OR p.phone LIKE :f OR p.fax LIKE :f OR p.url LIKE :f OR p.phonesec LIKE :f OR p.owner LIKE :f OR p.note LIKE :f OR p.cellphone LIKE :f OR p.billingemail LIKE :f OR p.dunningemail LIKE :f OR p.bankname LIKE :f OR p.bankcode LIKE :f OR p.bankaccount LIKE :f OR p.bic LIKE :f OR p.iban LIKE :f OR p.reference LIKE :f OR (address.street LIKE :f OR address.zip LIKE :f OR address.city LIKE :f OR address.county LIKE :f) OR (contact.name LIKE :f OR contact.jobdescription LIKE :f)';
+        $rows = R::getAll($sql, [
+            ':f' => $searchphrase
+        ]);
+        return R::convertToBeans($this->bean->getMeta('type'), $rows);
     }
 
     /**

@@ -307,7 +307,7 @@ class Model_Correspondence extends Model
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
             $this->bean->getMeta('type'),
-            ' subject LIKE :f OR postaladdress LIKE :f OR confidential LIKE :f OR writtenon = :f',
+            ' subject LIKE :f OR postaladdress LIKE :f OR confidential LIKE :f OR writtenon = :f OR @joined.person.name LIKE :f OR (@joined.contact.name LIKE :f OR @joined.contact.jobdescription LIKE :f)',
             [
                 ':f' => $searchphrase,
             ]

@@ -212,7 +212,7 @@ class Model_Article extends Model
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
             $this->bean->getMeta('type'),
-            ' number LIKE :f OR description LIKE :f',
+            ' number LIKE :f OR description LIKE :f OR @joined.person.name LIKE :f',
             [
                 ':f' => $searchphrase,
             ]
