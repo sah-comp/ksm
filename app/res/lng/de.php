@@ -933,6 +933,7 @@ Rufen Sie "cms/module":/cms/module auf und erstellen Sie ein neues Modul auf der
   'person_label_personkind.name' => 'Art',
   'person_label_phone' => 'Telefon',
   'person_label_phonesec' => '2. Telefon',
+  'person_label_reference' => 'Referenz',
   'person_label_suffix' => 'Zusatz',
   'person_label_title' => 'Titel',
   'person_label_url' => 'Webseite',
