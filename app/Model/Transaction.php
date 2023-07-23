@@ -113,6 +113,25 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns an array with dependent data. Depending on person given.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return array
+     */
+    public function getDependents($person)
+    {
+        if (!$person->getId()) {
+            return ['contacts' => []];
+        }
+        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
+        $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
+        $result = [
+            'contacts' => $contacts//$person->with("ORDER BY name")->ownContact
+        ];
+        return $result;
+    }
+
+    /**
      * Returns an array with dunninglevels.
      *
      * @return array

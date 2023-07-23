@@ -107,7 +107,10 @@
             id="transaction-person-name"
             name="dialog[person][name]"
             class="autocomplete"
+            data-target="person-dependent"
+            data-extra="transaction-person-id"
             data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
+            data-dynamic="<?php echo Url::build('/transaction/%d/person/changed/?callback=?', [$record->getId()]) ?>"
             data-spread='<?php
                 echo json_encode([
                     'transaction-person-name' => 'value',
@@ -429,11 +432,22 @@
                 for="transaction-billingemail">
                 <?php echo I18n::__('transaction_label_billingemail') ?>
             </label>
-            <input
-                id="transaction-billingemail"
-                type="text"
-                name="dialog[billingemail]"
-                value="<?php echo htmlspecialchars($record->billingemail) ?>">
+            <div id="person-dependent" class="autodafe">
+            <?php
+            if ($record->getPerson()->getId()) :
+            // The customer of this appointment is already set. No autodafe needed.
+                $_dependents = $record->getDependents($record->getPerson());
+                Flight::render('model/transaction/billingmail', [
+                'person' => $record->getPerson(),
+                'record' => $record,
+                'contacts' => $_dependents['contacts']
+                ]);
+            else :
+            // lazy load, after hunting that heretic.
+                ?>
+            <div class="heretic"><?php echo I18n::__('transaction_person_select_before_me') ?></div>
+            <?php endif; ?>
+            </div>
         </div>
         <div class="row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
             <label

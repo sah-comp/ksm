@@ -310,4 +310,36 @@ class Controller_Transaction extends Controller_Scaffold
         R::debug(false);
         return null;
     }
+
+    /**
+     * Rerenders the "person-dependent" part of an transaction form.
+     *
+     * @todo documentation
+     * Requires the following data-* in your html:
+     *  - data-extra="transaction-person-id"
+     *  - data-dynamic="URL TO THIS FUNCTION"
+     *
+     * @return JSONP
+     */
+    public function dependent()
+    {
+        $person = R::load('person', Flight::request()->data->person_id);
+        $dependents = $this->record->getDependents($person);
+        $this->record->person = $person;
+        ob_start();
+        Flight::render('model/transaction/billingmail', [
+            'person' => $person,
+            'record' => $this->record,
+            'contacts' => $dependents['contacts']
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        $result = [
+            'okay' => true,
+            'html' => $html
+        ];
+
+        Flight::jsonp($result, 'callback');
+    }
 }
