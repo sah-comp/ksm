@@ -33,8 +33,7 @@ class Model_Person extends Model
      */
     public $paydrivetypes = [
         'per_bulk',
-        'per_kilometer',
-        'per_time'
+        'per_kilometer'
     ];
 
     /**
@@ -284,8 +283,9 @@ class Model_Person extends Model
                     person.discount_id AS discount_id,
                     if (person.billingemail != '', billingemail, email) AS billingemail,
                     if (person.dunningemail != '', dunningemail, email) AS dunningemail,
-                    person.payhourly AS payhourly,
-                    person.paydrive AS paydrive
+                    FORMAT(person.payhourly, 2, 'de_DE') AS payhourly,
+                    person.paydrive AS paydrive,
+                    FORMAT(person.paydriveperkilometer, 2, 'de_DE') AS paydriveperkilometer
                 FROM
                     person
                 LEFT JOIN
@@ -502,6 +502,9 @@ SQL;
             new Converter_Decimal()
         ]);
         $this->addConverter('payhourly', [
+            new Converter_Decimal()
+        ]);
+        $this->addConverter('paydriveperkilometer', [
             new Converter_Decimal()
         ]);
     }

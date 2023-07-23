@@ -597,7 +597,7 @@ $_personkinds = $record->sharedPersonkind;
                 id="person-payhourly"
                 type="text"
                 name="dialog[payhourly]"
-                value="<?php echo htmlspecialchars($record->payhourly) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('payhourly')) ?>" />
         </div>
 
         <div class="row ">
@@ -617,6 +617,18 @@ $_personkinds = $record->sharedPersonkind;
                 </option>
                 <?php endforeach ?>
             </select>
+        </div>
+
+        <div class="row <?php echo ($record->hasError('paydriveperkilometer')) ? 'error' : ''; ?>">
+            <label
+                for="person-paydriveperkilometer">
+                <?php echo I18n::__('person_label_paydriveperkilometer') ?>
+            </label>
+            <input
+                id="person-paydriveperkilometer"
+                type="text"
+                name="dialog[paydriveperkilometer]"
+                value="<?php echo htmlspecialchars($record->decimal('paydriveperkilometer')) ?>" />
         </div>
 
         <div class="row nomargins">

@@ -585,6 +585,18 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns wether the model has a scaffold buttons template or not.
+     *
+     * @todo Really check for an existing template.
+     *
+     * @return bool
+     */
+    public function hasScaffoldButtons()
+    {
+        return true;
+    }
+
+    /**
      * Returns wether the transaction can be emailed or not.
      *
      * @param string $emailtype
@@ -1137,6 +1149,7 @@ SQL;
         $this->addConverter('dunningdate', new Converter_Mysqldate()); //last date this transaction was reinforced
         $this->addConverter('penaltyfee', new Converter_Decimal());
         $this->addConverter('payhourly', new Converter_Decimal());
+        $this->addConverter('paydriveperkilometer', new Converter_Decimal());
     }
 
     /**

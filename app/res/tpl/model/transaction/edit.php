@@ -119,7 +119,8 @@
                     'transaction-duedays' => 'duedays',
                     'transaction-discount-id' => 'discount_id',
                     'transaction-payhourly' => 'payhourly',
-                    'transaction-paydrive' => 'paydrive'
+                    'transaction-paydrive' => 'paydrive',
+                    'transaction-paydriveperkilometer' => 'paydriveperkilometer'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
             <a
@@ -139,7 +140,7 @@
                 id="transaction-payhourly"
                 type="text"
                 name="dialog[payhourly]"
-                value="<?php echo htmlspecialchars($record->payhourly) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('payhourly')) ?>" />
         </div>
 
         <div class="row ">
@@ -159,6 +160,17 @@
                 </option>
                 <?php endforeach ?>
             </select>
+        </div>
+        <div class="row <?php echo ($record->hasError('paydriveperkilometer')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-paydriveperkilometer">
+                <?php echo I18n::__('person_label_paydriveperkilometer') ?>
+            </label>
+            <input
+                id="transaction-paydriveperkilometer"
+                type="text"
+                name="dialog[paydriveperkilometer]"
+                value="<?php echo htmlspecialchars($record->decimal('paydriveperkilometer')) ?>" />
         </div>
 </fieldset>
 <div class="tab-container">

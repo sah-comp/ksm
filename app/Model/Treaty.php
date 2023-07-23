@@ -303,7 +303,7 @@ class Model_Treaty extends Model
      */
     public function hasQuickFilter(): bool
     {
-        return false;// true to have a select menu after the header h1 allowing users to quickly select by contracttype
+        return true;// true to have a select menu after the header h1 allowing users to quickly select by contracttype
     }
 
     /**

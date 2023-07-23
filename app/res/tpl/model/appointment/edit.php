@@ -69,7 +69,14 @@
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->date) ?>"
                 required="required" />
-                <p class="info"><?php echo I18n::__('appointment_info_date', null, [$record->localizedDate('receipt')]) ?></p>
+            <input
+            id="appointment-receipt"
+            class="autowidth minor"
+            type="date"
+            name="dialog[receipt]"
+            placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
+            value="<?php echo htmlspecialchars($record->receipt) ?>"
+            title="<?php echo I18n::__('appointment_title_receipt') ?>" />
         </div>
         <div class="span2">
             <select
@@ -219,7 +226,7 @@
             id="appointment-appointmenttype"
             name="dialog[appointmenttype_id]">
             <option value=""><?php echo I18n::__('appointment_appointmenttype_none') ?></option>
-            <?php foreach (R::findAll('appointmenttype') as $_id => $_appointmenttype): ?>
+            <?php foreach (R::findAll('appointmenttype') as $_id => $_appointmenttype) : ?>
             <option
                 value="<?php echo $_appointmenttype->getId() ?>"
                 <?php echo ($record->appointmenttype_id == $_appointmenttype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_appointmenttype->name ?>
@@ -284,7 +291,7 @@
         class="autodafe">
 
         <?php
-        if ($record->getPerson()->getId()):
+        if ($record->getPerson()->getId()) :
             // The customer of this appointment is already set. No autodafe needed.
             $_dependents = $record->getDependents($record->getPerson());
             Flight::render('model/appointment/machinecontactlocation', [
@@ -294,9 +301,9 @@
                 'contacts' => $_dependents['contacts'],
                 'locations' => $_dependents['locations']
             ]);
-        else:
+        else :
             // lazy load, after hunting that heretic.
-        ?>
+            ?>
         <div class="heretic"><?php echo I18n::__('appointment_person_select_before_me') ?></div>
         <?php endif; ?>
 
@@ -315,7 +322,7 @@
             id="appointment-user-name"
             name="dialog[user_id]">
             <option value=""><?php echo I18n::__('appointment_user_select') ?></option>
-            <?php foreach (R::findAll('user', "ORDER BY name") as $_id => $_user): ?>
+            <?php foreach (R::findAll('user', "ORDER BY name") as $_id => $_user) : ?>
             <option
                 value="<?php echo $_user->getId() ?>"
                 <?php echo ($record->user_id == $_user->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_user->getName() . ' ' . $_user->getContactinfo()) ?>

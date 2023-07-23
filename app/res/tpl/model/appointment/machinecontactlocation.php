@@ -6,12 +6,13 @@
     </label>
     <select
         id="appointment-contact-name"
-        name="dialog[contact_id]">
+        name="dialog[contact_id]"
+        class="_select2basic">
         <option value=""><?php echo I18n::__('appointment_contact_select') ?></option>
         <?php foreach ($contacts as $_id => $_contact) : ?>
         <option
             value="<?php echo $_contact->getId() ?>"
-            <?php echo ($record->contact_id == $_contact->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_contact->name . ' ' . $_contact->getContactinfo()) ?>
+            <?php echo ($record->contact_id == $_contact->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_contact->name . ' (' . $_contact->jobdescription . ') ' . $_contact->getContactinfo()) ?>
         </option>
         <?php endforeach ?>
     </select>
@@ -34,7 +35,7 @@
         <?php foreach ($machines as $_id => $_machine) : ?>
         <option
             value="<?php echo $_machine->getId() ?>"
-            <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_machine->getMachinebrand()->name . ' ' . $_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ')') ?>
+            <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_machine->getMachinebrand()->name . ' ' . $_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ') ' . $_machine->locationName()) ?>
         </option>
         <?php endforeach ?>
     </select>
@@ -63,5 +64,5 @@
      * Check for select inputs to be handled with select2 plugin
      * @see https://select2.org
      */
-    $('.select2basic').select2();
+    initSelect2();
 </script>

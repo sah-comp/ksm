@@ -53,14 +53,14 @@ class Controller_Search extends Controller
      */
     public $types = [
         'treaty',
-        'appointment',
-        'machine',
         'correspondence',
-        'article',
         'person',
+        'machine',
+        'article',
         'product',
         'ledger',
-        'transaction'
+        'transaction',
+        'appointment'
     ];
 
     /**
