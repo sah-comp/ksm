@@ -163,6 +163,9 @@ class Model_Correspondence extends Model
                 return true;
             }
         }
+        if ($this->bean->to) {
+            return true;
+        }
         return false;
     }
 
@@ -247,17 +250,19 @@ class Model_Correspondence extends Model
     }
 
     /**
-     * Returns the email address of the contact or of the (person) customer.
+     * Returns the email address of the contact or of the (person) customer or false
      *
-     * @return string
+     * @return mixed
      */
-    public function toAddress()
+    public function toAddress():mixed
     {
         if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->getEmailaddress();
         }
-        return $this->bean->person->email;
-        ;
+        if ($this->bean->getPerson()->getId() && $this->bean->getPerson()->email) {
+            return $this->bean->person->email;
+        }
+        return false;
     }
 
     /**

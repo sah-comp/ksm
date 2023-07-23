@@ -85,8 +85,7 @@
             id="correspondence-postaladdress"
             name="dialog[postaladdress]"
             rows="5"
-            cols="60"
-            required="required"><?php echo htmlspecialchars($record->postaladdress) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->postaladdress) ?></textarea>
     </div>
 </fieldset>
 <fieldset>
@@ -96,7 +95,7 @@
         class="autodafe">
 
         <?php
-        if ($record->getPerson()->getId()):
+        if ($record->getPerson()->getId()) :
             // The customer of this appointment is already set. No autodafe needed.
             $_dependents = $record->getDependents($record->getPerson());
             Flight::render('model/correspondence/contact', [
@@ -104,12 +103,17 @@
                 'record' => $record,
                 'contacts' => $_dependents['contacts']
             ]);
-        else:
+        else :
             // lazy load, after hunting that heretic.
-        ?>
+            ?>
         <div class="heretic"><?php echo I18n::__('correspondence_person_select_before_me') ?></div>
         <?php endif; ?>
 
+    </div>
+    <div class="row">
+        <label for="correspondence-to"><?php echo I18n::__('correspondence_label_to') ?></label>
+        <input id="correspondence-to" type="text" name="dialog[to]" value="<?php echo htmlspecialchars($record->to) ?>">
+        <p class="info"><?php echo I18n::__('correspondence_info_to') ?></p>
     </div>
     <div class="row">
         <label for="correspondence-cc"><?php echo I18n::__('correspondence_label_cc') ?></label>
