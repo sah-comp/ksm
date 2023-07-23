@@ -197,7 +197,7 @@
             'contracttype-wording' => I18n::__('contracttype_wording_tab'),
             'contracttype-email' => I18n::__('contracttype_email_tab')
         ),
-        'default_tab' => 'contracttype-detail'
+                        'default_tab' => 'contracttype-detail'
     )) ?>
     <fieldset
         id="contracttype-detail"
@@ -325,6 +325,9 @@
             <div class="span1">
                 <?php echo I18n::__('limb_label_active') ?>
             </div>
+            <div class="span1" title="<?php echo I18n::__('limb_title_list') ?>">
+                <?php echo I18n::__('limb_label_list') ?>
+            </div>
             <div class="span1">
                 <?php echo I18n::__('limb_label_sequence') ?>
             </div>
@@ -334,7 +337,7 @@
             <div class="span2">
                 <?php echo I18n::__('limb_label_placeholder') ?>
             </div>
-            <div class="span2">
+            <div class="span1">
                 <?php echo I18n::__('limb_label_tag') ?>
             </div>
             <div class="span2">
@@ -345,13 +348,13 @@
             id="contracttype-<?php echo $record->getId() ?>-limb-container"
             class="container attachable detachable sortable">
             <?php $_limbs = $record->with(' ORDER BY sequence ASC ')->ownLimb ?>
-            <?php if (count($_limbs) == 0):
-            $_limbs[] = R::dispense('limb');
-        endif; ?>
+            <?php if (count($_limbs) == 0) :
+                $_limbs[] = R::dispense('limb');
+            endif; ?>
         <?php $index = 0 ?>
-        <?php foreach ($_limbs as $_limb_id => $_limb): ?>
-        <?php $index++ ?>
-        <?php Flight::render('model/contracttype/own/limb', array(
+        <?php foreach ($_limbs as $_limb_id => $_limb) : ?>
+            <?php $index++ ?>
+            <?php Flight::render('model/contracttype/own/limb', array(
             'record' => $record,
             '_limb' => $_limb,
             'index' => $index
