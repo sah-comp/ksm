@@ -120,8 +120,14 @@ class Model_Machine extends Model
                     'sort' => [
                         'name' => $limb->stub
                     ],
+                    'order' => [
+                        'name' => "JSON_EXTRACT(payload, '$." . $limb->stub . "')"
+                    ],
                     'callback' => [
                         'name' => 'jsonAttribute'
+                    ],
+                    'filter' => [
+                        'tag' => 'json'
                     ]
                     ];
                     //error_log('Add attribute ' . $limb->name);

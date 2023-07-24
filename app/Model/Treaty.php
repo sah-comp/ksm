@@ -133,28 +133,34 @@ class Model_Treaty extends Model
                 'width' => '8rem'
             ],
             [
-                'name' => 'payload',
+                'name' => 'product',
+                'order' => [
+                    'name' => " JSON_EXTRACT(payload, '$.product') "
+                ],
                 'sort' => [
-                    'name' => 'treaty.payload'
+                    'name' => 'product'
                 ],
                 'callback' => [
-                    'name' => 'payloadProduct'
+                    'name' => 'jsonAttribute'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'json'
                 ],
                 'width' => 'auto'
             ],
             [
-                'name' => 'payload2',
+                'name' => 'deadweight',
+                'order' => [
+                    'name' => " JSON_EXTRACT(payload, '$.deadweight') "
+                ],
                 'sort' => [
-                    'name' => 'treaty.payload'
+                    'name' => 'treaty.deadweight'
                 ],
                 'callback' => [
-                    'name' => 'payloadDeadweight'
+                    'name' => 'jsonAttribute'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'json'
                 ],
                 'width' => 'auto'
             ],
@@ -303,7 +309,7 @@ class Model_Treaty extends Model
      */
     public function hasQuickFilter(): bool
     {
-        return true;// true to have a select menu after the header h1 allowing users to quickly select by contracttype
+        return false;// true to have a select menu after the header h1 allowing users to quickly select by contracttype
     }
 
     /**
