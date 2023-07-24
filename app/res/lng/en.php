@@ -1253,6 +1253,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'treaty_label_note' => 'treaty_label_note',
   'treaty_label_number' => 'treaty_label_number',
   'treaty_label_payload' => 'Product',
+  'treaty_label_payload2' => 'treaty_label_payload2',
   'treaty_label_person' => 'treaty_label_person',
   'treaty_label_person.name' => 'treaty_label_person.name',
   'treaty_label_priceperunit' => 'treaty_label_priceperunit',

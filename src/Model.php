@@ -182,7 +182,7 @@ class Model extends RedBean_SimpleModel
      */
     public function getAttributes($layout = 'table')
     {
-        return array();
+        return [];
         /*
         return array(
             array(
@@ -426,6 +426,23 @@ SQL;
     public function shortDescriptiveTitle():string
     {
         return $this->bean->getId();
+    }
+
+    /**
+     * Returns the data of the JSON formatted attribute 'payload'.
+     *
+     * This is a flimsy solution to implement user defined fields in a scaffold list view.
+     * @see getAttributes()
+     *
+     * @return mixed
+     */
+    public function jsonAttribute($attribute):mixed
+    {
+        $payload = json_decode($this->bean->payload, true);
+        if (isset($payload[$attribute])) {
+            return $payload[$attribute];
+        }
+        return '';
     }
 
     /**

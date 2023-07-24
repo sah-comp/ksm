@@ -25,7 +25,7 @@ class Model_Machine extends Model
      */
     public function getAttributes($layout = 'table')
     {
-        return [
+        $ret = [
             [
                 'name' => 'name',
                 'sort' => [
@@ -109,6 +109,26 @@ class Model_Machine extends Model
                 'width' => '8rem'
             ]
         ];
+        // check if there a additional fields to output
+        if (isset($this->bean->contracttype) && $this->bean->contracttype) {
+            //error_log('I may have some additional fields to output');
+            $limbs = $this->bean->contracttype->withCondition('list = 1 ORDER BY sequence')->ownLimb;
+            if (count($limbs)) {
+                foreach ($limbs as $id => $limb) {
+                    $ret[] = [
+                    'name' => $limb->stub,
+                    'sort' => [
+                        'name' => $limb->stub
+                    ],
+                    'callback' => [
+                        'name' => 'jsonAttribute'
+                    ]
+                    ];
+                    //error_log('Add attribute ' . $limb->name);
+                }
+            }
+        }
+        return $ret;
     }
 
     /**
