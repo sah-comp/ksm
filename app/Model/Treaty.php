@@ -727,7 +727,7 @@ SQL;
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
             $this->bean->getMeta('type'),
-            ' number LIKE :f OR serialnumber LIKE :f OR ctext LIKE :f OR startdate = :f OR enddate = :f OR treaty.note like :f OR prospect LIKE :f OR bookingdate = :f OR mailbody LIKE :f OR @joined.contracttype.name LIKE :f OR @joined.location.name LIKE :f OR @joined.person.name LIKE :f OR @joined.treatygroup.name LIKE :f OR (@joined.contact.name LIKE :f OR @joined.contact.jobdescription LIKE :f)',
+            ' number LIKE :f OR serialnumber LIKE :f OR ctext LIKE :f OR startdate = :f OR enddate = :f OR treaty.note like :f OR prospect LIKE :f OR bookingdate = :f OR mailbody LIKE :f OR payload LIKE :f OR @joined.contracttype.name LIKE :f OR @joined.location.name LIKE :f OR @joined.person.name LIKE :f OR @joined.treatygroup.name LIKE :f OR (@joined.contact.name LIKE :f OR @joined.contact.jobdescription LIKE :f)',
             [
                 ':f' => $searchphrase,
             ]
