@@ -478,10 +478,10 @@ class Controller_Scaffold extends Controller
         );
         $this->total_records = 0;
         try {
-            R::debug(true);
+            //R::debug(true);
             $rows = R::getAssoc($sqlCollection, $this->filter->getFilterValues());
             $this->records = R::batch($this->type, array_keys($rows));
-            R::debug(false);
+            //R::debug(false);
             //R::debug(true);
             $this->total_records = R::getCell(
                 $sqlTotal,
