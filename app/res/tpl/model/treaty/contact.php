@@ -7,12 +7,12 @@
     <select
         id="treaty-contact-name"
         name="dialog[contact_id]">
-        <?php if ($record->getPerson()->hasEmail()): ?>
+        <?php if ($record->getPerson()->hasEmail()) : ?>
         <option value=""><?php echo htmlspecialchars($record->getPerson()->name . ' ' . $record->getPerson()->email) ?></option>
-        <?php else: ?>
+        <?php else : ?>
         <option value=""><?php echo I18n::__('treaty_contact_select') ?></option>
         <?php endif; ?>
-        <?php foreach ($contacts as $_id => $_contact): ?>
+        <?php foreach ($contacts as $_id => $_contact) : ?>
         <option
             value="<?php echo $_contact->getId() ?>"
             <?php echo ($record->contact_id == $_contact->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_contact->name . ' ' . $_contact->getContactinfo()) ?>

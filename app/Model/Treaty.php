@@ -426,15 +426,17 @@ class Model_Treaty extends Model
     /**
      * Returns the email address of the contact or of the (person) customer.
      *
-     * @return string
+     * @return mixed
      */
-    public function toAddress()
+    public function toAddress():mixed
     {
         if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->getEmailaddress();
         }
-        return $this->bean->person->email;
-        ;
+        if ($this->bean->getPerson()->getId() && $this->bean->getPerson()->email) {
+            return $this->bean->person->email;
+        }
+        return false;
     }
 
     /**
@@ -477,6 +479,9 @@ class Model_Treaty extends Model
             if ($this->bean->getPerson()->hasEmail()) {
                 return true;
             }
+        }
+        if ($this->bean->to) {
+            return true;
         }
         return false;
     }
