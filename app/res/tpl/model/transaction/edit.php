@@ -42,7 +42,7 @@
                 disabled="disabled"
                 required="required">
                 <option value=""><?php echo I18n::__('transaction_contracttype_none') ?></option>
-                <?php foreach (R::find('contracttype', "enabled = 1 AND ledger = 1 ORDER BY name") as $_id => $_contracttype): ?>
+                <?php foreach (R::find('contracttype', "enabled = 1 AND ledger = 1 ORDER BY name") as $_id => $_contracttype) : ?>
                 <option
                     value="<?php echo $_contracttype->getId() ?>"
                     <?php echo ($record->contracttype_id == $_contracttype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_contracttype->name ?>
@@ -59,7 +59,7 @@
                 name="dialog[number]"
                 required="required"
                 value="<?php echo htmlspecialchars($record->number) ?>" />
-            <?php if ($_parent = $record->hasParent()): ?>
+            <?php if ($_parent = $record->hasParent()) : ?>
             <p class="info"><?php echo I18n::__('transaction_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
             <?php endif; ?>
         </div>
@@ -75,6 +75,11 @@
                 required="required"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
                 value="<?php echo htmlspecialchars($record->bookingdate) ?>" />
+                <?php if (Flight::get('user')->isBooking()) : ?>
+                <div class="alert alert-warning">
+                    <?php echo Flight::textile(I18n::__('transaction_booking_in_progress')) ?>
+                </div>
+                <?php endif ?>
         </div>
     </div>
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
@@ -102,7 +107,10 @@
             id="transaction-person-name"
             name="dialog[person][name]"
             class="autocomplete"
+            data-target="person-dependent"
+            data-extra="transaction-person-id"
             data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
+            data-dynamic="<?php echo Url::build('/transaction/%d/person/changed/?callback=?', [$record->getId()]) ?>"
             data-spread='<?php
                 echo json_encode([
                     'transaction-person-name' => 'value',
@@ -112,7 +120,10 @@
                     'transaction-billingemail' => 'billingemail',
                     'transaction-dunningemail' => 'dunningemail',
                     'transaction-duedays' => 'duedays',
-                    'transaction-discount-id' => 'discount_id'
+                    'transaction-discount-id' => 'discount_id',
+                    'transaction-payhourly' => 'payhourly',
+                    'transaction-paydrive' => 'paydrive',
+                    'transaction-paydriveperkilometer' => 'paydriveperkilometer'
                 ]); ?>'
             value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
             <a
@@ -123,6 +134,47 @@
                 class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
             <p class="info"><?php echo I18n::__('transaction_info_person') ?></p>
     </div>
+        <div class="row <?php echo ($record->hasError('payhourly')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-payhourly">
+                <?php echo I18n::__('person_label_payhourly') ?>
+            </label>
+            <input
+                id="transaction-payhourly"
+                type="text"
+                name="dialog[payhourly]"
+                value="<?php echo htmlspecialchars($record->decimal('payhourly')) ?>" />
+        </div>
+
+        <div class="row ">
+            <label
+                for="transaction-paydrive">
+                <?php echo I18n::__('person_label_paydrive') ?>        
+            </label>
+            <select
+                id="transaction-paydrive"
+                name="dialog[paydrive]">
+                <option value=""><?php echo I18n::__('person_paydrive_select') ?></option>
+                <?php foreach ($record->getPerson()->getPaydriveTypes() as $_paydrive) : ?>
+                <option
+                    value="<?php echo $_paydrive ?>"
+                    <?php echo ($record->paydrive == $_paydrive) ? 'selected="selected"' : '' ?>>
+                    <?php echo I18n::__('person_paydrive_type_' . $_paydrive) ?>
+                </option>
+                <?php endforeach ?>
+            </select>
+        </div>
+        <div class="row <?php echo ($record->hasError('paydriveperkilometer')) ? 'error' : ''; ?>">
+            <label
+                for="transaction-paydriveperkilometer">
+                <?php echo I18n::__('person_label_paydriveperkilometer') ?>
+            </label>
+            <input
+                id="transaction-paydriveperkilometer"
+                type="text"
+                name="dialog[paydriveperkilometer]"
+                value="<?php echo htmlspecialchars($record->decimal('paydriveperkilometer')) ?>" />
+        </div>
 </fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(
@@ -134,7 +186,7 @@
             'transaction-booking' => I18n::__('transaction_tab_booking'),
             'transaction-email' => I18n::__('transaction_tab_email')
         ),
-        'default_tab' => 'transaction-head'
+                            'default_tab' => 'transaction-head'
     )) ?>
     <fieldset
         id="transaction-head"
@@ -197,7 +249,7 @@
                 id="transaction-discount-id"
                 name="dialog[discount_id]">
                 <option value=""><?php echo I18n::__('person_discount_please_select') ?></option>
-                <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount): ?>
+                <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount) : ?>
                 <option
                     value="<?php echo $_discount->getId() ?>"
                     <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
@@ -267,16 +319,16 @@
             data-variable="position"
             class="container attachable detachable sortable ui-sortable">
             <?php $_positions = $record->with(' ORDER BY currentindex ASC ')->ownPosition ?>
-            <?php if (count($_positions) == 0):
-            $_positions[] = R::dispense('position');
+            <?php if (count($_positions) == 0) :
+                $_positions[] = R::dispense('position');
             endif; ?>
             <?php $index = 0 ?>
             <?php $_SESSION['subtotal'] = 0 ?>
-            <?php foreach ($_positions as $_position_id => $_position): ?>
+            <?php foreach ($_positions as $_position_id => $_position) : ?>
                 <?php $index++ ?>
                 <?php if (!$_position->isAlternative()) {
-                $_SESSION['subtotal'] += $_position->total;//adding up this position total to our subtotal, in case
-            }
+                    $_SESSION['subtotal'] += $_position->total;//adding up this position total to our subtotal, in case
+                }
                 ?>
                 <?php Flight::render('model/transaction/own/' . $_position->kindAsCss(), array(
                     'record' => $record,
@@ -302,8 +354,32 @@
                     value="<?php echo htmlspecialchars($record->decimal('net')) ?>">
             </div>
         </div>
+        <?php if ($record->getContracttype()->hidesome) : ?>
+        <div class="row">
+            <div class="span9">
+                &nbsp;
+            </div>
+            <div class="span3">
+                <select
+                    id="transaction-donthidesome"
+                    class="autowidth"
+                    name="dialog[donthidesome]">
+                    <option
+                        value="0"
+                        <?php echo (!$record->donthidesome) ? 'selected="selected"' : '' ?>>
+                        <?php echo I18n::__('transaction_hidesome_default') ?>
+                    </option>
+                    <option
+                        value="1"
+                        <?php echo ($record->donthidesome) ? 'selected="selected"' : '' ?>>
+                        <?php echo I18n::__('transaction_hidesome_override') ?>
+                    </option>
+                </select>
+            </div>
+        </div>
+        <?php endif ?>
         <?php $vats = $record->getVatSentences(); ?>
-        <?php foreach ($vats as $_id => $_vat): ?>
+        <?php foreach ($vats as $_id => $_vat) : ?>
         <div class="row">
             <div class="span1">
                 &nbsp;
@@ -356,11 +432,22 @@
                 for="transaction-billingemail">
                 <?php echo I18n::__('transaction_label_billingemail') ?>
             </label>
-            <input
-                id="transaction-billingemail"
-                type="text"
-                name="dialog[billingemail]"
-                value="<?php echo htmlspecialchars($record->billingemail) ?>">
+            <div id="person-dependent" class="autodafe">
+            <?php
+            if ($record->getPerson()->getId()) :
+            // The customer of this appointment is already set. No autodafe needed.
+                $_dependents = $record->getDependents($record->getPerson());
+                Flight::render('model/transaction/billingmail', [
+                'person' => $record->getPerson(),
+                'record' => $record,
+                'contacts' => $_dependents['contacts']
+                ]);
+            else :
+            // lazy load, after hunting that heretic.
+                ?>
+            <div class="heretic"><?php echo I18n::__('transaction_person_select_before_me') ?></div>
+            <?php endif; ?>
+            </div>
         </div>
         <div class="row <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
             <label
@@ -403,11 +490,11 @@
             id="transaction-<?php echo $record->getId() ?>-payment-container"
             class="container attachable detachable sortable">
             <?php $_payments = $record->with(' ORDER BY bookingdate ASC ')->ownPayment ?>
-            <?php if (count($_payments) == 0):
-            $_payments[] = R::dispense('payment');
+            <?php if (count($_payments) == 0) :
+                $_payments[] = R::dispense('payment');
             endif; ?>
             <?php $index = 0 ?>
-            <?php foreach ($_payments as $_payment_id => $_payment): ?>
+            <?php foreach ($_payments as $_payment_id => $_payment) : ?>
                 <?php $index++ ?>
                 <?php Flight::render('model/transaction/own/payment', array(
                     'record' => $record,

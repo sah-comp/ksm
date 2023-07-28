@@ -110,6 +110,16 @@ class Model_Treaty extends Model
                 'width' => '10rem'
             ],
             [
+                'name' => 'y',
+                'sort' => [
+                    'name' => 'treaty.y'
+                ],
+                'filter' => [
+                    'tag' => 'number'
+                ],
+                'width' => '6rem'
+            ],
+            [
                 'name' => 'bookingdate',
                 'sort' => [
                     'name' => 'treaty.bookingdate'
@@ -123,28 +133,34 @@ class Model_Treaty extends Model
                 'width' => '8rem'
             ],
             [
-                'name' => 'payload',
+                'name' => 'product',
+                'order' => [
+                    'name' => " JSON_EXTRACT(payload, '$.product') "
+                ],
                 'sort' => [
-                    'name' => 'treaty.payload'
+                    'name' => 'product'
                 ],
                 'callback' => [
-                    'name' => 'payloadProduct'
+                    'name' => 'jsonAttribute'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'json'
                 ],
                 'width' => 'auto'
             ],
             [
-                'name' => 'payload2',
+                'name' => 'deadweight',
+                'order' => [
+                    'name' => " JSON_EXTRACT(payload, '$.deadweight') "
+                ],
                 'sort' => [
-                    'name' => 'treaty.payload'
+                    'name' => 'treaty.deadweight'
                 ],
                 'callback' => [
-                    'name' => 'payloadDeadweight'
+                    'name' => 'jsonAttribute'
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'json'
                 ],
                 'width' => 'auto'
             ],
@@ -410,15 +426,17 @@ class Model_Treaty extends Model
     /**
      * Returns the email address of the contact or of the (person) customer.
      *
-     * @return string
+     * @return mixed
      */
-    public function toAddress()
+    public function toAddress():mixed
     {
         if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->getEmailaddress();
         }
-        return $this->bean->person->email;
-        ;
+        if ($this->bean->getPerson()->getId() && $this->bean->getPerson()->email) {
+            return $this->bean->person->email;
+        }
+        return false;
     }
 
     /**
@@ -461,6 +479,9 @@ class Model_Treaty extends Model
             if ($this->bean->getPerson()->hasEmail()) {
                 return true;
             }
+        }
+        if ($this->bean->to) {
+            return true;
         }
         return false;
     }
@@ -701,6 +722,24 @@ SQL;
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' number LIKE :f OR serialnumber LIKE :f OR ctext LIKE :f OR startdate = :f OR enddate = :f OR treaty.note like :f OR prospect LIKE :f OR bookingdate = :f OR mailbody LIKE :f OR payload LIKE :f OR @joined.contracttype.name LIKE :f OR @joined.location.name LIKE :f OR @joined.person.name LIKE :f OR @joined.treatygroup.name LIKE :f OR (@joined.contact.name LIKE :f OR @joined.contact.jobdescription LIKE :f)',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Returns a treaty bean if this bean has derived from a former one or false if not.
      *
      * @return mixed
@@ -727,6 +766,9 @@ SQL;
         $this->addConverter('startdate', new Converter_Mysqldate());
         $this->addConverter('enddate', new Converter_Mysqldate());
         $this->addConverter('signdate', new Converter_Mysqldate());
+        $this->addConverter('y', new Converter_Decimal());
+        $this->addConverter('m', new Converter_Decimal());
+        $this->addConverter('d', new Converter_Decimal());
     }
 
     /**
@@ -778,6 +820,9 @@ SQL;
             }
             //error_log($this->bean->payload);
         }
+        $this->bean->y = date('Y', strtotime($this->bean->bookingdate));
+        $this->bean->m = date('m', strtotime($this->bean->bookingdate));
+        $this->bean->d = date('d', strtotime($this->bean->bookingdate));
         parent::update();
     }
 }

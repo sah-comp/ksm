@@ -8,8 +8,8 @@
  * @version $Id$
  */
 ?>
-<?php if ($record->getId()): ?>
-    <?php if ($record->hasEmail()): ?>
+<?php if ($record->getId()) : ?>
+    <?php if ($record->hasEmail()) : ?>
 <li>
     <a
         href="<?php echo Url::build("/correspondence/mail/%d", [$record->getId()]) ?>"
@@ -18,6 +18,14 @@
     </a>
 </li>
     <?php endif; ?>
+
+<li>
+    <a
+        href="<?php echo Url::build("/correspondence/copy/%d", [$record->getId()]) ?>"
+        class="">
+        <?php echo I18n::__('correspondence_action_copy_as') ?>
+    </a>
+</li>
 <li>
     <form
         id="printform"
@@ -30,7 +38,7 @@
         enctype="multipart/form-data">
         <select
             name="layout">
-            <?php foreach ($record->getPrintLayouts() as $_layout => $_default): ?>
+            <?php foreach ($record->getPrintLayouts() as $_layout => $_default) : ?>
             <option value="<?php echo $_layout ?>" <?php echo ($_default) ? 'selected="selected"' : '' ?>><?php echo I18n::__('correspondence_layout_' . $_layout) ?></option>
             <?php endforeach; ?>
         </select>
@@ -40,13 +48,13 @@
             value="<?php echo I18n::__('correspondence_action_pdf') ?>" />
     </form>
 </li>
-<?php elseif ($hasRecords): ?>
+<?php elseif ($hasRecords) : ?>
 <li>
     <a
         href="<?php echo Url::build("/correspondence/pdf") ?>">
         <?php echo I18n::__('correspondence_action_pdf_list') ?>
     </a>
 </li>
-<?php else: ?>
+<?php else : ?>
 <!-- There are no records -->
 <?php endif; ?>

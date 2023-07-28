@@ -25,7 +25,7 @@ class Model_Machine extends Model
      */
     public function getAttributes($layout = 'table')
     {
-        return [
+        $ret = [
             [
                 'name' => 'name',
                 'sort' => [
@@ -83,6 +83,19 @@ class Model_Machine extends Model
                 'width' => 'auto'
             ],
             [
+                'name' => 'location.name',
+                'sort' => [
+                    'name' => 'location.name'
+                ],
+                'callback' => [
+                    'name' => 'locationName'
+                ],
+                'filter' => [
+                    'tag' => 'text'
+                ],
+                'width' => 'auto'
+            ],
+            [
                 'name' => 'lastservice',
                 'sort' => [
                     'name' => 'machine.lastservice'
@@ -96,6 +109,32 @@ class Model_Machine extends Model
                 'width' => '8rem'
             ]
         ];
+        // check if there a additional fields to output
+        if (isset($this->bean->contracttype) && $this->bean->contracttype) {
+            //error_log('I may have some additional fields to output');
+            $limbs = $this->bean->contracttype->withCondition('list = 1 ORDER BY sequence')->ownLimb;
+            if (count($limbs)) {
+                foreach ($limbs as $id => $limb) {
+                    $ret[] = [
+                    'name' => $limb->stub,
+                    'sort' => [
+                        'name' => $limb->stub
+                    ],
+                    'order' => [
+                        'name' => "JSON_EXTRACT(payload, '$." . $limb->stub . "')"
+                    ],
+                    'callback' => [
+                        'name' => 'jsonAttribute'
+                    ],
+                    'filter' => [
+                        'tag' => 'json'
+                    ]
+                    ];
+                    //error_log('Add attribute ' . $limb->name);
+                }
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -104,9 +143,27 @@ class Model_Machine extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return ['/js/datatables.min'];
+    }
+
+    /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' serialnumber LIKE :f OR internalnumber LIKE :f OR buildyear LIKE :f OR lastservice = :f OR specialagreement LIKE :f OR payload LIKE :f OR @joined.machinebrand.name LIKE :f',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
     }
 
     /**
@@ -146,6 +203,22 @@ class Model_Machine extends Model
     }
 
     /**
+     * Return the location bean of the latest appointment of this machine.
+     *
+     * @return object
+     */
+    public function getLocation()
+    {
+        $appointment = R::findOne('appointment', " machine_id = ? ORDER BY date DESC LIMIT 1", [$this->bean->getId()]);
+        if ($appointment && $appointment->location) {
+            $location = $appointment->location;
+        } else {
+            $location = R::dispense('location');
+        }
+        return $location;
+    }
+
+    /**
      * Returns the name of the person (customer).
      *
      * @return string
@@ -153,6 +226,16 @@ class Model_Machine extends Model
     public function personName()
     {
         return $this->bean->getPerson()->name;
+    }
+
+    /**
+     * Returns the name of the location (of the latest appointment).
+     *
+     * @return string
+     */
+    public function locationName()
+    {
+        return $this->bean->getLocation()->name;
     }
 
     /**
@@ -202,6 +285,10 @@ class Model_Machine extends Model
                 contract ON contract.machine_id = machine.id
             LEFT JOIN
                 person ON person.id = contract.person_id
+            LEFT JOIN
+                appointment ON appointment.id = (SELECT appointment.id FROM appointment WHERE appointment.machine_id = machine.id ORDER BY appointment.date DESC LIMIT 1)
+            LEFT JOIN
+                location ON location.id = appointment.location_id
             WHERE
                 {$where}
 SQL;
@@ -227,7 +314,7 @@ SQL;
     {
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     machine.id AS id,
                     CONCAT(mb.name, ' ', machine.name, ' ', machine.serialnumber, ' ', machine.internalnumber) AS label,
@@ -253,6 +340,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->contracttype = R::load('contracttype', CINNEBAR_CONTRACTTYPE_MACHINE_BEAN_ID);
         $this->addValidator('name', [
             new Validator_HasValue(),
             //new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
@@ -293,6 +381,7 @@ SQL;
      */
     public function update()
     {
+        //$this->bean->contracttype = R::load('contracttype', CINNEBAR_CONTRACTTYPE_MACHINE_BEAN_ID);
         $files = reset(Flight::request()->files);
         $file = reset($files);
         if (!empty($file) && !$file['error']) {
@@ -318,6 +407,10 @@ SQL;
             if (!$installedpart->getId() && !$installedpart->clairvoyant) {
                 unset($this->bean->ownInstalledpart[$id]); // this is most likely a blank article, just nill
             }
+        }
+        if (Flight::request()->method == 'POST') {
+            $limb = Flight::request()->data->limb;
+            $this->bean->payload = json_encode($limb);
         }
         parent::update();
     }

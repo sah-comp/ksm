@@ -94,7 +94,7 @@ class Model extends RedBean_SimpleModel
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return [];
     }
@@ -105,7 +105,7 @@ class Model extends RedBean_SimpleModel
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS()
+    public function injectCSS():array
     {
         return [];
     }
@@ -182,7 +182,7 @@ class Model extends RedBean_SimpleModel
      */
     public function getAttributes($layout = 'table')
     {
-        return array();
+        return [];
         /*
         return array(
             array(
@@ -409,6 +409,92 @@ SQL;
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        return [];
+    }
+
+    /**
+     * Returns a string that represents a short and descriptive title for this bean.
+     * @return string
+     */
+    public function shortDescriptiveTitle():string
+    {
+        return $this->bean->getId();
+    }
+
+    /**
+     * Returns the data of the JSON formatted attribute 'payload'.
+     *
+     * This is a flimsy solution to implement user defined fields in a scaffold list view.
+     * @see getAttributes()
+     *
+     * @return mixed
+     */
+    public function jsonAttribute($attribute):mixed
+    {
+        $payload = json_decode($this->bean->payload, true);
+        if (isset($payload[$attribute])) {
+            return $payload[$attribute];
+        }
+        return '';
+    }
+
+    /**
+     * Returns a string with the default table thead of attributes.
+     * @return string
+     */
+    public function defaultTableHead():string
+    {
+        $type = $this->bean->getMeta('type');
+        $s = '';
+        foreach ($this->getAttributes() as $attribute) {
+            $s .= '<th class="';
+            if (isset($attribute['class'])) {
+                $s .= $attribute['class'];
+            }
+            if (isset($attribute['width'])) {
+                $s .= ' style="width: ' . $attribute['width'] . '"';
+            }
+            $s .= '">';
+            $s .= I18n::__($type.'_label_'.$attribute['name']);
+            $s .= '</th>';
+        }
+        return $s;
+    }
+
+    /**
+     * Returns a string with the default table tbody of attributes.
+     * @return string
+     */
+    public function defaultTableBody():string
+    {
+        $s = '';
+        foreach ($this->getAttributes() as $attribute) {
+            $s .= '<td class="';
+            if (isset($attribute['class'])) {
+                $s .= $attribute['class'];
+            }
+            $s .= '">';
+            if (isset($attribute['prefix'])) {
+                //$s .= $this->bean->{$attribute['prefix']['callback']['name']}($attribute['name']);
+            }
+            if (isset($attribute['callback'])) {
+                $s .= htmlspecialchars($this->bean->{$attribute['callback']['name']}($attribute['name']));
+            } else {
+                $s .= htmlspecialchars($this->bean->{$attribute['name']});
+            }
+            $s .= '</td>';
+        }
+        return $s;
+    }
+
+    /**
      * Returns an array of possible actions.
      *
      * Overwrite this function on your bean models.
@@ -574,7 +660,7 @@ SQL;
             return false;
         }
         $tags = array();
-        foreach ($this->keywords() as $n=>$keyword) {
+        foreach ($this->keywords() as $n => $keyword) {
             if (trim($keyword) == '') {
                 continue;
             }
@@ -709,7 +795,7 @@ SQL;
             case self::VALIDATION_MODE_EXCEPTION:
                 $validators_with_errors_flat = implode(', ', $validators_with_errors);
                 throw new Exception_Validation("Invalid {$this->bean->getMeta('type')}#{$this->bean->getId()} because {$validators_with_errors_flat} on {$attribute}");
-                break;
+            break;
             case self::VALIDATION_MODE_IMPLICIT:
                 $this->bean->invalid = true;
                 break;

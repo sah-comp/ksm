@@ -149,7 +149,7 @@ class Model_Article extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return ['/js/Chart.bundle.min'];
     }
@@ -202,6 +202,24 @@ class Model_Article extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' number LIKE :f OR description LIKE :f OR @joined.person.name LIKE :f',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Lookup a searchterm and return the resultset as an array.
      *
      * @param string $searchtext
@@ -212,7 +230,7 @@ class Model_Article extends Model
     {
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     article.id AS id,
                     CONCAT(article.number, ' ', article.description, ' ', IF(article.isoriginal, 'Original', '')) AS label,

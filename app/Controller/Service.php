@@ -83,12 +83,14 @@ class Controller_Service extends Controller_Scaffold
             }
             //handle a selection
             $this->selection = Flight::request()->data->selection;
-            if ($this->applyToSelection(
-                $this->selection['appointment'],
-                Flight::request()->data->next_action
-            )) {
-                $this->redirect("/service");
-                exit();
+            if ($this->selection !== null && count($this->selection)) {
+                if ($this->applyToSelection(
+                    $this->selection['appointment'],
+                    Flight::request()->data->next_action
+                )) {
+                    $this->redirect("/service");
+                    exit();
+                }
             }
         }
         $this->records = $this->record->getConfirmedUndone();

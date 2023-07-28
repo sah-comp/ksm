@@ -106,7 +106,7 @@ class Model_Correspondence extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return [
             '/js/quill.min',
@@ -121,7 +121,7 @@ class Model_Correspondence extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS()
+    public function injectCSS():array
     {
         return [
             'quill.core',
@@ -162,6 +162,9 @@ class Model_Correspondence extends Model
             if ($this->bean->getPerson()->hasEmail()) {
                 return true;
             }
+        }
+        if ($this->bean->to) {
+            return true;
         }
         return false;
     }
@@ -247,17 +250,19 @@ class Model_Correspondence extends Model
     }
 
     /**
-     * Returns the email address of the contact or of the (person) customer.
+     * Returns the email address of the contact or of the (person) customer or false
      *
-     * @return string
+     * @return mixed
      */
-    public function toAddress()
+    public function toAddress():mixed
     {
         if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->getEmailaddress();
         }
-        return $this->bean->person->email;
-        ;
+        if ($this->bean->getPerson()->getId() && $this->bean->getPerson()->email) {
+            return $this->bean->person->email;
+        }
+        return false;
     }
 
     /**
@@ -294,6 +299,24 @@ class Model_Correspondence extends Model
     public function stripHTML()
     {
         return strip_tags($this->bean->payload);
+    }
+
+    /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' subject LIKE :f OR postaladdress LIKE :f OR confidential LIKE :f OR writtenon = :f OR @joined.person.name LIKE :f OR (@joined.contact.name LIKE :f OR @joined.contact.jobdescription LIKE :f)',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
     }
 
     /**

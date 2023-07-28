@@ -1,6 +1,9 @@
 <?php
 /**
  * Person contact beans with contactinfo beans as additional information.
+ *
+ * This template is used on the service appointment page.
+ * @todo unify with model/person/tooltip/contactinfo
  */
 $contacts = $record->with("ORDER BY name")->ownContact;
 ?>
@@ -44,13 +47,13 @@ $contacts = $record->with("ORDER BY name")->ownContact;
     <h2><?php echo I18n::__('person_contact_tab') ?></h2>
     <table>
         <tbody>
-    <?php foreach ($contacts as $_id => $_contact): ?>
+    <?php foreach ($contacts as $_id => $_contact) : ?>
             <tr>
-                <td><?php echo htmlspecialchars($_contact->name) ?></td>
+                <td><?php echo htmlspecialchars($_contact->name) ?><br /><small><?php echo htmlspecialchars($_contact->jobdescription) ?></small></td>
                 <td>
                     <table>
                         <tbody>
-                            <?php foreach ($_contact->with("ORDER BY label DESC")->ownContactinfo as $_c_id => $_contactinfo): ?>
+                            <?php foreach ($_contact->with("ORDER BY label DESC")->ownContactinfo as $_c_id => $_contactinfo) : ?>
                             <tr>
                                 <td><?php echo I18n::__('contactinfo_label_' . $_contactinfo->label) ?></td>
                                 <td><?php echo htmlspecialchars($_contactinfo->value) ?></td>

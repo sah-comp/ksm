@@ -9,15 +9,15 @@
  */
 
 /**
- * Filer controller.
+ * Search controller.
  *
- * Document Management, Finder, File- and Directory Browser.
+ * Global search.
  *
  * @package KSM
  * @subpackage Controller
  * @version $Id$
  */
-class Controller_Filer extends Controller
+class Controller_Search extends Controller
 {
     /**
      * Holds the records.
@@ -38,7 +38,30 @@ class Controller_Filer extends Controller
      *
      * @var string
      */
-    public $template = 'filer/index';
+    public $template = 'search/index';
+
+    /**
+     * Holds the current searchtext
+     * @var string
+     */
+    public $q;
+
+    /**
+     * Holds the searchable beans.
+     *
+     * @var array
+     */
+    public $types = [
+        'treaty',
+        'correspondence',
+        'person',
+        'machine',
+        'article',
+        'product',
+        'ledger',
+        'transaction',
+        'appointment'
+    ];
 
     /**
      * Constructor
@@ -47,7 +70,6 @@ class Controller_Filer extends Controller
     {
         session_start();
         Auth::check();
-        $this->record = R::dispense('file');
     }
 
     /*
@@ -55,7 +77,14 @@ class Controller_Filer extends Controller
      */
     public function index()
     {
+        $this->q = trim(Flight::request()->query->q);
         $this->records = [];
+        if (!empty($this->q)) {
+            foreach ($this->types as $type) {
+                $bean = R::dispense($type);
+                $this->records[$type] = $bean->searchGlobal($this->q);
+            }
+        }
         $this->render();
     }
 
@@ -68,20 +97,20 @@ class Controller_Filer extends Controller
         //
         Flight::render('shared/navigation/account', [], 'navigation_account');
         Flight::render('shared/navigation/main', [], 'navigation_main');
-        Flight::render('shared/navigation', [], 'navigation');
-        Flight::render('filer/toolbar', [
+        Flight::render('shared/navigation', [
+            'q' => $this->q,
+        ], 'navigation');
+        Flight::render('search/toolbar', [
             'record' => $this->record
         ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => I18n::__("filer_head_title"),
-            'record' => $this->record,
+            'title' => I18n::__("search_head_title"),
             'records' => $this->records,
-            'path' => DMS_PATH
         ], 'content');
         Flight::render('html5', [
-            'title' => I18n::__("filer_head_title"),
+            'title' => I18n::__("search_head_title"),
             'language' => Flight::get('language')
         ]);
     }

@@ -129,7 +129,7 @@ class Controller_Treaty extends Controller_Scaffold
             } else {
                 $mail->SMTPAuth = false;                          // Disable SMTP authentication
             }
-            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Port = $smtp['port'];                          // SMTP port
             $mail->Username = $smtp['user'];                      // SMTP username
             $mail->Password = $smtp['password'];                  // SMTP password
             $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
@@ -152,7 +152,21 @@ class Controller_Treaty extends Controller_Scaffold
         $mail->addReplyTo($user->email, $user->name);
 
         //$mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
-        $mail->addAddress($this->record->toAddress(), $this->record->toName());
+        if ($this->record->toAddress()) {
+            $mail->addAddress($this->record->toAddress(), $this->record->toName());
+        }
+
+        if ($this->record->to !== '') {
+            $pos = strpos($this->record->to, ';');
+            if ($pos === false) {
+                $mail->addCC($this->record->to);
+            } else {
+                $emails = explode(';', $this->record->to);
+                foreach ($emails as $email) {
+                    $mail->addAddress(trim($email));
+                }
+            }
+        }
 
 
         if ($this->record->cc !== '') {
@@ -400,7 +414,8 @@ class Controller_Treaty extends Controller_Scaffold
             if (isset($payload[$limb->stub])) {
                 $value = htmlspecialchars($payload[$limb->stub]);
             }
-            switch ($limb->tag) {;
+            switch ($limb->tag) {
+                ;
                 case 'textarea':
                     $input = <<<HTML
                         <textarea

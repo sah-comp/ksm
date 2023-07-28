@@ -173,6 +173,24 @@ class Model_Product extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' number LIKE :f OR matchcode LIKE :f OR description LIKE :f OR unit LIKE :f',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Lookup a searchterm and return the resultset as an array.
      *
      * @param string $searchtext
@@ -183,7 +201,7 @@ class Model_Product extends Model
     {
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     product.id AS id,
                     product.number AS ska,

@@ -29,7 +29,7 @@ class Model_Appointment extends Model
      */
     public function __construct()
     {
-        $this->setAction('index', ['idle', 'expunge', 'fix', 'complete', 'adjourn', 'adjournweekday']);
+        $this->setAction('index', ['idle', 'expunge', 'fix', 'complete', 'adjourn', 'adjournweekday', 'multiedit']);
     }
 
     /**
@@ -453,6 +453,50 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Update this appointment from the multiedit footer in tpl/service/index.
+     */
+    public function multiedit()
+    {
+        if (Flight::request()->data->multiedit_date) {
+            $this->bean->date = Flight::request()->data->multiedit_date;
+        }
+        if (Flight::request()->data->multiedit_time) {
+            $this->bean->starttime = Flight::request()->data->multiedit_time;
+        }
+        if (Flight::request()->data->multiedit_worker) {
+            $this->bean->user_id = Flight::request()->data->multiedit_worker;
+        }
+        R::store($this->bean);
+    }
+
+    /**
+     * Returns an array of path to js files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectJS():array
+    {
+        return [
+            '/js/select2.min',
+            '/js/appointment'
+        ];
+    }
+
+    /**
+     * Returns an array of path to css files.
+     *
+     * @see Scaffold_Controller
+     * @return array
+     */
+    public function injectCSS():array
+    {
+        return [
+            'select2.min'
+        ];
+    }
+
+    /**
      * Returns wether the model has a toolbar menu extension or not.
      *
      * @todo Really check for an existing template.
@@ -652,6 +696,24 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        return R::find(
+            $this->bean->getMeta('type'),
+            ' @joined.person.name LIKE :f OR @joined.contact.name LIKE :f OR (@joined.user.name LIKE :f OR @joined.user.email LIKE :f OR @joined.user.shortname LIKE :f OR @joined.user.screenname LIKE :f) OR @joined.appointmenttype.name LIKE :f OR (@joined.machine.name LIKE :f OR @joined.machine.name LIKE :f OR @joined.machine.serialnumber LIKE :f OR @joined.machine.internalnumber LIKE :f OR @joined.machine.note LIKE :f) OR @joined.location.name LIKE :f OR transactionnumber LIKE :f OR date = :f OR appointment.note LIKE :f',
+            [
+                ':f' => $searchphrase,
+            ]
+        );
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
@@ -766,6 +828,7 @@ SQL;
             $dup->transactionnumber = '';
             $dup->transaction = null;
             $dup_id = R::store($dup);
+            //$dup->receipt = date('Y-m-d');
             $this->bean->ownAppointment[] = $dup;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
         }

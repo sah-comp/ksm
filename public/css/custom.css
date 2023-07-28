@@ -22,8 +22,23 @@ table.revenue tfoot {
     /*overflow: visible;*/
 }
 
-table.scaffold a.dunning-pdf, table.scaffold a.dunning-mail {
+table.scaffold a.dunning-pdf,
+table.scaffold a.dunning-mail {
     display: inline-block;
+}
+
+table.gsearch {
+    margin-bottom: 5rem;
+}
+
+p.none-found {
+    text-align: center;
+    font-size: small;
+    color: gray;
+}
+
+h2.some-found {
+    text-align: center;
 }
 
 .dunning-pdf,
@@ -130,6 +145,10 @@ a.logo {
 
 .smaller-font {
     font-size: 0.975rem;
+}
+
+.minor {
+    font-size: 0.666rem;
 }
 
 /* Cockpit stuff */
@@ -407,7 +426,9 @@ input.num {
 }
 
 /* open item transaction table */
-th.gros, th.paid, th.balance {
+th.gros,
+th.paid,
+th.balance {
     width: 10rem;
 }
 
@@ -818,6 +839,29 @@ fieldset.sub>.attach {
 .quill-spacer {
     display: inline-block;
     padding: 0 1rem;
+}
+
+/**
+ * Override the absolute position of select2
+ */
+.select2-hidden-accessible {
+    position: inherit !important;
+}
+
+.select2smallfont {
+    font-size: 1rem;
+}
+
+.switch-start {
+    color: green;
+}
+
+.switch-stop {
+    color: red;
+}
+
+p.gsearch span {
+    margin-right: 1rem;
 }
 
 /*

@@ -28,6 +28,15 @@ class Model_Person extends Model
     public const PERSONKIND_ID_SUPPLIER = 3;
 
     /**
+     * Holds possible types to invoice way bills to this customer.
+     * @var array
+     */
+    public $paydrivetypes = [
+        'per_bulk',
+        'per_kilometer'
+    ];
+
+    /**
      * Constructor.
      *
      * Set actions for list views.
@@ -43,7 +52,7 @@ class Model_Person extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS()
+    public function injectJS():array
     {
         return ['/js/datatables.min'];
     }
@@ -54,10 +63,19 @@ class Model_Person extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS()
+    public function injectCSS():array
     {
         return [];
         //return ['datatables.min'];
+    }
+
+    /**
+     * Returns an array with possible paydrive types.
+     * @return array
+     */
+    public function getPaydriveTypes():array
+    {
+        return $this->paydrivetypes;
     }
 
     /**
@@ -211,6 +229,22 @@ class Model_Person extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        $sql = 'SELECT p.* FROM person AS p LEFT JOIN address ON address.person_id = p.id LEFT JOIN contact ON contact.person_id = p.id WHERE p.nickname LIKE :f OR p.account LIKE :f OR p.attention LIKE :f OR p.title LIKE :f OR p.firstname LIKE :f OR p.lastname LIKE :f OR p.suffix LIKE :f OR p.organization LIKE :f OR p.jobtitle LIKE :f OR p.department LIKE :f OR p.email LIKE :f OR p.phone LIKE :f OR p.fax LIKE :f OR p.url LIKE :f OR p.phonesec LIKE :f OR p.owner LIKE :f OR p.note LIKE :f OR p.cellphone LIKE :f OR p.billingemail LIKE :f OR p.dunningemail LIKE :f OR p.bankname LIKE :f OR p.bankcode LIKE :f OR p.bankaccount LIKE :f OR p.bic LIKE :f OR p.iban LIKE :f OR p.reference LIKE :f OR (address.street LIKE :f OR address.zip LIKE :f OR address.city LIKE :f OR address.county LIKE :f) OR (contact.name LIKE :f OR contact.jobdescription LIKE :f)';
+        $rows = R::getAll($sql, [
+            ':f' => $searchphrase
+        ]);
+        return R::convertToBeans($this->bean->getMeta('type'), $rows);
+    }
+
+    /**
      * Lookup a searchterm and return the resultset as an array.
      *
      * @todo allow more freedom with the additional query parameter.
@@ -237,7 +271,7 @@ class Model_Person extends Model
         }
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     person.id AS id,
                     CONCAT(person.name, ' (', person.nickname, ', ', CONCAT(address.street, ' ', address.zip, ' ', address.city), ')') AS label,
@@ -248,7 +282,10 @@ class Model_Person extends Model
                     person.duedays AS duedays,
                     person.discount_id AS discount_id,
                     if (person.billingemail != '', billingemail, email) AS billingemail,
-                    if (person.dunningemail != '', dunningemail, email) AS dunningemail
+                    if (person.dunningemail != '', dunningemail, email) AS dunningemail,
+                    FORMAT(person.payhourly, 2, 'de_DE') AS payhourly,
+                    person.paydrive AS paydrive,
+                    FORMAT(person.paydriveperkilometer, 2, 'de_DE') AS paydriveperkilometer
                 FROM
                     person
                 LEFT JOIN
@@ -462,6 +499,12 @@ SQL;
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'nickname'))
         ));
         $this->addConverter('duedays', [
+            new Converter_Decimal()
+        ]);
+        $this->addConverter('payhourly', [
+            new Converter_Decimal()
+        ]);
+        $this->addConverter('paydriveperkilometer', [
             new Converter_Decimal()
         ]);
     }

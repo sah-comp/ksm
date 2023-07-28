@@ -65,7 +65,7 @@
                 name="dialog[contracttype_id]"
                 disabled="disabled">
                 <option value=""><?php echo I18n::__('treaty_contracttype_none') ?></option>
-                <?php foreach (R::find('contracttype', "enabled = 1 AND service = 1 ORDER BY name") as $_id => $_contracttype): ?>
+                <?php foreach (R::find('contracttype', "enabled = 1 AND service = 1 ORDER BY name") as $_id => $_contracttype) : ?>
                 <option
                     value="<?php echo $_contracttype->getId() ?>"
                     <?php echo ($record->contracttype_id == $_contracttype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_contracttype->name ?>
@@ -82,7 +82,7 @@
                         name="dialog[treatygroup_id]"
                         required="required">
                         <option value=""><?php echo I18n::__('treaty_label_treatygroup_please_select') ?></option>
-                        <?php foreach (R::find('treatygroup', "ORDER BY sequence") as $_id => $_treatygroup): ?>
+                        <?php foreach (R::find('treatygroup', "ORDER BY sequence") as $_id => $_treatygroup) : ?>
                         <option
                             value="<?php echo $_treatygroup->getId() ?>"
                             <?php echo ($record->treatygroup_id == $_treatygroup->getId()) ? 'selected="selected"' : '' ?>><?php echo $_treatygroup->name ?>
@@ -98,7 +98,7 @@
                         name="dialog[number]"
                         readonly="readonly"
                         value="<?php echo htmlspecialchars($record->number) ?>" />
-                        <?php if ($_parent = $record->hasParent()): ?>
+                        <?php if ($_parent = $record->hasParent()) : ?>
                         <p class="info"><?php echo I18n::__('treaty_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
                         <?php endif; ?>
                 </div>
@@ -198,7 +198,7 @@
         class="autodafe">
 
         <?php
-        if ($record->getPerson()->getId()):
+        if ($record->getPerson()->getId()) :
             // The customer of this appointment is already set. No autodafe needed.
             $_dependents = $record->getDependents($record->getPerson());
             Flight::render('model/treaty/contact', [
@@ -206,12 +206,17 @@
                 'record' => $record,
                 'contacts' => $_dependents['contacts']
             ]);
-        else:
+        else :
             // lazy load, after hunting that heretic.
-        ?>
+            ?>
         <div class="heretic"><?php echo I18n::__('treaty_person_select_before_me') ?></div>
         <?php endif; ?>
 
+    </div>
+        <div class="row">
+        <label for="treaty-to"><?php echo I18n::__('treaty_label_to') ?></label>
+        <input id="treaty-to" type="text" name="dialog[to]" value="<?php echo htmlspecialchars($record->to) ?>">
+        <p class="info"><?php echo I18n::__('treaty_info_to') ?></p>
     </div>
     <div class="row">
         <label for="treaty-cc"><?php echo I18n::__('treaty_label_cc') ?></label>
@@ -242,7 +247,7 @@
             'treaty-note' => I18n::__('treaty_note_tab'),
             'treaty-email' => I18n::__('treaty_email_tab')
         ),
-        'default_tab' => 'treaty-limb'
+                        'default_tab' => 'treaty-limb'
     )) ?>
     <fieldset
         id="treaty-limb"
@@ -251,7 +256,7 @@
         <legend class="verbose"><?php echo I18n::__('treaty_legend_limb') ?></legend>
         <?php $_payload = json_decode($record->payload, true) ?>
         <?php
-        foreach ($record->contracttype->withCondition("active = 1 ORDER BY sequence")->ownLimb as $_id => $_limb):
+        foreach ($record->contracttype->withCondition("active = 1 ORDER BY sequence")->ownLimb as $_id => $_limb) :
             Flight::render('model/treaty/part/limb', [
                 'payload' => $_payload,
                 'limb' => $_limb

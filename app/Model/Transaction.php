@@ -113,6 +113,25 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns an array with dependent data. Depending on person given.
+     *
+     * @param RedBeanPHP\OODBBean
+     * @return array
+     */
+    public function getDependents($person)
+    {
+        if (!$person->getId()) {
+            return ['contacts' => []];
+        }
+        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
+        $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
+        $result = [
+            'contacts' => $contacts//$person->with("ORDER BY name")->ownContact
+        ];
+        return $result;
+    }
+
+    /**
      * Returns an array with dunninglevels.
      *
      * @return array
@@ -585,6 +604,18 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns wether the model has a scaffold buttons template or not.
+     *
+     * @todo Really check for an existing template.
+     *
+     * @return bool
+     */
+    public function hasScaffoldButtons()
+    {
+        return true;
+    }
+
+    /**
      * Returns wether the transaction can be emailed or not.
      *
      * @param string $emailtype
@@ -695,6 +726,22 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Look up searchtext in all fields of a bean.
+     *
+     * @param string $searchphrase
+     * @return array
+     */
+    public function searchGlobal($searchphrase):array
+    {
+        $searchphrase = '%'.$searchphrase.'%';
+        $sql = 'SELECT t.* FROM transaction AS t LEFT JOIN person ON t.person_id = person.id LEFT JOIN position ON t.id = position.transaction_id WHERE t.footer LIKE :f OR t.header LIKE :f OR t.billingemail LIKE :f OR t.dunningemail LIKE :f OR t.postaladdress LIKE :f OR (position.desc LIKE :f)';
+        $rows = R::getAll($sql, [
+            ':f' => $searchphrase
+        ]);
+        return R::convertToBeans($this->bean->getMeta('type'), $rows);
+    }
+
+    /**
      * Returns SQL string.
      *
      * @param string (optional) $fields to select
@@ -742,7 +789,7 @@ SQL;
         $slots = R::genSlots($this->bookable_types);
         switch ($query) {
             default:
-            $sql = <<<SQL
+                $sql = <<<SQL
                 SELECT
                     transaction.id AS id,
                     CONCAT(transaction.number, ' ', DATE_FORMAT(transaction.bookingdate, '%d.%m.%Y'), ' ', REPLACE(person.name, "\r\n", ' '), ' ', FORMAT(transaction.gros, 2, 'de_DE')) AS label,
@@ -1100,6 +1147,7 @@ SQL;
     public function dispense()
     {
         $this->bean->archived = 0;
+        $this->bean->donthidesome = 0;
         $this->bean->locked = false;
         $this->bean->accumulate = false;//flag to be used for dunning, if true all open items will be combinded in a pdf
         $this->bean->number = '';//I18n::__('transaction_placeholder_number');
@@ -1119,6 +1167,8 @@ SQL;
         $this->addConverter('balance', new Converter_Decimal()); //saldo
         $this->addConverter('dunningdate', new Converter_Mysqldate()); //last date this transaction was reinforced
         $this->addConverter('penaltyfee', new Converter_Decimal());
+        $this->addConverter('payhourly', new Converter_Decimal());
+        $this->addConverter('paydriveperkilometer', new Converter_Decimal());
     }
 
     /**

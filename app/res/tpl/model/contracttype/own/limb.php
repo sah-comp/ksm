@@ -13,18 +13,18 @@
     id="contracttype-<?php echo $record->getId() ?>-ownlimb-<?php echo $index ?>">
     <legend class="verbose"><?php echo I18n::__('contracttype_legend_limb') ?></legend>
     <a
-    	href="<?php echo Url::build(sprintf('/admin/contracttype/detach/limb/%d', $_limb->getId())) ?>"
-    	class="ir detach"
-    	title="<?php echo I18n::__('scaffold_detach') ?>"
-    	data-target="contracttype-<?php echo $record->getId() ?>-ownlimb-<?php echo $index ?>">
-    		<?php echo I18n::__('scaffold_detach') ?>
+        href="<?php echo Url::build(sprintf('/admin/contracttype/detach/limb/%d', $_limb->getId())) ?>"
+        class="ir detach"
+        title="<?php echo I18n::__('scaffold_detach') ?>"
+        data-target="contracttype-<?php echo $record->getId() ?>-ownlimb-<?php echo $index ?>">
+            <?php echo I18n::__('scaffold_detach') ?>
     </a>
     <a
-    	href="<?php echo Url::build(sprintf('/admin/contracttype/attach/own/limb/%d', $record->getId())) ?>"
-    	class="ir attach"
-    	title="<?php echo I18n::__('scaffold_attach') ?>"
-    	data-target="contracttype-<?php echo $record->getId() ?>-limb-container">
-    		<?php echo I18n::__('scaffold_attach') ?>
+        href="<?php echo Url::build(sprintf('/admin/contracttype/attach/own/limb/%d', $record->getId())) ?>"
+        class="ir attach"
+        title="<?php echo I18n::__('scaffold_attach') ?>"
+        data-target="contracttype-<?php echo $record->getId() ?>-limb-container">
+            <?php echo I18n::__('scaffold_attach') ?>
     </a>
 
     <div>
@@ -64,6 +64,17 @@
         </div>
         <div class="span1">
             <input
+                type="hidden"
+                name="dialog[ownLimb][<?php echo $index ?>][list]"
+                value="0" />
+            <input
+                type="checkbox"
+                name="dialog[ownLimb][<?php echo $index ?>][list]"
+                <?php echo ($_limb->list) ? 'checked="checked"' : '' ?>
+                value="1" />
+        </div>
+        <div class="span1">
+            <input
                 type="number"
                 min="0"
                 step="10"
@@ -82,14 +93,14 @@
                 name="dialog[ownLimb][<?php echo $index ?>][placeholder]"
                 value="<?php echo htmlspecialchars($_limb->placeholder) ?>" />
         </div>
-        <div class="span2">
+        <div class="span1">
             <select
                 name="dialog[ownLimb][<?php echo $index ?>][tag]">
                 <option
                     value="">
                     <?php echo I18n::__('select_one_or_leave_empty') ?>
                 </option>
-                <?php foreach ($_limb->getTags() as $_attr_name): ?>
+                <?php foreach ($_limb->getTags() as $_attr_name) : ?>
                 <option
                     value="<?php echo $_attr_name ?>"
                     <?php echo ($_limb->tag == $_attr_name) ? 'selected="selected"' : '' ?>>

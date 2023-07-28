@@ -57,18 +57,19 @@ class Model_Criteria extends Model
      *
      * @var array
      */
-    public $operators = array(
-        'text' => array('like', 'ew', 'eq', 'neq', 'bw', 'notlike'),
-        'number' => array('eq', 'gt', 'lt', 'neq'),
-        'date' => array('eq', 'gt', 'lt', 'neq'),
-        'time' => array('eq', 'gt', 'lt', 'neq'),
-        'datetime' => array('eq', 'gt', 'lt', 'neq'),
-        'email' => array('bw', 'ew', 'eq', 'neq', 'like', 'notlike'),
-        'textarea' => array('like', 'ew', 'eq', 'neq', 'bw', 'notlike'),
-        'in' => array('in'),
-        'select' => array('eq'),
-        'bool' => array('eq')
-     );
+    public $operators = [
+        'text' => ['like', 'ew', 'eq', 'neq', 'bw', 'notlike'],
+        'number' => ['eq', 'gt', 'lt', 'neq'],
+        'date' => ['eq', 'gt', 'lt', 'neq'],
+        'time' => ['eq', 'gt', 'lt', 'neq'],
+        'datetime' => ['eq', 'gt', 'lt', 'neq'],
+        'email' => ['bw', 'ew', 'eq', 'neq', 'like', 'notlike'],
+        'textarea' => ['like', 'ew', 'eq', 'neq', 'bw', 'notlike'],
+        'in' => ['in'],
+        'select' => ['eq'],
+        'bool' => ['eq'],
+        'json' => ['like']
+     ];
 
     /**
      * Container for characters that have to be escaped for usage with SQL.
@@ -215,6 +216,9 @@ class Model_Criteria extends Model
             $result = sprintf($this->daterangetemplate, $this->bean->attribute, $date_from, $date_to);
             $filter->filter_values[] = $date_from;
             $filter->filter_values[] = $date_to;
+        } elseif ($this->bean->tag == 'json') {
+            $result = " JSON_EXTRACT(payload, '$." . $this->bean->attribute . "') like '%" . $this->bean->value . "%' ";
+            //$result = sprintf($template, $this->bean->attribute, $this->bean->value);
         } else {
             $template = $this->map[$this->bean->op];
             $value = $this->mask_filter_value($filter);
@@ -235,25 +239,25 @@ class Model_Criteria extends Model
         $add_to_filter_values = true;
         switch ($this->bean->op) {
             case 'like':
-                $value = '%'.str_replace($this->pat, $this->rep, $this->bean->value).'%';
+                $value = '%' . str_replace($this->pat, $this->rep, $this->bean->value) . '%';
                 break;
             case 'notlike':
-                $value = '%'.str_replace($this->pat, $this->rep, $this->bean->value).'%';
+                $value = '%' . str_replace($this->pat, $this->rep, $this->bean->value) . '%';
                 break;
             case 'bw':
                 $value = str_replace($this->pat, $this->rep, $this->bean->value).'%';
                 break;
             case 'ew':
-                $value = '%'.str_replace($this->pat, $this->rep, $this->bean->value);
+                $value = '%' . str_replace($this->pat, $this->rep, $this->bean->value);
                 break;
             case 'shared':
-                $_sharedSubName = 'shared'.ucfirst(strtolower($this->bean->substitute));
+                $_sharedSubName = 'shared' . ucfirst(strtolower($this->bean->substitute));
                 $ids = array_keys($this->bean->{$_sharedSubName});
                 $value = implode(', ', $ids);
                 $add_to_filter_values = false;
                 break;
             case 'in':
-                $value = $this->bean->value; // has to look like this "1, 6, 12, 8978"
+                $value = $this->bean->value;
                 $add_to_filter_values = false;
                 break;
             default:

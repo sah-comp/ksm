@@ -18,7 +18,7 @@ $_roles = $record->sharedRole;
     <input type="hidden" name="dialog[id]" value="<?php echo $record->getId() ?>" />
     <input type="hidden" name="dialog[pw]" value="<?php echo htmlspecialchars($record->pw) ?>" />
 
-    <?php if ($record->email): ?>
+    <?php if ($record->email) : ?>
     <img
         src="<?php echo Gravatar::src($record->email, 72) ?>"
         class="gravatar-account circular no-shadow"
@@ -113,7 +113,7 @@ $_roles = $record->sharedRole;
         <select
             id="user-startpage"
             name="dialog[startpage]">
-            <?php foreach (R::findAll('domain') as $_id => $_domain): ?>
+            <?php foreach (R::findAll('domain') as $_id => $_domain) : ?>
             <option
                 value="<?php echo $_domain->url ?>"
                 <?php echo ($record->startpage == $_domain->url) ? 'selected="selected"' : '' ?>><?php echo $_domain->i18n(Flight::get('language'))->name ?></option>
@@ -129,7 +129,8 @@ $_roles = $record->sharedRole;
             'user-setting' => I18n::__('user_setting_tab'),
             'user-role' => I18n::__('user_role_tab'),
             'user-team' => I18n::__('user_team_tab'),
-            'user-editor' => I18n::__('user_editor_tab')
+            'user-editor' => I18n::__('user_editor_tab'),
+            'user-signature' => I18n::__('user_signature_tab')
         ),
         'default_tab' => 'user-setting'
     )) ?>
@@ -180,7 +181,7 @@ $_roles = $record->sharedRole;
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('user_legend_team') ?></legend>
-        <?php foreach (R::findAll('team') as $_id => $_team): ?>
+        <?php foreach (R::findAll('team') as $_id => $_team) : ?>
         <div class="row">
             <input
                 type="hidden"
@@ -207,7 +208,7 @@ $_roles = $record->sharedRole;
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('user_legend_role') ?></legend>
-        <?php foreach (R::findAll('role') as $_id => $_role): ?>
+        <?php foreach (R::findAll('role') as $_id => $_role) : ?>
         <div class="row">
             <input
                 type="hidden"
@@ -232,7 +233,7 @@ $_roles = $record->sharedRole;
     <fieldset
         id="user-editor"
         class="tab"
-        style="display: block;">
+        style="display: none;">
         <legend><?php echo I18n::__('user_legend_editor') ?></legend>
         <div
             class="row <?php echo $record->hasError('foxylisteditor') ? 'error' : '' ?>">
@@ -286,6 +287,25 @@ $_roles = $record->sharedRole;
                 value="<?php echo htmlspecialchars($record->recordsperpage) ?>" />
             <p class="info"><?php echo I18n::__('user_info_recordsperpage') ?></p>
         </div>
+    </fieldset>
+    <fieldset
+        id="user-signature"
+        class="tab"
+        style="display: none;">
+        <legend><?php echo I18n::__('user_legend_signature') ?></legend>
+    <div class="row <?php echo ($record->hasError('mailsig')) ? 'error' : ''; ?>">
+        <label
+            for="user-mailsig">
+            <?php echo I18n::__('user_label_mailsig') ?>
+        </label>
+        <textarea
+            id="user-mailsig"
+            name="dialog[mailsig]"
+            rows="12"
+            cols="60"
+            required="required"><?php echo htmlspecialchars($record->mailsig) ?></textarea>
+        <p class="info"><?php echo I18n::__('user_info_mailsig') ?></p>
+    </div>
     </fieldset>
 </div>
 <!-- End of edit user form -->

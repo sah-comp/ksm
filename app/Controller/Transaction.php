@@ -96,6 +96,19 @@ class Controller_Transaction extends Controller_Scaffold
     }
 
     /**
+     * Switch the booking semaphore of the current user session and redirects to the index page.
+     */
+    public function booking()
+    {
+        if (isset($_SESSION['user']['booking']) && $_SESSION['user']['booking'] === true) {
+            $_SESSION['user']['booking'] = false;
+        } else {
+            $_SESSION['user']['booking'] = true;
+        }
+        $this->redirect("/admin/transaction");
+    }
+
+    /**
      * Sends a email to the transaction recipient, cc to user who clicked button.
      */
     public function mail()
@@ -126,7 +139,7 @@ class Controller_Transaction extends Controller_Scaffold
             } else {
                 $mail->SMTPAuth = false;                          // Disable SMTP authentication
             }
-            $mail->Port = $smtp['port'];						  // SMTP port
+            $mail->Port = $smtp['port'];                          // SMTP port
             $mail->Username = $smtp['user'];                      // SMTP username
             $mail->Password = $smtp['password'];                  // SMTP password
             $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
@@ -296,5 +309,37 @@ class Controller_Transaction extends Controller_Scaffold
         $this->totals = R::getRow($sql, $this->filter->getFilterValues());
         R::debug(false);
         return null;
+    }
+
+    /**
+     * Rerenders the "person-dependent" part of an transaction form.
+     *
+     * @todo documentation
+     * Requires the following data-* in your html:
+     *  - data-extra="transaction-person-id"
+     *  - data-dynamic="URL TO THIS FUNCTION"
+     *
+     * @return JSONP
+     */
+    public function dependent()
+    {
+        $person = R::load('person', Flight::request()->data->person_id);
+        $dependents = $this->record->getDependents($person);
+        $this->record->person = $person;
+        ob_start();
+        Flight::render('model/transaction/billingmail', [
+            'person' => $person,
+            'record' => $this->record,
+            'contacts' => $dependents['contacts']
+        ]);
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        $result = [
+            'okay' => true,
+            'html' => $html
+        ];
+
+        Flight::jsonp($result, 'callback');
     }
 }

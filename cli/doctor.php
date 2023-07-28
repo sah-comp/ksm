@@ -57,6 +57,16 @@ class Doctor
                 $this->doctorSupplier();
                 break;
 
+            case 'treaty-y-m-d':
+                echo "Update all treaty beans to have year, month and day single digits from bookingdate.\n";
+                $this->doctorTreatyYMD();
+                break;
+
+            case 'mach-fields':
+                echo "Update all machine beans to use user-defined json fields instead of hardcoded fields.\n";
+                $this->doctorMachineFields();
+                break;
+
             default:
                 // code...
                 break;
@@ -135,6 +145,65 @@ class Doctor
         R::storeAll($transactions);
         return true;
     }
+
+    /**
+     * Doctor treatyYMD beans.
+     *
+     * @return bool
+     */
+    public function doctorTreatyYMD(): bool
+    {
+        $sql = "UPDATE treaty SET y = YEAR(bookingdate), m = MONTH(bookingdate), d = DAY(bookingdate)";
+        $result = R::exec($sql);
+        return true;
+    }
+
+    /**
+     * Doctor machine beans fields.
+     *
+     * @return bool
+     */
+    public function doctorMachineFields(): bool
+    {
+        $machines = R::findAll('machine');
+        $sql = "UPDATE machine SET payload = :payload WHERE id = :id LIMIT 1";
+        echo "\nDoctoring " . count($machines) . " machines:\n";
+        foreach ($machines as $id => $machine) {
+            $data = [
+                'charger' => $machine->charger,
+                'lever' => $machine->lever,
+                'forks' => $machine->forks,
+                'weight' => $machine->weight,
+                'height' => $machine->height,
+                'maxload' => $machine->maxload,
+                'masttype' => $machine->masttype,
+                'mastserialnumber' => $machine->mastserialnumber,
+                'attachment' => $machine->attachment,
+                'attachmenttype' => $machine->attachmenttype,
+                'attachmentserialnumber' => $machine->attachmentserialnumber,
+                'motor' => $machine->motor,
+                'motorserialnumber' => $machine->motorserialnumber,
+                'controlvalve' => $machine->controlvalve,
+                'shutdownvalve' => $machine->shutdownvalve,
+                'mixer' => $machine->mixer,
+                'keynumber' => $machine->keynumber,
+                'fronttires' => $machine->fronttires,
+                'backtires' => $machine->backtires,
+                'controltype' => $machine->controltype,
+                'battery' => $machine->battery,
+                'hourlyrate' => $machine->hourlyrate,
+                'drivingcost' => $machine->drivingcost,
+                'forkmaxheight' => $machine->forkmaxheight
+            ];
+            $result = R::exec($sql, [
+                ':payload' => json_encode($data),
+                ':id' => $machine->getId()
+            ]);
+            echo '.';
+        }
+        //R::storeAll($machines);
+        return true;
+    }
 }
 
 /**
@@ -170,12 +239,12 @@ $doc = <<<DOC
 The doctor checks and repairs things.
 
 Usage:
-  doctor.php -b BEAN
+  doctor.php -b TASK
   doctor.php (-h | --help)
   doctor.php --version
 
 Options:
-  -b BEAN       The bean or table to repair.
+  -b TASK       The task to perform.
   -h --help     Show this screen.
   --version     Show version.
 

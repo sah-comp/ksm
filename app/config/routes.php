@@ -297,6 +297,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
     $transactionController->mail();
  });
 
+ /**
+ * Routes to the transaction controller to begin or end booking session.
+ */
+ Flight::route('GET (/[a-z]{2})/transaction/booking', function () {
+    $transactionController = new Controller_Transaction(null, 'transaction', null);
+    $transactionController->booking();
+ });
+
 /**
  * Routes to the appointment controller to download a list as PDF to the client.
  */
@@ -319,6 +327,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
  Flight::route('(/[a-z]{2})/correspondence/mail(/@id:[0-9]+)', function ($id) {
     $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
     $correspondenceController->mail();
+ });
+
+ /**
+ * Routes to the correspondence controller to duplicate the given bean.
+ */
+ Flight::route('GET (/[a-z]{2})/correspondence/copy/@id:[0-9]+', function ($id) {
+    $correspondenceController = new Controller_Correspondence(null, 'correspondence', $id);
+    $correspondenceController->copy();
  });
 
 /**
@@ -396,6 +412,14 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
  Flight::route('(/[a-z]{2})/filer(/index)', function () {
     $filerController = new Controller_Filer();
     $filerController->index();
+ });
+
+ /**
+ * Display the (global) search index page.
+ */
+ Flight::route('GET (/[a-z]{2})/search(/index)', function () {
+    $searchController = new Controller_Search();
+    $searchController->index();
  });
 
 /**

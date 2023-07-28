@@ -39,7 +39,7 @@ class Menu
     /**
      * Container for templates.
      *
-     * @var array 
+     * @var array
      */
     public $templates = array(
         'list-open' => '<ul%s>',
@@ -100,100 +100,103 @@ class Menu
         return $this;
     }
     
-	/**
-	 * Renders the HTML output for the menu
-	 *
-	 * @param array $attrs associative array of html attributes
-	 * @param array $current associative array containing the key and value of current url
-	 * @param array $items the parent item's array, only used internally
-	 * @return string HTML unordered list
-	 */
-	public function render(array $attrs = null, $current = null, array $items = null)
-	{
-		static $i;
-		
-		$items = empty($items) ? $this->items : $items;
-		$current = empty($current) ? $this->current : $current;
-		$attrs = empty($attrs) ? $this->attrs : $attrs;
-		
-		$i++;
-		$menu = sprintf($this->templates['list-open'], ($i == 1 ? self::glue($attrs) : null));
-		
-		foreach ($items as $key => $item)
-		{
-			$has_children =  ! empty($item['children']);
-			
-			$class = array($item['class']);
-			
-			$has_children ? $class[] = 'parent sm2_liOpen' : null;
-			
-			if ( ! empty($current))
-			{
-				if ($current_class = self::current($current, $item))
-				{
-					$class[] = $current_class;
-				}
-			}
-			$classes = ! empty($class) ? self::glue(array('class' => implode(' ', $class))) : null;
-			$id = null;
-			if (isset($item['id']) && $item['id']) $id = ' id="'.$item['id'].'"';
-			$menu .= sprintf($this->templates['item-open'], $id, $classes, $item['url'], $item['title']);
-			$menu .= $has_children ? $this->render(null, $current, $item['children']) : null;
-			$menu .= $this->templates['item-close'];
-		}
-		
-		$menu .= $this->templates['list-close'];
-		
-		$i--;
-		
-		return $menu;
-	}
-	
-	/**
-	 * Figures out if items are parents of the active item.
-	 *
-	 * @param array $current the current url array (key, match)
-	 * @param array $item the array to check against
-	 * @return bool
-	 */
-	protected static function current($current, array $item)
-	{
-		if ($current === $item['url']) {
-			return 'active current';
-		} else {
-		    if (self::active($item, $current, 'url')) return 'active';
-		}
-		return '';
-	}
-	
-	/**
-	 * Recursive function to check if active item is child of parent item
-	 *
-	 * @param array $array the list item
-	 * @param string $value the current active item
-	 * @param string $key to match current against
-	 * @return bool
-	 */
-	public static function active($array, $value, $key)
-	{
-		foreach ($array as $val) {
-			if (is_array($val)) {
-				if (self::active($val, $value, $key)) return true;
-			} else {
-				if ($array[$key] === $value) return true;
-			}
-		}
-		return false;
-	}
-	
+    /**
+     * Renders the HTML output for the menu
+     *
+     * @param array $attrs associative array of html attributes
+     * @param array $current associative array containing the key and value of current url
+     * @param array $items the parent item's array, only used internally
+     * @return string HTML unordered list
+     */
+    public function render(array $attrs = null, $current = null, array $items = null)
+    {
+        static $i;
+        
+        $items = empty($items) ? $this->items : $items;
+        $current = empty($current) ? $this->current : $current;
+        $attrs = empty($attrs) ? $this->attrs : $attrs;
+        
+        $i++;
+        $menu = sprintf($this->templates['list-open'], ($i == 1 ? self::glue($attrs) : null));
+        
+        foreach ($items as $key => $item) {
+            $has_children =  ! empty($item['children']);
+            
+            $class = array($item['class']);
+            
+            $has_children ? $class[] = 'parent sm2_liOpen' : null;
+            
+            if (! empty($current)) {
+                if ($current_class = self::current($current, $item)) {
+                    $class[] = $current_class;
+                }
+            }
+            $classes = ! empty($class) ? self::glue(array('class' => implode(' ', $class))) : null;
+            $id = null;
+            if (isset($item['id']) && $item['id']) {
+                $id = ' id="'.$item['id'].'"';
+            }
+            $menu .= sprintf($this->templates['item-open'], $id, $classes, $item['url'], $item['title']);
+            $menu .= $has_children ? $this->render(null, $current, $item['children']) : null;
+            $menu .= $this->templates['item-close'];
+        }
+        
+        $menu .= $this->templates['list-close'];
+        
+        $i--;
+        
+        return $menu;
+    }
+    
+    /**
+     * Figures out if items are parents of the active item.
+     *
+     * @param array $current the current url array (key, match)
+     * @param array $item the array to check against
+     * @return bool
+     */
+    protected static function current($current, array $item)
+    {
+        if ($current === $item['url']) {
+            return 'active current';
+        } else {
+            if (self::active($item, $current, 'url')) {
+                return 'active';
+            }
+        }
+        return '';
+    }
+    
+    /**
+     * Recursive function to check if active item is child of parent item
+     *
+     * @param array $array the list item
+     * @param string $value the current active item
+     * @param string $key to match current against
+     * @return bool
+     */
+    public static function active($array, $value, $key)
+    {
+        foreach ($array as $val) {
+            if (is_array($val)) {
+                if (self::active($val, $value, $key)) {
+                    return true;
+                }
+            } else {
+                if ($array[$key] === $value) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     /**
      * Glues together an array of key/values as a string and returns it.
      *
      * Usage Example:
      * <code>
-     * <?php
      * $text = glue(array('title' => 'Test', 'lenght' => '4'));
-     * ?>
      * </code>
      *
      * @param mixed (required) $dict
@@ -205,11 +208,13 @@ class Menu
      */
     public static function glue($dict, $glueOpen = '="', $glueClose = '"', $pre = ' ', $impChar = ' ')
     {
-    	if (empty($dict)) return '';
-    	$stack = array();
-    	foreach ($dict as $key=>$value) {
-    		$stack[] = $key.$glueOpen.htmlspecialchars($value).$glueClose;
-    	}
-    	return $pre.implode($impChar, $stack);
+        if (empty($dict)) {
+            return '';
+        }
+        $stack = array();
+        foreach ($dict as $key => $value) {
+            $stack[] = $key.$glueOpen.htmlspecialchars($value).$glueClose;
+        }
+        return $pre.implode($impChar, $stack);
     }
 }

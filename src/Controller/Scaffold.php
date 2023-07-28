@@ -462,6 +462,9 @@ class Controller_Scaffold extends Controller
             }
         }
         $order = $attributes[$this->order]['sort']['name'].' '.$this->dir_map[$this->dir];
+        if (isset($attributes[$this->order]['order'])) {
+            $order = $attributes[$this->order]['order']['name'].' '.$this->dir_map[$this->dir];
+        }
         $sqlCollection = $this->record->getSql(
             "DISTINCT({$this->type}.id) AS id, " . $attributes[$this->order]['sort']['name'],
             $where,
@@ -750,6 +753,7 @@ class Controller_Scaffold extends Controller
                     Url::build("{$this->base_url}/{$this->type}/edit/{$this->id}/1/0/0/{$this->layout}/")
                 )));
             }
+            // preset fields from the query parameters
             if (Flight::request()->query) {
                 foreach (Flight::request()->query as $param => $val) {
                     $this->record->{$param} = $val;

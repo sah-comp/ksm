@@ -28,10 +28,10 @@ $('body').ready(function() {
      *
      * @see https://theme.co/forum/t/scroll-to-anchor-with-offset-when-coming-from-another-page/26622/5
      */
-    if (location.hash){
+    if (location.hash) {
         var pagehash = $(location.hash);
-        $('html,body').animate({scrollTop: pagehash.offset().top - headeroffset}, 'linear')
-	}
+        $('html,body').animate({ scrollTop: pagehash.offset().top - headeroffset }, 'linear')
+    }
 
     /**
      * Tooltips. Tippsy.
@@ -74,6 +74,12 @@ $('body').ready(function() {
     $('form.checko').areYouSure();
 
     /**
+     * Check for select inputs to be handled with select2 plugin
+     * @see https://select2.org
+     */
+    //$('.select2basic').select2();
+
+    /**
      * Sortable containers.
      *
      * When the container was scrolled the "shadow" element is way of the cursor.
@@ -94,7 +100,7 @@ $('body').ready(function() {
         "start": function(event, ui) {
             //ui.item.css('margin-top', 0);
         },
-        "sort": function (event, ui) {
+        "sort": function(event, ui) {
             ui.helper.css({ 'top': ui.position.top + $(window).scrollTop() + 'px' });
         },
         "stop": function(event, ui) {
@@ -152,11 +158,11 @@ $('body').ready(function() {
      */
     $(".notification").slideDown("slow");
 
-    $('body').bind("ajaxSend", function(){
-       $("body").addClass("loading");
-     }).bind("ajaxComplete", function(){
-       $("body").removeClass("loading");
-     });
+    $('body').bind("ajaxSend", function() {
+        $("body").addClass("loading");
+    }).bind("ajaxComplete", function() {
+        $("body").removeClass("loading");
+    });
 
     /**
      * Plugin idTabs.
@@ -170,7 +176,7 @@ $('body').ready(function() {
                 var defaultid = $(this).attr("data-default");
             }
             //alert('Default tab is ' + defaultid);
-            $("#"+$(this).attr("id")+" ul").idTabs({
+            $("#" + $(this).attr("id") + " ul").idTabs({
                 start: defaultid,
                 click: function(id, all, container, settings) {
                     localStorage.setItem("lastTab", id.substring(1));
@@ -260,25 +266,25 @@ $('body').ready(function() {
         event.preventDefault();
         var container = $(this).attr("data-container");
         $.get($(this).attr("data-href"), function(data) {
-            $("#"+container).empty();
-            $("#"+container).append(data);
+            $("#" + container).empty();
+            $("#" + container).append(data);
         }, "html");
         //$(".slice-container").removeClass("active");
         $(this).addClass("active");
     });
 
-	/**
-	 * Form with class inplace will be ajaxified by jQuery form plugin and
-	 * the response is placed into the element given in data-container.
-	 */
+    /**
+     * Form with class inplace will be ajaxified by jQuery form plugin and
+     * the response is placed into the element given in data-container.
+     */
     $('body').on("submit", ".inline, .inline-add", function(event) {
         var form = $(this);
         var container = form.attr("data-container");
-        if ($("#"+container).hasClass("active")) $("#"+container).removeClass("active");
+        if ($("#" + container).hasClass("active")) $("#" + container).removeClass("active");
         form.ajaxSubmit({
             success: function(response) {
-                if ( ! form.hasClass("inline-add")) $("#"+container).empty();
-                $("#"+container).append(response);
+                if (!form.hasClass("inline-add")) $("#" + container).empty();
+                $("#" + container).append(response);
             }
         });
         return false;
@@ -294,68 +300,68 @@ $('body').ready(function() {
      *
      * @see app/res/tpl/scaffold/quickfilter.php
      */
-    $('body').on('change', '.submitOnChange', function(){
+    $('body').on('change', '.submitOnChange', function() {
         $(this).closest('form').submit();
     });
 
     /**
-	 * all and future detach links send a post request and then
-	 * fade out and finally detach the element.
-	 */
-	$('body').on("click", ".detach", function(event) {
-	    event.preventDefault();
-		var target = $(this).attr("data-target");
-		var url = $(this).attr("href");
-		$.post(url, function(data) {
-	        $('#'+target).fadeOut('fast', function() {
-				$('#'+target).detach();
-			});
-	    });
-	});
+     * all and future detach links send a post request and then
+     * fade out and finally detach the element.
+     */
+    $('body').on("click", ".detach", function(event) {
+        event.preventDefault();
+        var target = $(this).attr("data-target");
+        var url = $(this).attr("href");
+        $.post(url, function(data) {
+            $('#' + target).fadeOut('fast', function() {
+                $('#' + target).detach();
+            });
+        });
+    });
 
-	/**
-	 * all and future attach links post request a url and
-	 * insert a new element into the *-additional zone.
-	 */
-	$('body').on("click", ".attach", function(event) {
-	    event.preventDefault();
-		var target = $(this).attr("data-target");
-		var url = $(this).attr("href");
-		$.post(url, function(data) {
-			$("#"+target).append(data);
+    /**
+     * all and future attach links post request a url and
+     * insert a new element into the *-additional zone.
+     */
+    $('body').on("click", ".attach", function(event) {
+        event.preventDefault();
+        var target = $(this).attr("data-target");
+        var url = $(this).attr("href");
+        $.post(url, function(data) {
+            $("#" + target).append(data);
             initAutocompletes();
-	    });
-	});
+        });
+    });
 
     /**
-	 * all and future finish links send a get request and then
-	 * fade out and finally detach the element.
-	 */
-	$('body').on("click", ".finish", function(event) {
-	    event.preventDefault();
-		var target = $(this).attr("data-target");
-		var url = $(this).attr("href");
-		$.get(url, function(data) {
-	        $('#'+target).fadeOut('fast', function() {
-				$('#'+target).detach();
+     * all and future finish links send a get request and then
+     * fade out and finally detach the element.
+     */
+    $('body').on("click", ".finish", function(event) {
+        event.preventDefault();
+        var target = $(this).attr("data-target");
+        var url = $(this).attr("href");
+        $.get(url, function(data) {
+            $('#' + target).fadeOut('fast', function() {
+                $('#' + target).detach();
                 $('table caption').addClass('scratched');
-			});
-	    });
-	});
+            });
+        });
+    });
 
     /**
-	 * Load additional data into a container.
-	 */
-	$('body').on("click", ".additional-info", function(event) {
-	    event.preventDefault();
-		var target = '#' + $(this).attr("data-target");
-		var url = $(this).attr("href");
-		$.get(url, function(data) {
+     * Load additional data into a container.
+     */
+    $('body').on("click", ".additional-info", function(event) {
+        event.preventDefault();
+        var target = '#' + $(this).attr("data-target");
+        var url = $(this).attr("href");
+        $.get(url, function(data) {
             $(target).empty();
-	        $(target).append(data);
+            $(target).append(data);
             $(target).addClass('active');
-	    });
-	});
+        });
+    });
 
     /**
      * all and future delete links send a get request and then
@@ -375,8 +381,8 @@ $('body').ready(function() {
         var url = $(this).attr("href");
         $.get(url, function(data) {
             $('#dtinstalledparts').DataTable().destroy(); // destroy the DataTable
-            $('#'+target).fadeOut('fast', function() {
-                $('#'+target).detach();
+            $('#' + target).fadeOut('fast', function() {
+                $('#' + target).detach();
             });
             $('#dtinstalledparts').DataTable({
                 "paging": false,
@@ -437,8 +443,8 @@ $('body').ready(function() {
         } else {
             value = $(this).val();
         }
-		var url = $(this).attr("data-url");
-		$.post(url, { value: value }, function(data) {
+        var url = $(this).attr("data-url");
+        $.post(url, { value: value }, function(data) {
             if (data.okay) {
                 $("#" + data.bean).attr('data-sort', data.sortorder);
                 $('#' + data.bean).attr('class', data.trclass);
@@ -448,7 +454,7 @@ $('body').ready(function() {
                 // there was an error updating the bean. Tell the user somehow.
                 console.log('Enpassant: Bean was not updated.');
             }
-	    }, 'json');
+        }, 'json');
     });
 
     $('body').on('click', ".scratch", function(event) {
@@ -483,35 +489,35 @@ $('body').ready(function() {
             'ip-article-salesprice'
         ];
         $.post(url, {
-                article_id: $("#ip-article-id").val(),
-                stamp: $("#ip-article-stamp").val(),
-                purchaseprice: $("#ip-article-purchaseprice").val(),
-                salesprice: $("#ip-article-salesprice").val(),
-                adopt: $("#ip-article-adopt").val()
-            }, function(data) {
-                if (data.okay) {
-                    console.log('Installing article was successfull');
-                    // clear the form. sorry for this, I am a JS dummy.
-                    nils.forEach(function(item, index, array) {
-                      $('#' + item).val('');
-                    });
-                    zeros.forEach(function(item, index, array) {
-                      $('#' + item).val('0');
-                    });
+            article_id: $("#ip-article-id").val(),
+            stamp: $("#ip-article-stamp").val(),
+            purchaseprice: $("#ip-article-purchaseprice").val(),
+            salesprice: $("#ip-article-salesprice").val(),
+            adopt: $("#ip-article-adopt").val()
+        }, function(data) {
+            if (data.okay) {
+                console.log('Installing article was successfull');
+                // clear the form. sorry for this, I am a JS dummy.
+                nils.forEach(function(item, index, array) {
+                    $('#' + item).val('');
+                });
+                zeros.forEach(function(item, index, array) {
+                    $('#' + item).val('0');
+                });
 
-                    $('#dt' + target).DataTable().destroy(); // destroy the DataTable
-                    $("#" + target).prepend(data.html); // add a tr at the bgining of tbody
+                $('#dt' + target).DataTable().destroy(); // destroy the DataTable
+                $("#" + target).prepend(data.html); // add a tr at the bgining of tbody
 
-                    $('#dt' + target).DataTable({
-                        "paging": false,
-                        "stateSave": true,
-                        "language": dtlang
-                    });
-                    console.log('After adding newly installed part');
-                } else {
-                    // there was an error updating the bean. Tell the user somehow.
-                    console.log('Installing article failed');
-                }
+                $('#dt' + target).DataTable({
+                    "paging": false,
+                    "stateSave": true,
+                    "language": dtlang
+                });
+                console.log('After adding newly installed part');
+            } else {
+                // there was an error updating the bean. Tell the user somehow.
+                console.log('Installing article failed');
+            }
         }, 'json');
     });
 
@@ -562,8 +568,8 @@ $('body').ready(function() {
     if ($('#chart').length) {
         var url = $('#chart').attr('data-url');
         $.ajax({
-            url : url,
-            dataType : 'json'
+            url: url,
+            dataType: 'json'
         }).done(function(data, statusText, resObject) {
             var jsonData = resObject.responseJSON;
             var chart = new Chart($('#chart'), jsonData);
