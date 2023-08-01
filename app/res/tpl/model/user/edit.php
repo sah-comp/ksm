@@ -293,19 +293,17 @@ $_roles = $record->sharedRole;
         class="tab"
         style="display: none;">
         <legend><?php echo I18n::__('user_legend_signature') ?></legend>
-    <div class="row <?php echo ($record->hasError('mailsig')) ? 'error' : ''; ?>">
-        <label
-            for="user-mailsig">
-            <?php echo I18n::__('user_label_mailsig') ?>
-        </label>
-        <textarea
-            id="user-mailsig"
-            name="dialog[mailsig]"
-            rows="12"
-            cols="60"
-            required="required"><?php echo htmlspecialchars($record->mailsig) ?></textarea>
-        <p class="info"><?php echo I18n::__('user_info_mailsig') ?></p>
-    </div>
+        <div class="row <?php echo ($record->hasError('mailsig')) ? 'error' : ''; ?>">
+            <label
+             for="user-mailsig"><?php echo I18n::__('user_label_mailsig') ?>
+            </label>
+            <textarea
+              id="user-mailsig"
+               name="dialog[mailsig]"
+               rows="12"
+               cols="60"><?php echo htmlspecialchars($record->mailsig) ?></textarea>
+            <p class="info"><?php echo I18n::__('user_info_mailsig') ?></p>
+        </div>
     </fieldset>
 </div>
 <!-- End of edit user form -->
