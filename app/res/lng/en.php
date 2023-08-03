@@ -1198,6 +1198,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'transaction_pdf_filename' => '%s.pdf',
   'transaction_pdf_list_docname' => 'transaction_pdf_list_docname',
   'transaction_pdf_list_filename' => 'transaction_pdf_list_filename',
+  'transaction_person_select_before_me' => 'transaction_person_select_before_me',
   'transaction_placeholder_nonce' => '',
   'transaction_placeholder_number' => 'transaction_placeholder_number',
   'transaction_status_readable_canceled' => 'transaction_status_readable_canceled',
