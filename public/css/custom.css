@@ -864,6 +864,49 @@ p.gsearch span {
     margin-right: 1rem;
 }
 
+/**
+ * treaty module has a "special" table layout which is used
+ * instead of the common scaffold table. the treaty layout
+ * has two divs. the left one show all contractype beans plus
+ * a "all" entry and preselects the treaty beans which are shown
+ * in the right div, that holds the usual table (of scaffold).
+ */
+.directory {
+    margin-top: 2.8rem;
+    float: left;
+    width: calc(15% - 4px);
+    padding-right: 0;
+    margin-right: 2px;
+    border-right: 1px solid rgb(33, 33, 33);
+    padding-bottom: 2rem;
+}
+
+.directory ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.directory a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+    text-decoration: none;
+    padding: 0.222em 0.444em;
+    font-size: 1em;
+}
+
+.directory a.current {
+    background-color: rgb(33, 33, 33);
+    color: white;
+}
+
+.listing {
+    float: left;
+    width: 85%;
+}
+
 /*
 hr.person-contact-divider:after {
     content: '\002702';

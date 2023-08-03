@@ -145,6 +145,16 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Returns true if the bean has a table layout.
+     *
+     * @return bool
+     */
+    public function hasTable(): bool
+    {
+        return false;
+    }
+
+    /**
      * Returns an array of RedBeanPHP\OODBBean objects.
      *
      * @return array

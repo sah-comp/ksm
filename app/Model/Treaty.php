@@ -57,7 +57,7 @@ class Model_Treaty extends Model
      */
     public function getAttributes($layout = 'table')
     {
-        return [
+        $ret = [
             [
                 'name' => 'person.name',
                 'sort' => [
@@ -81,6 +81,7 @@ class Model_Treaty extends Model
                 ],
                 'width' => 'auto'
             ],
+            /*
             [
                 'name' => 'contracttype.name',
                 'sort' => [
@@ -95,6 +96,7 @@ class Model_Treaty extends Model
                 ],
                 'width' => '14rem'
             ],
+            */
             [
                 'name' => 'treatygroup.name',
                 'sort' => [
@@ -117,7 +119,7 @@ class Model_Treaty extends Model
                 'filter' => [
                     'tag' => 'number'
                 ],
-                'width' => '6rem'
+                'width' => '4rem'
             ],
             [
                 'name' => 'bookingdate',
@@ -130,7 +132,7 @@ class Model_Treaty extends Model
                 'callback' => [
                     'name' => 'localizedDate'
                 ],
-                'width' => '8rem'
+                'width' => '6rem'
             ],
             [
                 'name' => 'product',
@@ -182,8 +184,9 @@ class Model_Treaty extends Model
                 'filter' => [
                     'tag' => 'text'
                 ],
-                'width' => '12rem'
+                'width' => '11rem'
             ],
+            /*
             [
                 'name' => 'startdate',
                 'sort' => [
@@ -223,7 +226,35 @@ class Model_Treaty extends Model
                 ],
                 'width' => '4rem'
             ]
+            */
         ];
+        // check if there a additional fields to output, based on a query parameter
+        if (isset($_SESSION['scaffold']['treaty']['quickfilter']['value']) && $_SESSION['scaffold']['treaty']['quickfilter']['value'] != '') {
+            //error_log('I may have some additional fields to output for query');
+            $contracttype = R::findOne('contracttype', " name = ? LIMIT 1", [$_SESSION['scaffold']['treaty']['quickfilter']['value']]);
+            $limbs = $contracttype->withCondition('list = 1 ORDER BY sequence')->ownLimb;
+            if (count($limbs)) {
+                foreach ($limbs as $id => $limb) {
+                    $ret[] = [
+                        'label' => $limb->name,
+                        'name' => $limb->stub,
+                        'sort' => [
+                            'name' => $limb->stub
+                        ],
+                        'order' => [
+                            'name' => "JSON_EXTRACT(payload, '$." . $limb->stub . "')"
+                        ],
+                        'callback' => [
+                            'name' => 'jsonAttribute'
+                        ],
+                        'filter' => [
+                            'tag' => 'json'
+                        ]
+                    ];
+                }
+            }
+        }
+        return $ret;
     }
 
     /**
@@ -298,6 +329,20 @@ class Model_Treaty extends Model
      * @return bool
      */
     public function hasMenu()
+    {
+        return true;
+    }
+
+    /**
+     * Returns true if the bean has a table layout.
+     *
+     * If you set the return value of this function to true, make
+     * sure that the layout app/res/tpl/model/treaty/table.php does
+     * exist and that it resembles everthing the is in app/res/scaffold/table.php.
+     *
+     * @return bool
+     */
+    public function hasTable(): bool
     {
         return true;
     }

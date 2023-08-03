@@ -24,6 +24,15 @@
     <?php endif; ?>
 <?php endif ?>
 <!-- <?php echo $record->getMeta('type') ?> scaffold table -->
+<div class="directory fixable">
+    <ul>
+        <li><a href="<?php echo Url::build('/admin/%s/?qf_reset=1', [$record->getMeta('type')]) ?>" class="<?php echo ($quickfilter_value == '') ? 'current' : '' ?>">Alle</a></li>
+        <?php foreach ($record->getQuickFilterValues() as $_id => $_ctype) : ?>
+        <li><a href="<?php echo Url::build('/admin/%s/?qf_reset=1&amp;qf_value=%s&amp;contracttype=%d', [$record->getMeta('type'), ($_ctype->name), $_id]) ?>" title="<?php echo htmlspecialchars($_ctype->name) ?>" class="<?php echo ($quickfilter_value == $_ctype->name) ? 'current' : '' ?>"><?php echo $_ctype->name ?></a></li>
+        <?php endforeach ?>
+    </ul>
+</div>
+<div class="listing">
 <table class="scaffold">
 
     <caption>
@@ -272,3 +281,4 @@
 </div>
 <?php endif; ?>
 <!-- End of scaffold table -->
+</div>

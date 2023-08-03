@@ -242,7 +242,7 @@ class Controller_Scaffold extends Controller
         }
 
         if ($_SESSION['scaffold'][$this->type]['filter']['id'] == 0) {
-            // if there is not alreay a filter, create it
+            // if there is not already a filter, create it
             $this->filter = R::dispense('filter');
             $this->filter->model = $this->type;
             // preset it with what the model wants
@@ -466,7 +466,8 @@ class Controller_Scaffold extends Controller
             $order = $attributes[$this->order]['order']['name'].' '.$this->dir_map[$this->dir];
         }
         $sqlCollection = $this->record->getSql(
-            "DISTINCT({$this->type}.id) AS id, " . $attributes[$this->order]['sort']['name'],
+            //"DISTINCT({$this->type}.id) AS id, " . $attributes[$this->order]['sort']['name'],
+            "DISTINCT({$this->type}.id) AS id ",
             $where,
             $order,
             $this->offset($this->page, $this->limit),
@@ -490,6 +491,7 @@ class Controller_Scaffold extends Controller
             //R::debug(false);
             return true;
         } catch (Exception $e) {
+            //error_log($e);
             $this->records = array();
             return false;
         }
@@ -632,8 +634,11 @@ class Controller_Scaffold extends Controller
             $dir = $this->record->getDefaultSortDir();
         }
         $this->dir = $dir;
-        //$this->template = "model/{$this->type}/{$this->layout}";
-        $this->template = "scaffold/{$this->layout}";
+        if ($this->record->hasTable()) {
+            $this->template = "model/{$this->type}/{$this->layout}";
+        } else {
+            $this->template = "scaffold/{$this->layout}";
+        }
         if (Flight::request()->method == 'POST') {
             if (! Security::validateCSRFToken(Flight::request()->data->token)) {
                 $this->redirect("/logout");
@@ -644,12 +649,25 @@ class Controller_Scaffold extends Controller
             if (Flight::request()->data->submit == I18n::__('filter_submit_clear')) {
                 R::trash($this->filter);
                 $_SESSION['scaffold'][$this->type]['filter']['id'] = 0;
+                $_SESSION['scaffold'][$this->type]['quickfilter']['value'] = null;
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
                 exit();
             }
             //refresh filter
             if (Flight::request()->data->submit == I18n::__('filter_submit_refresh')) {
                 $this->filter = R::graph(Flight::request()->data->filter, true);
+                // check if there is an active quickfilter criteria
+                if (isset($_SESSION['scaffold'][$this->type]['quickfilter']['value'])) {
+                    /*
+                    $criteria = R::dispense('criteria');
+                    $criteria->op = 'eq';
+                    $criteria->tag = 'text';
+                    $criteria->attribute = 'contracttype.name';
+                    $criteria->value = $value;
+                    $this->filter->ownCriteria[] = $criteria;
+                    */
+                    $this->record->quickFilterSetup($this->filter, $_SESSION['scaffold'][$this->type]['quickfilter']['value']);
+                }
                 try {
                     R::store($this->filter);
                     $_SESSION['scaffold'][$this->type]['filter']['id'] = $this->filter->getId();
@@ -660,7 +678,7 @@ class Controller_Scaffold extends Controller
                     Flight::get('user')->notify(I18n::__('action_filter_error', null, array(), 'error'));
                 }
             }
-            // clear filter via quickfilter
+            // clear filter via quickfilter | POST
             if (Flight::request()->data->submit == I18n::__('scaffold_quickfilter_submit_refresh')) {
                 $this->clearFilterViaQuickfilter(Flight::request()->data->qf_value);
                 $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
@@ -676,6 +694,12 @@ class Controller_Scaffold extends Controller
                     exit();
                 }
             }
+        }
+        // clear filter via quickfilter | GET
+        if (Flight::request()->query->qf_reset == 1 && Flight::request()->query->qf_value !== $this->quickfilter_value) {
+            $this->clearFilterViaQuickfilter(Flight::request()->query->qf_value);
+            $this->redirect("{$this->base_url}/{$this->type}/{$this->layout}");
+            exit();
         }
         $this->getCollection();
         if (R::count($this->type) == 0) {
@@ -887,7 +911,8 @@ class Controller_Scaffold extends Controller
             'hasRecords' => $this->hasRecords(),
             'selection' => $this->selection,
             'total_records' => $this->total_records,
-            'dir_map' => $this->dir_map
+            'dir_map' => $this->dir_map,
+            'quickfilter_value' => $this->quickfilter_value
         ), 'form_details');
         Flight::render('scaffold/form', array(
             'actions' => $this->actions,
