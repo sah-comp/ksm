@@ -116,19 +116,20 @@ class Model_Machine extends Model
             if (count($limbs)) {
                 foreach ($limbs as $id => $limb) {
                     $ret[] = [
-                    'name' => $limb->stub,
-                    'sort' => [
-                        'name' => $limb->stub
-                    ],
-                    'order' => [
-                        'name' => "JSON_EXTRACT(payload, '$." . $limb->stub . "')"
-                    ],
-                    'callback' => [
-                        'name' => 'jsonAttribute'
-                    ],
-                    'filter' => [
-                        'tag' => 'json'
-                    ]
+                        'label' => $limb->name,
+                        'name' => $limb->stub,
+                        'sort' => [
+                            'name' => $limb->stub
+                        ],
+                        'order' => [
+                            'name' => "JSON_EXTRACT(payload, '$." . $limb->stub . "')"
+                        ],
+                        'callback' => [
+                            'name' => 'jsonAttribute'
+                        ],
+                        'filter' => [
+                            'tag' => 'json'
+                        ]
                     ];
                     //error_log('Add attribute ' . $limb->name);
                 }
@@ -156,14 +157,22 @@ class Model_Machine extends Model
      */
     public function searchGlobal($searchphrase):array
     {
+        /*
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
             $this->bean->getMeta('type'),
-            ' serialnumber LIKE :f OR internalnumber LIKE :f OR buildyear LIKE :f OR lastservice = :f OR specialagreement LIKE :f OR payload LIKE :f OR @joined.machinebrand.name LIKE :f',
+            ' machine.name LIKE :f OR serialnumber LIKE :f OR internalnumber LIKE :f OR buildyear LIKE :f OR lastservice = :f OR specialagreement LIKE :f OR payload LIKE :f OR @joined.machinebrand.name LIKE :f',
             [
                 ':f' => $searchphrase,
             ]
         );
+        */
+        $searchphrase = '%'.$searchphrase.'%';
+        $sql = 'SELECT m.* FROM machine AS m LEFT JOIN contract ON contract.machine_id = m.id LEFT JOIN person ON person.id = contract.person_id LEFT JOIN machinebrand ON machinebrand.id = m.machinebrand_id WHERE machinebrand.name LIKE :f OR person.name LIKE :f OR m.name LIKE :f OR m.serialnumber LIKE :f OR m.internalnumber LIKE :f OR m.buildyear LIKE :f OR m.lastservice = :f OR m.specialagreement LIKE :f OR m.payload LIKE :f';
+        $rows = R::getAll($sql, [
+            ':f' => $searchphrase
+        ]);
+        return R::convertToBeans($this->bean->getMeta('type'), $rows);
     }
 
     /**
