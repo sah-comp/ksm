@@ -132,8 +132,41 @@ class Model_Treaty extends Model
                 'callback' => [
                     'name' => 'localizedDate'
                 ],
-                'width' => '6rem'
+                'width' => '7rem'
             ],
+            [
+                'label' => I18n::__('treaty_label_manufacturer'),
+                'name' => 'manufacturer',
+                'sort' => [
+                    'name' => 'manufacturer'
+                ],
+                'order' => [
+                    'name' => "JSON_EXTRACT(payload, '$.manufacturer')"
+                ],
+                'callback' => [
+                    'name' => 'jsonAttribute'
+                ],
+                'filter' => [
+                    'tag' => 'json'
+                ]
+            ],
+            [
+                'label' => I18n::__('treaty_label_product'),
+                'name' => 'product',
+                'sort' => [
+                    'name' => 'product'
+                ],
+                'order' => [
+                    'name' => "JSON_EXTRACT(payload, '$.product')"
+                ],
+                'callback' => [
+                    'name' => 'jsonAttribute'
+                ],
+                'filter' => [
+                    'tag' => 'json'
+                ]
+            ]
+            /*
             [
                 'name' => 'product',
                 'order' => [
@@ -186,7 +219,6 @@ class Model_Treaty extends Model
                 ],
                 'width' => '11rem'
             ],
-            /*
             [
                 'name' => 'startdate',
                 'sort' => [
@@ -227,7 +259,7 @@ class Model_Treaty extends Model
                 'width' => '4rem'
             ]
             */
-        ];
+                ];
         // check if there a additional fields to output, based on a query parameter
         if (isset($_SESSION['scaffold']['treaty']['quickfilter']['value']) && $_SESSION['scaffold']['treaty']['quickfilter']['value'] != '') {
             //error_log('I may have some additional fields to output for query');
@@ -239,7 +271,7 @@ class Model_Treaty extends Model
                         'label' => $limb->name,
                         'name' => $limb->stub,
                         'sort' => [
-                            'name' => $limb->stub
+                    'name' => $limb->stub
                         ],
                         'order' => [
                             'name' => "JSON_EXTRACT(payload, '$." . $limb->stub . "')"
@@ -254,7 +286,7 @@ class Model_Treaty extends Model
                 }
             }
         }
-        return $ret;
+                return $ret;
     }
 
     /**
