@@ -67,6 +67,11 @@ class Doctor
                 $this->doctorMachineFields();
                 break;
 
+            case 'treaty-serialnumber':
+                echo "Update all treaty beans to copy hardcoded serialnumber to json fields.\n";
+                $this->doctorTreatyFields();
+                break;
+
             default:
                 // code...
                 break;
@@ -202,6 +207,29 @@ class Doctor
             echo '.';
         }
         //R::storeAll($machines);
+        return true;
+    }
+
+    /**
+     * Doctor treaty beans fields.
+     *
+     * @return bool
+     */
+    public function doctorTreatyFields(): bool
+    {
+        $treaties = R::findAll('treaty');
+        $sql = "UPDATE treaty SET payload = :payload WHERE id = :id LIMIT 1";
+        echo "\nDoctoring " . count($treaties) . " treaties:\n";
+        foreach ($treaties as $id => $treaty) {
+            $data = json_decode($treaty->payload, true);
+            $data['serialnumber'] = $treaty->serialnumber;
+            $result = R::exec($sql, [
+                ':payload' => json_encode($data),
+                ':id' => $treaty->getId()
+            ]);
+            echo '.';
+        }
+        //R::storeAll($treaties);
         return true;
     }
 }
