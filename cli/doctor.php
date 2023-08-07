@@ -72,6 +72,11 @@ class Doctor
                 $this->doctorTreatyFields();
                 break;
 
+            case 'treaty-manufacturer':
+                echo "Update all treaty beans to copy josn product to json manufacturer, if not empty.\n";
+                $this->doctorTreatyManufacturerFields();
+                break;
+
             default:
                 // code...
                 break;
@@ -230,6 +235,30 @@ class Doctor
             echo '.';
         }
         //R::storeAll($treaties);
+        return true;
+    }
+
+    /**
+     * Doctor treaty beans manufacturer fields.
+     *
+     * @return bool
+     */
+    public function doctorTreatyManufacturerFields(): bool
+    {
+        $treaties = R::findAll('treaty');
+        $sql = "UPDATE treaty SET payload = :payload WHERE id = :id LIMIT 1";
+        echo "\nDoctoring " . count($treaties) . " treaties:\n";
+        foreach ($treaties as $id => $treaty) {
+            $data = json_decode($treaty->payload, true);
+            if ((!isset($data['manufacturer']) || $data['manufacturer'] == '') && isset($data['product'])) {
+                $data['manufacturer'] = $data['product'];
+            }
+            $result = R::exec($sql, [
+                ':payload' => json_encode($data),
+                ':id' => $treaty->getId()
+            ]);
+            echo '.';
+        }
         return true;
     }
 }

@@ -224,21 +224,6 @@
         <p class="info"><?php echo I18n::__('treaty_info_cc') ?></p>
     </div>
 </fieldset>
-<fieldset>
-    <legend class="verbose"><?php echo I18n::__('treaty_serialnumber_legend') ?></legend>
-    <div class="row <?php echo ($record->hasError('serialnumber')) ? 'error' : ''; ?>">
-        <label
-            for="treaty-serialnumber">
-            <?php echo I18n::__('treaty_label_serialnumber') ?>
-        </label>
-        <input
-            type="text"
-            id="treaty-serialnumber"
-            name="dialog[serialnumber]"
-            value="<?php echo htmlspecialchars($record->serialnumber) ?>" />
-        <p class="info"><?php echo I18n::__('treaty_info_serialnumber') ?></p>
-    </div>
-</fieldset>
 <div class="tab-container">
     <?php Flight::render('shared/navigation/tabs', array(
         'tab_id' => 'treaty-tabs',
