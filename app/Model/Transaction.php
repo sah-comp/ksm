@@ -259,6 +259,7 @@ class Model_Transaction extends Model
         $this->bean->penaltyfee = null;
         $this->bean->dunningdate = null;
         $this->bean->dunningprintedon = null;
+        $this->bean->ownAppointment = []; // does this solve issue #120? NO
         return $this->bean;
     }
 

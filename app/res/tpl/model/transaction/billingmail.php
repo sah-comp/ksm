@@ -8,6 +8,9 @@
     name="dialog[billingemail]">
     <option value=""><?php echo I18n::__('transaction_billingemail_select') ?></option>
     <?php if ($record->getPerson()->billingemail) : ?>
+        <?php if ($record->getPerson()->email) : ?>
+    <option value="<?php echo htmlspecialchars($record->getPerson()->email) ?>" <?php echo ($record->billingemail == $record->getPerson()->email) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($record->getPerson()->email) ?></option>
+        <?php endif ?>
     <option value="<?php echo htmlspecialchars($record->getPerson()->billingemail) ?>" <?php echo ($record->billingemail == $record->getPerson()->billingemail) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($record->getPerson()->billingemail) ?></option>
     <?php endif; ?>
     <?php foreach ($contacts as $_id => $_contact) : ?>
