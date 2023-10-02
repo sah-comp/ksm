@@ -61,10 +61,10 @@ $_colspan = 8;
                 </tr>
             </tfoot>
             <tbody>
-            <?php foreach ($records as $_id => $_record):
+            <?php foreach ($records as $_id => $_record) :
                 $_type = $_record->getMeta('type');
                 $_person = $_record->getPerson();
-            ?>
+                ?>
                 <tr
                     id="bean-<?php echo $_record->getId() ?>"
                     data-href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/openitem/#bean-' . $_record->getId()]) ?>">
@@ -114,14 +114,14 @@ $_colspan = 8;
                         <?php echo htmlspecialchars($_record->localizedDate('dunningdate')) ?>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_person->name) ?>"
-                        data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_person->name) ?>">
+                        data-sort="<?php echo htmlspecialchars($_record->customername) ?>"
+                        data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_record->customername) ?>">
                         <a href="<?php echo Url::build(sprintf('/admin/transaction/additional/%d/contactinfo', $_record->getId())) ?>" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/openitem/#bean-' . $_record->getId()]) ?>"
-                            title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
+                            title="<?php echo htmlspecialchars($_record->customername . ' ' . $_person->account) ?>"
                             class="in-table">
-                            <?php echo htmlspecialchars($_person->name) ?>
+                            <?php echo htmlspecialchars($_record->customername) ?>
                         </a>
                     </td>
                     <td class="number"
@@ -145,7 +145,7 @@ $_colspan = 8;
                             data-showhide="dunning-pdf-<?php echo $_record->getId() ?>"
                             name="dunning_id">
                             <option value=""><?php echo I18n::__('transaction_dunning_none') ?></option>
-                            <?php foreach ($_record->getDunnings() as $_id_level => $_level): ?>
+                            <?php foreach ($_record->getDunnings() as $_id_level => $_level) : ?>
                             <option value="<?php echo $_id_level ?>" <?php echo $_record->dunning_id == $_id_level ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_level->name) ?></option>
                             <?php endforeach; ?>
                         </select>
@@ -164,7 +164,7 @@ $_colspan = 8;
                     <td>
                         <span id="dunning-pdf-<?php echo $_record->getId() ?>" class="<?php echo $_record->getDunning()->getId() ? '' : 'hidden' ?>">
                             <a href="<?php echo Url::build('/openitem/dunning/%s', [$_record->getId()]) ?>" class="ir dunning-pdf" title="<?php echo I18n::__('openitem_action_title_dunning_pdf') ?>"><?php echo I18n::__('openitem_action_dunning_pdf') ?></a>
-                            <?php if ($_record->hasEmail('dunningemail')): ?>
+                            <?php if ($_record->hasEmail('dunningemail')) : ?>
                                 <a href="<?php echo Url::build('/openitem/mail/%s', [$_record->getId()]) ?>" class="ir confirm dunning-mail" title="<?php echo I18n::__('openitem_action_title_dunning_mail') ?>"><?php echo I18n::__('openitem_action_dunning_mail') ?></a>
                             <?php endif; ?>
                         </span>
@@ -184,7 +184,7 @@ $_colspan = 8;
                 </div>
                 <div class="span2">
                     <select name="next_action">
-                        <?php foreach ($actions[$current_action] as $action): ?>
+                        <?php foreach ($actions[$current_action] as $action) : ?>
                         <option
                             value="<?php echo $action ?>"><?php echo I18n::__("action_{$action}_select") ?></option>
                         <?php endforeach ?>

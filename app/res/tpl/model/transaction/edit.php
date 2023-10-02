@@ -105,7 +105,7 @@
         <input
             type="text"
             id="transaction-person-name"
-            name="dialog[person][name]"
+            name="dialog[customername]"
             class="autocomplete"
             data-target="person-dependent"
             data-extra="transaction-person-id"
@@ -125,7 +125,7 @@
                     'transaction-paydrive' => 'paydrive',
                     'transaction-paydriveperkilometer' => 'paydriveperkilometer'
                 ]); ?>'
-            value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+            value="<?php echo htmlspecialchars($record->customername) ?>" />
             <a
                 href="#scratch-item"
                 title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"

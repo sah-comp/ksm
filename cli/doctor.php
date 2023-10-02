@@ -47,6 +47,11 @@ class Doctor
     {
         $this->beanname = $this->args['-b'];
         switch ($this->beanname) {
+            case 'transcust':
+                echo "Copy person name from person bean to transaction attribute customername\n";
+                $this->doctorTranscust();
+                break;
+
             case 'transaction':
                 echo "Checking and repairing transaction beans\n";
                 $this->doctorTransaction();
@@ -153,6 +158,18 @@ class Doctor
             }
         }
         R::storeAll($transactions);
+        return true;
+    }
+
+    /**
+     * Doctor transcust beans.
+     *
+     * @return bool
+     */
+    public function doctorTranscust(): bool
+    {
+        $$sql = "UPDATE transaction AS t, person AS p SET t.customername = p.name WHERE p.id = t.person_id";
+        $result = R::exec($sql);
         return true;
     }
 

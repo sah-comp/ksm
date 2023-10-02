@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: sans-serif;
-	        font-size: 9pt;
+            font-size: 9pt;
         }
         .emphasize {
             font-weight: bold;
@@ -80,12 +80,12 @@
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($records as $_id => $_record): ?>
+        <?php foreach ($records as $_id => $_record) : ?>
             <tr>
                 <td><?php echo htmlspecialchars($_record->number) ?></td>
                 <td><?php echo htmlspecialchars($_record->getContracttype()->name) ?></td>
                 <td><?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?></td>
-                <td><?php echo htmlspecialchars($_record->getPerson()->name) ?></td>
+                <td><?php echo htmlspecialchars($_record->customername) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_record->decimal('net')) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_record->decimal('vat')) ?></td>
                 <td class="number"><?php echo htmlspecialchars($_record->decimal('gros')) ?></td>

@@ -101,7 +101,7 @@
                     <br /><br />
                 </div>
                 <div class="name">
-                    <?php echo htmlspecialchars($record->getPerson()->name) ?>
+                    <?php echo htmlspecialchars($record->customername) ?>
                 </div>
                 <div class="postal">
                     <p>

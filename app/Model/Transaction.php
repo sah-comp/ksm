@@ -329,12 +329,9 @@ class Model_Transaction extends Model
                 'width' => '6rem'
             ],
             [
-                'name' => 'person.name',
+                'name' => 'customername',
                 'sort' => [
-                    'name' => 'person.name'
-                ],
-                'callback' => [
-                    'name' => 'personName'
+                    'name' => 'customername'
                 ],
                 'prefix' => [
                     'callback' => [
@@ -689,7 +686,7 @@ class Model_Transaction extends Model
      */
     public function personName()
     {
-        return $this->bean->getPerson()->name;
+        return $this->bean->customername;
     }
 
     /**
