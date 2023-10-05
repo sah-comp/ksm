@@ -1164,6 +1164,7 @@ Navigate to "/cms/module/":/cms/module a copy *Demo* module to kick off your own
   'transaction_label_bookingdate' => 'transaction_label_bookingdate',
   'transaction_label_contracttype' => 'Kind',
   'transaction_label_contracttype.name' => 'Kind',
+  'transaction_label_customername' => 'transaction_label_customername',
   'transaction_label_discount' => 'transaction_label_discount',
   'transaction_label_duedate' => 'transaction_label_duedate',
   'transaction_label_duedays' => 'transaction_label_duedays',
