@@ -419,7 +419,9 @@ SQL;
         }
         if (Flight::request()->method == 'POST') {
             $limb = Flight::request()->data->limb;
-            $this->bean->payload = json_encode($limb);
+            if (is_array($limb)) {
+                $this->bean->payload = json_encode($limb);
+            }
         }
         parent::update();
     }
