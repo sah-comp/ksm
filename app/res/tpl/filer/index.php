@@ -5,7 +5,10 @@
             <?php echo $toolbar ?>
         </nav>
     </header>
-    <div class="panel">
-        <?php echo $record->dir(DMS_PATH); ?>
+    <div class="panel tree">
+        <?php
+        //echo $record->dir(DMS_PATH);
+        $record->listFiles(DMS_PATH);
+        ?>
     </div>
 </article>

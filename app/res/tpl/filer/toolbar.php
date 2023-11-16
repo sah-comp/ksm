@@ -11,7 +11,7 @@
 <ul class="panel-navigation">
     <li>
         <a
-            href="<?php echo Url::build('/#idle') ?>">
+            href="<?php echo Url::build('/filer/') ?>">
             <?php echo I18n::__('filer_action_idle') ?>
         </a>
     </li>

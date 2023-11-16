@@ -234,6 +234,16 @@ $('body').ready(function() {
     });
 
     /**
+     * Open a dialog on double click to rename a file.
+     */
+    $('body').on('dblclick', 'ul.fileviewer a', function(event) {
+        event.preventDefault();
+        var filename = $(this).attr('data-filename');
+        new_filename = prompt('Ändern Sie den Namen:', filename);
+        return false;
+    });
+
+    /**
      * Click on a sitemap link will load the domain and fill the content-container.
      */
     $('body').on("click", '#sitemap a', function(event) {

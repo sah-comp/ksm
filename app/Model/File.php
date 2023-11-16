@@ -41,6 +41,15 @@ class Model_File extends Model
     ];
 
     /**
+     * Holds files that will be ignored.
+     *
+     * @var array
+     */
+    public $ignore = [
+        '.DS_Store'
+    ];
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -83,6 +92,50 @@ class Model_File extends Model
     }
 
     /**
+     * Read a directory and output as a unorderer list.
+     *
+     * @param string $dir the path to the directory to scan
+     */
+    public function listFiles($dir)
+    {
+        $files = scandir($dir);
+    
+        echo '<ul class="fileviewer">';
+        foreach ($files as $file) {
+            if (in_array($file, $this->ignore)) {
+                continue;
+            }
+            if ($file != '.' && $file != '..') {
+                $path = $dir . '/' . $file;
+
+                echo '<li>';
+
+                // Check if it's a directory or a file
+                if (is_dir($path)) {
+                    echo '<details open>';
+                    echo '<summary>';
+                    echo $file;
+                    echo '</summary>';
+                    $this->listFiles($path);
+                    echo '</details>';
+                } else {
+                    $path_info = pathinfo($path);
+                    $extension = $path_info['extension'];
+                    $href = $path;
+                    if (array_key_exists($extension, $this->filetypes)) {
+                        $bridge = $this->filetypes[$extension];
+                        $href = $bridge['prefix'] . WEBDAV_PREFIX . '/' . $file;
+                    }
+                    echo '<a href="file://' . $href . '" data-filename="' . $file . '">' . $file . '</a>';
+                }
+
+                echo '</li>';
+            }
+        }
+        echo '</ul>';
+    }
+
+    /**
      * Read a directory and return a unordered html list.
      *
      * @see https://stackoverflow.com/questions/10779546/recursiveiteratoriterator-and-recursivedirectoryiterator-to-nested-html-lists/10780023#10780023
@@ -101,16 +154,18 @@ class Model_File extends Model
         foreach ($objects as $name => $object) {
             $pos = strpos($object->getFilename(), '.');
             //error_log("Position " . $pos . " in " . $object->getFilename());
-            if (str_starts_with($object->getFilename(), '.')) {
+            
+            if (str_starts_with($object->getFilename(), '.') || str_starts_with($object->getFilename(), '..')) {
                 continue;
             }
+            
             if ($objects->getDepth() == $depth) {
-        //the depth hasnt changed so just add another li
+                //the depth hasnt changed so just add another li
                 //$li = $dom->createElement('li', $this->buildFileLink($object));
                 $li = $this->createListItem($dom, $object);
                 $node->appendChild($li);
             } elseif ($objects->getDepth() > $depth) {
-        //the depth increased, the last li is a non-empty folder
+                //the depth increased, the last li is a non-empty folder
                 $li = $node->lastChild;
                 $ul = $dom->createElement('ul');
                 $li->appendChild($ul);
@@ -119,7 +174,7 @@ class Model_File extends Model
                 $ul->appendChild($li);
                 $node = $ul;
             } else {
-        //the depth decreased, going up $difference directories
+                //the depth decreased, going up $difference directories
                 $difference = $depth - $objects->getDepth();
                 for ($i = 0; $i < $difference; $difference--) {
                     $node = $node->parentNode->parentNode;
@@ -151,10 +206,12 @@ class Model_File extends Model
                 $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.'/'.$file->getFilename());
                 //error_log($bridge['prefix']);
             } else {
-                $a->setAttribute('href', $file->getPathname());
+                $a->setAttribute('href', 'file:/' . $file->getPathname());
+                $a->setAttribute('target', '_blank');
             }
         } else {
-            $a->setAttribute('href', $file->getPathname());
+            //$a->setAttribute('href', $file->getPathname());
+            $a->setAttribute('href', '#toggle');
         }
         $li = $dom->createElement('li');
         $li->appendChild($e);
