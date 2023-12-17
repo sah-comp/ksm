@@ -85,13 +85,6 @@ class Model_File extends Model
     }
 
     /**
-     * Dispense.
-     */
-    public function dispense()
-    {
-    }
-
-    /**
      * Read a directory and output as a unorderer list.
      *
      * @param string $dir the path to the directory to scan
@@ -108,7 +101,15 @@ class Model_File extends Model
             if ($file != '.' && $file != '..') {
                 $path = $dir . '/' . $file;
 
-                echo '<li>';
+                // lookup the file. If none is found, dispense a empty one
+                if (! $filebean = R::findOne('file', " ident = ? LIMIT 1", [md5($path)])) {
+                    $filebean = R::dispense('file');
+                }
+                $filebean->path = $path;
+                $filebean->file = $file;
+                R::store($filebean);
+
+                echo '<li class="" id="file-' . $filebean->ident . '">';
 
                 // Check if it's a directory or a file
                 if (is_dir($path)) {
@@ -125,8 +126,12 @@ class Model_File extends Model
                     if (array_key_exists($extension, $this->filetypes)) {
                         $bridge = $this->filetypes[$extension];
                         $href = $bridge['prefix'] . WEBDAV_PREFIX . '/' . $file;
+                    } else {
+                        // which URL in case the file is not openable?
                     }
-                    echo '<a href="file://' . $href . '" data-filename="' . $file . '">' . $file . '</a>';
+                    $inspector_url = Url::build('/filer/inspector/%s', [$filebean->ident]);
+                    echo '<a data-ident="' . $filebean->ident . '" class="inspector" data-intrinsic="' . $href . '" href="' . $inspector_url . '" title="' . I18n::__('scaffold_action_edit') . '">' . $file . '</a>';
+                    //echo '<a href="' . $href . '" data-filename="' . $file . '">' . $file . '</a>';
                 }
 
                 echo '</li>';
@@ -139,6 +144,8 @@ class Model_File extends Model
      * Read a directory and return a unordered html list.
      *
      * @see https://stackoverflow.com/questions/10779546/recursiveiteratoriterator-and-recursivedirectoryiterator-to-nested-html-lists/10780023#10780023
+     *
+     * @deprecated since 2023-11-22
      *
      * @param string $path path to a certain directory
      * @return string
@@ -190,6 +197,8 @@ class Model_File extends Model
     /**
      * Makes a a href link for the file object.
      *
+     * @deprecated since 2023-11-22
+     *
      * @param $object
      * @return mixed
      */
@@ -216,5 +225,26 @@ class Model_File extends Model
         $li = $dom->createElement('li');
         $li->appendChild($e);
         return $li;
+    }
+
+    /**
+     * dispense a new bean.
+     */
+    public function dispense()
+    {
+        $this->bean->size = 2340000;
+        $this->bean->createdon = date('Y-m-d');
+        $this->bean->changedon = date('Y-m-d');
+        $this->bean->lastopened = date('Y-m-d');
+        $this->bean->machine = null;
+    }
+
+    /**
+     * update the file bean.
+     */
+    public function update()
+    {
+        $this->bean->ident = md5($this->bean->path);
+        parent::update();
     }
 }

@@ -60,6 +60,23 @@ class Controller_Filer extends Controller
     }
 
     /**
+     * Loads the file bean identified by the ident and loads information about into the
+     * sidebar area.
+     *
+     * @param string $ident the md5 key to retrieve a certain file
+     * @return void
+     */
+    public function inspector($ident)
+    {
+        $this->record = R::findOne('file', " ident = ? LIMIT 1 ", [$ident]);
+        Flight::render('filer/inspector', [
+            'record' => $this->record
+        ]);
+        return;
+        //echo 'Info about ' . $this->record->file;
+    }
+
+    /**
      * Renders the filer page.
      */
     protected function render()

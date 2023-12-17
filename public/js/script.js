@@ -234,12 +234,26 @@ $('body').ready(function() {
     });
 
     /**
-     * Open a dialog on double click to rename a file.
+     * Click on a inspector link will load the file info into the sidebar of the directory viewer.
      */
-    $('body').on('dblclick', 'ul.fileviewer a', function(event) {
+    $('body').on("click", 'a.inspector', function(event) {
         event.preventDefault();
-        var filename = $(this).attr('data-filename');
-        new_filename = prompt('Ändern Sie den Namen:', filename);
+        var ident = $(this).attr('data-ident');
+        $.get($(this).attr("href"), function(data) {
+            $("#inspector").empty();
+            $("#inspector").append(data);
+        }, "html");
+        $("#directory li").removeClass("active");
+        $("li#file-" + ident).addClass("active");
+    });
+
+    /**
+     * Open an URL on double clicking on a filename.
+     */
+    $('body').on('dblclick', 'a.inspector', function(event) {
+        event.preventDefault();
+        var href = $(this).attr('data-intrinsic');
+        window.location = href;
         return false;
     });
 

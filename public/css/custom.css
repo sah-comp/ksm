@@ -936,15 +936,43 @@ hr.person-contact-divider:after {
  * @see https://iamkate.com/code/tree-views/
  */
 
+#directory {
+    width: 70%;
+    float: left;
+}
+
+#sidebar {
+    width: 30%;
+    float: right;
+}
+
+.inspector {
+    padding-left 24px;
+    background: url(/img/glyphicons/glyphicons_030_pencil.png);
+    background-position: 3px center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+}
+
 .tree>ul {
     --spacing: 1.5rem;
     --radius: 10px;
 }
 
 .tree ul li {
-    display: block;
+    display: flex;
     position: relative;
     padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+    align-items: center;
+}
+
+.tree a {
+    padding: 0.22rem 0.5rem 0.22rem 24px;
+}
+
+.tree li.active a {
+    background-color: #c2eddb;
+    /*color: white;*/
 }
 
 .tree ul ul {
