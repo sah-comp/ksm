@@ -77,6 +77,43 @@ class Controller_Filer extends Controller
     }
 
     /**
+     * Edit a file.
+     *
+     * @param int $id of the slice
+     */
+    public function edit($id)
+    {
+        //session_start();
+        //Auth::check();
+        if (Flight::request()->method == 'POST') {
+            try {
+                error_log('Graphing data ...');
+                $file = R::graph(Flight::request()->data->dialog, true);
+                if (Flight::request()->data->delete) {
+                    R::trash($file);
+                    echo '';
+                    return;
+                } else {
+                    error_log('Saving the graphed data ...');
+                    R::store($file);
+                    Flight::render('filer/inspector', [
+                        'record' => $file
+                    ]);
+                    return;
+                }
+            } catch (Exception $e) {
+                error_log($e);
+            }
+        }
+        error_log('No POST request ...');
+        $file = R::load('file', $id);
+        Flight::render('filer/inspector', [
+            'record' => $file
+        ]);
+        return;
+    }
+
+    /**
      * Renders the filer page.
      */
     protected function render()

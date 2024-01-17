@@ -937,13 +937,16 @@ hr.person-contact-divider:after {
  */
 
 #directory {
-    width: 70%;
+    width: 61.8%;
     float: left;
 }
 
 #sidebar {
-    width: 30%;
+    width: 38.2%;
     float: right;
+    min-height: 100vh;
+    /*height: 100vh;*/
+    background-color: rgba(0, 0, 0, .05);
 }
 
 .inspector {

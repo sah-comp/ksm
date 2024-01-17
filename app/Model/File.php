@@ -109,7 +109,7 @@ class Model_File extends Model
                 $filebean->file = $file;
                 R::store($filebean);
 
-                echo '<li class="" id="file-' . $filebean->ident . '">';
+                echo '<li class="" id="file-' . $filebean->id . '">';
 
                 // Check if it's a directory or a file
                 if (is_dir($path)) {
@@ -120,6 +120,7 @@ class Model_File extends Model
                     $this->listFiles($path);
                     echo '</details>';
                 } else {
+                    /*
                     $path_info = pathinfo($path);
                     $extension = $path_info['extension'];
                     $href = $path;
@@ -129,8 +130,18 @@ class Model_File extends Model
                     } else {
                         // which URL in case the file is not openable?
                     }
-                    $inspector_url = Url::build('/filer/inspector/%s', [$filebean->ident]);
-                    echo '<a data-ident="' . $filebean->ident . '" class="inspector" data-intrinsic="' . $href . '" href="' . $inspector_url . '" title="' . I18n::__('scaffold_action_edit') . '">' . $file . '</a>';
+                    */
+                    //$inspector_url = Url::build('/filer/inspector/%s', [$filebean->ident]);
+                    
+                    ob_start();
+                    Flight::render('filer/item', [
+                        'record' => $filebean,
+                        'href' => $filebean->getHref()
+                    ]);
+                    $html = ob_get_clean();
+                    echo $html;
+                    
+                    //echo '<a data-ident="' . $filebean->ident . '" class="inspector" data-intrinsic="' . $href . '" href="' . $inspector_url . '" title="' . I18n::__('scaffold_action_edit') . '">' . $file . '</a>';
                     //echo '<a href="' . $href . '" data-filename="' . $file . '">' . $file . '</a>';
                 }
 
@@ -225,6 +236,25 @@ class Model_File extends Model
         $li = $dom->createElement('li');
         $li->appendChild($e);
         return $li;
+    }
+
+    /**
+     * Returns the URL to the item depending on the extension.
+     *
+     * @return string
+     */
+    public function getHref()
+    {
+        $path_info = pathinfo($this->bean->path);
+        $extension = $path_info['extension'];
+        $href = $this->bean->path;
+        if (array_key_exists($extension, $this->filetypes)) {
+            $bridge = $this->filetypes[$extension];
+            $href = $bridge['prefix'] . WEBDAV_PREFIX . '/' . $this->bean->file;
+        } else {
+            // which URL in case the file is not openable?
+        }
+        return $href;
     }
 
     /**

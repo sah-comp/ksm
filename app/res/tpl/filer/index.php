@@ -20,4 +20,7 @@
             </div>
         </div>
     </div>
+    <div id="footer" class="clearfix">
+        &nbsp;
+    </div>
 </article>
