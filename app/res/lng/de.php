@@ -489,6 +489,8 @@ Mit freundlichen Grüßen
   'email_label_email' => 'E-Mail',
   'email_legend' => '',
   'email_legend_personkind' => '',
+  'filer_action_idle' => 'Aktualisieren',
+  'filer_head_title' => 'Dokumente',
   'filter_placeholder_any' => 'Alle',
   'filter_submit_clear' => 'Filter zurücksetzen',
   'filter_submit_refresh' => 'Filter aktualisieren',
@@ -1203,7 +1205,7 @@ Web www.ksm-moesch.de',
 Udo Mösch, Oliver Mösch
 Amtsgericht Duisburg HRB 11357
 USt-ID DE 177 801 293
-Steuer-Nr. 130/5838/0029',
+Steuer-Nr. 130/5838/0029XX',
   'transaction_footer_block_3' => 'Niederrheinische Sparkasse RheinLippe
 IBAN DE25 3565 0000 0000 2562 89
 BIC WELADED1WES',
