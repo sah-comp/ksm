@@ -16,7 +16,9 @@
     <div id="sidebar">
         <div class="panel">
             <div id="inspector">
-                Info of selected file goes here
+                <div class="initally-empty">
+                    <p><?php echo I18n::__('file_inspector_select_one') ?></p>
+                </div>
             </div>
         </div>
     </div>

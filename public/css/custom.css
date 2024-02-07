@@ -1046,3 +1046,22 @@ hr.person-contact-divider:after {
 .tree a {
     text-decoration: none;
 }
+
+.panel textarea.force100 {
+    width: 100%;
+}
+
+p.secondary {
+    font-size: 0.666rem;
+}
+
+.initally-empty {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#inspector input[type=submit] {
+    padding: 0.2rem 1rem;
+}

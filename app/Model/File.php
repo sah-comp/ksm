@@ -107,6 +107,8 @@ class Model_File extends Model
                 }
                 $filebean->path = $path;
                 $filebean->file = $file;
+                $filebean->size = filesize($path);
+                $filebean->filemtime = filemtime($path);
                 R::store($filebean);
 
                 echo '<li class="" id="file-' . $filebean->id . '">';
@@ -258,15 +260,27 @@ class Model_File extends Model
     }
 
     /**
+     * Return the machine bean.
+     *
+     * @return $machine
+     */
+    public function getMachine()
+    {
+        if (! $this->bean->machine) {
+            $this->bean->machine = R::dispense('machine');
+        }
+        return $this->bean->machine;
+    }
+
+    /**
      * dispense a new bean.
      */
     public function dispense()
     {
-        $this->bean->size = 2340000;
-        $this->bean->createdon = date('Y-m-d');
-        $this->bean->changedon = date('Y-m-d');
-        $this->bean->lastopened = date('Y-m-d');
+        $this->bean->size = 0;
+        $this->bean->filemtime = date('Y-m-d H:i:s');
         $this->bean->machine = null;
+        $this->addConverter('filemtime', new Converter_Mysqldatetime());
     }
 
     /**

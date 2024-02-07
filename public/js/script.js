@@ -252,8 +252,9 @@ $('body').ready(function() {
      */
     $('body').on('dblclick', 'a.inspector', function(event) {
         event.preventDefault();
-        var href = $(this).attr('data-intrinsic');
-        window.location = href;
+        alert('Die BETA Version kann nicht auf WebDAV zugreifen und somit keine Dateiein öffnen.');
+        //var href = $(this).attr('data-intrinsic');
+        //window.location = href;
         return false;
     });
 
