@@ -31,23 +31,6 @@
                 cols="60"
                 placeholder="<?php echo I18n::__('file_text_placeholder_desc') ?>"><?php echo htmlspecialchars($record->desc) ?></textarea>
         </div>
-        <div class="row <?php echo ($record->hasError('template')) ? 'error' : ''; ?>">
-        <input
-            type="hidden"
-            name="dialog[template]"
-            value="0" />
-        <input
-            id="file-template"
-            type="checkbox"
-            name="dialog[template]"
-            <?php echo ($record->template) ? 'checked="checked"' : '' ?>
-            value="1" />
-        <label
-            for="file-template"
-            class="cb">
-            <?php echo I18n::__('file_label_template') ?>
-        </label>
-    </div>
     </fieldset>
     <fieldset>
         <legend class="verbose"><?php echo I18n::__('file_legend_details') ?></legend>
