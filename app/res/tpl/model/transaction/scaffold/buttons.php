@@ -13,6 +13,6 @@
 <input
     type="submit"
     name="submit"
-    class="trans <?php echo Flight::get('user')->current()->isBooking() ? 'confirm' : '' ?>"
+    class="trans <?php echo (Flight::get('user')->current()->isBooking() && $record->getContracttype()->nickname == 'RE') ? 'confirm' : '' ?>"
     accesskey="s"
     value="<?php echo I18n::__('scaffold_submit_apply_action') ?>" />
