@@ -177,6 +177,7 @@ class Model_Correspondence extends Model
      */
     public function resetAfterCopy()
     {
+        $this->bean->ownArtifact = [];
         return $this->bean;
     }
 

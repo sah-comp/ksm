@@ -19,12 +19,12 @@ $_appointments = R::find('appointment', "machine_id = ? ORDER BY date DESC", [$r
     </thead>
     <tbody>
     <?php
-    foreach ($_appointments as $_appointment_id => $_appointment):
+    foreach ($_appointments as $_appointment_id => $_appointment) :
         $_appointmenttype = $_appointment->getAppointmenttype();
         $_person = $_appointment->getPerson();
         $_location = $_appointment->getLocation();
         $_transaction = $_appointment->getTransaction();
-    ?>
+        ?>
         <tr>
             <td
                 data-order="<?php echo $_appointment->date ?>">
@@ -52,11 +52,7 @@ $_appointments = R::find('appointment', "machine_id = ? ORDER BY date DESC", [$r
             </td>
             <td
                 data-order="<?php echo $_location->name ?>">
-                <a
-                    href="<?php echo Url::build('/admin/%s/edit/%d/', [$_location->getMeta('type'), $_location->getId()]) ?>"
-                    class="in-table">
-                    <?php echo htmlspecialchars($_location->name) ?>
-                </a>
+                <?php echo htmlspecialchars($_location->name) ?>
             </td>
             <td>
                 <?php echo htmlspecialchars($_appointment->note) ?>
