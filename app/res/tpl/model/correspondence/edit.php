@@ -56,7 +56,7 @@
             data-target="person-dependent"
             data-extra="correspondence-person-id"
             data-dynamic="<?php echo Url::build('/correspondence/%d/person/changed/?callback=?', [$record->getId()]) ?>"
-            data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?') ?>"
+            data-source="<?php echo Url::build('/autocomplete/person/name/?callback=?&both=1') ?>"
             data-spread='<?php
                 echo json_encode([
                     'correspondence-person-name' => 'value',
