@@ -110,8 +110,10 @@ Flight::set('language', CINNEBAR_DEFAULT_LANGUAGE);
 
 /**
  * Check and load language file.
+ *
+ * @deprecated since 2024-02-29 because every now and then a string gets lost.
  */
-I18n::load();
+//I18n::load();
 
 /**
  * Sets some template for localization.

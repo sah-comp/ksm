@@ -264,8 +264,11 @@ class Model_Person extends Model
          *
          * @see tpl/model/article/edit.php
          */
+        $additionalAttribute = '';
         if (isset(Flight::request()->query->attr) && Flight::request()->query->attr != '') {
             $additionalAttribute = ' AND person.' . Flight::request()->query->attr . ' = ' . Flight::request()->query->value;
+        } elseif (isset(Flight::request()->query->both) && Flight::request()->query->both == '1') {
+            // the persons kind does not matter
         } else {
             $additionalAttribute = ' AND person.' . Model_Person::ATTR_PERSONKIND_ID . ' != ' . Model_Person::PERSONKIND_ID_SUPPLIER;
         }
