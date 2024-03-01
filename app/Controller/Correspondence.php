@@ -249,13 +249,26 @@ class Controller_Correspondence extends Controller_Scaffold
     }
 
     /*
-     * Generate a PDF with data deriving from the addressed correspondence bean.
+     * Download a PDF to the client.
      */
     public function pdfSingleCorrespondence()
     {
+        $filename = I18n::__('correspondence_pdf_filename', null, [$this->record->getFilename()]);
+        $mpdf = $this->generateSinglePDF($filename);
+        $mpdf->Output($filename, 'D');
+        exit;
+    }
+
+    /*
+     * Generate a PDF and return the mpdf object;
+     *
+     * @param string $filename
+     * @ereturn \Mpdf\Mpdf
+     */
+    public function generateSinglePDF($filename)
+    {
         $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('correspondence_pdf_filename', null, [$this->record->getFilename()]);
         $docname = I18n::__('correspondence_pdf_docname', null, [$this->record->getDocname()]);
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
         $mpdf->SetTitle($docname);
@@ -271,7 +284,6 @@ class Controller_Correspondence extends Controller_Scaffold
         $html = ob_get_contents();
         ob_end_clean();
         $mpdf->WriteHTML($html);
-        $mpdf->Output($filename, 'D');
-        exit;
+        return $mpdf;
     }
 }
