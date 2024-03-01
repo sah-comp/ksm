@@ -201,6 +201,23 @@
                 <div id="correspondence-payload-editor"><?php echo nl2br($record->payload) ?></div>
             </div>
         </div>
+            <div class="row <?php echo ($record->hasError('attachpdf')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[attachpdf]"
+            value="0" />
+        <input
+            id="correspondence-attachpdf"
+            type="checkbox"
+            name="dialog[attachpdf]"
+            <?php echo ($record->attachpdf) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="correspondence-attachpdf"
+            class="cb">
+            <?php echo I18n::__('correspondence_label_attachpdf') ?>
+        </label>
+    </div>
     </fieldset>
     <fieldset
         id="correspondence-artifact"
