@@ -189,6 +189,13 @@ class Controller_Correspondence extends Controller_Scaffold
             $mail->AddAttachment(Flight::get('upload_dir') . '/' . $artifact->filename, $artifact->name);
         }
 
+        if ($this->record->attachpdf) {
+            $filename = I18n::__('correspondence_pdf_filename', null, [$this->record->getFilename()]);
+            $mpdf = $this->generateSinglePDF($filename, 'letterhead');
+            $attachment = $mpdf->Output('', 'S');
+            $mail->addStringAttachment($attachment, $filename);
+        }
+
         if ($mail->send()) {
             $this->record->sent = true;
             Flight::get('user')->notify(I18n::__("correspondence_mail_done"), 'success');
@@ -253,6 +260,7 @@ class Controller_Correspondence extends Controller_Scaffold
      */
     public function pdfSingleCorrespondence()
     {
+        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $filename = I18n::__('correspondence_pdf_filename', null, [$this->record->getFilename()]);
         $mpdf = $this->generateSinglePDF($filename);
         $mpdf->Output($filename, 'D');
@@ -263,11 +271,11 @@ class Controller_Correspondence extends Controller_Scaffold
      * Generate a PDF and return the mpdf object;
      *
      * @param string $filename
+     * @param string $layout
      * @ereturn \Mpdf\Mpdf
      */
-    public function generateSinglePDF($filename)
+    public function generateSinglePDF($filename, $layout)
     {
-        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $docname = I18n::__('correspondence_pdf_docname', null, [$this->record->getDocname()]);
         $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
