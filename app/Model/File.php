@@ -46,7 +46,8 @@ class Model_File extends Model
      * @var array
      */
     public $ignore = [
-        '.DS_Store'
+        '.DS_Store',
+        '.DAV'
     ];
 
     /**
