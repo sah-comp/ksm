@@ -36,6 +36,9 @@ $('body').ready(function() {
         };
         var editor = new Quill('#correspondence-payload-editor', options);
 
+        /**
+         * When changes where made in the editor the whole form is set to "dirty".
+         */
         editor.on('text-change', function(delta, oldDelta, source) {
 
             var content = $("#correspondence-payload-editor").html();
@@ -56,7 +59,7 @@ $('body').ready(function() {
             //$('#correspondence-payload').attr('value', JSON.stringify(editor.getText()));
 
             // this will work, but was changed to the code in line 37 ff.
-            //$('#correspondence-payload').attr('value', editor.root.innerHTML);
+            $('#correspondence-payload').attr('value', editor.root.innerHTML);
             //console.log('Submit form with quill data');
         });
     }
