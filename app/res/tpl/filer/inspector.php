@@ -44,7 +44,7 @@
             <label>
                 <?php echo I18n::__('file_filemtime') ?>
             </label>
-            <input type="date" class="" name="dialog[filemtime]" readonly="readonly" value="<?php echo $record->filemtime ?>">
+            <input type="datetime" class="" name="dialog[filemtime]" readonly="readonly" value="<?php echo $record->filemtime ?>">
         </div>
     </fieldset>
     <fieldset>
