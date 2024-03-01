@@ -110,7 +110,7 @@ class Model_File extends Model
                 $filebean->file = $file;
                 $filebean->size = filesize($path);
                 //$filebean->filemtime = filemtime($path);
-                $filebaen->filemtime = date("Y-m-d H:i:s", filemtime($path));
+                $filebean->filemtime = date("Y-m-d H:i:s", filemtime($path));
                 R::store($filebean);
 
                 echo '<li class="" id="file-' . $filebean->id . '">';
