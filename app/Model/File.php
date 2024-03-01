@@ -41,6 +41,15 @@ class Model_File extends Model
     ];
 
     /**
+     * Holds files that will be ignored.
+     *
+     * @var array
+     */
+    public $ignore = [
+        '.DS_Store'
+    ];
+
+    /**
      * Returns an array with attributes for lists.
      *
      * @param string (optional) $layout
@@ -76,16 +85,80 @@ class Model_File extends Model
     }
 
     /**
-     * Dispense.
+     * Read a directory and output as a unorderer list.
+     *
+     * @param string $dir the path to the directory to scan
      */
-    public function dispense()
+    public function listFiles($dir)
     {
+        $files = scandir($dir);
+    
+        echo '<ul class="fileviewer">';
+        foreach ($files as $file) {
+            if (in_array($file, $this->ignore)) {
+                continue;
+            }
+            if ($file != '.' && $file != '..') {
+                $path = $dir . '/' . $file;
+
+                // lookup the file. If none is found, dispense a empty one
+                if (! $filebean = R::findOne('file', " ident = ? LIMIT 1", [md5($path)])) {
+                    $filebean = R::dispense('file');
+                }
+                $filebean->path = $path;
+                $filebean->file = $file;
+                $filebean->size = filesize($path);
+                $filebean->filemtime = filemtime($path);
+                R::store($filebean);
+
+                echo '<li class="" id="file-' . $filebean->id . '">';
+
+                // Check if it's a directory or a file
+                if (is_dir($path)) {
+                    echo '<details open>';
+                    echo '<summary>';
+                    echo $file;
+                    echo '</summary>';
+                    $this->listFiles($path);
+                    echo '</details>';
+                } else {
+                    /*
+                    $path_info = pathinfo($path);
+                    $extension = $path_info['extension'];
+                    $href = $path;
+                    if (array_key_exists($extension, $this->filetypes)) {
+                        $bridge = $this->filetypes[$extension];
+                        $href = $bridge['prefix'] . WEBDAV_PREFIX . '/' . $file;
+                    } else {
+                        // which URL in case the file is not openable?
+                    }
+                    */
+                    //$inspector_url = Url::build('/filer/inspector/%s', [$filebean->ident]);
+                    
+                    ob_start();
+                    Flight::render('filer/item', [
+                        'record' => $filebean,
+                        'href' => $filebean->getHref()
+                    ]);
+                    $html = ob_get_clean();
+                    echo $html;
+                    
+                    //echo '<a data-ident="' . $filebean->ident . '" class="inspector" data-intrinsic="' . $href . '" href="' . $inspector_url . '" title="' . I18n::__('scaffold_action_edit') . '">' . $file . '</a>';
+                    //echo '<a href="' . $href . '" data-filename="' . $file . '">' . $file . '</a>';
+                }
+
+                echo '</li>';
+            }
+        }
+        echo '</ul>';
     }
 
     /**
      * Read a directory and return a unordered html list.
      *
      * @see https://stackoverflow.com/questions/10779546/recursiveiteratoriterator-and-recursivedirectoryiterator-to-nested-html-lists/10780023#10780023
+     *
+     * @deprecated since 2023-11-22
      *
      * @param string $path path to a certain directory
      * @return string
@@ -101,16 +174,18 @@ class Model_File extends Model
         foreach ($objects as $name => $object) {
             $pos = strpos($object->getFilename(), '.');
             //error_log("Position " . $pos . " in " . $object->getFilename());
-            if (str_starts_with($object->getFilename(), '.')) {
+            
+            if (str_starts_with($object->getFilename(), '.') || str_starts_with($object->getFilename(), '..')) {
                 continue;
             }
+            
             if ($objects->getDepth() == $depth) {
-        //the depth hasnt changed so just add another li
+                //the depth hasnt changed so just add another li
                 //$li = $dom->createElement('li', $this->buildFileLink($object));
                 $li = $this->createListItem($dom, $object);
                 $node->appendChild($li);
             } elseif ($objects->getDepth() > $depth) {
-        //the depth increased, the last li is a non-empty folder
+                //the depth increased, the last li is a non-empty folder
                 $li = $node->lastChild;
                 $ul = $dom->createElement('ul');
                 $li->appendChild($ul);
@@ -119,7 +194,7 @@ class Model_File extends Model
                 $ul->appendChild($li);
                 $node = $ul;
             } else {
-        //the depth decreased, going up $difference directories
+                //the depth decreased, going up $difference directories
                 $difference = $depth - $objects->getDepth();
                 for ($i = 0; $i < $difference; $difference--) {
                     $node = $node->parentNode->parentNode;
@@ -134,6 +209,8 @@ class Model_File extends Model
 
     /**
      * Makes a a href link for the file object.
+     *
+     * @deprecated since 2023-11-22
      *
      * @param $object
      * @return mixed
@@ -151,13 +228,67 @@ class Model_File extends Model
                 $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.'/'.$file->getFilename());
                 //error_log($bridge['prefix']);
             } else {
-                $a->setAttribute('href', $file->getPathname());
+                $a->setAttribute('href', 'file:/' . $file->getPathname());
+                $a->setAttribute('target', '_blank');
             }
         } else {
-            $a->setAttribute('href', $file->getPathname());
+            //$a->setAttribute('href', $file->getPathname());
+            $a->setAttribute('href', '#toggle');
         }
         $li = $dom->createElement('li');
         $li->appendChild($e);
         return $li;
+    }
+
+    /**
+     * Returns the URL to the item depending on the extension.
+     *
+     * @return string
+     */
+    public function getHref()
+    {
+        $path_info = pathinfo($this->bean->path);
+        $extension = $path_info['extension'];
+        $href = $this->bean->path;
+        if (array_key_exists($extension, $this->filetypes)) {
+            $bridge = $this->filetypes[$extension];
+            $href = $bridge['prefix'] . WEBDAV_PREFIX . '/' . $this->bean->file;
+        } else {
+            // which URL in case the file is not openable?
+        }
+        return $href;
+    }
+
+    /**
+     * Return the machine bean.
+     *
+     * @return $machine
+     */
+    public function getMachine()
+    {
+        if (! $this->bean->machine) {
+            $this->bean->machine = R::dispense('machine');
+        }
+        return $this->bean->machine;
+    }
+
+    /**
+     * dispense a new bean.
+     */
+    public function dispense()
+    {
+        $this->bean->size = 0;
+        $this->bean->filemtime = date('Y-m-d H:i:s');
+        $this->bean->machine = null;
+        $this->addConverter('filemtime', new Converter_Mysqldatetime());
+    }
+
+    /**
+     * update the file bean.
+     */
+    public function update()
+    {
+        $this->bean->ident = md5($this->bean->path);
+        parent::update();
     }
 }

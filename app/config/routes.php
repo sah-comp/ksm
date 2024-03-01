@@ -415,6 +415,22 @@ Flight::route('(/[a-z]{2})/contract/pdf/@id:[0-9]+', function ($id) {
  });
 
  /**
+ * Routes to file inspector.
+ */
+ Flight::route('(/[a-z]{2})/filer/inspector/@ident:[a-z,0-9]+', function ($ident) {
+    $filerController = new Controller_Filer();
+    $filerController->inspector($ident);
+ });
+
+ /**
+ * Routes to file inspector.
+ */
+ Flight::route('(/[a-z]{2})/filer/edit/@id:[0-9]+', function ($id) {
+    $filerController = new Controller_Filer();
+    $filerController->edit($id);
+ });
+
+ /**
  * Display the (global) search index page.
  */
  Flight::route('GET (/[a-z]{2})/search(/index)', function () {

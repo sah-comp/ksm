@@ -60,6 +60,60 @@ class Controller_Filer extends Controller
     }
 
     /**
+     * Loads the file bean identified by the ident and loads information about into the
+     * sidebar area.
+     *
+     * @param string $ident the md5 key to retrieve a certain file
+     * @return void
+     */
+    public function inspector($ident)
+    {
+        $this->record = R::findOne('file', " ident = ? LIMIT 1 ", [$ident]);
+        Flight::render('filer/inspector', [
+            'record' => $this->record
+        ]);
+        return;
+        //echo 'Info about ' . $this->record->file;
+    }
+
+    /**
+     * Edit a file.
+     *
+     * @param int $id of the slice
+     */
+    public function edit($id)
+    {
+        //session_start();
+        //Auth::check();
+        if (Flight::request()->method == 'POST') {
+            try {
+                error_log('Graphing data ...');
+                $file = R::graph(Flight::request()->data->dialog, true);
+                if (Flight::request()->data->delete) {
+                    R::trash($file);
+                    echo '';
+                    return;
+                } else {
+                    error_log('Saving the graphed data ...');
+                    R::store($file);
+                    Flight::render('filer/inspector', [
+                        'record' => $file
+                    ]);
+                    return;
+                }
+            } catch (Exception $e) {
+                error_log($e);
+            }
+        }
+        error_log('No POST request ...');
+        $file = R::load('file', $id);
+        Flight::render('filer/inspector', [
+            'record' => $file
+        ]);
+        return;
+    }
+
+    /**
      * Renders the filer page.
      */
     protected function render()

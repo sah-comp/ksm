@@ -234,6 +234,31 @@ $('body').ready(function() {
     });
 
     /**
+     * Click on a inspector link will load the file info into the sidebar of the directory viewer.
+     */
+    $('body').on("click", 'a.inspector', function(event) {
+        event.preventDefault();
+        var ident = $(this).attr('data-ident');
+        $.get($(this).attr("href"), function(data) {
+            $("#inspector").empty();
+            $("#inspector").append(data);
+        }, "html");
+        $("#directory li").removeClass("active");
+        $("li#file-" + ident).addClass("active");
+    });
+
+    /**
+     * Open an URL on double clicking on a filename.
+     */
+    $('body').on('dblclick', 'a.inspector', function(event) {
+        event.preventDefault();
+        alert('Die BETA Version kann nicht auf WebDAV zugreifen und somit keine Dateiein öffnen.');
+        //var href = $(this).attr('data-intrinsic');
+        //window.location = href;
+        return false;
+    });
+
+    /**
      * Click on a sitemap link will load the domain and fill the content-container.
      */
     $('body').on("click", '#sitemap a', function(event) {
