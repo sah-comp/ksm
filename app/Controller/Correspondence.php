@@ -262,7 +262,7 @@ class Controller_Correspondence extends Controller_Scaffold
     {
         $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
         $filename = I18n::__('correspondence_pdf_filename', null, [$this->record->getFilename()]);
-        $mpdf = $this->generateSinglePDF($filename);
+        $mpdf = $this->generateSinglePDF($filename, $layout);
         $mpdf->Output($filename, 'D');
         exit;
     }
