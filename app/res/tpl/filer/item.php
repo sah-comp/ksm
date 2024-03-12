@@ -3,4 +3,4 @@
  *
  */
 ?>
-<a data-ident="<?php echo $record->id ?>" class="inspector" data-intrinsic="<?php echo $href ?>" href="<?php echo Url::build('/filer/inspector/%s', [$record->ident]) ?>" title=""><?php echo htmlspecialchars($record->file) ?></a>
+<a data-ident="<?php echo $record->id ?>" class="inspector" data-intrinsic="<?php echo $href ?>" href="<?php echo Url::build('/filer/inspector/%s', [$record->ident]) ?>" title="<?php echo htmlspecialchars($record->getHref()) ?>"><?php echo htmlspecialchars($record->filename) ?></a>

@@ -5,7 +5,7 @@
  * Information about a selected file is displayed.
  */
 ?>
-<h3><?php echo htmlspecialchars($record->file) ?></h3>
+<h3><?php echo htmlspecialchars($record->filename) ?></h3>
 <form
     id="<?php echo $record->getId() ?>"
     data-container="inspector"
@@ -44,7 +44,7 @@
             <label>
                 <?php echo I18n::__('file_filemtime') ?>
             </label>
-            <input type="datetime" class="" name="dialog[filemtime]" readonly="readonly" value="<?php echo $record->filemtime ?>">
+            <input type="datetime" class="" name="dialog[filemtime]" readonly="readonly" value="<?php echo date('Y-m-d H:i:s', strtotime($record->filemtime)) ?>">
         </div>
     </fieldset>
     <fieldset>
@@ -83,7 +83,7 @@
         <legend class="verbose"></legend>
         <div class="row">
             <label><?php echo I18n::__('file_label_path') ?></label>
-            <input type="text" name="dialog[path]" readonly="readonly" value="<?php echo htmlspecialchars($record->path) ?>">
+            <input type="text" name="path" readonly="readonly" value="<?php echo htmlspecialchars($record->getShortHref()) ?>">
         </div>
     </fieldset>
     <div class="buttons">

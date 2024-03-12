@@ -92,6 +92,7 @@ class Model_File extends Model
      */
     public function listFiles($dir)
     {
+        clearstatcache();
         $files = scandir($dir);
     
         echo '<ul class="fileviewer">';
@@ -107,7 +108,7 @@ class Model_File extends Model
                     $filebean = R::dispense('file');
                 }
                 $filebean->path = $path;
-                $filebean->file = $file;
+                $filebean->filename = $file;
                 $filebean->size = filesize($path);
                 //$filebean->filemtime = filemtime($path);
                 $filebean->filemtime = date("Y-m-d H:i:s", filemtime($path));
@@ -254,11 +255,22 @@ class Model_File extends Model
         $href = $this->bean->path;
         if (array_key_exists($extension, $this->filetypes)) {
             $bridge = $this->filetypes[$extension];
-            $href = $bridge['prefix'] . WEBDAV_PREFIX . '/' . $this->bean->file;
+            $href = str_replace(DMS_PATH, '', $href);
+            $href = $bridge['prefix'] . WEBDAV_PREFIX . $href;
         } else {
-            // which URL in case the file is not openable?
+            $href = WEBDAV_PREFIX . str_replace(DMS_PATH, '', $href);
         }
         return $href;
+    }
+
+    /**
+     * Returns the cut of URL to the item depending on the extension.
+     *
+     * @return string
+     */
+    public function getShortHref()
+    {
+        return str_replace(DMS_PATH, '', $this->bean->path);
     }
 
     /**
@@ -280,8 +292,8 @@ class Model_File extends Model
     public function dispense()
     {
         $this->bean->size = 0;
-        $this->bean->filemtime = date('Y-m-d H:i:s');
-        $this->bean->machine = null;
+        //$this->bean->filemtime = date('Y-m-d H:i:s');
+        //$this->bean->machine = null;
         $this->addConverter('filemtime', new Converter_Mysqldatetime());
     }
 
@@ -290,6 +302,12 @@ class Model_File extends Model
      */
     public function update()
     {
+        /*
+        if (!$this->bean->machine_id) {
+            $this->bean->machine_id = null;
+            unset($this->bean->machine);
+        }
+        */
         $this->bean->ident = md5($this->bean->path);
         parent::update();
     }
