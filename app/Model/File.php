@@ -313,7 +313,7 @@ class Model_File extends Model
     public function update()
     {
         
-        if (!$this->bean->machine_id) {
+        if (!$this->bean->machine) {
             $this->bean->machine_id = null;
             unset($this->bean->machine);
         }
