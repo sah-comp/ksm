@@ -55,6 +55,7 @@ class Controller_Filer extends Controller
      */
     public function index()
     {
+        Permission::check(Flight::get('user'), 'filer', 'index');
         $this->records = [];
         $this->render();
     }
@@ -70,7 +71,8 @@ class Controller_Filer extends Controller
     {
         $this->record = R::findOne('file', " ident = ? LIMIT 1 ", [$ident]);
         Flight::render('filer/inspector', [
-            'record' => $this->record
+            'record' => $this->record,
+            'permission_delete' => Permission::validate(Flight::get('user'), 'filer', 'expunge')
         ]);
         return;
         //echo 'Info about ' . $this->record->file;
@@ -87,17 +89,17 @@ class Controller_Filer extends Controller
         //Auth::check();
         if (Flight::request()->method == 'POST') {
             try {
-                error_log('Graphing data ...');
                 $file = R::graph(Flight::request()->data->dialog, true);
                 if (Flight::request()->data->delete) {
+                    unlink($file->path);
                     R::trash($file);
-                    echo '';
+                    echo ''; // clear the inspector areas
                     return;
                 } else {
-                    error_log('Saving the graphed data ...');
                     R::store($file);
                     Flight::render('filer/inspector', [
-                        'record' => $file
+                        'record' => $file,
+                         'permission_delete' => Permission::check(Flight::get('user'), 'filer', 'expunge')
                     ]);
                     return;
                 }
@@ -105,10 +107,10 @@ class Controller_Filer extends Controller
                 error_log($e);
             }
         }
-        error_log('No POST request ...');
         $file = R::load('file', $id);
         Flight::render('filer/inspector', [
-            'record' => $file
+            'record' => $file,
+            'permission_delete' => Permission::check(Flight::get('user'), 'filer', 'expunge')
         ]);
         return;
     }

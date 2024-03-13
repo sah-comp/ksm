@@ -1065,3 +1065,7 @@ p.secondary {
 #inspector input[type=submit] {
     padding: 0.2rem 1rem;
 }
+
+.template {
+    font-style: italic;
+}

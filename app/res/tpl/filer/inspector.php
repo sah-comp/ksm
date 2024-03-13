@@ -21,6 +21,23 @@
     <fieldset>
         <legend class="verbose"><?php echo I18n::__('file_legend_desc') ?></legend>
         <div class="row">
+            <input
+                type="hidden"
+                name="dialog[template]"
+                value="0" />
+            <input
+                id="file-template"
+                type="checkbox"
+                name="dialog[template]"
+                <?php echo ($record->template) ? 'checked="checked"' : '' ?>
+                value="1" />
+            <label
+                for="file-template"
+                class="cb">
+                <?php echo I18n::__('file_label_template') ?>
+            </label>
+        </div>
+        <div class="row">
             <label for="file-desc">
                 <?php echo I18n::__('file_desc') ?>
             </label>
@@ -30,21 +47,6 @@
                 rows="8"
                 cols="60"
                 placeholder="<?php echo I18n::__('file_text_placeholder_desc') ?>"><?php echo htmlspecialchars($record->desc) ?></textarea>
-        </div>
-    </fieldset>
-    <fieldset>
-        <legend class="verbose"><?php echo I18n::__('file_legend_details') ?></legend>
-        <div class="row">
-            <label>
-                <?php echo I18n::__('file_size') ?>
-            </label>
-            <input type="text" class="number" name="dialog[size]" readonly="readonly" value="<?php echo $record->size ?>">
-        </div>
-        <div class="row">
-            <label>
-                <?php echo I18n::__('file_filemtime') ?>
-            </label>
-            <input type="datetime" class="" name="dialog[filemtime]" readonly="readonly" value="<?php echo date('Y-m-d H:i:s', strtotime($record->filemtime)) ?>">
         </div>
     </fieldset>
     <fieldset>
@@ -80,10 +82,22 @@
         </div>
     </fieldset>
     <fieldset>
-        <legend class="verbose"></legend>
+        <legend class="verbose"><?php echo I18n::__('file_legend_details') ?></legend>
+        <div class="row">
+            <label>
+                <?php echo I18n::__('file_filemtime') ?>
+            </label>
+            <input type="datetime" class="" name="dialog[filemtime]" readonly="readonly" value="<?php echo date('d.m.Y H:i:s', strtotime($record->filemtime)) ?>">
+        </div>
         <div class="row">
             <label><?php echo I18n::__('file_label_path') ?></label>
             <input type="text" name="path" readonly="readonly" value="<?php echo htmlspecialchars($record->getShortHref()) ?>">
+        </div>
+        <div class="row">
+            <label>
+                <?php echo I18n::__('file_size') ?>
+            </label>
+            <input type="text" class="number" name="dialog[size]" readonly="readonly" value="<?php echo $record->size ?>">
         </div>
     </fieldset>
     <div class="buttons">
@@ -93,6 +107,7 @@
             name="submit"
             value="<?php echo I18n::__('file_submit') ?>" />            
         <!-- Ajax does not send the submit button value, so we transport with hidden field -->
+        <?php if ($permission_delete) : ?>
         <input
             id="file-<?php echo $record->getId() ?>-delete"
             type="hidden"
@@ -101,10 +116,11 @@
         <input
             type="submit"
             onclick="$('#file-<?php echo $record->getId() ?>').hide(); $('#file-<?php echo $record->getId() ?>-delete').val('1');"
-            class="danger"
+            class="danger confirm"
             name="submit"
             value="<?php echo I18n::__('file_submit_delete') ?>" />
-        <!-- End of hidden field to solve missing submit button when ajax(ed) -->
+            <!-- End of hidden field to solve missing submit button when ajax(ed) -->
+        <?php endif ?>
     </div>
 </form>
 <script type="text/javascript">

@@ -274,6 +274,16 @@ class Model_File extends Model
     }
 
     /**
+     * Returns wether the file is an template or not.
+     *
+     * @return bool
+     */
+    public function isTemplate():bool
+    {
+        return $this->bean->template ? true : false;
+    }
+
+    /**
      * Return the machine bean.
      *
      * @return $machine
