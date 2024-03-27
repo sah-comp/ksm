@@ -197,7 +197,7 @@ class Model_Product extends Model
      * @param string (optional) $query The prepared query or SQL to use for search
      * @return array
      */
-    public function clairvoyant($searchtext, $query = 'default', $limit = 10)
+    public function clairvoyant($searchtext, $query = 'default', $limit = 23)
     {
         switch ($query) {
             default:
