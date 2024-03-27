@@ -251,6 +251,9 @@ class Model_File extends Model
     public function getHref()
     {
         $path_info = pathinfo($this->bean->path);
+        if (! isset($path_info['extension'])) {
+            return $this->bean->path;
+        }
         $extension = $path_info['extension'];
         $href = $this->bean->path;
         if (array_key_exists($extension, $this->filetypes)) {
@@ -313,7 +316,7 @@ class Model_File extends Model
     public function update()
     {
         
-        if (!$this->bean->machine) {
+        if (!$this->bean->machine_id) {
             $this->bean->machine_id = null;
             unset($this->bean->machine);
         }
