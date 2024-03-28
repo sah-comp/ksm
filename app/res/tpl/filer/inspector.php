@@ -5,7 +5,7 @@
  * Information about a selected file is displayed.
  */
 ?>
-<h3><?php echo htmlspecialchars($record->filename) ?></h3>
+<h3><?php echo htmlspecialchars($record->filename ?? '') ?></h3>
 <form
     id="<?php echo $record->getId() ?>"
     data-container="inspector"
@@ -46,7 +46,7 @@
                 name="dialog[desc]"
                 rows="8"
                 cols="60"
-                placeholder="<?php echo I18n::__('file_text_placeholder_desc') ?>"><?php echo htmlspecialchars($record->desc) ?></textarea>
+                placeholder="<?php echo I18n::__('file_text_placeholder_desc') ?>"><?php echo htmlspecialchars($record->desc ?? '') ?></textarea>
         </div>
     </fieldset>
     <fieldset>
@@ -78,7 +78,7 @@
                         'file-machine-name' => 'label',
                         'file-machine-id' => 'id'
                     ]); ?>'
-                value="<?php echo htmlspecialchars($record->machinename) ?>" />
+                value="<?php echo htmlspecialchars($record->machinename ?? '') ?>" />
         </div>
     </fieldset>
     <fieldset>
@@ -91,7 +91,7 @@
         </div>
         <div class="row">
             <label><?php echo I18n::__('file_label_path') ?></label>
-            <input type="text" name="path" readonly="readonly" value="<?php echo htmlspecialchars($record->getShortHref()) ?>">
+            <input type="text" name="path" readonly="readonly" value="<?php echo htmlspecialchars($record->getShortHref() ?? '') ?>">
         </div>
         <div class="row">
             <label>
