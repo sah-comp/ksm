@@ -24,7 +24,7 @@
             id="language-iso"
             type="text"
             name="dialog[iso]"
-            value="<?php echo htmlspecialchars($record->iso) ?>"
+            value="<?php echo htmlspecialchars($record->iso ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
@@ -53,7 +53,7 @@
             id="language-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
 </fieldset>

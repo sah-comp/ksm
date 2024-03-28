@@ -75,7 +75,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[name]"
-                value="<?php echo htmlspecialchars($record->name) ?>"
+                value="<?php echo htmlspecialchars($record->name ?? '') ?>"
                 required="required" />
         </div>
         <div class="span2">
@@ -84,7 +84,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[serialnumber]"
-                value="<?php echo htmlspecialchars($record->serialnumber) ?>" />
+                value="<?php echo htmlspecialchars($record->serialnumber ?? '') ?>" />
         </div>
         <div class="span1">
             <input
@@ -92,7 +92,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[buildyear]"
-                value="<?php echo htmlspecialchars($record->buildyear) ?>" />
+                value="<?php echo htmlspecialchars($record->buildyear ?? '') ?>" />
         </div>
         <div class="span2">
             <input
@@ -100,7 +100,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[workinghours]"
-                value="<?php echo htmlspecialchars($record->workinghours) ?>" />
+                value="<?php echo htmlspecialchars($record->workinghours ?? '') ?>" />
         </div>
     </div>
 </fieldset>
@@ -138,7 +138,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[internalnumber]"
-                value="<?php echo htmlspecialchars($record->internalnumber) ?>"/>
+                value="<?php echo htmlspecialchars($record->internalnumber ?? '') ?>"/>
         </div>
         <div class="span3">
             <input
@@ -147,7 +147,7 @@
                 type="date"
                 name="dialog[lastservice]"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-                value="<?php echo htmlspecialchars($record->lastservice) ?>" />
+                value="<?php echo htmlspecialchars($record->lastservice ?? '') ?>" />
         </div>
         <div class="tab span3">
             <select
@@ -168,7 +168,7 @@
             id="machine-note"
             name="dialog[note]"
             rows="3"
-            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->note ?? '') ?></textarea>
     </div>
     <div class="row <?php echo ($record->hasError('specialagreement')) ? 'error' : ''; ?>">
         <label
@@ -179,7 +179,7 @@
             id="machine-specialagreement"
             name="dialog[specialagreement]"
             rows="3"
-            cols="60"><?php echo htmlspecialchars($record->specialagreement) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->specialagreement ?? '') ?></textarea>
     </div>
 
 </fieldset>
@@ -200,7 +200,7 @@
         class="tab"
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('machine_legend_limb') ?></legend>
-        <?php $_payload = json_decode($record->payload, true) ?>
+        <?php $_payload = json_decode($record->payload ?? '', true) ?>
         <?php
         foreach ($record->contracttype->withCondition("active = 1 ORDER BY sequence")->ownLimb as $_id => $_limb) :
             Flight::render('model/machine/part/limb', [

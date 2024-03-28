@@ -251,13 +251,13 @@ class Model extends RedBean_SimpleModel
             return '';
         }
         if ($format !== null) {
-            return strftime($format, strtotime($value));
+            return date($format, strtotime($value));
         }
         if (! Flight::setlocale()) {
             return $value;
         }
         $templates = Flight::get('templates');
-        return strftime($templates['datetime'], strtotime($value));
+        return date($templates['datetime'], strtotime($value));
     }
 
     /**
@@ -274,13 +274,13 @@ class Model extends RedBean_SimpleModel
             return '';
         }
         if ($format !== null) {
-            return strftime($format, strtotime($value));
+            return date($format, strtotime($value));
         }
         if (! Flight::setlocale()) {
             return $value;
         }
         $templates = Flight::get('templates');
-        return strftime($templates['date'], strtotime($value));
+        return date($templates['date'], strtotime($value));
     }
 
     /**
@@ -298,13 +298,13 @@ class Model extends RedBean_SimpleModel
             return '';
         }
         if ($format !== null) {
-            return strftime($format, strtotime($value));
+            return date($format, strtotime($value));
         }
         if (! Flight::setlocale()) {
             return $value;
         }
         $templates = Flight::get('templates');
-        return strftime($templates['time'], strtotime($value));
+        return date($templates['time'], strtotime($value));
     }
 
     /**
@@ -671,7 +671,7 @@ SQL;
         }
         $tags = array();
         foreach ($this->keywords() as $n => $keyword) {
-            if (trim($keyword) == '') {
+            if (trim($keyword ?? '') == '') {
                 continue;
             }
             $tags[] = trim($keyword);

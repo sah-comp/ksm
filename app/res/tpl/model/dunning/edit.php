@@ -24,7 +24,7 @@
             id="dunning-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('level')) ? 'error' : ''; ?>">
@@ -36,7 +36,7 @@
             id="dunning-level"
             type="text"
             name="dialog[level]"
-            value="<?php echo htmlspecialchars($record->level) ?>"
+            value="<?php echo htmlspecialchars($record->level ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('sequence')) ? 'error' : ''; ?>">
@@ -48,7 +48,7 @@
             id="dunning-sequence"
             type="number"
             name="dialog[sequence]"
-            value="<?php echo htmlspecialchars($record->sequence) ?>" />
+            value="<?php echo htmlspecialchars($record->sequence ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('grace')) ? 'error' : ''; ?>">
         <label
@@ -60,7 +60,7 @@
             type="text"
             class="number"
             name="dialog[grace]"
-            value="<?php echo htmlspecialchars($record->decimal('grace')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('grace') ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('applyto')) ? 'error' : ''; ?>">
         <label
@@ -74,7 +74,7 @@
             <?php foreach ($record->getApplyToAttributes() as $_attribute): ?>
             <option
                 value="<?php echo $_attribute ?>"
-                <?php echo ($record->applyto == $_attribute) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars(I18n::__('dunning_option_' . $_attribute)) ?></option>
+                <?php echo ($record->applyto == $_attribute) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars(I18n::__('dunning_option_' . $_attribute) ?? '') ?></option>
             <?php endforeach ?>
         </select>
     </div>
@@ -88,7 +88,7 @@
             type="text"
             class="number"
             name="dialog[penaltyfee]"
-            value="<?php echo htmlspecialchars($record->decimal('penaltyfee')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('penaltyfee') ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('head')) ? 'error' : ''; ?>">
         <label
@@ -99,7 +99,7 @@
             id="dunning-head"
             name="dialog[head]"
             rows="13"
-            cols="60"><?php echo htmlspecialchars($record->head) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->head ?? '') ?></textarea>
         <p class="info"><?php echo I18n::__('dunning_info_head') ?></p>
     </div>
     <div class="row <?php echo ($record->hasError('foot')) ? 'error' : ''; ?>">
@@ -111,7 +111,7 @@
             id="dunning-foot"
             name="dialog[foot]"
             rows="13"
-            cols="60"><?php echo htmlspecialchars($record->foot) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->foot ?? '') ?></textarea>
         <p class="info"><?php echo I18n::__('dunning_info_foot') ?></p>
     </div>
 </fieldset>

@@ -24,7 +24,7 @@
             id="vehiclebrand-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
 </fieldset>

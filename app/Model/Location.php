@@ -72,6 +72,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->name = '';
     }
 
     /**

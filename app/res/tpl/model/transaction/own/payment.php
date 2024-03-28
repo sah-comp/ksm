@@ -51,21 +51,21 @@
             <input
                 type="date"
                 name="dialog[ownPayment][<?php echo $index ?>][bookingdate]"
-                value="<?php echo htmlspecialchars($_payment->bookingdate) ?>">
+                value="<?php echo htmlspecialchars($_payment->bookingdate ?? '') ?>">
         </div>
         <div class="span4">
             <textarea
                 id="transaction-<?php echo $record->getId() ?>-payment-<?php echo $index ?>-desc"
                 name="dialog[ownPayment][<?php echo $index ?>][desc]"
                 rows="1"
-                cols="60"><?php echo htmlspecialchars($_payment->desc) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($_payment->desc ?? '') ?></textarea>
         </div>
         <div class="span2">
             <textarea
                 id="transaction-<?php echo $record->getId() ?>-payment-<?php echo $index ?>-statement"
                 name="dialog[ownPayment][<?php echo $index ?>][statement]"
                 rows="1"
-                cols="60"><?php echo htmlspecialchars($_payment->statement) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($_payment->statement ?? '') ?></textarea>
         </div>
         <div class="span1">
             <input
@@ -82,7 +82,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownPayment][<?php echo $index ?>][amount]"
-                value="<?php echo htmlspecialchars($_payment->decimal('amount')) ?>">
+                value="<?php echo htmlspecialchars($_payment->decimal('amount') ?? '') ?>">
         </div>
     </div>
 </fieldset>

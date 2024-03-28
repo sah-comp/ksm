@@ -24,7 +24,7 @@
             id="costunittype-sequence"
             type="number"
             name="dialog[sequence]"
-            value="<?php echo htmlspecialchars($record->sequence) ?>" />
+            value="<?php echo htmlspecialchars($record->sequence ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
         <label
@@ -35,7 +35,7 @@
             id="costunittype-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('color')) ? 'error' : ''; ?>">
@@ -48,7 +48,7 @@
             id="costunittype-color"
             type="text"
             name="dialog[color]"
-            value="<?php echo htmlspecialchars($record->color) ?>"
+            value="<?php echo htmlspecialchars($record->color ?? '') ?>"
             required="required" />
         <p class="info"><?php echo I18n::__('costunittype_info_color') ?></p>
     </div>

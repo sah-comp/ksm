@@ -43,6 +43,7 @@ class Model_Machinebrand extends Model
      */
     public function dispense()
     {
+        $this->bean->name = '';
         $this->addValidator('name', [
             new Validator_HasValue(),
             new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])

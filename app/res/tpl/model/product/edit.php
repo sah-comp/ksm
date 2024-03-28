@@ -44,7 +44,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[number]"
-                value="<?php echo htmlspecialchars($record->number) ?>"
+                value="<?php echo htmlspecialchars($record->number ?? '') ?>"
                 required="required" />
         </div>
         <div class="span3">
@@ -53,7 +53,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[matchcode]"
-                value="<?php echo htmlspecialchars($record->matchcode) ?>" />
+                value="<?php echo htmlspecialchars($record->matchcode ?? '') ?>" />
         </div>
     </div>
     <div class="row <?php echo ($record->hasError('costunittype_id')) ? 'error' : ''; ?>">
@@ -82,7 +82,7 @@
             id="product-description"
             name="dialog[description]"
             rows="3"
-            cols="60"><?php echo htmlspecialchars($record->description) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->description ?? '') ?></textarea>
     </div>
     <div class="row <?php echo ($record->hasError('unit')) ? 'error' : ''; ?>">
         <label
@@ -93,7 +93,7 @@
             id="product-unit"
             type="text"
             name="dialog[unit]"
-            value="<?php echo htmlspecialchars($record->unit) ?>" />
+            value="<?php echo htmlspecialchars($record->unit ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('purchaseprice')) ? 'error' : ''; ?>">
         <label
@@ -105,7 +105,7 @@
             type="text"
             class="number"
             name="dialog[purchaseprice]"
-            value="<?php echo htmlspecialchars($record->decimal('purchaseprice')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('purchaseprice') ?? '') ?>" />
             <p class="info">
                 <?php echo I18n::__('product_info_purchaseprice') ?>
             </p>
@@ -123,7 +123,7 @@
             <?php foreach (R::find('vat', ' ORDER BY name') as $_id => $_vat): ?>
             <option
                 value="<?php echo $_vat->getId() ?>"
-                <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name) ?></option>
+                <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name ?? '') ?></option>
             <?php endforeach ?>
         </select>
     </div>
@@ -137,7 +137,7 @@
             type="text"
             class="number"
             name="dialog[salesprice]"
-            value="<?php echo htmlspecialchars($record->decimal('salesprice')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('salesprice') ?? '') ?>" />
             <p class="info">
                 <?php echo I18n::__('product_info_salesprice') ?>
             </p>

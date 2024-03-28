@@ -24,7 +24,7 @@
             id="headfoot-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('content')) ? 'error' : ''; ?>">
@@ -36,7 +36,7 @@
             id="headfoot-content"
             name="dialog[content]"
             rows="13"
-            cols="60"><?php echo htmlspecialchars($record->content) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->content ?? '') ?></textarea>
         <p class="info"><?php echo I18n::__('headfoot_info_content') ?></p>
     </div>
 </fieldset>

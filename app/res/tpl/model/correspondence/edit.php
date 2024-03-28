@@ -112,12 +112,12 @@
     </div>
     <div class="row">
         <label for="correspondence-to"><?php echo I18n::__('correspondence_label_to') ?></label>
-        <input id="correspondence-to" type="text" name="dialog[to]" value="<?php echo htmlspecialchars($record->to) ?>">
+        <input id="correspondence-to" type="text" name="dialog[to]" value="<?php echo htmlspecialchars($record->to ?? '') ?>">
         <p class="info"><?php echo I18n::__('correspondence_info_to') ?></p>
     </div>
     <div class="row">
         <label for="correspondence-cc"><?php echo I18n::__('correspondence_label_cc') ?></label>
-        <input id="correspondence-cc" type="text" name="dialog[cc]" value="<?php echo htmlspecialchars($record->cc) ?>">
+        <input id="correspondence-cc" type="text" name="dialog[cc]" value="<?php echo htmlspecialchars($record->cc ?? '') ?>">
         <p class="info"><?php echo I18n::__('correspondence_info_cc') ?></p>
     </div>
 </fieldset>

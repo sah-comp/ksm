@@ -120,7 +120,7 @@
                 type="date"
                 name="dialog[startdate]"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-                value="<?php echo htmlspecialchars($record->startdate) ?>" />
+                value="<?php echo htmlspecialchars($record->startdate ?? '') ?>" />
         </div>
         <div class="span2 <?php echo $record->classesCss() ?>">
             <input
@@ -129,7 +129,7 @@
                 type="date"
                 name="dialog[enddate]"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-                value="<?php echo htmlspecialchars($record->enddate) ?>"/>
+                value="<?php echo htmlspecialchars($record->enddate ?? '') ?>"/>
         </div>
     </div>
 </fieldset>
@@ -144,7 +144,7 @@
             type="text"
             id="treaty-prospect"
             name="dialog[prospect]"
-            value="<?php echo htmlspecialchars($record->prospect) ?>" />
+            value="<?php echo htmlspecialchars($record->prospect ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
@@ -215,12 +215,12 @@
     </div>
         <div class="row">
         <label for="treaty-to"><?php echo I18n::__('treaty_label_to') ?></label>
-        <input id="treaty-to" type="text" name="dialog[to]" value="<?php echo htmlspecialchars($record->to) ?>">
+        <input id="treaty-to" type="text" name="dialog[to]" value="<?php echo htmlspecialchars($record->to ?? '') ?>">
         <p class="info"><?php echo I18n::__('treaty_info_to') ?></p>
     </div>
     <div class="row">
         <label for="treaty-cc"><?php echo I18n::__('treaty_label_cc') ?></label>
-        <input id="treaty-cc" type="text" name="dialog[cc]" value="<?php echo htmlspecialchars($record->cc) ?>">
+        <input id="treaty-cc" type="text" name="dialog[cc]" value="<?php echo htmlspecialchars($record->cc ?? '') ?>">
         <p class="info"><?php echo I18n::__('treaty_info_cc') ?></p>
     </div>
 </fieldset>
@@ -263,7 +263,7 @@
                 id="treaty-note"
                 name="dialog[note]"
                 rows="5"
-                cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->note ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('treaty_info_note') ?></p>
         </div>
     </fieldset>
@@ -281,7 +281,7 @@
                 id="treaty-mailbody"
                 name="dialog[mailbody]"
                 rows="5"
-                cols="60"><?php echo htmlspecialchars($record->mailbody) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->mailbody ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('treaty_info_mailbody') ?></p>
         </div>
     </fieldset>

@@ -837,6 +837,10 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->to = '';
+        $this->bean->cc = '';
+        $this->bean->prospect = '';
+        $this->bean->note = '';
         $this->bean->mytreatyid = 0;
         $this->bean->bookingdate = date('Y-m-d');
         $this->addConverter('bookingdate', new Converter_Mysqldate());

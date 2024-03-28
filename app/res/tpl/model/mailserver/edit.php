@@ -24,7 +24,7 @@
             id="mailserver-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
 		<p class="info"><?php echo I18n::__('mailserver_info_name') ?></p>
     </div>
@@ -37,7 +37,7 @@
             id="mailserver-host"
             type="text"
             name="dialog[host]"
-            value="<?php echo htmlspecialchars($record->host) ?>" />
+            value="<?php echo htmlspecialchars($record->host ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('port')) ? 'error' : ''; ?>">
         <label
@@ -48,7 +48,7 @@
             id="mailserver-host"
             type="text"
             name="dialog[port]"
-            value="<?php echo htmlspecialchars($record->port) ?>" />
+            value="<?php echo htmlspecialchars($record->port ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('user')) ? 'error' : ''; ?>">
         <label
@@ -59,7 +59,7 @@
             id="mailserver-user"
             type="text"
             name="dialog[user]"
-            value="<?php echo htmlspecialchars($record->user) ?>" />
+            value="<?php echo htmlspecialchars($record->user ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('pw')) ? 'error' : ''; ?>">
         <label
@@ -70,7 +70,7 @@
             id="mailserver-pw"
             type="password"
             name="dialog[pw]"
-            value="<?php echo htmlspecialchars($record->pw) ?>" />
+            value="<?php echo htmlspecialchars($record->pw ?? '') ?>" />
     </div>
 </fieldset>
 <!-- end of mailserver edit form -->

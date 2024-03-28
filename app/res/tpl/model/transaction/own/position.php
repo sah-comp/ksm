@@ -94,7 +94,7 @@
                         class="sequence"
                         type="text"
                         name="dialog[ownPosition][<?php echo $index ?>][sequence]"
-                        value="<?php echo htmlspecialchars($_position->decimal('sequence', 0)) ?>">
+                        value="<?php echo htmlspecialchars($_position->decimal('sequence', 0) ?? '') ?>">
                 </div>
                 <div class="span2">
                     <input
@@ -127,14 +127,14 @@
                         'transaction-'.$record->getId().'-position-'.$index.'-product-costunittype-id' => 'costunittype_id',
                         'transaction-'.$record->getId().'-position-'.$index.'-vatpercentage' => 'vatpercentage'
                     ]); ?>'
-                value="<?php echo htmlspecialchars($_position->ska) ?>" />
+                value="<?php echo htmlspecialchars($_position->ska ?? '') ?>" />
         </div>
         <div class="span3">
             <textarea
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-desc"
                 name="dialog[ownPosition][<?php echo $index ?>][desc]"
                 rows="2"
-                cols="60"><?php echo htmlspecialchars($_position->desc) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($_position->desc ?? '') ?></textarea>
         </div>
         <div class="span1">
             <input
@@ -142,14 +142,14 @@
                 type="text"
                 class="number"
                 name="dialog[ownPosition][<?php echo $index ?>][count]"
-                value="<?php echo htmlspecialchars($_position->decimal('count')) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('count') ?? '') ?>">
         </div>
         <div class="span1">
             <input
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-unit"
                 type="text"
                 name="dialog[ownPosition][<?php echo $index ?>][unit]"
-                value="<?php echo htmlspecialchars($_position->unit) ?>">
+                value="<?php echo htmlspecialchars($_position->unit ?? '') ?>">
         </div>
         <div class="span1">
             <div class="row">
@@ -191,7 +191,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownPosition][<?php echo $index ?>][salesprice]"
-                value="<?php echo htmlspecialchars($_position->decimal('salesprice')) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('salesprice') ?? '') ?>">
         </div>
         <div class="span1">
             <input
@@ -199,7 +199,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownPosition][<?php echo $index ?>][adjustment]"
-                value="<?php echo htmlspecialchars($_position->decimal('adjustment')) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('adjustment') ?? '') ?>">
         </div>
         <div class="span1">
             <input
@@ -208,7 +208,7 @@
                 class="number"
                 readonly="readonly"
                 name="dialog[ownPosition][<?php echo $index ?>][total]"
-                value="<?php echo htmlspecialchars($_position->decimal('total')) ?>">
+                value="<?php echo htmlspecialchars($_position->decimal('total') ?? '') ?>">
         </div>
     </div>
 </fieldset>

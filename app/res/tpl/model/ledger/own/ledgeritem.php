@@ -39,15 +39,15 @@
                 type="date"
                 placeholder="yyyy-mm-dd"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][bookingdate]"
-                value="<?php echo htmlspecialchars($_ledgeritem->bookingdate) ?>" />
-            <input type="hidden" name="dialog[ownLedgeritem][<?php echo $index ?>][bookingtime]" value="<?php echo htmlspecialchars($_ledgeritem->getBookingtime()) ?>">
+                value="<?php echo htmlspecialchars($_ledgeritem->bookingdate ?? '') ?>" />
+            <input type="hidden" name="dialog[ownLedgeritem][<?php echo $index ?>][bookingtime]" value="<?php echo htmlspecialchars($_ledgeritem->getBookingtime() ?? '') ?>">
         </div>
         <div class="span3">
             <input
                 id="ledger-ledgeritem-<?php echo $index ?>-desc"
                 type="text"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][desc]"
-                value="<?php echo htmlspecialchars($_ledgeritem->desc) ?>" />
+                value="<?php echo htmlspecialchars($_ledgeritem->desc ?? '') ?>" />
         </div>
         <div class="span1">
             <input
@@ -55,7 +55,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][taking]"
-                value="<?php echo htmlspecialchars($_ledgeritem->decimal('taking')) ?>" />
+                value="<?php echo htmlspecialchars($_ledgeritem->decimal('taking') ?? '') ?>" />
         </div>
         <div class="span1">
             <input
@@ -63,7 +63,7 @@
                 type="text"
                 class="number"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][expense]"
-                value="<?php echo htmlspecialchars($_ledgeritem->decimal('expense')) ?>" />
+                value="<?php echo htmlspecialchars($_ledgeritem->decimal('expense') ?? '') ?>" />
         </div>
         <div class="span1">
             <select
@@ -73,7 +73,7 @@
                 <?php foreach (R::find('vat', " ORDER BY name") as $_vat_id => $_vat): ?>
                 <option
                     value="<?php echo $_vat->value ?>"
-                    <?php echo ($_ledgeritem->vat == $_vat->value) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name) ?></option>
+                    <?php echo ($_ledgeritem->vat == $_vat->value) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name ?? '') ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -84,7 +84,7 @@
                 class="number"
                 readonly="readonly"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][vattaking]"
-                value="<?php echo htmlspecialchars($_ledgeritem->decimal('vattaking')) ?>" />
+                value="<?php echo htmlspecialchars($_ledgeritem->decimal('vattaking') ?? '') ?>" />
         </div>
         <div class="span1">
             <input
@@ -93,7 +93,7 @@
                 class="number"
                 readonly="readonly"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][vatexpense]"
-                value="<?php echo htmlspecialchars($_ledgeritem->decimal('vatexpense')) ?>" />
+                value="<?php echo htmlspecialchars($_ledgeritem->decimal('vatexpense') ?? '') ?>" />
         </div>
         <div class="span1">
             <input
@@ -102,7 +102,7 @@
                 class="number"
                 readonly="readonly"
                 name="dialog[ownLedgeritem][<?php echo $index ?>][balance]"
-                value="<?php echo htmlspecialchars($_ledgeritem->decimal('balance')) ?>" />
+                value="<?php echo htmlspecialchars($_ledgeritem->decimal('balance') ?? '') ?>" />
         </div>
     </div>
 </fieldset>

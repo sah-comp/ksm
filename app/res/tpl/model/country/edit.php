@@ -24,7 +24,7 @@
             id="country-iso"
             type="text"
             name="dialog[iso]"
-            value="<?php echo htmlspecialchars($record->iso) ?>"
+            value="<?php echo htmlspecialchars($record->iso ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
@@ -53,7 +53,7 @@
             id="country-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
 </fieldset>
@@ -93,7 +93,7 @@
                     class="scaleable"
                     name="dialog[ownCountryi18n][<?php echo $_id ?>][name]"
                     cols="60"
-                    rows="2"><?php echo htmlspecialchars($_tokeni18n->name) ?></textarea>
+                    rows="2"><?php echo htmlspecialchars($_tokeni18n->name ?? '') ?></textarea>
             </div>
         <?php endforeach ?>
     </fieldset>

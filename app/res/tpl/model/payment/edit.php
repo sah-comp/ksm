@@ -24,7 +24,7 @@
             type="date"
             name="dialog[bookingdate]"
             placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-            value="<?php echo htmlspecialchars($record->bookingdate) ?>"
+            value="<?php echo htmlspecialchars($record->bookingdate ?? '') ?>"
             required="required" />
     </div>
 
@@ -63,7 +63,7 @@
                     'payment-transaction-totalpaid' => 'totalpaid',
                     'payment-transaction-balance' => 'balance'
                 ]); ?>'
-            value="<?php echo htmlspecialchars($record->getTransaction()->number) ?>" />
+            value="<?php echo htmlspecialchars($record->getTransaction()->number ?? '') ?>" />
             <a
                 href="#scratch-item"
                 title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
@@ -81,7 +81,7 @@
             id="payment-desc"
             name="dialog[desc]"
             rows="5"
-            cols="60"><?php echo htmlspecialchars($record->desc) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->desc ?? '') ?></textarea>
     </div>
     <div class="row <?php echo ($record->hasError('statement')) ? 'error' : ''; ?>">
         <label
@@ -92,7 +92,7 @@
             id="payment-statement"
             name="dialog[statement]"
             rows="4"
-            cols="60"><?php echo htmlspecialchars($record->statement) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->statement ?? '') ?></textarea>
     </div>
     <div class="row">
         <label
@@ -105,7 +105,7 @@
             class="number"
             name="gros"
             readonly="readonly"
-            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('gros')) ?>" />
+            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('gros') ?? '') ?>" />
     </div>
     <div class="row">
         <label
@@ -118,7 +118,7 @@
             class="number"
             name="totalpaid"
             readonly="readonly"
-            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('totalpaid')) ?>" />
+            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('totalpaid') ?? '') ?>" />
     </div>
     <div class="row">
         <label
@@ -131,7 +131,7 @@
             class="number"
             name="balance"
             readonly="readonly"
-            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('balance')) ?>" />
+            value="<?php echo htmlspecialchars($record->getTransaction()->decimal('balance') ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('amount')) ? 'error' : ''; ?>">
         <label
@@ -143,7 +143,7 @@
             type="text"
             class="number"
             name="dialog[amount]"
-            value="<?php echo htmlspecialchars($record->decimal('amount')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('amount') ?? '') ?>" />
             <p class="info">
                 <?php echo I18n::__('payment_info_amount') ?>
             </p>

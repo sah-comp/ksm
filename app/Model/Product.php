@@ -271,6 +271,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->matchcode = '';
         $this->addValidator('number', array(
             new Validator_HasValue(),
             new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'number'))

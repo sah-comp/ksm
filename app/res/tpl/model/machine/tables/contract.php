@@ -29,7 +29,7 @@ $_contracts = R::find('contract', "machine_id = ? ORDER BY @joined.person.name",
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_contract->getMeta('type'), $_contract->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_contracttype->name) ?>
+                    <?php echo htmlspecialchars($_contracttype->name ?? '') ?>
                 </a>
             </td>
             <td
@@ -37,7 +37,7 @@ $_contracts = R::find('contract', "machine_id = ? ORDER BY @joined.person.name",
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_contract->getMeta('type'), $_contract->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_contract->number) ?>
+                    <?php echo htmlspecialchars($_contract->number ?? '') ?>
                 </a>
             </td>
             <td
@@ -45,7 +45,7 @@ $_contracts = R::find('contract', "machine_id = ? ORDER BY @joined.person.name",
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_person->getMeta('type'), $_person->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_person->name) ?>
+                    <?php echo htmlspecialchars($_person->name ?? '') ?>
                 </a>
             </td>
             <td

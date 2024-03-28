@@ -60,7 +60,7 @@
                 type="text"
                 id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-contactinfo-<?php echo $_index ?>-value"
                 name="dialog[ownContact][<?php echo $index ?>][ownContactinfo][<?php echo $_index ?>][value]"
-                value="<?php echo htmlspecialchars($_contactinfo->value) ?>" />
+                value="<?php echo htmlspecialchars($_contactinfo->value ?? '') ?>" />
         </div>
     </div>
 </fieldset>

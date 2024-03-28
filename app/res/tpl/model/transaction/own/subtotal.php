@@ -76,7 +76,7 @@
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-desc"
                 name="dialog[ownPosition][<?php echo $index ?>][desc]"
                 rows="2"
-                cols="60"><?php echo htmlspecialchars($_position->desc) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($_position->desc ?? '') ?></textarea>
         </div>
         <div class="span4">
             &nbsp;
@@ -87,7 +87,7 @@
                 class="number"
                 readonly="readonly"
                 name="subtotal[<?php echo $index ?>]"
-                value="<?php echo htmlspecialchars(Flight::nformat($_subtotal)) ?>">
+                value="<?php echo htmlspecialchars(Flight::nformat($_subtotal) ?? '') ?>">
             <?php $_SESSION['subtotal'] = 0 ?>
         </div>
     </div>

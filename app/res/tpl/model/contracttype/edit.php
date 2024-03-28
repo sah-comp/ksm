@@ -25,7 +25,7 @@
             id="contracttype-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('bookable')) ? 'error' : ''; ?>">
@@ -54,7 +54,7 @@
             id="contracttype-nickname"
             type="text"
             name="dialog[nickname]"
-            value="<?php echo htmlspecialchars($record->nickname) ?>"
+            value="<?php echo htmlspecialchars($record->nickname ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('nextnumber')) ? 'error' : ''; ?>">
@@ -66,7 +66,7 @@
             id="contracttype-nextnumber"
             type="number"
             name="dialog[nextnumber]"
-            value="<?php echo htmlspecialchars($record->nextnumber) ?>"
+            value="<?php echo htmlspecialchars($record->nextnumber ?? '') ?>"
             required="required" />
     </div>
 
@@ -183,7 +183,7 @@
             id="contracttype-note"
             name="dialog[note]"
             rows="5"
-            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->note ?? '') ?></textarea>
         <p class="info"><?php echo I18n::__('contracttype_info_note') ?></p>
     </div>
 </fieldset>
@@ -213,7 +213,7 @@
                 id="contracttype-text"
                 name="dialog[text]"
                 rows="23"
-                cols="60"><?php echo htmlspecialchars($record->text) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->text ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('contracttype_info_text') ?></p>
         </div>
     </fieldset>
@@ -228,7 +228,7 @@
                 id="contracttype-css"
                 name="dialog[css]"
                 rows="5"
-                cols="60"><?php echo htmlspecialchars($record->css) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->css ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('contracttype_info_css') ?></p>
         </div>
     </fieldset>
@@ -243,7 +243,7 @@
                 id="contracttype-wordgros"
                 name="dialog[wordgros]"
                 type="text"
-                value="<?php echo htmlspecialchars($record->wordgros) ?>">
+                value="<?php echo htmlspecialchars($record->wordgros ?? '') ?>">
             <p class="info"><?php echo I18n::__('contracttype_info_wordgros') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('resetheader')) ? 'error' : ''; ?>">
@@ -309,7 +309,7 @@
                 id="contracttype-emailtext"
                 name="dialog[emailtext]"
                 rows="10"
-                cols="60"><?php echo htmlspecialchars($record->emailtext) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->emailtext ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('contracttype_info_emailtext') ?></p>
         </div>
     </fieldset>

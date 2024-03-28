@@ -339,6 +339,9 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->email = '';
+        $this->bean->shortname = '';
+        $this->bean->name = '';
         $this->bean->screenname = 'shortname';
         $this->bean->maxlifetime = MAX_SESSION_LIFETIME;
         $this->bean->recordsperpage = CINNEBAR_RECORDS_PER_PAGE;

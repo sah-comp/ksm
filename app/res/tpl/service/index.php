@@ -146,7 +146,7 @@ Flight::render('script/datatable_config');
                             type="time"
                             class="enpassant"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'starttime']) ?>"
-                            value="<?php echo htmlspecialchars($_record->starttime) ?>" />
+                            value="<?php echo htmlspecialchars($_record->starttime ?? '') ?>" />
                     </td>
                     <td
                         class="number"

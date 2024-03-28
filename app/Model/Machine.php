@@ -349,6 +349,9 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->name = '';
+        $this->bean->serialnumber = '';
+        $this->bean->internalnumber = '';
         $this->bean->contracttype = R::load('contracttype', CINNEBAR_CONTRACTTYPE_MACHINE_BEAN_ID);
         $this->addValidator('name', [
             new Validator_HasValue(),
@@ -391,26 +394,29 @@ SQL;
     public function update()
     {
         //$this->bean->contracttype = R::load('contracttype', CINNEBAR_CONTRACTTYPE_MACHINE_BEAN_ID);
-        $files = reset(Flight::request()->files);
-        $file = reset($files);
-        if (!empty($file) && !$file['error']) {
-            if ($file['error']) {
-                $this->addError($file['error'], 'file');
-                throw new Exception('fileupload error ' . $file['error']);
+        $filesArray = (array) Flight::request()->files;
+        $file = reset($filesArray);
+        if ($file !== false) {
+            $file = reset($file);
+            if (!empty($file) && !$file['error']) {
+                if ($file['error']) {
+                    $this->addError($file['error'], 'file');
+                    throw new Exception('fileupload error ' . $file['error']);
+                }
+                $file_parts = pathinfo($file['name']);
+                $orgname = $file['name'];
+                $extension = strtolower($file_parts['extension']);
+                $sanename = $this->sanitizeFilename($file_parts['filename']);
+                $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
+                if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
+                    $this->addError('move_upload_file_failed', 'file');
+                    throw new Exception('move_upload_file_failed');
+                }
+                $artifact = R::dispense('artifact');
+                $artifact->name = $orgname;
+                $artifact->filename = $filename;
+                $this->bean->ownArtifact[] = $artifact;
             }
-            $file_parts = pathinfo($file['name']);
-            $orgname = $file['name'];
-            $extension = strtolower($file_parts['extension']);
-            $sanename = $this->sanitizeFilename($file_parts['filename']);
-            $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
-            if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
-                $this->addError('move_upload_file_failed', 'file');
-                throw new Exception('move_upload_file_failed');
-            }
-            $artifact = R::dispense('artifact');
-            $artifact->name = $orgname;
-            $artifact->filename = $filename;
-            $this->bean->ownArtifact[] = $artifact;
         }
         foreach ($this->bean->ownInstalledpart as $id => $installedpart) {
             if (!$installedpart->getId() && !$installedpart->clairvoyant) {

@@ -24,7 +24,7 @@
             id="appointmenttype-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('color')) ? 'error' : ''; ?>">
@@ -37,7 +37,7 @@
             id="appointmenttype-color"
             type="text"
             name="dialog[color]"
-            value="<?php echo htmlspecialchars($record->color) ?>"
+            value="<?php echo htmlspecialchars($record->color ?? '') ?>"
             required="required" />
         <p class="info"><?php echo I18n::__('appointmenttype_info_color') ?></p>
     </div>

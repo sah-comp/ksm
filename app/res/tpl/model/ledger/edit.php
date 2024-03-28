@@ -24,7 +24,7 @@
             id="ledger-fy"
             type="text"
             name="dialog[fy]"
-            value="<?php echo htmlspecialchars($record->fy) ?>"
+            value="<?php echo htmlspecialchars($record->fy ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('month')) ? 'error' : ''; ?>">
@@ -53,7 +53,7 @@
             type="text"
             class="number"
             name="dialog[cash]"
-            value="<?php echo htmlspecialchars($record->decimal('cash')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('cash') ?? '') ?>" />
     </div>
 </fieldset>
 <div
@@ -150,7 +150,7 @@
                     class="number"
                     name="dialog[totaltaking]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('totaltaking')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('totaltaking') ?? '') ?>">
             </div>
             <div class="span1">
                 <input
@@ -158,7 +158,7 @@
                     class="number"
                     name="dialog[totalexpense]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('totalexpense')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('totalexpense') ?? '') ?>">
             </div>
             <div class="span1">
                 &nbsp;
@@ -169,21 +169,21 @@
                     class="number"
                     name="dialog[totalvattaking]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('totalvattaking')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('totalvattaking') ?? '') ?>">
             </div><div class="span1">
                 <input
                     type="text"
                     class="number"
                     name="dialog[totalvatexpense]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('totalvatexpense')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('totalvatexpense') ?? '') ?>">
             </div><div class="span1">
                 <input
                     type="text"
                     class="number"
                     name="dialog[balance]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('balance')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('balance') ?? '') ?>">
             </div>
         </div>
     </fieldset>

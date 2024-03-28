@@ -42,7 +42,7 @@
             id="domain-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('url')) ? 'error' : ''; ?>">
@@ -54,7 +54,7 @@
             id="domain-url"
             type="text"
             name="dialog[url]"
-            value="<?php echo htmlspecialchars($record->url) ?>" />
+            value="<?php echo htmlspecialchars($record->url ?? '') ?>" />
     </div>
     <div class="row <?php echo ($record->hasError('invisible')) ? 'error' : ''; ?>">
         <input
@@ -85,7 +85,7 @@
             step="10"
             max="99999999"
             name="dialog[sequence]"
-            value="<?php echo htmlspecialchars($record->sequence) ?>" />
+            value="<?php echo htmlspecialchars($record->sequence ?? '') ?>" />
     </div>
 </fieldset>
 <div class="tab-container">
@@ -189,7 +189,7 @@
                     class="scaleable"
                     name="dialog[ownDomaini18n][<?php echo $_id ?>][name]"
                     cols="60"
-                    rows="2"><?php echo htmlspecialchars($_tokeni18n->name) ?></textarea>
+                    rows="2"><?php echo htmlspecialchars($_tokeni18n->name ?? '') ?></textarea>
             </div>
         <?php endforeach ?>
     </fieldset>

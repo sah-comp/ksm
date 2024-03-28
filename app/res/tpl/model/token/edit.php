@@ -24,7 +24,7 @@
             id="token-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('desc')) ? 'error' : ''; ?>">
@@ -36,7 +36,7 @@
             id="token-desc"
             name="dialog[desc]"
             placeholder="<?php echo I18n::__('token_placeholder_desc') ?>"
-            rows="3"><?php echo htmlspecialchars($record->desc) ?></textarea>
+            rows="3"><?php echo htmlspecialchars($record->desc ?? '') ?></textarea>
             <p class="info">
                 <?php echo I18n::__('token_info_desc') ?>
             </p>
@@ -79,7 +79,7 @@
                     class="scaleable"
                     name="dialog[ownTokeni18n][<?php echo $_id ?>][name]"
                     cols="60"
-                    rows="2"><?php echo htmlspecialchars($_tokeni18n->name) ?></textarea>
+                    rows="2"><?php echo htmlspecialchars($_tokeni18n->name ?? '') ?></textarea>
             </div>
         <?php endforeach ?>
     </fieldset>

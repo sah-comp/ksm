@@ -495,6 +495,32 @@ SQL;
      */
     public function dispense()
     {
+        
+        $this->bean->attention = '';
+        $this->bean->title = '';
+        $this->bean->suffix = '';
+        $this->bean->organization = '';
+        $this->bean->jobtitle = '';
+        $this->bean->department = '';
+        $this->bean->phone = '';
+        $this->bean->fax = '';
+        $this->bean->url = '';
+        $this->bean->email = '';
+        $this->bean->account = '';
+        $this->bean->nickname = '';
+        $this->bean->lastname = '';
+        $this->bean->firstname = '';
+        $this->bean->name = '';
+
+        $this->bean->bankname = '';
+        $this->bean->bankcode = '';
+        $this->bean->bankaccount = '';
+        $this->bean->bic = '';
+        $this->bean->iban = '';
+        $this->bean->taxoffice = '';
+        $this->bean->taxid = '';
+        $this->bean->vatid = '';
+
         $this->autoTag(true);
         $this->bean->duedays = 8;
         $this->addValidator('nickname', array(
@@ -559,8 +585,8 @@ SQL;
         }
 
         // set the phonetic names
-        $this->bean->phoneticlastname = soundex($this->bean->lastname);
-        $this->bean->phoneticfirstname = soundex($this->bean->firstname);
+        $this->bean->phoneticlastname = soundex($this->bean->lastname ?? '');
+        $this->bean->phoneticfirstname = soundex($this->bean->firstname ?? '');
         // set the name according to sort rule
         $this->bean->name = implode(' ', array($this->bean->firstname, $this->bean->lastname));
         // company name

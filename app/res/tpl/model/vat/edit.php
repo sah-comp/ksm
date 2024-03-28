@@ -24,7 +24,7 @@
             id="vat-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('value')) ? 'error' : ''; ?>">
@@ -37,7 +37,7 @@
             class="number"
             type="text"
             name="dialog[value]"
-            value="<?php echo htmlspecialchars($record->decimal('value')) ?>"
+            value="<?php echo htmlspecialchars($record->decimal('value') ?? '') ?>"
             required="required" />
     </div>
 </fieldset>

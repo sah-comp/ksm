@@ -52,9 +52,9 @@ $_colspan = 8;
             <tfoot>
                 <tr>
                     <td colspan="<?php echo $_colspan ?>" class="tar"><?php echo I18n::__('openitem_label_sums') ?></td>
-                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros'])) ?></td>
-                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid'])) ?></td>
-                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalbalance'])) ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalgros']) ?? '') ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalpaid']) ?? '') ?></td>
+                    <td class="number"><?php echo htmlspecialchars(Flight::nformat($totals['totalbalance']) ?? '') ?></td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
                     <td>&nbsp;</td>
@@ -94,50 +94,50 @@ $_colspan = 8;
                             <?php echo (isset($selection[$_record->getMeta('type')][$_record->getId()]) && $selection[$_record->getMeta('type')][$_record->getId()]) ? 'checked="checked"' : '' ?> />
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->number) ?>">
+                        data-sort="<?php echo htmlspecialchars($_record->number ?? '') ?>">
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_record->getMeta('type'), $_record->getId(), '/openitem/#bean-' . $_record->getId()]) ?>"
                             class="in-table">
-                            <?php echo htmlspecialchars($_record->number) ?>
+                            <?php echo htmlspecialchars($_record->number ?? '') ?>
                         </a>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->bookingdate) ?>">
-                        <?php echo htmlspecialchars($_record->localizedDate('bookingdate')) ?>
+                        data-sort="<?php echo htmlspecialchars($_record->bookingdate ?? '') ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('bookingdate') ?? '') ?>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->duedate) ?>">
-                        <?php echo htmlspecialchars($_record->localizedDate('duedate')) ?>
+                        data-sort="<?php echo htmlspecialchars($_record->duedate ?? '') ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('duedate') ?? '') ?>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->dunningdate) ?>">
-                        <?php echo htmlspecialchars($_record->localizedDate('dunningdate')) ?>
+                        data-sort="<?php echo htmlspecialchars($_record->dunningdate ?? '') ?>">
+                        <?php echo htmlspecialchars($_record->localizedDate('dunningdate') ?? '') ?>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->customername) ?>"
-                        data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_record->customername) ?>">
+                        data-sort="<?php echo htmlspecialchars($_record->customername ?? '') ?>"
+                        data-filter="<?php echo htmlspecialchars($_person->nickname . ' ' . $_record->customername ?? '') ?>">
                         <a href="<?php echo Url::build(sprintf('/admin/transaction/additional/%d/contactinfo', $_record->getId())) ?>" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>
                         <a
                             href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/openitem/#bean-' . $_record->getId()]) ?>"
-                            title="<?php echo htmlspecialchars($_record->customername . ' ' . $_person->account) ?>"
+                            title="<?php echo htmlspecialchars($_record->customername . ' ' . $_person->account ?? '') ?>"
                             class="in-table">
-                            <?php echo htmlspecialchars($_record->customername) ?>
+                            <?php echo htmlspecialchars($_record->customername ?? '') ?>
                         </a>
                     </td>
                     <td class="number"
-                        data-sort="<?php echo htmlspecialchars($_record->decimal('gros')) ?>">
-                        <?php echo htmlspecialchars($_record->decimal('gros')) ?>
+                        data-sort="<?php echo htmlspecialchars($_record->decimal('gros') ?? '') ?>">
+                        <?php echo htmlspecialchars($_record->decimal('gros') ?? '') ?>
                     </td>
                     <td class="number"
-                        data-sort="<?php echo htmlspecialchars($_record->decimal('totalpaid')) ?>">
-                        <?php echo htmlspecialchars($_record->decimal('totalpaid')) ?>
+                        data-sort="<?php echo htmlspecialchars($_record->decimal('totalpaid') ?? '') ?>">
+                        <?php echo htmlspecialchars($_record->decimal('totalpaid') ?? '') ?>
                     </td>
                     <td class="number"
-                        data-sort="<?php echo htmlspecialchars($_record->decimal('balance')) ?>">
-                        <?php echo htmlspecialchars($_record->decimal('balance')) ?>
+                        data-sort="<?php echo htmlspecialchars($_record->decimal('balance') ?? '') ?>">
+                        <?php echo htmlspecialchars($_record->decimal('balance') ?? '') ?>
                     </td>
                     <td
-                        data-sort="<?php echo htmlspecialchars($_record->getDunning()->level) ?>">
+                        data-sort="<?php echo htmlspecialchars($_record->getDunning()->level ?? '') ?>">
                         <select
                             id="<?php echo $_type ?>-<?php echo $_id ?>-dunning-id"
                             data-url="<?php echo Url::build('/enpassant/%s/%d/%s/%s/?callback=?', [$_type, $_id, 'dunning_id', 'dunning']) ?>"
@@ -146,7 +146,7 @@ $_colspan = 8;
                             name="dunning_id">
                             <option value=""><?php echo I18n::__('transaction_dunning_none') ?></option>
                             <?php foreach ($_record->getDunnings() as $_id_level => $_level) : ?>
-                            <option value="<?php echo $_id_level ?>" <?php echo $_record->dunning_id == $_id_level ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_level->name) ?></option>
+                            <option value="<?php echo $_id_level ?>" <?php echo $_record->dunning_id == $_id_level ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_level->name ?? '') ?></option>
                             <?php endforeach; ?>
                         </select>
                     </td>

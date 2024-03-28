@@ -39,7 +39,7 @@
             type="text"
             name="dialog[licenseplate]"
             placeholder="<?php echo I18n::__('vehicle_placeholder_licenseplate') ?>"
-            value="<?php echo htmlspecialchars($record->licenseplate) ?>"
+            value="<?php echo htmlspecialchars($record->licenseplate ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
@@ -51,7 +51,7 @@
             id="vehicle-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>" />
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>" />
     </div>
 </fieldset>
 <!-- end of vehicle edit form -->

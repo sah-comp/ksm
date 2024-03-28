@@ -63,7 +63,7 @@
             type="text"
             id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-name"
             name="dialog[ownContact][<?php echo $index ?>][name]"
-            value="<?php echo htmlspecialchars($_contact->name) ?>" />
+            value="<?php echo htmlspecialchars($_contact->name ?? '') ?>" />
     </div>
     <div class="row <?php echo ($_contact->hasError('jobdescription')) ? 'error' : ''; ?>">
         <label
@@ -74,7 +74,7 @@
             type="text"
             id="person-<?php echo $record->getId() ?>-contact-<?php echo $index ?>-jobdescription"
             name="dialog[ownContact][<?php echo $index ?>][jobdescription]"
-            value="<?php echo htmlspecialchars($_contact->jobdescription) ?>" />
+            value="<?php echo htmlspecialchars($_contact->jobdescription ?? '') ?>" />
     </div>
     <div class="row nomargins">
         <div class="span3">

@@ -119,9 +119,9 @@ Flight::set('language', CINNEBAR_DEFAULT_LANGUAGE);
  * Sets some template for localization.
  */
 Flight::set('templates', array(
-    'date' => CINNEBAR_TEMPLATE_DATE,
-    'time' => CINNEBAR_TEMPLATE_TIME,
-    'datetime' => CINNEBAR_TEMPLATE_DATETIME
+    'date' => CINNEBAR_TEMPLATE2_DATE,
+    'time' => CINNEBAR_TEMPLATE2_TIME,
+    'datetime' => CINNEBAR_TEMPLATE2_DATETIME
 ));
 
 /**

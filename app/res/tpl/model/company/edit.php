@@ -24,7 +24,7 @@
             id="company-name"
             type="text"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div class="row <?php echo ($record->hasError('active')) ? 'error' : ''; ?>">
@@ -71,7 +71,7 @@
                     id="company-legalname"
                     type="text"
                     name="dialog[legalname]"
-                    value="<?php echo htmlspecialchars($record->legalname) ?>" />
+                    value="<?php echo htmlspecialchars($record->legalname ?? '') ?>" />
             </div>
             <div class="row <?php echo ($record->hasError('street')) ? 'error' : ''; ?>">
                 <label
@@ -82,7 +82,7 @@
                     id="company-street"
                     type="text"
                     name="dialog[street]"
-                    value="<?php echo htmlspecialchars($record->street) ?>" />
+                    value="<?php echo htmlspecialchars($record->street ?? '') ?>" />
             </div>
             <div class="row <?php echo ($record->hasError('zip')) ? 'error' : ''; ?>">
                 <label
@@ -93,7 +93,7 @@
                     id="company-zip"
                     type="text"
                     name="dialog[zip]"
-                    value="<?php echo htmlspecialchars($record->zip) ?>" />
+                    value="<?php echo htmlspecialchars($record->zip ?? '') ?>" />
             </div>
             <div class="row <?php echo ($record->hasError('city')) ? 'error' : ''; ?>">
                 <label
@@ -104,7 +104,7 @@
                     id="company-city"
                     type="text"
                     name="dialog[city]"
-                    value="<?php echo htmlspecialchars($record->city) ?>" />
+                    value="<?php echo htmlspecialchars($record->city ?? '') ?>" />
             </div>
     </fieldset>
     <fieldset
@@ -121,7 +121,7 @@
                 id="company-phone"
                 type="text"
                 name="dialog[phone]"
-                value="<?php echo htmlspecialchars($record->phone) ?>" />
+                value="<?php echo htmlspecialchars($record->phone ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('fax')) ? 'error' : ''; ?>">
             <label
@@ -132,7 +132,7 @@
                 id="company-fax"
                 type="text"
                 name="dialog[fax]"
-                value="<?php echo htmlspecialchars($record->fax) ?>" />
+                value="<?php echo htmlspecialchars($record->fax ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('email')) ? 'error' : ''; ?>">
             <label
@@ -143,7 +143,7 @@
                 id="company-email"
                 type="email"
                 name="dialog[email]"
-                value="<?php echo htmlspecialchars($record->email) ?>" />
+                value="<?php echo htmlspecialchars($record->email ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('website')) ? 'error' : ''; ?>">
             <label
@@ -154,7 +154,7 @@
                 id="company-website"
                 type="text"
                 name="dialog[website]"
-                value="<?php echo htmlspecialchars($record->website) ?>" />
+                value="<?php echo htmlspecialchars($record->website ?? '') ?>" />
         </div>
         <!-- Noreply email address and its smtp Server -->
         <hr />
@@ -167,7 +167,7 @@
                 id="company-emailnoreply"
                 type="email"
                 name="dialog[emailnoreply]"
-                value="<?php echo htmlspecialchars($record->emailnoreply) ?>" />
+                value="<?php echo htmlspecialchars($record->emailnoreply ?? '') ?>" />
             <p class="info"><?php echo I18n::__('company_info_emailnoreply') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('smtphost')) ? 'error' : ''; ?>">
@@ -179,7 +179,7 @@
                 id="company-smtphost"
                 type="text"
                 name="dialog[smtphost]"
-                value="<?php echo htmlspecialchars($record->smtphost) ?>" />
+                value="<?php echo htmlspecialchars($record->smtphost ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('smtpport')) ? 'error' : ''; ?>">
             <label
@@ -190,7 +190,7 @@
                 id="company-smtpport"
                 type="text"
                 name="dialog[smtpport]"
-                value="<?php echo htmlspecialchars($record->smtpport) ?>" />
+                value="<?php echo htmlspecialchars($record->smtpport ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('smtpauth')) ? 'error' : ''; ?>">
             <label
@@ -201,7 +201,7 @@
                 id="company-smtpauth"
                 type="text"
                 name="dialog[smtpauth]"
-                value="<?php echo htmlspecialchars($record->smtpauth) ?>" />
+                value="<?php echo htmlspecialchars($record->smtpauth ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('smtpuser')) ? 'error' : ''; ?>">
             <label
@@ -212,7 +212,7 @@
                 id="company-smtpuser"
                 type="text"
                 name="dialog[smtpuser]"
-                value="<?php echo htmlspecialchars($record->smtpuser) ?>" />
+                value="<?php echo htmlspecialchars($record->smtpuser ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('smtppwd')) ? 'error' : ''; ?>">
             <label
@@ -223,7 +223,7 @@
                 id="company-smtppwd"
                 type="password"
                 name="dialog[smtppwd]"
-                value="<?php echo htmlspecialchars($record->smtppwd) ?>" />
+                value="<?php echo htmlspecialchars($record->smtppwd ?? '') ?>" />
         </div>
         <!-- /Noreply email address and its smtp Server -->
     </fieldset>
@@ -241,7 +241,7 @@
                 id="company-taxoffice"
                 type="text"
                 name="dialog[taxoffice]"
-                value="<?php echo htmlspecialchars($record->taxoffice) ?>" />
+                value="<?php echo htmlspecialchars($record->taxoffice ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('taxid')) ? 'error' : ''; ?>">
             <label
@@ -252,7 +252,7 @@
                 id="company-taxid"
                 type="text"
                 name="dialog[taxid]"
-                value="<?php echo htmlspecialchars($record->taxid) ?>" />
+                value="<?php echo htmlspecialchars($record->taxid ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('vatid')) ? 'error' : ''; ?>">
             <label
@@ -263,7 +263,7 @@
                 id="company-vatid"
                 type="text"
                 name="dialog[vatid]"
-                value="<?php echo htmlspecialchars($record->vatid) ?>" />
+                value="<?php echo htmlspecialchars($record->vatid ?? '') ?>" />
         </div>
     </fieldset>
     <fieldset
@@ -280,7 +280,7 @@
                 id="company-bankname"
                 type="text"
                 name="dialog[bankname]"
-                value="<?php echo htmlspecialchars($record->bankname) ?>" />
+                value="<?php echo htmlspecialchars($record->bankname ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('bankcode')) ? 'error' : ''; ?>">
             <label
@@ -291,7 +291,7 @@
                 id="company-bankcode"
                 type="text"
                 name="dialog[bankcode]"
-                value="<?php echo htmlspecialchars($record->bankcode) ?>" />
+                value="<?php echo htmlspecialchars($record->bankcode ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('bankaccount')) ? 'error' : ''; ?>">
             <label
@@ -302,7 +302,7 @@
                 id="company-bankaccountfield"
                 type="text"
                 name="dialog[bankaccount]"
-                value="<?php echo htmlspecialchars($record->bankaccount) ?>" />
+                value="<?php echo htmlspecialchars($record->bankaccount ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('bic')) ? 'error' : ''; ?>">
             <label
@@ -313,7 +313,7 @@
                 id="company-bic"
                 type="text"
                 name="dialog[bic]"
-                value="<?php echo htmlspecialchars($record->bic) ?>" />
+                value="<?php echo htmlspecialchars($record->bic ?? '') ?>" />
         </div>
         <div class="row <?php echo ($record->hasError('iban')) ? 'error' : ''; ?>">
             <label
@@ -324,7 +324,7 @@
                 id="company-iban"
                 type="text"
                 name="dialog[iban]"
-                value="<?php echo htmlspecialchars($record->iban) ?>" />
+                value="<?php echo htmlspecialchars($record->iban ?? '') ?>" />
         </div>
     </fieldset>
     <fieldset
@@ -342,7 +342,7 @@
                 class="scaleable"
                 name="dialog[conditiondiscount]"
                 cols="60"
-                rows="2"><?php echo htmlspecialchars($record->conditiondiscount) ?></textarea>
+                rows="2"><?php echo htmlspecialchars($record->conditiondiscount ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('company_info_conditiondiscount') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('conditionnodiscount')) ? 'error' : ''; ?>">
@@ -355,7 +355,7 @@
                 class="scaleable"
                 name="dialog[conditionnodiscount]"
                 cols="60"
-                rows="2"><?php echo htmlspecialchars($record->conditionnodiscount) ?></textarea>
+                rows="2"><?php echo htmlspecialchars($record->conditionnodiscount ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('company_info_conditionnodiscount') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('conditionimmediately')) ? 'error' : ''; ?>">
@@ -368,7 +368,7 @@
                 class="scaleable"
                 name="dialog[conditionimmediately]"
                 cols="60"
-                rows="2"><?php echo htmlspecialchars($record->conditionimmediately) ?></textarea>
+                rows="2"><?php echo htmlspecialchars($record->conditionimmediately ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('company_info_conditionimmediately') ?></p>
         </div>
         <div class="row <?php echo ($record->hasError('conditionother')) ? 'error' : ''; ?>">
@@ -381,7 +381,7 @@
                 class="scaleable"
                 name="dialog[conditionother]"
                 cols="60"
-                rows="2"><?php echo htmlspecialchars($record->conditionother) ?></textarea>
+                rows="2"><?php echo htmlspecialchars($record->conditionother ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('company_info_conditionother') ?></p>
         </div>
 
@@ -395,7 +395,7 @@
                 class="scaleable"
                 name="dialog[dunningemailtext]"
                 cols="60"
-                rows="2"><?php echo htmlspecialchars($record->dunningemailtext) ?></textarea>
+                rows="2"><?php echo htmlspecialchars($record->dunningemailtext ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('company_info_dunningemailtext') ?></p>
         </div>
     </fieldset>

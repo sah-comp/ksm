@@ -79,7 +79,7 @@
                 id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-desc"
                 name="dialog[ownPosition][<?php echo $index ?>][desc]"
                 rows="5"
-                cols="60"><?php echo htmlspecialchars($_position->desc) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($_position->desc ?? '') ?></textarea>
         </div>
         <div class="span6">
             &nbsp;

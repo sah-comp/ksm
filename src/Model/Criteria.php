@@ -289,6 +289,7 @@ class Model_Criteria extends Model
     public function dispense()
     {
         //$this->bean->postvar = 'none';
+        $this->value = '';
         $this->addValidator('attribute', new Validator_HasValue());
     }
 

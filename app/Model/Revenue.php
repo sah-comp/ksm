@@ -410,6 +410,7 @@ class Model_Revenue extends Model
      */
     public function dispense()
     {
+        $this->bean->name = '';
         $this->bean->fy = date('Y');
         $this->bean->month = date('m');
         $this->bean->unpaid = true;

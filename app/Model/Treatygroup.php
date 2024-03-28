@@ -156,6 +156,7 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->name = '';
         $this->bean->sequence = 0;
         $this->addValidator('name', [
             new Validator_HasValue(),

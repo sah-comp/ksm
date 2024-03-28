@@ -79,19 +79,19 @@
                 min="0"
                 step="10"
                 name="dialog[ownLimb][<?php echo $index ?>][sequence]"
-                value="<?php echo htmlspecialchars($_limb->sequence) ?>" />
+                value="<?php echo htmlspecialchars($_limb->sequence ?? '') ?>" />
         </div>
         <div class="span3">
             <input
                 type="text"
                 name="dialog[ownLimb][<?php echo $index ?>][name]"
-                value="<?php echo htmlspecialchars($_limb->name) ?>" />
+                value="<?php echo htmlspecialchars($_limb->name ?? '') ?>" />
         </div>
         <div class="span2">
             <input
                 type="text"
                 name="dialog[ownLimb][<?php echo $index ?>][placeholder]"
-                value="<?php echo htmlspecialchars($_limb->placeholder) ?>" />
+                value="<?php echo htmlspecialchars($_limb->placeholder ?? '') ?>" />
         </div>
         <div class="span1">
             <select
@@ -113,7 +113,7 @@
             <input
                 type="text"
                 name="dialog[ownLimb][<?php echo $index ?>][stub]"
-                value="<?php echo htmlspecialchars($_limb->stub) ?>" />
+                value="<?php echo htmlspecialchars($_limb->stub ?? '') ?>" />
         </div>
     </div>
 </fieldset>

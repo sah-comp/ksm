@@ -85,7 +85,7 @@
                         'article-duedays' => 'duedays',
                         'article-discount-id' => 'discount_id'
                     ]); ?>'
-                value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+                value="<?php echo htmlspecialchars($record->getPerson()->name ?? '') ?>" />
                 <a
                     href="#scratch-item"
                     title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
@@ -99,7 +99,7 @@
                 class="autowidth"
                 type="text"
                 name="dialog[number]"
-                value="<?php echo htmlspecialchars($record->number) ?>"
+                value="<?php echo htmlspecialchars($record->number ?? '') ?>"
                 required="required" />
         </div>
         <div class="span2">
@@ -130,7 +130,7 @@
             id="article-description"
             name="dialog[description]"
             rows="3"
-            cols="60"><?php echo htmlspecialchars($record->description) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->description ?? '') ?></textarea>
     </div>
     <div class="row <?php echo ($record->hasError('purchaseprice')) ? 'error' : ''; ?>">
         <label
@@ -142,7 +142,7 @@
             type="text"
             class="number"
             name="dialog[purchaseprice]"
-            value="<?php echo htmlspecialchars($record->decimal('purchaseprice')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('purchaseprice') ?? '') ?>" />
             <p class="info">
                 <?php echo I18n::__('article_info_purchaseprice') ?>
             </p>
@@ -158,7 +158,7 @@
             type="text"
             class="number"
             name="dialog[salesprice]"
-            value="<?php echo htmlspecialchars($record->decimal('salesprice')) ?>" />
+            value="<?php echo htmlspecialchars($record->decimal('salesprice') ?? '') ?>" />
             <p class="info">
                 <?php echo I18n::__('article_info_salesprice') ?>
             </p>
@@ -174,7 +174,7 @@
             class="date"
             name="dialog[lastchange]"
             placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-            value="<?php echo htmlspecialchars($record->lastchange) ?>"
+            value="<?php echo htmlspecialchars($record->lastchange ?? '') ?>"
             required="required" />
     </div>
 </fieldset>

@@ -25,7 +25,7 @@
             type="text"
             id="user-name"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div
@@ -38,7 +38,7 @@
             type="email"
             id="user-email"
             name="dialog[email]"
-            value="<?php echo htmlspecialchars($record->email) ?>"
+            value="<?php echo htmlspecialchars($record->email ?? '') ?>"
             required="required" />
     </div>
     <div
@@ -51,7 +51,7 @@
             type="text"
             id="user-shortname"
             name="dialog[shortname]"
-            value="<?php echo htmlspecialchars($record->shortname) ?>"
+            value="<?php echo htmlspecialchars($record->shortname ?? '') ?>"
             required="required" />
     </div>
     <div

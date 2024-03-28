@@ -58,7 +58,7 @@
                 readonly="readonly"
                 name="dialog[number]"
                 required="required"
-                value="<?php echo htmlspecialchars($record->number) ?>" />
+                value="<?php echo htmlspecialchars($record->number ?? '') ?>" />
             <?php if ($_parent = $record->hasParent()) : ?>
             <p class="info"><?php echo I18n::__('transaction_info_parent', null, [$_parent->getId(), $_parent->getContracttype()->name, $_parent->number]) ?></p>
             <?php endif; ?>
@@ -74,7 +74,7 @@
                 name="dialog[bookingdate]"
                 required="required"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-                value="<?php echo htmlspecialchars($record->bookingdate) ?>" />
+                value="<?php echo htmlspecialchars($record->bookingdate ?? '') ?>" />
                 <?php if (Flight::get('user')->isBooking()) : ?>
                 <div class="alert alert-warning">
                     <?php echo Flight::textile(I18n::__('transaction_booking_in_progress')) ?>
@@ -125,7 +125,7 @@
                     'transaction-paydrive' => 'paydrive',
                     'transaction-paydriveperkilometer' => 'paydriveperkilometer'
                 ]); ?>'
-            value="<?php echo htmlspecialchars($record->customername) ?>" />
+            value="<?php echo htmlspecialchars($record->customername ?? '') ?>" />
             <a
                 href="#scratch-item"
                 title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
@@ -143,7 +143,7 @@
                 id="transaction-payhourly"
                 type="text"
                 name="dialog[payhourly]"
-                value="<?php echo htmlspecialchars($record->decimal('payhourly')) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('payhourly') ?? '') ?>" />
         </div>
 
         <div class="row ">
@@ -173,7 +173,7 @@
                 id="transaction-paydriveperkilometer"
                 type="text"
                 name="dialog[paydriveperkilometer]"
-                value="<?php echo htmlspecialchars($record->decimal('paydriveperkilometer')) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('paydriveperkilometer') ?? '') ?>" />
         </div>
 </fieldset>
 <div class="tab-container">
@@ -203,7 +203,7 @@
                 name="dialog[postaladdress]"
                 rows="5"
                 cols="60"
-                required="required"><?php echo htmlspecialchars($record->postaladdress) ?></textarea>
+                required="required"><?php echo htmlspecialchars($record->postaladdress ?? '') ?></textarea>
         </div>
         <div class="row <?php echo ($record->hasError('header')) ? 'error' : ''; ?>">
             <label
@@ -220,7 +220,7 @@
                         'transaction-header' => 'value'
                     ]); ?>'
                 rows="10"
-                cols="60"><?php echo htmlspecialchars($record->header) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->header ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('transaction_info_header') ?></p>
         </div>
     </fieldset>
@@ -238,7 +238,7 @@
                 type="text"
                 id="transaction-duedays"
                 name="dialog[duedays]"
-                value="<?php echo htmlspecialchars($record->duedays) ?>" />
+                value="<?php echo htmlspecialchars($record->duedays ?? '') ?>" />
         </div>
         <div class="row">
             <label
@@ -252,7 +252,7 @@
                 <?php foreach (R::find('discount', ' ORDER BY name') as $_id => $_discount) : ?>
                 <option
                     value="<?php echo $_discount->getId() ?>"
-                    <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name) ?></option>
+                    <?php echo ($record->discount_id == $_discount->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_discount->name ?? '') ?></option>
                 <?php endforeach ?>
             </select>
         </div>
@@ -271,7 +271,7 @@
                         'transaction-footer' => 'value'
                     ]); ?>'
                 rows="10"
-                cols="60"><?php echo htmlspecialchars($record->footer) ?></textarea>
+                cols="60"><?php echo htmlspecialchars($record->footer ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('transaction_info_footer') ?></p>
         </div>
     </fieldset>
@@ -351,7 +351,7 @@
                     class="number"
                     name="dialog[net]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('net')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('net') ?? '') ?>">
             </div>
         </div>
         <?php if ($record->getContracttype()->hidesome) : ?>
@@ -393,7 +393,7 @@
                     class="number"
                     name="vatnet[]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars(Flight::nformat($_vat['net'])) ?>">
+                    value="<?php echo htmlspecialchars(Flight::nformat($_vat['net']) ?? '') ?>">
             </div>
             <div class="span2">
                 <input
@@ -401,7 +401,7 @@
                     class="number"
                     name="vatvalue[]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue'])) ?>">
+                    value="<?php echo htmlspecialchars(Flight::nformat($_vat['vatvalue']) ?? '') ?>">
             </div>
         </div>
         <?php endforeach; ?>
@@ -418,7 +418,7 @@
                     class="number"
                     name="dialog[gros]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('gros')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('gros') ?? '') ?>">
             </div>
         </div>
     </fieldset>
@@ -458,7 +458,7 @@
                 id="transaction-dunningemail"
                 type="text"
                 name="dialog[dunningemail]"
-                value="<?php echo htmlspecialchars($record->dunningemail) ?>">
+                value="<?php echo htmlspecialchars($record->dunningemail ?? '') ?>">
         </div>
     </fieldset>
     <fieldset
@@ -516,7 +516,7 @@
                     class="number"
                     name="dialog[gros]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('gros')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('gros') ?? '') ?>">
             </div>
         </div>
         <div class="row">
@@ -532,7 +532,7 @@
                     class="number"
                     name="dialog[totalpaid]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('totalpaid')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('totalpaid') ?? '') ?>">
             </div>
         </div>
         <div class="row">
@@ -548,7 +548,7 @@
                     class="number"
                     name="dialog[balance]"
                     readonly="readonly"
-                    value="<?php echo htmlspecialchars($record->decimal('balance')) ?>">
+                    value="<?php echo htmlspecialchars($record->decimal('balance') ?? '') ?>">
             </div>
         </div>
     </fieldset>

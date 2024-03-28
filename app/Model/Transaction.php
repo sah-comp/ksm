@@ -178,7 +178,7 @@ class Model_Transaction extends Model
     public function getLocalizedDateOfPayment()
     {
         $templates = Flight::get('templates');
-        return strftime($templates['date'], strtotime($this->bean->getDateOfPayment()));
+        return date($templates['date'], strtotime($this->bean->getDateOfPayment()));
     }
 
     /**

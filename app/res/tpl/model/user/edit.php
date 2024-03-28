@@ -16,7 +16,7 @@ $_roles = $record->sharedRole;
 <div>
     <input type="hidden" name="dialog[type]" value="<?php echo $record->getMeta('type') ?>" />
     <input type="hidden" name="dialog[id]" value="<?php echo $record->getId() ?>" />
-    <input type="hidden" name="dialog[pw]" value="<?php echo htmlspecialchars($record->pw) ?>" />
+    <input type="hidden" name="dialog[pw]" value="<?php echo htmlspecialchars($record->pw ?? '') ?>" />
 
     <?php if ($record->email) : ?>
     <img
@@ -24,7 +24,7 @@ $_roles = $record->sharedRole;
         class="gravatar-account circular no-shadow"
         width="72"
         height="72"
-        alt="<?php echo htmlspecialchars($record->getName()) ?>" />
+        alt="<?php echo htmlspecialchars($record->getName() ?? '') ?>" />
     <?php endif ?>
 
 </div>
@@ -40,7 +40,7 @@ $_roles = $record->sharedRole;
             type="text"
             id="user-name"
             name="dialog[name]"
-            value="<?php echo htmlspecialchars($record->name) ?>"
+            value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
     <div
@@ -53,7 +53,7 @@ $_roles = $record->sharedRole;
             type="email"
             id="user-email"
             name="dialog[email]"
-            value="<?php echo htmlspecialchars($record->email) ?>"
+            value="<?php echo htmlspecialchars($record->email ?? '') ?>"
             required="required" />
     </div>
     <div
@@ -66,7 +66,7 @@ $_roles = $record->sharedRole;
             type="text"
             id="user-shortname"
             name="dialog[shortname]"
-            value="<?php echo htmlspecialchars($record->shortname) ?>"
+            value="<?php echo htmlspecialchars($record->shortname ?? '') ?>"
             required="required" />
     </div>
     <div
@@ -82,7 +82,7 @@ $_roles = $record->sharedRole;
             step="60"
             id="user-maxlifetime"
             name="dialog[maxlifetime]"
-            value="<?php echo htmlspecialchars($record->maxlifetime) ?>"
+            value="<?php echo htmlspecialchars($record->maxlifetime ?? '') ?>"
             required="required" />
         <p class="info"><?php echo I18n::__('user_info_maxlifetime') ?></p>
     </div>
@@ -193,7 +193,7 @@ $_roles = $record->sharedRole;
                 value="0" />
             <label
                 for="user-team-<?php echo $_team->getId() ?>"
-                class="cb"><?php echo htmlspecialchars($_team->i18n(Flight::get('language'))->name) ?></label>
+                class="cb"><?php echo htmlspecialchars($_team->i18n(Flight::get('language'))->name ?? '') ?></label>
             <input
                 type="checkbox"
                 id="user-team-<?php echo $_team->getId() ?>"
@@ -220,7 +220,7 @@ $_roles = $record->sharedRole;
                 value="0" />
             <label
                 for="user-role-<?php echo $_role->getId() ?>"
-                class="cb"><?php echo htmlspecialchars($_role->i18n(Flight::get('language'))->name) ?></label>
+                class="cb"><?php echo htmlspecialchars($_role->i18n(Flight::get('language'))->name ?? '') ?></label>
             <input
                 type="checkbox"
                 id="user-role-<?php echo $_role->getId() ?>"
@@ -284,7 +284,7 @@ $_roles = $record->sharedRole;
                 step="1"
                 id="user-recordsperpage"
                 name="dialog[recordsperpage]"
-                value="<?php echo htmlspecialchars($record->recordsperpage) ?>" />
+                value="<?php echo htmlspecialchars($record->recordsperpage ?? '') ?>" />
             <p class="info"><?php echo I18n::__('user_info_recordsperpage') ?></p>
         </div>
     </fieldset>
@@ -301,7 +301,7 @@ $_roles = $record->sharedRole;
               id="user-mailsig"
                name="dialog[mailsig]"
                rows="12"
-               cols="60"><?php echo htmlspecialchars($record->mailsig) ?></textarea>
+               cols="60"><?php echo htmlspecialchars($record->mailsig ?? '') ?></textarea>
             <p class="info"><?php echo I18n::__('user_info_mailsig') ?></p>
         </div>
     </fieldset>

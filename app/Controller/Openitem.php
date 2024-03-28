@@ -48,6 +48,11 @@ class Controller_Openitem extends Controller_Scaffold
     public $totals = [];
 
     /**
+     * Holds the company bean
+     */
+    public $company = '';
+
+    /**
     * Constructor
     *
     * @param string $base_url for scaffold links and redirects
@@ -298,7 +303,7 @@ class Controller_Openitem extends Controller_Scaffold
         }
         //$ts = date('Y-m-d');
         $templates = Flight::get('templates');
-        $ts = strftime($templates['date'], time());
+        $ts = date($templates['date'], time());
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename = I18n::__('openitem_pdf_list_filename', null, [date('Y-m-d')]);
         $docname = I18n::__('openitem_pdf_list_docname', null, [$ts]);

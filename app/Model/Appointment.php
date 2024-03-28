@@ -761,6 +761,8 @@ SQL;
      */
     public function dispense()
     {
+        $this->bean->transactionnumber = '';
+        $this->bean->note = '';
         $this->bean->date = date('Y-m-d');
         $this->bean->interval = 0;
         $this->bean->adjourned = 0; // Counts how many times the appointment was adjournded

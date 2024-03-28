@@ -25,7 +25,7 @@
             id="contract-number"
             type="text"
             name="dialog[number]"
-            value="<?php echo htmlspecialchars($record->number) ?>" />
+            value="<?php echo htmlspecialchars($record->number ?? '') ?>" />
     </div>
 
 </fieldset>
@@ -58,7 +58,7 @@
                     'contract-machine-name' => 'value',
                     'contract-machine-id' => 'id'
                 ]); ?>'
-            value="<?php echo htmlspecialchars($record->getMachine()->name) ?>" />
+            value="<?php echo htmlspecialchars($record->getMachine()->name ?? '') ?>" />
     </div>
 
     <div class="row <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
@@ -90,7 +90,7 @@
                     'contract-person-name' => 'value',
                     'contract-person-id' => 'id'
                 ]); ?>'
-            value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+            value="<?php echo htmlspecialchars($record->getPerson()->name ?? '') ?>" />
     </div>
 </fieldset>
 <fieldset>
@@ -126,7 +126,7 @@
             id="contract-note"
             name="dialog[note]"
             rows="5"
-            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->note ?? '') ?></textarea>
         <p class="info"><?php echo I18n::__('contract_info_note') ?></p>
     </div>
 </fieldset>
