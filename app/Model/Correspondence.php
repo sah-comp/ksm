@@ -106,7 +106,7 @@ class Model_Correspondence extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS():array
+    public function injectJS(): array
     {
         return [
             '/js/quill.min',
@@ -121,7 +121,7 @@ class Model_Correspondence extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS():array
+    public function injectCSS(): array
     {
         return [
             'quill.core',
@@ -255,7 +255,7 @@ class Model_Correspondence extends Model
      *
      * @return mixed
      */
-    public function toAddress():mixed
+    public function toAddress(): mixed
     {
         if ($this->bean->contact && $this->bean->contact->getId()) {
             return $this->bean->contact->getEmailaddress();
@@ -308,7 +308,7 @@ class Model_Correspondence extends Model
      * @param string $searchphrase
      * @return array
      */
-    public function searchGlobal($searchphrase):array
+    public function searchGlobal($searchphrase): array
     {
         $searchphrase = '%'.$searchphrase.'%';
         return R::find(
@@ -392,25 +392,27 @@ SQL;
         parent::update();
         $filesArray = (array) Flight::request()->files;
         $file = reset($filesArray);
-        $file = reset($file);
-        if (!empty($file) && !$file['error']) {
-            if ($file['error']) {
-                $this->addError($file['error'], 'file');
-                throw new Exception('fileupload error ' . $file['error']);
+        if ($file !== false) {
+            $file = reset($file);
+            if (!empty($file) && !$file['error']) {
+                if ($file['error']) {
+                    $this->addError($file['error'], 'file');
+                    throw new Exception('fileupload error ' . $file['error']);
+                }
+                $file_parts = pathinfo($file['name']);
+                $orgname = $file['name'];
+                $extension = strtolower($file_parts['extension']);
+                $sanename = $this->sanitizeFilename($file_parts['filename']);
+                $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
+                if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
+                    $this->addError('move_upload_file_failed', 'file');
+                    throw new Exception('move_upload_file_failed');
+                }
+                $artifact = R::dispense('artifact');
+                $artifact->name = $orgname;
+                $artifact->filename = $filename;
+                $this->bean->ownArtifact[] = $artifact;
             }
-            $file_parts = pathinfo($file['name']);
-            $orgname = $file['name'];
-            $extension = strtolower($file_parts['extension']);
-            $sanename = $this->sanitizeFilename($file_parts['filename']);
-            $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
-            if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
-                $this->addError('move_upload_file_failed', 'file');
-                throw new Exception('move_upload_file_failed');
-            }
-            $artifact = R::dispense('artifact');
-            $artifact->name = $orgname;
-            $artifact->filename = $filename;
-            $this->bean->ownArtifact[] = $artifact;
         }
         // customer (person)
         if (!$this->bean->person_id) {
