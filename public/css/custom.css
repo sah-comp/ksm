@@ -1006,6 +1006,7 @@ hr.person-contact-divider:after {
 .tree summary {
     display: block;
     cursor: pointer;
+    color: rgb(88, 88, 88);
 }
 
 .tree summary::marker,
