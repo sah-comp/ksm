@@ -40,9 +40,9 @@ class Model_Media extends Model
         'gif',
         'jpeg',
         'jpg',
-        'png'
-    );
-    
+        'png',
+    ];
+
     /**
      * Returns the media file name.
      *

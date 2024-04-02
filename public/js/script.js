@@ -238,7 +238,8 @@ $('body').ready(function() {
      */
     $('body').on("click", 'a.inspector', function(event) {
         event.preventDefault();
-        var ident = $(this).attr('data-ident');
+        //var ident = $(this).attr('data-ident');
+        ident = $(this).attr('data-ident');
         $.get($(this).attr("href"), function(data) {
             $("#inspector").empty();
             $("#inspector").append(data);
@@ -256,6 +257,21 @@ $('body').ready(function() {
         var href = $(this).attr('data-intrinsic');
         window.location = href;
         return false;
+    });
+
+    /**
+     * Click on a folder in filer index to use that folder as a target to copy the current file into.
+     */
+    $('body').on('click', 'summary.filer-folder', function(event) {
+        //event.preventDefault();
+        if (event.altKey) {
+            //console.log('You have clicked w alt key pressed while ident ' +ident+ ' is active');
+            var path = $(this).attr('data-path');
+            var href = '/filer/move/' + ident + '/?path=' + encodeURIComponent(path);
+            window.location = href;
+            return false;
+        }
+        return true;
     });
 
     /**

@@ -63,7 +63,7 @@
     </fieldset>
     <fieldset>
         <legend class="verbose"><?php echo I18n::__('file_legend_machine') ?></legend>
-        <div class="row                                                                      <?php echo ($record->getMachine()->hasError()) ? 'error' : ''; ?>">
+        <div class="row                                                                                                                                           <?php echo ($record->getMachine()->hasError()) ? 'error' : ''; ?>">
             <label
                 for="file-machine-name">
                 <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getMachine()->getMeta('type'), $record->getMachine()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
@@ -135,6 +135,9 @@
         <?php endif?>
     </div>
 </form>
+<div class="help">
+<?php echo Flight::textile(I18n::__('file_info_how_to_move')) ?>
+</div>
 <script type="text/javascript">
     initAutocompletes();
 </script>

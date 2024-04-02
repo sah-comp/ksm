@@ -128,6 +128,27 @@ class Controller_Filer extends Controller
     }
 
     /**
+     * Move a file to another folder.
+     *
+     * @param int $id of the file
+     * @return void
+     */
+    public function move($id)
+    {
+        Permission::check(Flight::get('user'), 'filer', 'edit');
+        $this->record = R::load('file', $id);
+        $path         = Flight::request()->query->path;
+        $newpath      = $path . '/' . $this->record->filename;
+        //error_log('Move ' . $this->record->filename . ' to foldeer ' . $path);
+        if ( ! rename($this->record->path, $newpath)) {
+            Flight::get('user')->notify(I18n::__('filer_error_rename'), 'error');
+        } else {
+            Flight::get('user')->notify(I18n::__('filer_success_rename', null, [$this->record->filename]), 'success');
+        }
+        $this->redirect('/filer/index/#file-' . md5($newpath));
+    }
+
+    /**
      * Renders the filer page.
      */
     protected function render()

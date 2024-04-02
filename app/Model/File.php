@@ -119,7 +119,7 @@ class Model_File extends Model
                 // Check if it's a directory or a file
                 if (is_dir($path)) {
                     echo '<details open>';
-                    echo '<summary>';
+                    echo '<summary class="filer-folder" data-path="' . $path . '">';
                     echo $file;
                     echo '</summary>';
                     $this->listFiles($path);
