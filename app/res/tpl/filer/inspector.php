@@ -1,9 +1,9 @@
 <?php
-/**
- * File inspector template.
- *
- * Information about a selected file is displayed.
- */
+    /**
+     * File inspector template.
+     *
+     * Information about a selected file is displayed.
+     */
 ?>
 <h3><?php echo htmlspecialchars($record->filename ?? '') ?></h3>
 <form
@@ -11,7 +11,7 @@
     data-container="inspector"
     class="inline"
     method="POST"
-    action="<?php echo Url::build('/filer/edit/%d/', array($record->getId())) ?>"
+    action="<?php echo Url::build('/filer/edit/%d/', [$record->getId()]) ?>"
     accept-charset="utf-8"
     enctype="multipart/form-data">
     <div>
@@ -37,6 +37,18 @@
                 <?php echo I18n::__('file_label_template') ?>
             </label>
         </div>
+    <!--
+        <div class="row">
+            <label for="file-filename">
+                <?php echo I18n::__('file_lable_filename') ?>
+            </label>
+            <input
+                type="text"
+                id="file-filename"
+                name="dialog[filename]"
+                value="<?php echo htmlspecialchars($record->filename ?? '') ?>">
+        </div>
+    -->
         <div class="row">
             <label for="file-desc">
                 <?php echo I18n::__('file_desc') ?>
@@ -51,7 +63,7 @@
     </fieldset>
     <fieldset>
         <legend class="verbose"><?php echo I18n::__('file_legend_machine') ?></legend>
-        <div class="row <?php echo ($record->getMachine()->hasError()) ? 'error' : ''; ?>">
+        <div class="row                                                                      <?php echo ($record->getMachine()->hasError()) ? 'error' : ''; ?>">
             <label
                 for="file-machine-name">
                 <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getMachine()->getMeta('type'), $record->getMachine()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
@@ -74,10 +86,10 @@
                 data-source="<?php echo Url::build('/autocomplete/machine/name/?callback=?') ?>"
                 data-extra="file-person-id"
                 data-spread='<?php
-                    echo json_encode([
-                        'file-machine-name' => 'label',
-                        'file-machine-id' => 'id'
-                    ]); ?>'
+                                 echo json_encode([
+                                     'file-machine-name' => 'label',
+                                 'file-machine-id'   => 'id',
+                             ]); ?>'
                 value="<?php echo htmlspecialchars($record->machinename ?? '') ?>" />
         </div>
     </fieldset>
@@ -105,9 +117,9 @@
             id="file-<?php echo $record->getId() ?>-update"
             type="submit"
             name="submit"
-            value="<?php echo I18n::__('file_submit') ?>" />            
+            value="<?php echo I18n::__('file_submit') ?>" />
         <!-- Ajax does not send the submit button value, so we transport with hidden field -->
-        <?php if ($permission_delete) : ?>
+        <?php if ($permission_delete): ?>
         <input
             id="file-<?php echo $record->getId() ?>-delete"
             type="hidden"
@@ -120,7 +132,7 @@
             name="submit"
             value="<?php echo I18n::__('file_submit_delete') ?>" />
             <!-- End of hidden field to solve missing submit button when ajax(ed) -->
-        <?php endif ?>
+        <?php endif?>
     </div>
 </form>
 <script type="text/javascript">

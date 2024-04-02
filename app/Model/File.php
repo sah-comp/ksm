@@ -23,21 +23,21 @@ class Model_File extends Model
      * @var array
      */
     public $filetypes = [
-        'xls' => [
-            'prefix' => "ms-excel:ofe%7Cu%7C"
+        'xls'  => [
+            'prefix' => "ms-excel:ofe%7Cu%7C",
         ],
         'xlsx' => [
-            'prefix' => "ms-excel:ofe%7Cu%7C"
+            'prefix' => "ms-excel:ofe%7Cu%7C",
         ],
-        'doc' => [
-            'prefix' => "ms-word:ofe%7Cu%7C"
+        'doc'  => [
+            'prefix' => "ms-word:ofe%7Cu%7C",
         ],
         'docx' => [
-            'prefix' => "ms-word:ofe%7Cu%7C"
+            'prefix' => "ms-word:ofe%7Cu%7C",
         ],
-        'pdf' => [
-            'prefix' => ""
-        ]
+        'pdf'  => [
+            'prefix' => "",
+        ],
     ];
 
     /**
@@ -47,7 +47,7 @@ class Model_File extends Model
      */
     public $ignore = [
         '.DS_Store',
-        '.DAV'
+        '.DAV',
     ];
 
     /**
@@ -60,28 +60,28 @@ class Model_File extends Model
     {
         return [
             [
-                'name' => 'name',
-                'sort' => [
-                    'name' => 'name'
+                'name'   => 'name',
+                'sort'   => [
+                    'name' => 'name',
                 ],
                 'filter' => [
-                    'tag' => 'text'
-                ]
+                    'tag' => 'text',
+                ],
             ],
             [
-                'name' => 'value',
-                'sort' => [
-                    'name' => 'value'
+                'name'     => 'value',
+                'sort'     => [
+                    'name' => 'value',
                 ],
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'class' => 'number',
-                'filter' => [
-                    'tag' => 'number'
+                'class'    => 'number',
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
-            ]
+                'width'    => '8rem',
+            ],
         ];
     }
 
@@ -94,7 +94,7 @@ class Model_File extends Model
     {
         clearstatcache();
         $files = scandir($dir);
-    
+
         echo '<ul class="fileviewer">';
         foreach ($files as $file) {
             if (in_array($file, $this->ignore)) {
@@ -104,12 +104,12 @@ class Model_File extends Model
                 $path = $dir . '/' . $file;
 
                 // lookup the file. If none is found, dispense a empty one
-                if (! $filebean = R::findOne('file', " ident = ? LIMIT 1", [md5($path)])) {
+                if ( ! $filebean = R::findOne('file', " ident = ? LIMIT 1", [md5($path)])) {
                     $filebean = R::dispense('file');
                 }
-                $filebean->path = $path;
+                $filebean->path     = $path;
                 $filebean->filename = $file;
-                $filebean->size = filesize($path);
+                $filebean->size     = filesize($path);
                 //$filebean->filemtime = filemtime($path);
                 $filebean->filemtime = date("Y-m-d H:i:s", filemtime($path));
                 R::store($filebean);
@@ -137,15 +137,15 @@ class Model_File extends Model
                     }
                     */
                     //$inspector_url = Url::build('/filer/inspector/%s', [$filebean->ident]);
-                    
+
                     ob_start();
                     Flight::render('filer/item', [
                         'record' => $filebean,
-                        'href' => $filebean->getHref()
+                        'href'   => $filebean->getHref(),
                     ]);
                     $html = ob_get_clean();
                     echo $html;
-                    
+
                     //echo '<a data-ident="' . $filebean->ident . '" class="inspector" data-intrinsic="' . $href . '" href="' . $inspector_url . '" title="' . I18n::__('scaffold_action_edit') . '">' . $file . '</a>';
                     //echo '<a href="' . $href . '" data-filename="' . $file . '">' . $file . '</a>';
                 }
@@ -166,22 +166,22 @@ class Model_File extends Model
      * @param string $path path to a certain directory
      * @return string
      */
-    public function dir($path = '/'):string
+    public function dir($path = '/'): string
     {
         $objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($path), RecursiveIteratorIterator::SELF_FIRST);
-        $dom = new DomDocument("1.0");
-        $list = $dom->createElement("ul");
+        $dom     = new DomDocument("1.0");
+        $list    = $dom->createElement("ul");
         $dom->appendChild($list);
-        $node = $list;
+        $node  = $list;
         $depth = 0;
         foreach ($objects as $name => $object) {
             $pos = strpos($object->getFilename(), '.');
             //error_log("Position " . $pos . " in " . $object->getFilename());
-            
+
             if (str_starts_with($object->getFilename(), '.') || str_starts_with($object->getFilename(), '..')) {
                 continue;
             }
-            
+
             if ($objects->getDepth() == $depth) {
                 //the depth hasnt changed so just add another li
                 //$li = $dom->createElement('li', $this->buildFileLink($object));
@@ -222,13 +222,13 @@ class Model_File extends Model
     {
         $e = $dom->createElement('a', $file->getFilename());
         $a = $dom->appendChild($e);
-        
+
         if ($file->isFile()) {
             $extension = $file->getExtension();
             //error_log($extension);
             if (array_key_exists($extension, $this->filetypes)) {
                 $bridge = $this->filetypes[$extension];
-                $a->setAttribute('href', $bridge['prefix'].WEBDAV_PREFIX.'/'.$file->getFilename());
+                $a->setAttribute('href', $bridge['prefix'] . WEBDAV_PREFIX . '/' . $file->getFilename());
                 //error_log($bridge['prefix']);
             } else {
                 $a->setAttribute('href', 'file:/' . $file->getPathname());
@@ -251,15 +251,15 @@ class Model_File extends Model
     public function getHref()
     {
         $path_info = pathinfo($this->bean->path);
-        if (! isset($path_info['extension'])) {
+        if ( ! isset($path_info['extension'])) {
             return $this->bean->path;
         }
         $extension = $path_info['extension'];
-        $href = $this->bean->path;
+        $href      = $this->bean->path;
         if (array_key_exists($extension, $this->filetypes)) {
             $bridge = $this->filetypes[$extension];
-            $href = str_replace(DMS_PATH, '', $href);
-            $href = $bridge['prefix'] . WEBDAV_PREFIX . $href;
+            $href   = str_replace(DMS_PATH, '', $href);
+            $href   = $bridge['prefix'] . WEBDAV_PREFIX . $href;
         } else {
             $href = WEBDAV_PREFIX . str_replace(DMS_PATH, '', $href);
         }
@@ -281,7 +281,7 @@ class Model_File extends Model
      *
      * @return bool
      */
-    public function isTemplate():bool
+    public function isTemplate(): bool
     {
         return $this->bean->template ? true : false;
     }
@@ -293,7 +293,7 @@ class Model_File extends Model
      */
     public function getMachine()
     {
-        if (! $this->bean->machine) {
+        if ( ! $this->bean->machine) {
             $this->bean->machine = R::dispense('machine');
         }
         return $this->bean->machine;
@@ -315,12 +315,12 @@ class Model_File extends Model
      */
     public function update()
     {
-        
-        if (!$this->bean->machine_id) {
+
+        if ( ! $this->bean->machine_id) {
             $this->bean->machine_id = null;
             unset($this->bean->machine);
         }
-        
+
         $this->bean->ident = md5($this->bean->path);
         parent::update();
     }

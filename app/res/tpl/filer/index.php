@@ -8,8 +8,8 @@
     <div id="directory">
         <div class="panel tree">
             <?php
-            //echo $record->dir(DMS_PATH);
-            $record->listFiles(DMS_PATH);
+                //echo $record->dir(DMS_PATH);
+                $record->listFiles(DMS_PATH);
             ?>
         </div>
     </div>

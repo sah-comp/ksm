@@ -56,6 +56,18 @@ class Controller_Filer extends Controller
     public function index()
     {
         Permission::check(Flight::get('user'), 'filer', 'index');
+        if (Flight::request()->data->submit == I18n::__('file_action_clone_from')) {
+            $original = R::load('file', Flight::request()->data->clonefrom);
+            $newname  = Flight::request()->data->clonename;
+            $newpath  = str_replace($original->filename, $newname, $original->path);
+            $newident = md5($newpath);
+            if ( ! copy($original->path, $newpath)) {
+                Flight::get('user')->notify(I18n::__('filer_error_clone'), 'error');
+            } else {
+                Flight::get('user')->notify(I18n::__('filer_success_clone', null, [$newname]), 'success');
+            }
+            $this->redirect('/filer/#file-' . $newident);
+        }
         $this->records = [];
         $this->render();
     }
@@ -71,8 +83,8 @@ class Controller_Filer extends Controller
     {
         $this->record = R::findOne('file', " ident = ? LIMIT 1 ", [$ident]);
         Flight::render('filer/inspector', [
-            'record' => $this->record,
-            'permission_delete' => Permission::validate(Flight::get('user'), 'filer', 'expunge')
+            'record'            => $this->record,
+            'permission_delete' => Permission::validate(Flight::get('user'), 'filer', 'expunge'),
         ]);
         return;
         //echo 'Info about ' . $this->record->file;
@@ -98,8 +110,8 @@ class Controller_Filer extends Controller
                 } else {
                     R::store($file);
                     Flight::render('filer/inspector', [
-                        'record' => $file,
-                         'permission_delete' => Permission::check(Flight::get('user'), 'filer', 'expunge')
+                        'record'            => $file,
+                        'permission_delete' => Permission::check(Flight::get('user'), 'filer', 'expunge'),
                     ]);
                     return;
                 }
@@ -109,8 +121,8 @@ class Controller_Filer extends Controller
         }
         $file = R::load('file', $id);
         Flight::render('filer/inspector', [
-            'record' => $file,
-            'permission_delete' => Permission::check(Flight::get('user'), 'filer', 'expunge')
+            'record'            => $file,
+            'permission_delete' => Permission::check(Flight::get('user'), 'filer', 'expunge'),
         ]);
         return;
     }
@@ -126,19 +138,19 @@ class Controller_Filer extends Controller
         Flight::render('shared/navigation/main', [], 'navigation_main');
         Flight::render('shared/navigation', [], 'navigation');
         Flight::render('filer/toolbar', [
-            'record' => $this->record
+            'record' => $this->record,
         ], 'toolbar');
         Flight::render('shared/header', [], 'header');
         Flight::render('shared/footer', [], 'footer');
         Flight::render($this->template, [
-            'title' => I18n::__("filer_head_title"),
-            'record' => $this->record,
+            'title'   => I18n::__("filer_head_title"),
+            'record'  => $this->record,
             'records' => $this->records,
-            'path' => DMS_PATH
+            'path'    => DMS_PATH,
         ], 'content');
         Flight::render('html5', [
-            'title' => I18n::__("filer_head_title"),
-            'language' => Flight::get('language')
+            'title'    => I18n::__("filer_head_title"),
+            'language' => Flight::get('language'),
         ]);
     }
 }
