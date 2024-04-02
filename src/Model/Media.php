@@ -23,19 +23,19 @@ class Model_Media extends Model
      *
      * @var array
      */
-    protected $extensions = array(
-        'gif' => 'image/gif',
-        'jpg' => 'image/jpeg',
+    protected $extensions = [
+        'gif'  => 'image/gif',
+        'jpg'  => 'image/jpeg',
         'jpeg' => 'image/jpeg',
-        'png' => 'image/png'
-    );
+        'png'  => 'image/png',
+    ];
 
     /**
      * Container for exensions that qualify as image files.
      *
      * @var array
      */
-    protected $extensions_image = array(
+    protected $extensions_image = [
         'jpg',
         'gif',
         'jpeg',
@@ -52,7 +52,7 @@ class Model_Media extends Model
     {
         return $this->name;
     }
-    
+
     /**
      * Returns wether the uploaded file is an image file or not.
      *
@@ -66,7 +66,7 @@ class Model_Media extends Model
     {
         return in_array($this->bean->extension, $this->extensions_image);
     }
-    
+
     /**
      * Returns an textile image tag.
      *
@@ -85,58 +85,58 @@ class Model_Media extends Model
      */
     public function getAttributes($layout = 'table')
     {
-        return array(
-            array(
-                'name' => 'sanename',
-                'sort' => array(
-                    'name' => 'media.sanename'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            ),
-            array(
-                'name' => 'extension',
-                'sort' => array(
-                    'name' => 'media.extension'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                ),
-				'width' => '5rem'
-            ),
-            array(
-                'name' => 'size',
-                'sort' => array(
-                    'name' => 'media.size'
-                ),
-                'class' => 'number',
-                'filter' => array(
-                    'tag' => 'number'
-                ),
-				'width' => '10rem'
-            ),
-            array(
-                'name' => 'name',
-                'sort' => array(
-                    'name' => 'media.name'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            ),
-            array(
-                'name' => 'desc',
-                'sort' => array(
-                    'name' => 'media.desc'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            )
-        );
+        return [
+            [
+                'name'   => 'sanename',
+                'sort'   => [
+                    'name' => 'media.sanename',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+            ],
+            [
+                'name'   => 'extension',
+                'sort'   => [
+                    'name' => 'media.extension',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+                'width'  => '5rem',
+            ],
+            [
+                'name'   => 'size',
+                'sort'   => [
+                    'name' => 'media.size',
+                ],
+                'class'  => 'number',
+                'filter' => [
+                    'tag' => 'number',
+                ],
+                'width'  => '10rem',
+            ],
+            [
+                'name'   => 'name',
+                'sort'   => [
+                    'name' => 'media.name',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+            ],
+            [
+                'name'   => 'desc',
+                'sort'   => [
+                    'name' => 'media.desc',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+            ],
+        ];
     }
-    
+
     /**
      * Returns a the given string safely to use as filename or url.
      *
@@ -152,7 +152,7 @@ class Model_Media extends Model
      */
     public function sanitizeFilename($string = '', $is_filename = false)
     {
-        $string = preg_replace('/[^\w\-'. ($is_filename ? '~_\.' : ''). ']+/u', '-', $string);
+        $string = preg_replace('/[^\w\-' . ($is_filename ? '~_\.' : '') . ']+/u', '-', $string);
         return mb_strtolower(preg_replace('/--+/u', '-', $string));
     }
 
@@ -163,9 +163,9 @@ class Model_Media extends Model
      */
     public function dispense()
     {
-		$this->bean->sequence = 1;
-	}
-        
+        $this->bean->sequence = 1;
+    }
+
     /**
      * update.
      *
@@ -173,24 +173,22 @@ class Model_Media extends Model
      */
     public function update()
     {
-        $files = reset(Flight::request()->files);
-        $file = reset($files);
+        $filesArray = (array) Flight::request()->files;
+        $file       = reset($filesArray);
         if ($this->bean->getId() && (empty($file) || $file['error'] == 4)) {
-            
-        }
-        else
-        {
+
+        } else {
             if ($file['error']) {
                 $this->addError($file['error'], 'file');
                 throw new Exception('fileupload error ' . $file['error']);
             }
-            $file_parts = pathinfo($file['name']);
-            $this->bean->sanename = $this->sanitizeFilename($file_parts['filename']);
+            $file_parts            = pathinfo($file['name']);
+            $this->bean->sanename  = $this->sanitizeFilename($file_parts['filename']);
             $this->bean->extension = strtolower($file_parts['extension']);
             if ( ! $this->bean->name) {
                 $this->bean->name = ucfirst(strtolower($this->bean->sanename));
             }
-            $this->bean->file = $this->bean->sanename.'.'.$this->bean->extension;
+            $this->bean->file = $this->bean->sanename . '.' . $this->bean->extension;
             if ( ! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $this->bean->file)) {
                 $this->addError('move_upload_file_failed', 'file');
                 throw new Exception('move_upload_file_failed');
@@ -200,7 +198,7 @@ class Model_Media extends Model
         }
         parent::update();
     }
-    
+
     /**
      * after_delete.
      *
@@ -209,8 +207,8 @@ class Model_Media extends Model
      */
     public function after_delete()
     {
-        if (is_file(Flight::get('upload_dir').'/'.$this->bean->file)) {
-            unlink(Flight::get('upload_dir').'/'.$this->bean->file);
+        if (is_file(Flight::get('upload_dir') . '/' . $this->bean->file)) {
+            unlink(Flight::get('upload_dir') . '/' . $this->bean->file);
         }
     }
 }
