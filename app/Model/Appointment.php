@@ -42,192 +42,192 @@ class Model_Appointment extends Model
     {
         return [
             [
-                'name' => 'date',
-                'sort' => [
-                    'name' => 'appointment.date'
+                'name'     => 'date',
+                'sort'     => [
+                    'name' => 'appointment.date',
                 ],
                 'callback' => [
-                    'name' => 'localizedDate'
+                    'name' => 'localizedDate',
                 ],
-                'filter' => [
-                    'tag' => 'date'
+                'filter'   => [
+                    'tag' => 'date',
                 ],
-                'width' => '7rem'
+                'width'    => '7rem',
             ],
             [
-                'name' => 'starttime',
-                'sort' => [
-                    'name' => 'appointment.starttime'
+                'name'     => 'starttime',
+                'sort'     => [
+                    'name' => 'appointment.starttime',
                 ],
                 'callback' => [
-                    'name' => 'localizedTime'
+                    'name' => 'localizedTime',
                 ],
-                'filter' => [
-                    'tag' => 'time'
+                'filter'   => [
+                    'tag' => 'time',
                 ],
-                'width' => '5rem'
+                'width'    => '5rem',
             ],
             [
-                'name' => 'fix',
-                'sort' => [
-                    'name' => 'appointment.fix'
+                'name'     => 'fix',
+                'sort'     => [
+                    'name' => 'appointment.fix',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '4rem'
+                'width'    => '4rem',
             ],
             [
-                'name' => 'completed',
-                'sort' => [
-                    'name' => 'appointment.completed'
+                'name'     => 'completed',
+                'sort'     => [
+                    'name' => 'appointment.completed',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '4rem'
+                'width'    => '4rem',
             ],
             [
-                'name' => 'confirmed',
-                'sort' => [
-                    'name' => 'appointment.confirmed'
+                'name'     => 'confirmed',
+                'sort'     => [
+                    'name' => 'appointment.confirmed',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '4rem'
+                'width'    => '4rem',
             ],
             [
-                'name' => 'receipt',
-                'sort' => [
-                    'name' => 'appointment.receipt'
+                'name'     => 'receipt',
+                'sort'     => [
+                    'name' => 'appointment.receipt',
                 ],
                 'callback' => [
-                    'name' => 'localizedDate'
+                    'name' => 'localizedDate',
                 ],
-                'filter' => [
-                    'tag' => 'date'
+                'filter'   => [
+                    'tag' => 'date',
                 ],
-                'width' => '7rem'
+                'width'    => '7rem',
             ],
             [
-                'name' => 'appointmenttype.id',
-                'sort' => [
-                    'name' => 'appointmenttype.id'
+                'name'     => 'appointmenttype.id',
+                'sort'     => [
+                    'name' => 'appointmenttype.id',
                 ],
                 'callback' => [
-                    'name' => 'appointmenttypeName'
+                    'name' => 'appointmenttypeName',
                 ],
-                'filter' => [
-                    'tag' => 'in',
+                'filter'   => [
+                    'tag'     => 'in',
                     'postvar' => 'appointmenttype',
                     'options' => [
-                        'bean' => 'appointmenttype',
-                        'id' => 'id',
-                        'label' => 'name'
-                    ]
+                        'bean'  => 'appointmenttype',
+                        'id'    => 'id',
+                        'label' => 'name',
+                    ],
                 ],
-                'width' => '7rem'
+                'width'    => '7rem',
             ],
             [
-                'name' => 'user.name',
-                'sort' => [
-                    'name' => 'user.name'
+                'name'     => 'user.name',
+                'sort'     => [
+                    'name' => 'user.name',
                 ],
                 'callback' => [
-                    'name' => 'userName'
+                    'name' => 'userName',
                 ],
-                'filter' => [
-                    'tag' => 'text'
+                'filter'   => [
+                    'tag' => 'text',
                 ],
-                'width' => '4rem'
+                'width'    => '4rem',
             ],
             [
-                'name' => 'person.name',
-                'sort' => [
-                    'name' => 'person.name'
+                'name'     => 'person.name',
+                'sort'     => [
+                    'name' => 'person.name',
                 ],
                 'callback' => [
-                    'name' => 'personName'
+                    'name' => 'personName',
                 ],
-                'filter' => [
-                    'tag' => 'text'
+                'filter'   => [
+                    'tag' => 'text',
                 ],
-                'prefix' => [
+                'prefix'   => [
                     'callback' => [
-                        'name' => 'linkAdditionalInfo'//'prefixContact'
-                    ]
+                        'name' => 'linkAdditionalInfo', //'prefixContact'
+                    ],
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'location.name',
-                'sort' => [
-                    'name' => 'location.name'
+                'name'     => 'location.name',
+                'sort'     => [
+                    'name' => 'location.name',
                 ],
                 'callback' => [
-                    'name' => 'locationName'
+                    'name' => 'locationName',
                 ],
-                'filter' => [
-                    'tag' => 'text'
+                'filter'   => [
+                    'tag' => 'text',
                 ],
-                'width' => '6rem'
+                'width'    => '6rem',
             ],
             [
-                'name' => 'machine.name',
-                'sort' => [
-                    'name' => 'machine.name'
+                'name'     => 'machine.name',
+                'sort'     => [
+                    'name' => 'machine.name',
                 ],
                 'callback' => [
-                    'name' => 'machineName'
+                    'name' => 'machineName',
                 ],
-                'filter' => [
-                    'tag' => 'text'
-                ]
+                'filter'   => [
+                    'tag' => 'text',
+                ],
             ],
             [
-                'name' => 'machine.serialnumber',
-                'sort' => [
-                    'name' => 'machine.serialnumber'
+                'name'     => 'machine.serialnumber',
+                'sort'     => [
+                    'name' => 'machine.serialnumber',
                 ],
                 'callback' => [
-                    'name' => 'machineSerialnumber'
+                    'name' => 'machineSerialnumber',
                 ],
-                'filter' => [
-                    'tag' => 'text'
-                ]
+                'filter'   => [
+                    'tag' => 'text',
+                ],
             ],
             [
-                'name' => 'machine.internalnumber',
-                'sort' => [
-                    'name' => 'machine.internalnumber'
+                'name'     => 'machine.internalnumber',
+                'sort'     => [
+                    'name' => 'machine.internalnumber',
                 ],
                 'callback' => [
-                    'name' => 'machineInternalnumber'
+                    'name' => 'machineInternalnumber',
                 ],
-                'filter' => [
-                    'tag' => 'text'
+                'filter'   => [
+                    'tag' => 'text',
                 ],
-                'width' => '4rem'
+                'width'    => '4rem',
             ],
             [
-                'name' => 'note',
-                'sort' => [
-                    'name' => 'appointment.note'
+                'name'   => 'note',
+                'sort'   => [
+                    'name' => 'appointment.note',
                 ],
                 'filter' => [
-                    'tag' => 'text'
-                ]
-            ]
+                    'tag' => 'text',
+                ],
+            ],
         ];
     }
 
@@ -240,7 +240,7 @@ class Model_Appointment extends Model
     public function prefixContact()
     {
         Flight::render('model/person/tooltip/contactinfo', [
-            'record' => $this->bean->getPerson()
+            'record' => $this->bean->getPerson(),
         ]);
     }
 
@@ -263,7 +263,7 @@ class Model_Appointment extends Model
     public function renderAdditional($info): void
     {
         Flight::render('model/person/additional/contactinfo', [
-            'record' => $this->bean->getPerson()
+            'record' => $this->bean->getPerson(),
         ]);
     }
 
@@ -275,19 +275,19 @@ class Model_Appointment extends Model
      */
     public function getConfirmedUndone($date = '')
     {
-        $filter = [':yes' => 1];
+        $filter   = [':yes' => 1];
         $add_date = '';
         if ($date) {
             if (strpos($date, $this->daterangedelimiter)) {
-                $dates = explode($this->daterangedelimiter, $date);
-                $date_from = $this->convertToDate($dates[0]);
-                $date_to = $this->convertToDate($dates[1]);
-                $add_date = ' AND (date >= :pday_from AND date <= :pday_to)';
+                $dates                = explode($this->daterangedelimiter, $date);
+                $date_from            = $this->convertToDate($dates[0]);
+                $date_to              = $this->convertToDate($dates[1]);
+                $add_date             = ' AND (date >= :pday_from AND date <= :pday_to)';
                 $filter[':pday_from'] = $date_from;
-                $filter[':pday_to'] = $date_to;
+                $filter[':pday_to']   = $date_to;
             } else {
-                $add_date = ' AND date = :pday ';
-                $date = $this->convertToDate($date);
+                $add_date        = ' AND date = :pday ';
+                $date            = $this->convertToDate($date);
                 $filter[':pday'] = $date;
             }
         }
@@ -303,25 +303,25 @@ class Model_Appointment extends Model
      */
     public function getLastUpdated($date = '')
     {
-        $filter = [':yes' => 1];
+        $filter   = [':yes' => 1];
         $add_date = '';
         if ($date) {
             if (strpos($date, $this->daterangedelimiter)) {
-                $dates = explode($this->daterangedelimiter, $date);
-                $date_from = $this->convertToDate($dates[0]);
-                $date_to = $this->convertToDate($dates[1]);
-                $add_date = ' AND (date >= :pday_from AND date <= :pday_to)';
+                $dates                = explode($this->daterangedelimiter, $date);
+                $date_from            = $this->convertToDate($dates[0]);
+                $date_to              = $this->convertToDate($dates[1]);
+                $add_date             = ' AND (date >= :pday_from AND date <= :pday_to)';
                 $filter[':pday_from'] = $date_from;
-                $filter[':pday_to'] = $date_to;
+                $filter[':pday_to']   = $date_to;
             } else {
-                $add_date = ' AND date = :pday ';
-                $date = $this->convertToDate($date);
+                $add_date        = ' AND date = :pday ';
+                $date            = $this->convertToDate($date);
                 $filter[':pday'] = $date;
             }
         }
         $sql = "confirmed = :yes AND completed != :yes {$add_date} ORDER BY updated DESC LIMIT 1";
         if ($latest = R::findOne('appointment', $sql, $filter)) {
-            return (int)$latest->updated;
+            return (int) $latest->updated;
         }
         return false;
     }
@@ -333,7 +333,7 @@ class Model_Appointment extends Model
      */
     public function getTransaction()
     {
-        if (! $this->bean->transaction) {
+        if ( ! $this->bean->transaction) {
             $this->bean->transaction = R::dispense('transaction');
         }
         return $this->bean->transaction;
@@ -395,7 +395,7 @@ class Model_Appointment extends Model
      */
     public function isOverdue()
     {
-        if (!$this->bean->getId()) {
+        if ( ! $this->bean->getId()) {
             return '';
         }
         if ($this->bean->getId() && (strtotime($this->bean->date . ' ' . $this->bean->starttime) < time())) {
@@ -415,7 +415,7 @@ class Model_Appointment extends Model
     public function weekofyear()
     {
         //$class = $this->bean->isOverdue();
-        return htmlspecialchars($this->bean->localizedDate('date', '%V'));
+        return htmlspecialchars($this->bean->localizedDate('date', 'W'));
     }
 
     /**
@@ -436,7 +436,7 @@ class Model_Appointment extends Model
      */
     public function complete()
     {
-        $this->bean->completed = true;
+        $this->bean->completed       = true;
         $this->bean->terminationdate = date('Y-m-d');
         R::store($this->bean);
     }
@@ -475,11 +475,11 @@ class Model_Appointment extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS():array
+    public function injectJS(): array
     {
         return [
             '/js/select2.min',
-            '/js/appointment'
+            '/js/appointment',
         ];
     }
 
@@ -489,10 +489,10 @@ class Model_Appointment extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectCSS():array
+    public function injectCSS(): array
     {
         return [
-            'select2.min'
+            'select2.min',
         ];
     }
 
@@ -537,7 +537,7 @@ class Model_Appointment extends Model
      */
     public function getLocation()
     {
-        if (! $this->bean->location) {
+        if ( ! $this->bean->location) {
             $this->bean->location = R::dispense('location');
         }
         return $this->bean->location;
@@ -564,7 +564,7 @@ class Model_Appointment extends Model
      */
     public function getContact()
     {
-        if (! $this->bean->contact) {
+        if ( ! $this->bean->contact) {
             $this->bean->contact = R::dispense('contact');
         }
         return $this->bean->contact;
@@ -577,7 +577,7 @@ class Model_Appointment extends Model
      */
     public function getAppointmenttype()
     {
-        if (! $this->bean->appointmenttype) {
+        if ( ! $this->bean->appointmenttype) {
             $this->bean->appointmenttype = R::dispense('appointmenttype');
         }
         return $this->bean->appointmenttype;
@@ -600,7 +600,7 @@ class Model_Appointment extends Model
      */
     public function getPerson()
     {
-        if (! $this->bean->person) {
+        if ( ! $this->bean->person) {
             $this->bean->person = R::dispense('person');
         }
         return $this->bean->person;
@@ -623,7 +623,7 @@ class Model_Appointment extends Model
      */
     public function getMachine()
     {
-        if (! $this->bean->machine) {
+        if ( ! $this->bean->machine) {
             $this->bean->machine = R::dispense('machine');
         }
         return $this->bean->machine;
@@ -646,7 +646,7 @@ class Model_Appointment extends Model
      */
     public function getUser()
     {
-        if (! $this->bean->user) {
+        if ( ! $this->bean->user) {
             $this->bean->user = R::dispense('user');
         }
         return $this->bean->user;
@@ -689,7 +689,7 @@ class Model_Appointment extends Model
      */
     public function scaffoldStyle()
     {
-        if (! $this->bean->getAppointmenttype()->getId()) {
+        if ( ! $this->bean->getAppointmenttype()->getId()) {
             return "style=\"border-left: 5px solid inherit;\"";
         }
         return "style=\"border-left: 5px solid {$this->bean->getAppointmenttype()->color};\"";
@@ -701,9 +701,9 @@ class Model_Appointment extends Model
      * @param string $searchphrase
      * @return array
      */
-    public function searchGlobal($searchphrase):array
+    public function searchGlobal($searchphrase): array
     {
-        $searchphrase = '%'.$searchphrase.'%';
+        $searchphrase = '%' . $searchphrase . '%';
         return R::find(
             $this->bean->getMeta('type'),
             ' @joined.person.name LIKE :f OR @joined.contact.name LIKE :f OR (@joined.user.name LIKE :f OR @joined.user.email LIKE :f OR @joined.user.shortname LIKE :f OR @joined.user.screenname LIKE :f) OR @joined.appointmenttype.name LIKE :f OR (@joined.machine.name LIKE :f OR @joined.machine.name LIKE :f OR @joined.machine.serialnumber LIKE :f OR @joined.machine.internalnumber LIKE :f OR @joined.machine.note LIKE :f) OR @joined.location.name LIKE :f OR transactionnumber LIKE :f OR date = :f OR appointment.note LIKE :f',
@@ -761,14 +761,14 @@ SQL;
      */
     public function dispense()
     {
-        $this->bean->transactionnumber = '';
-        $this->bean->note = '';
-        $this->bean->date = date('Y-m-d');
-        $this->bean->interval = 0;
-        $this->bean->adjourned = 0; // Counts how many times the appointment was adjournded
-        $this->bean->receipt = date('Y-m-d'); // Date when the appointment was arranged
-        $this->bean->starttime = date('H:i:s', strtotime('00:00:00'));
-        $this->bean->endtime = date('H:i:s', strtotime('00:00:00'));
+        $this->bean->transactionnumber  = '';
+        $this->bean->note               = '';
+        $this->bean->date               = date('Y-m-d');
+        $this->bean->interval           = 0;
+        $this->bean->adjourned          = 0; // Counts how many times the appointment was adjournded
+        $this->bean->receipt            = date('Y-m-d'); // Date when the appointment was arranged
+        $this->bean->starttime          = date('H:i:s', strtotime('00:00:00'));
+        $this->bean->endtime            = date('H:i:s', strtotime('00:00:00'));
         $this->bean->appointmenttype_id = Flight::setting()->appointmenttypeservice;
         $this->addConverter(
             'date',
@@ -809,9 +809,9 @@ SQL;
     public function getDependents($person)
     {
         $result = [
-            'machines' => R::findFromSQL('machine', " SELECT machine.* FROM machine LEFT JOIN contract ON contract.machine_id = machine.id WHERE contract.person_id = ? ORDER BY machine.name, machine.serialnumber", [$person->getId()]),
-            'contacts' => $person->with("ORDER BY name")->ownContact,
-            'locations' => $person->with("ORDER BY name")->ownLocation
+            'machines'  => R::findFromSQL('machine', " SELECT machine.* FROM machine LEFT JOIN contract ON contract.machine_id = machine.id WHERE contract.person_id = ? ORDER BY machine.name, machine.serialnumber", [$person->getId()]),
+            'contacts'  => $person->with("ORDER BY name")->ownContact,
+            'locations' => $person->with("ORDER BY name")->ownLocation,
         ];
         return $result;
     }
@@ -821,44 +821,44 @@ SQL;
      */
     public function update()
     {
-        if ((int)$this->bean->interval > 0 && $this->bean->date && !$this->bean->old('completed') && $this->bean->completed && $this->bean->getId()) {
+        if ((int) $this->bean->interval > 0 && $this->bean->date && ! $this->bean->old('completed') && $this->bean->completed && $this->bean->getId()) {
             // Existing appointment with interval set to completed will be re-newed with a new date.
-            $dup = R::duplicate($this->bean);
-            $dup->date = date('Y-m-d', strtotime($this->bean->date . " + " . (int)$this->bean->interval . " days"));
-            $dup->completed = false;
-            $dup->confirmed = false;
+            $dup                    = R::duplicate($this->bean);
+            $dup->date              = date('Y-m-d', strtotime($this->bean->date . " + " . (int) $this->bean->interval . " days"));
+            $dup->completed         = false;
+            $dup->confirmed         = false;
             $dup->transactionnumber = '';
-            $dup->transaction = null;
-            $dup_id = R::store($dup);
+            $dup->transaction       = null;
+            $dup_id                 = R::store($dup);
             //$dup->receipt = date('Y-m-d');
             $this->bean->ownAppointment[] = $dup;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
         }
 
-        if (!$this->bean->person_id) {
+        if ( ! $this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
         }
 
-        if (!CINNEBAR_MIP) {
-            if (!$this->bean->machine_id) {
+        if ( ! CINNEBAR_MIP) {
+            if ( ! $this->bean->machine_id) {
                 $this->bean->machine_id = null;
                 unset($this->bean->machine);
             }
-            if (!$this->bean->user_id) {
+            if ( ! $this->bean->user_id) {
                 $this->bean->user_id = null;
                 unset($this->bean->user);
             }
-            if (!$this->bean->contact_id) {
+            if ( ! $this->bean->contact_id) {
                 $this->bean->contact_id = null;
                 unset($this->bean->contact);
             }
-            if (!$this->bean->location_id) {
+            if ( ! $this->bean->location_id) {
                 $this->bean->location_id = null;
                 unset($this->bean->location);
             }
             // transaction
-            if (!$this->bean->transaction_id) {
+            if ( ! $this->bean->transaction_id) {
                 $this->bean->transaction_id = null;
                 unset($this->bean->transaction);
             }

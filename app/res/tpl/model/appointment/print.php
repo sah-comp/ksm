@@ -92,7 +92,7 @@
     </htmlpageheader>
     <htmlpagefooter name="ksmfooter" style="display: none;">
         <div style="border-top: 0.1mm solid #000000; font-size: 9pt; text-align: center; padding-top: 3mm;">
-            <?php echo I18n::__('service_text_page') ?> {PAGENO} <?php echo I18n::__('service_text_of') ?> {nbpg}
+            <?php echo I18n::__('service_text_page') ?> {PAGENO}<?php echo I18n::__('service_text_of') ?> {nbpg}
         </div>
     </htmlpagefooter>
     <sethtmlpageheader name="ksmheader" value="on" show-this-page="1" />
@@ -121,37 +121,37 @@
         </thead>
         <tbody>
         <?php foreach ($records as $_id => $_record):
-            $_type = $_record->getMeta('type');
-            $_person = $_record->getPerson();
-            $_machine = $_record->getMachine();
-            $_user = $_record->getUser();
-            $_appointmenttype = $_record->getAppointmenttype();
-            $_location = $_record->getLocation();
-            if ($_location->getId()):
-                $_loca_name = $_location->name;
-            else:
-                $_loca_name = $_person->postalAddress();
-            endif;
-            $_timecheck = $_record->isOverdue();
-        ?>
-        <tr>
-            <td><?php echo htmlspecialchars($_record->localizedDate('date')) ?></td>
-            <td><?php echo htmlspecialchars($_record->localizedTime('starttime', '%H:%M')) ?></td>
-            <td class="number"><?php echo htmlspecialchars($_record->localizedDate('date', '%V')) ?></td>
-            <td><?php echo ($_record->fix) ? I18n::__('bool_true') : '' ?></td>
-            <td><?php echo htmlspecialchars($_record->localizedDate('receipt')) ?></td>
-            <td><?php echo htmlspecialchars($_appointmenttype->name) ?></td>
-            <td><?php echo htmlspecialchars($_user->getName()) ?></td>
-            <td class="number"><?php echo htmlspecialchars($_record->decimal('duration')) ?></td>
-            <td><?php echo htmlspecialchars($_person->name) ?></td>
-            <td><?php echo htmlspecialchars($_loca_name) ?></td>
-            <td><?php echo htmlspecialchars($_machine->machinebrandName()) ?></td>
-            <td><?php echo htmlspecialchars($_machine->name) ?></td>
-            <td><?php echo htmlspecialchars($_machine->serialnumber) ?></td>
-            <td><?php echo htmlspecialchars($_machine->internalnumber) ?></td>
-            <td><?php echo htmlspecialchars($_record->note) ?></td>
-        </tr>
-        <?php endforeach; ?>
+                $_type            = $_record->getMeta('type');
+                $_person          = $_record->getPerson();
+                $_machine         = $_record->getMachine();
+                $_user            = $_record->getUser();
+                $_appointmenttype = $_record->getAppointmenttype();
+                $_location        = $_record->getLocation();
+                if ($_location->getId()):
+                    $_loca_name = $_location->name;
+                else:
+                    $_loca_name = $_person->postalAddress();
+                endif;
+                $_timecheck = $_record->isOverdue();
+            ?>
+			        <tr>
+			            <td><?php echo htmlspecialchars($_record->localizedDate('date')) ?></td>
+			            <td><?php echo htmlspecialchars($_record->localizedTime('starttime', 'H:i')) ?></td>
+			            <td class="number"><?php echo htmlspecialchars($_record->localizedDate('date', 'W')) ?></td>
+			            <td><?php echo ($_record->fix) ? I18n::__('bool_true') : '' ?></td>
+			            <td><?php echo htmlspecialchars($_record->localizedDate('receipt')) ?></td>
+			            <td><?php echo htmlspecialchars($_appointmenttype->name) ?></td>
+			            <td><?php echo htmlspecialchars($_user->getName()) ?></td>
+			            <td class="number"><?php echo htmlspecialchars($_record->decimal('duration')) ?></td>
+			            <td><?php echo htmlspecialchars($_person->name) ?></td>
+			            <td><?php echo htmlspecialchars($_loca_name) ?></td>
+			            <td><?php echo htmlspecialchars($_machine->machinebrandName()) ?></td>
+			            <td><?php echo htmlspecialchars($_machine->name) ?></td>
+			            <td><?php echo htmlspecialchars($_machine->serialnumber) ?></td>
+			            <td><?php echo htmlspecialchars($_machine->internalnumber) ?></td>
+			            <td><?php echo htmlspecialchars($_record->note) ?></td>
+			        </tr>
+			        <?php endforeach;?>
         </tbody>
     </table>
 
