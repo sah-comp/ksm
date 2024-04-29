@@ -287,6 +287,16 @@ class Model_File extends Model
     }
 
     /**
+     * Returns wether the file is linked to a machine or not.
+     *
+     * @return bool
+     */
+    public function hasMachine()
+    {
+        return $this->getMachine()->getId();
+    }
+
+    /**
      * Return the machine bean.
      *
      * @return $machine
