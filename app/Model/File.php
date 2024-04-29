@@ -287,6 +287,16 @@ class Model_File extends Model
     }
 
     /**
+     * Returns wether the file is linked to a machine or not.
+     *
+     * @return bool
+     */
+    public function hasMachine()
+    {
+        return $this->getMachine()->getId();
+    }
+
+    /**
      * Return the machine bean.
      *
      * @return $machine
@@ -315,12 +325,12 @@ class Model_File extends Model
      */
     public function update()
     {
-
+        /*
         if ( ! $this->bean->machine_id) {
             $this->bean->machine_id = null;
             unset($this->bean->machine);
         }
-
+        */
         $this->bean->ident = md5($this->bean->path);
         parent::update();
     }

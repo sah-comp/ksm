@@ -1071,6 +1071,10 @@ p.secondary {
     font-style: italic;
 }
 
+.hasmachine {
+    font-weight: bold;
+}
+
 .help {
     font-size: small;
     color: gray;
