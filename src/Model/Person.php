@@ -519,10 +519,10 @@ SQL;
         $this->bean->bankaccount  = '';
         $this->bean->bic          = '';
         $this->bean->iban         = '';
-        $this->bean->taxoffice    = '';
-        $this->bean->taxid        = '';
-        $this->bean->vatid        = '';
-        $this->bean->note         = '';
+        //$this->bean->taxoffice    = '';
+        $this->bean->taxid = '';
+        $this->bean->vatid = '';
+        $this->bean->note  = '';
 
         $this->autoTag(true);
         $this->bean->duedays = 8;
