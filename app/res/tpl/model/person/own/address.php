@@ -1,12 +1,12 @@
 <?php
-/**
- * Cinnebar.
- *
- * @package Cinnebar
- * @subpackage Template
- * @author $Author$
- * @version $Id$
- */
+    /**
+     * Cinnebar.
+     *
+     * @package Cinnebar
+     * @subpackage Template
+     * @author $Author$
+     * @version $Id$
+     */
 ?>
 <!-- address edit subform -->
 <fieldset
@@ -36,7 +36,7 @@
         name="dialog[ownAddress][<?php echo $index ?>][id]"
         value="<?php echo $_address->getId() ?>" />
 </div>
-<div class="row <?php echo ($_address->hasError('label')) ? 'error' : ''; ?>">
+<div class="row                                                             <?php echo ($_address->hasError('label')) ? 'error' : ''; ?>">
     <label
         for="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-label">
         <?php echo I18n::__('address_label_label') ?>
@@ -49,12 +49,12 @@
         <option
             value="<?php echo $_label ?>"
             <?php echo ($_address->label == $_label) ? 'selected="selected"' : '' ?>>
-            <?php echo I18n::__('address_label_'.$_label) ?>
+            <?php echo I18n::__('address_label_' . $_label) ?>
         </option>
-        <?php endforeach ?>
+        <?php endforeach?>
     </select>
 </div>
-<div class="row <?php echo ($_address->hasError('street')) ? 'error' : ''; ?>">
+<div class="row                                                             <?php echo ($_address->hasError('street')) ? 'error' : ''; ?>">
     <label
         for="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-street">
         <?php echo I18n::__('address_label_street') ?>
@@ -63,9 +63,9 @@
         id="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-street"
         name="dialog[ownAddress][<?php echo $index ?>][street]"
         rows="3"
-        cols="60"><?php echo htmlspecialchars($_address->street) ?></textarea>
+        cols="60"><?php echo htmlspecialchars($_address->street ?? '') ?></textarea>
 </div>
-<div class="row <?php echo ($_address->hasError('zip')) ? 'error' : ''; ?>">
+<div class="row                                                             <?php echo ($_address->hasError('zip')) ? 'error' : ''; ?>">
     <label
         for="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-zip">
         <?php echo I18n::__('address_label_zip') ?>
@@ -74,9 +74,9 @@
         type="text"
         id="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-zip"
         name="dialog[ownAddress][<?php echo $index ?>][zip]"
-        value="<?php echo htmlspecialchars($_address->zip) ?>" />
+        value="<?php echo htmlspecialchars($_address->zip ?? '') ?>" />
 </div>
-<div class="row <?php echo ($_address->hasError('city')) ? 'error' : ''; ?>">
+<div class="row                                                             <?php echo ($_address->hasError('city')) ? 'error' : ''; ?>">
     <label
         for="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-city">
         <?php echo I18n::__('address_label_city') ?>
@@ -85,9 +85,9 @@
         type="text"
         id="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-city"
         name="dialog[ownAddress][<?php echo $index ?>][city]"
-        value="<?php echo htmlspecialchars($_address->city) ?>" />
+        value="<?php echo htmlspecialchars($_address->city ?? '') ?>" />
 </div>
-<div class="row <?php echo ($_address->hasError('county')) ? 'error' : ''; ?>">
+<div class="row                                                             <?php echo ($_address->hasError('county')) ? 'error' : ''; ?>">
     <label
         for="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-county">
         <?php echo I18n::__('address_label_county') ?>
@@ -96,9 +96,9 @@
         type="text"
         id="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-county"
         name="dialog[ownAddress][<?php echo $index ?>][county]"
-        value="<?php echo htmlspecialchars($_address->county) ?>" />
+        value="<?php echo htmlspecialchars($_address->county ?? '') ?>" />
 </div>
-<div class="row <?php echo ($_address->hasError('country_id')) ? 'error' : ''; ?>">
+<div class="row                                                             <?php echo ($_address->hasError('country_id')) ? 'error' : ''; ?>">
     <label
         for="person-<?php echo $record->getId() ?>-address-<?php echo $index ?>-country">
         <?php echo I18n::__('address_label_country') ?>
@@ -113,7 +113,7 @@
             <?php echo ($_address->country_id == $_country->getId()) ? 'selected="selected"' : '' ?>>
             <?php echo htmlspecialchars($_country->name) ?>
         </option>
-        <?php endforeach ?>
+        <?php endforeach?>
     </select>
 </div>
 </fieldset>
