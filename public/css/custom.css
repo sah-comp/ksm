@@ -962,6 +962,18 @@ hr.person-contact-divider:after {
     --radius: 10px;
 }
 
+.fileviewer {
+    margin-bottom: 10px;
+}
+
+.tree ul>li {
+    font-weight: bold;
+}
+
+.tree ul>li li {
+    font-weight: normal;
+}
+
 .tree ul li {
     display: flex;
     position: relative;
@@ -1072,7 +1084,7 @@ p.secondary {
 }
 
 .hasmachine {
-    font-weight: bold;
+    color: blue;
 }
 
 .help {

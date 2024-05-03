@@ -17,6 +17,14 @@
  */
 class Model_File extends Model
 {
+
+    /**
+     * Initial open status or closed
+     *
+     * @var string
+     */
+    public $defaultSettingOpen = '';
+
     /**
      * Holds the file types which will be prefixed with a special prefix to open directly in a desktop app.
      *
@@ -48,6 +56,7 @@ class Model_File extends Model
     public $ignore = [
         '.DS_Store',
         '.DAV',
+        'thumbs.db',
     ];
 
     /**
@@ -118,7 +127,7 @@ class Model_File extends Model
 
                 // Check if it's a directory or a file
                 if (is_dir($path)) {
-                    echo '<details open>';
+                    echo '<details ' . $this->defaultSettingOpen . '>';
                     echo '<summary class="filer-folder" data-path="' . $path . '">';
                     echo $file;
                     echo '</summary>';
