@@ -57,6 +57,7 @@ class Model_File extends Model
         '.DS_Store',
         '.DAV',
         'thumbs.db',
+        'Thumbs.db',
     ];
 
     /**
@@ -119,8 +120,12 @@ class Model_File extends Model
                 $filebean->path     = $path;
                 $filebean->filename = $file;
                 $filebean->size     = filesize($path);
+                $filebean->active   = 1;
                 //$filebean->filemtime = filemtime($path);
                 $filebean->filemtime = date("Y-m-d H:i:s", filemtime($path));
+
+                //error_log('File ' . $filebean->filename . ' ' . $filebean->active);
+
                 R::store($filebean);
 
                 echo '<li class="" id="file-' . $filebean->id . '">';
@@ -163,6 +168,16 @@ class Model_File extends Model
             }
         }
         echo '</ul>';
+    }
+
+    /**
+     * Set flag 'activee' of all files to false.
+     * @return bool
+     */
+    public function deactivateFiles(): bool
+    {
+        R::exec('UPDATE file SET active = 0');
+        return true;
     }
 
     /**
@@ -323,7 +338,9 @@ class Model_File extends Model
      */
     public function dispense()
     {
-        $this->bean->size = 0;
+        $this->bean->size     = 0;
+        $this->bean->active   = 0;
+        $this->bean->template = 0;
         //$this->bean->filemtime = date('Y-m-d H:i:s');
         //$this->bean->machine = null;
         $this->addConverter('filemtime', new Converter_Mysqldatetime());
@@ -334,12 +351,12 @@ class Model_File extends Model
      */
     public function update()
     {
-        /*
-        if ( ! $this->bean->machine_id) {
+
+        if ($this->bean->machinename == '') {
             $this->bean->machine_id = null;
             unset($this->bean->machine);
         }
-        */
+
         $this->bean->ident = md5($this->bean->path);
         parent::update();
     }

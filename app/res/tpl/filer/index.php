@@ -9,6 +9,7 @@
         <div class="panel tree">
             <?php
                 //echo $record->dir(DMS_PATH);
+                $record->deactiveFiles(DMS_PATH);
                 $record->listFiles(DMS_PATH);
             ?>
         </div>

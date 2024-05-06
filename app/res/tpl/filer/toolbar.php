@@ -24,7 +24,7 @@
             name="clonefrom"
             required="required">
             <option value=""><?php echo I18n::__('file_clone_from') ?></option>
-            <?php foreach (R::find('file', ' template = 1 ORDER BY filename') as $_id => $_filetemplate): ?>
+            <?php foreach (R::find('file', ' template = 1 AND active = 1 ORDER BY filename') as $_id => $_filetemplate): ?>
             <option value="<?php echo $_id ?>"><?php echo $_filetemplate->filename ?></option>
             <?php endforeach;?>
         </select>
