@@ -51,19 +51,19 @@ class Model_Transaction extends Model
         switch ($switch) {
             case 'openitem':
                 return [
-                    'index' => ['idle', 'paid', 'cancel'],
-                    'add' => ['add', 'edit', 'index'],
-                    'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
-                    'delete' => ['index']
+                    'index'  => ['idle', 'paid', 'cancel'],
+                    'add'    => ['add', 'edit', 'index'],
+                    'edit'   => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
+                    'delete' => ['index'],
                 ];
                 break;
 
             default:
                 return [
-                    'index' => ['idle', 'cancel', 'toggleArchived', 'expunge'],
-                    'add' => ['add', 'edit', 'index'],
-                    'edit' => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
-                    'delete' => ['index']
+                    'index'  => ['idle', 'cancel', 'toggleArchived', 'expunge'],
+                    'add'    => ['add', 'edit', 'index'],
+                    'edit'   => ['edit', 'next_edit', 'prev_edit', 'index', 'book'],
+                    'delete' => ['index'],
                 ];
                 break;
         }
@@ -81,7 +81,7 @@ class Model_Transaction extends Model
             'day',
             'week',
             'month',
-            'year'
+            'year',
         ];
     }
 
@@ -94,7 +94,7 @@ class Model_Transaction extends Model
     {
         return [
             'letterhead' => true,
-            'blank' => false
+            'blank'      => false,
         ];
     }
 
@@ -120,13 +120,13 @@ class Model_Transaction extends Model
      */
     public function getDependents($person)
     {
-        if (!$person->getId()) {
+        if ( ! $person->getId()) {
             return ['contacts' => []];
         }
-        $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
+        $sql      = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
         $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
-        $result = [
-            'contacts' => $contacts//$person->with("ORDER BY name")->ownContact
+        $result   = [
+            'contacts' => $contacts, //$person->with("ORDER BY name")->ownContact
         ];
         return $result;
     }
@@ -148,7 +148,7 @@ class Model_Transaction extends Model
      */
     public function getDunning()
     {
-        if (! $this->bean->dunning) {
+        if ( ! $this->bean->dunning) {
             $this->bean->dunning = R::dispense('dunning');
         }
         return $this->bean->dunning;
@@ -192,14 +192,14 @@ class Model_Transaction extends Model
     {
         $payment = R::dispense('payment');
 
-        $payment->desc = Flight::request()->data->payment_desc;
+        $payment->desc           = Flight::request()->data->payment_desc;
         $payment->transaction_id = $this->bean->getId();
-        $payment->bookingdate = date('Y-m-d');
+        $payment->bookingdate    = date('Y-m-d');
 
         $payment->amount = $this->bean->balance;
         if (Flight::request()->data->payment_amount) {
-            $converter = new Converter_Decimal();
-            $user_amount = $converter->convert(Flight::request()->data->payment_amount);
+            $converter       = new Converter_Decimal();
+            $user_amount     = $converter->convert(Flight::request()->data->payment_amount);
             $payment->amount = $user_amount;
         }
         $payment->closingpayment = false;
@@ -222,13 +222,13 @@ class Model_Transaction extends Model
     {
         //error_log('I am dunned');
         $dunning = $this->bean->getDunning();
-        if (!$dunning->getId()) {
-            $this->bean->penaltyfee = 0;
+        if ( ! $dunning->getId()) {
+            $this->bean->penaltyfee  = 0;
             $this->bean->dunningdate = null;
             return false;
         }
-        $this->bean->penaltyfee = $dunning->penaltyfee;
-        $this->bean->dunningdate = date('Y-m-d', strtotime($this->bean->{$dunning->applyto} . ' +' . $dunning->grace . 'days'));
+        $this->bean->penaltyfee       = $dunning->penaltyfee;
+        $this->bean->dunningdate      = date('Y-m-d', strtotime($this->bean->{$dunning->applyto} . ' +' . $dunning->grace . 'days'));
         $this->bean->dunningprintedon = date('Y-m-d');
         return true;
     }
@@ -242,24 +242,24 @@ class Model_Transaction extends Model
     public function resetAfterCopy()
     {
         $this->bean->bookingdate = date('Y-m-d');
-        $this->bean->status = 'open';
+        $this->bean->status      = 'open';
         if ($this->bean->getContracttype()->resetheader) {
             $this->bean->header = '';
         }
         if ($this->bean->getContracttype()->resetfooter) {
             $this->bean->footer = '';
         }
-        $this->bean->sent = false; //reset sent mail status
-        $this->bean->archived = false;
-        $this->bean->locked = false;
+        $this->bean->sent       = false; //reset sent mail status
+        $this->bean->archived   = false;
+        $this->bean->locked     = false;
         $this->bean->ownPayment = [];
         //reset dunnings stuff
-        $this->bean->dunning = null;
-        $this->bean->accumulate = false;
-        $this->bean->penaltyfee = null;
-        $this->bean->dunningdate = null;
+        $this->bean->dunning          = null;
+        $this->bean->accumulate       = false;
+        $this->bean->penaltyfee       = null;
+        $this->bean->dunningdate      = null;
         $this->bean->dunningprintedon = null;
-        $this->bean->ownAppointment = []; // does this solve issue #120? NO
+        $this->bean->ownAppointment   = []; // does this solve issue #120? NO
         return $this->bean;
     }
 
@@ -273,130 +273,130 @@ class Model_Transaction extends Model
     {
         return [
             [
-                'name' => 'number',
-                'sort' => [
-                    'name' => 'transaction.number'
+                'name'   => 'number',
+                'sort'   => [
+                    'name' => 'transaction.number',
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'text',
                 ],
                 'prefix' => [
                     'callback' => [
-                        'name' => 'linkAdditionalInfoPosition'
-                    ]
+                        'name' => 'linkAdditionalInfoPosition',
+                    ],
                 ],
-                'width' => '12rem'
+                'width'  => '12rem',
             ],
             [
-                'name' => 'contracttype.name',
-                'sort' => [
-                    'name' => 'contracttype.name'
+                'name'     => 'contracttype.name',
+                'sort'     => [
+                    'name' => 'contracttype.name',
                 ],
                 'callback' => [
-                    'name' => 'contracttypeName'
+                    'name' => 'contracttypeName',
                 ],
-                'filter' => [
+                'filter'   => [
                     'tag' => 'select',
-                    'sql' => 'getContracttypes'
+                    'sql' => 'getContracttypes',
                 ],
-                'width' => '6rem'
+                'width'    => '6rem',
             ],
             [
-                'name' => 'bookingdate',
-                'sort' => [
-                    'name' => 'transaction.bookingdate'
+                'name'     => 'bookingdate',
+                'sort'     => [
+                    'name' => 'transaction.bookingdate',
                 ],
-                'filter' => [
-                    'tag' => 'date'
+                'filter'   => [
+                    'tag' => 'date',
                 ],
                 'callback' => [
-                    'name' => 'localizedDate'
+                    'name' => 'localizedDate',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'status',
-                'sort' => [
-                    'name' => 'transaction.status'
+                'name'     => 'status',
+                'sort'     => [
+                    'name' => 'transaction.status',
                 ],
                 'callback' => [
-                    'name' => 'statusReadable'
+                    'name' => 'statusReadable',
                 ],
-                'filter' => [
-                    'tag' => 'select',
-                    'values' => $this->getStati()
+                'filter'   => [
+                    'tag'    => 'select',
+                    'values' => $this->getStati(),
                 ],
-                'width' => '6rem'
+                'width'    => '6rem',
             ],
             [
-                'name' => 'customername',
-                'sort' => [
-                    'name' => 'customername'
+                'name'   => 'customername',
+                'sort'   => [
+                    'name' => 'customername',
                 ],
                 'prefix' => [
                     'callback' => [
-                        'name' => 'linkAdditionalInfoPerson'//'prefixContact'
-                    ]
+                        'name' => 'linkAdditionalInfoPerson', //'prefixContact'
+                    ],
                 ],
                 'filter' => [
-                    'tag' => 'text'
-                ]
+                    'tag' => 'text',
+                ],
             ],
             [
-                'name' => 'net',
-                'sort' => [
-                    'name' => 'net'
+                'name'     => 'net',
+                'sort'     => [
+                    'name' => 'net',
                 ],
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'class' => 'number',
-                'filter' => [
-                    'tag' => 'number'
+                'class'    => 'number',
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'vat',
-                'sort' => [
-                    'name' => 'vat'
+                'name'     => 'vat',
+                'sort'     => [
+                    'name' => 'vat',
                 ],
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'class' => 'number',
-                'filter' => [
-                    'tag' => 'number'
+                'class'    => 'number',
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'gros',
-                'sort' => [
-                    'name' => 'gros'
+                'name'     => 'gros',
+                'sort'     => [
+                    'name' => 'gros',
                 ],
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'class' => 'number',
-                'filter' => [
-                    'tag' => 'number'
+                'class'    => 'number',
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'archived',
-                'sort' => [
-                    'name' => 'transaction.archived'
+                'name'     => 'archived',
+                'sort'     => [
+                    'name' => 'transaction.archived',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '4rem'
-            ]
+                'width'    => '4rem',
+            ],
         ];
     }
 
@@ -457,7 +457,7 @@ class Model_Transaction extends Model
                 break;
         }
         Flight::render($layout, [
-            'record' => $record
+            'record' => $record,
         ]);
     }
 
@@ -469,10 +469,10 @@ class Model_Transaction extends Model
     public function getStati(): array
     {
         return [
-            'open' => I18n::__('transaction_status_readable_open'),
-            'paid' => I18n::__('transaction_status_readable_paid'),
+            'open'     => I18n::__('transaction_status_readable_open'),
+            'paid'     => I18n::__('transaction_status_readable_paid'),
             'canceled' => I18n::__('transaction_status_readable_canceled'),
-            'closed' =>  I18n::__('transaction_status_readable_closed')
+            'closed'   => I18n::__('transaction_status_readable_closed'),
         ];
     }
 
@@ -483,7 +483,7 @@ class Model_Transaction extends Model
      */
     public function getFilename()
     {
-        $stack = [];
+        $stack   = [];
         $stack[] = $this->bean->getContracttype()->name;
         $stack[] = $this->bean->number;
         $stack[] = I18n::__('person_label_account');
@@ -528,7 +528,7 @@ class Model_Transaction extends Model
      */
     public function paymentConditions()
     {
-        $company = R::load('company', CINNEBAR_COMPANY_ID);
+        $company  = R::load('company', CINNEBAR_COMPANY_ID);
         $discount = $this->bean->getDiscount();
         if ($discount->days != 0 && $discount->value != 0) {
             // there is a possible discount within a certain time period, aka. skonto
@@ -563,9 +563,9 @@ class Model_Transaction extends Model
         //$paydate = $this->bean->getDateOfPayment();
         $paydate = $this->bean->duedate;
         $duedate = date_create_from_format('Y-m-d', $paydate);
-        $today = date_create_from_format('Y-m-d', date('Y-m-d'));
-        $diff = (array)date_diff($duedate, $today);
-        $days = $diff['days'];
+        $today   = date_create_from_format('Y-m-d', date('Y-m-d'));
+        $diff    = (array) date_diff($duedate, $today);
+        $days    = $diff['days'];
         if (time() > strtotime($paydate)) {
             if ($days == 0) {
                 return I18n::__('transaction_due_today');
@@ -585,7 +585,7 @@ class Model_Transaction extends Model
      */
     public function getDiscount()
     {
-        if (! $this->bean->discount) {
+        if ( ! $this->bean->discount) {
             $this->bean->discount = R::dispense('discount');
         }
         return $this->bean->discount;
@@ -621,8 +621,8 @@ class Model_Transaction extends Model
      */
     public function hasEmail($emailtype = 'billingemail'): bool
     {
-        if (!$this->bean->getPerson()->{$emailtype.'enabled'}) {
-            return false;//if person has not checked billingemail or dunningemail enabled
+        if ( ! $this->bean->getPerson()->{$emailtype . 'enabled'}) {
+            return false; //if person has not checked billingemail or dunningemail enabled
         }
         if ($this->bean->{$emailtype}) {
             return true;
@@ -650,7 +650,7 @@ class Model_Transaction extends Model
      */
     public function getContracttype()
     {
-        if (! $this->bean->contracttype) {
+        if ( ! $this->bean->contracttype) {
             $this->bean->contracttype = R::dispense('contracttype');
         }
         return $this->bean->contracttype;
@@ -673,7 +673,7 @@ class Model_Transaction extends Model
      */
     public function getPerson()
     {
-        if (! $this->bean->person) {
+        if ( ! $this->bean->person) {
             $this->bean->person = R::dispense('person');
         }
         return $this->bean->person;
@@ -697,11 +697,11 @@ class Model_Transaction extends Model
      */
     public function netByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT CAST(SUM(total) AS DECIMAL(10, 2)) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql    = "SELECT CAST(SUM(total) AS DECIMAL(10, 2)) AS net FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
-            ':trans_id' => $this->bean->getId(),
-            ':cut_id' => $costunittype->getId(),
-            ':kind_position' => Model_Position::KIND_POSITION
+            ':trans_id'      => $this->bean->getId(),
+            ':cut_id'        => $costunittype->getId(),
+            ':kind_position' => Model_Position::KIND_POSITION,
         ]);
         return $result;
     }
@@ -714,11 +714,11 @@ class Model_Transaction extends Model
      */
     public function grosByCostunit(RedBeanPHP\OODBBean $costunittype)
     {
-        $sql = "SELECT CAST(SUM(total + total * vatpercentage / 100) AS DECIMAL(10, 2)) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
+        $sql    = "SELECT CAST(SUM(total + total * vatpercentage / 100) AS DECIMAL(10, 2)) AS gros FROM position WHERE transaction_id = :trans_id AND costunittype_id = :cut_id AND kind = :kind_position";
         $result = R::getCell($sql, [
-            ':trans_id' => $this->bean->getId(),
-            ':cut_id' => $costunittype->getId(),
-            ':kind_position' => Model_Position::KIND_POSITION
+            ':trans_id'      => $this->bean->getId(),
+            ':cut_id'        => $costunittype->getId(),
+            ':kind_position' => Model_Position::KIND_POSITION,
         ]);
         return $result;
     }
@@ -729,12 +729,12 @@ class Model_Transaction extends Model
      * @param string $searchphrase
      * @return array
      */
-    public function searchGlobal($searchphrase):array
+    public function searchGlobal($searchphrase): array
     {
-        $searchphrase = '%'.$searchphrase.'%';
-        $sql = 'SELECT t.* FROM transaction AS t LEFT JOIN person ON t.person_id = person.id LEFT JOIN position ON t.id = position.transaction_id WHERE t.footer LIKE :f OR t.header LIKE :f OR t.billingemail LIKE :f OR t.dunningemail LIKE :f OR t.postaladdress LIKE :f OR (position.desc LIKE :f)';
-        $rows = R::getAll($sql, [
-            ':f' => $searchphrase
+        $searchphrase = '%' . $searchphrase . '%';
+        $sql          = 'SELECT t.* FROM transaction AS t LEFT JOIN person ON t.person_id = person.id LEFT JOIN position ON t.id = position.transaction_id WHERE t.footer LIKE :f OR t.header LIKE :f OR t.billingemail LIKE :f OR t.dunningemail LIKE :f OR t.postaladdress LIKE :f OR (position.desc LIKE :f)';
+        $rows         = R::getAll($sql, [
+            ':f' => $searchphrase,
         ]);
         return R::convertToBeans($this->bean->getMeta('type'), $rows);
     }
@@ -821,7 +821,7 @@ SQL;
     public function getBookables()
     {
         $bookables = R::find('contracttype', " ledger = 1 AND enabled = 1 AND bookable = 1");
-        $types = [];
+        $types     = [];
         foreach ($bookables as $id => $contracttype) {
             $types[$id] = $contracttype->nickname;
         }
@@ -913,32 +913,32 @@ SQL;
      */
     public function toggleArchived()
     {
-        $archived = ! $this->bean->archived;
+        $archived =  ! $this->bean->archived;
         if ($archived && $this->bean->getContracttype()->closeonarchive) {
             $oldstatus = $this->bean->status;
-            $status = 'closed';
+            $status    = 'closed';
         } elseif ($archived) {
             $oldstatus = $this->bean->status;
-            $status = $this->bean->status;
-        } elseif (!$archived) {
+            $status    = $this->bean->status;
+        } elseif ( ! $archived) {
             // un-archived, reset status
-            $status = $this->bean->oldstatus;
+            $status    = $this->bean->oldstatus;
             $oldstatus = '';
         } else {
             // do nothing
-            $status = $this->bean->status;
+            $status    = $this->bean->status;
             $oldstatus = $this->bean->oldstatus;
         }
-        if (!$archived) {
+        if ( ! $archived) {
             $archived = 0;
         } else {
             $archived = 1;
         }
         R::exec('UPDATE transaction SET oldstatus = :oldstatus, status = :status, archived = :archived WHERE id = :id LIMIT 1', [
             ':oldstatus' => $oldstatus,
-            ':status' => $status,
-            ':archived' => $archived,
-            ':id' => $this->bean->getId()
+            ':status'    => $status,
+            ':archived'  => $archived,
+            ':id'        => $this->bean->getId(),
         ]);
         //R::store($this->bean);
     }
@@ -955,24 +955,24 @@ SQL;
             return false;
             //throw new Exception(I18n::__('transaction_is_already_canceled'));
         }
-        if (!$this->bean->locked) {
+        if ( ! $this->bean->locked) {
             error_log('Transaction #' . $this->bean->getId() . ' is not yet booked and can not be canceled.');
             return false;
             //throw new Exception(I18n::__('transaction_is_already_canceled'));
         }
-        $converter = new Converter_Decimal();
-        $dup = R::duplicate($this->bean);
-        $dup->locked = false;
-        $dup->status = 'canceled';
-        $dup->bookingdate = date('Y-m-d');
+        $converter            = new Converter_Decimal();
+        $dup                  = R::duplicate($this->bean);
+        $dup->locked          = false;
+        $dup->status          = 'canceled';
+        $dup->bookingdate     = date('Y-m-d');
         $dup->mytransactionid = $this->bean->getId();
         foreach ($dup->ownPosition as $id => $position) {
             $position->count = $position->count * -1;
         }
         $dup->calcSums($converter);
-        R::store($dup);//we have to store it once to gather an ID
-        $dup->book();//then we book it, because a cancelation has to be booked immediately
-        R::store($dup);//and store it again to make cancelation persistent
+        R::store($dup); //we have to store it once to gather an ID
+        $dup->book(); //then we book it, because a cancelation has to be booked immediately
+        R::store($dup); //and store it again to make cancelation persistent
         $this->bean->status = 'canceled';
         R::store($this->bean);
         return $dup;
@@ -1025,8 +1025,8 @@ SQL;
     public function getCustomersWithOpenItems()
     {
         $bookable_types = $this->bean->getBookables();
-        $sql = "SELECT person.id, person.name FROM transaction AS trans LEFT JOIN person ON person.id = trans.person_id WHERE trans.contracttype_id IN (".R::genSlots($bookable_types).") AND trans.status IN (?) AND trans.locked = 1 GROUP BY person.id ORDER BY person.name";
-        return $result = R::getAssoc($sql, array_merge($bookable_types, ['open']));
+        $sql            = "SELECT person.id, person.name FROM transaction AS trans LEFT JOIN person ON person.id = trans.person_id WHERE trans.contracttype_id IN (" . R::genSlots($bookable_types) . ") AND trans.status IN (?) AND trans.locked = 1 GROUP BY person.id ORDER BY person.name";
+        return $result  = R::getAssoc($sql, array_merge($bookable_types, ['open']));
     }
 
     /**
@@ -1052,7 +1052,7 @@ SQL;
      */
     public function getEditor()
     {
-        if (!$this->bean->fetchAs('user')->editor) {
+        if ( ! $this->bean->fetchAs('user')->editor) {
             $this->bean->editor = R::dispense('user');
         }
         return $this->bean->fetchAs('user')->editor;
@@ -1082,7 +1082,7 @@ SQL;
             return false;
         }
         $this->bean->locked = true;
-        $number = $this->bean->contracttype->nextnumber;
+        $number             = $this->bean->contracttype->nextnumber;
         $this->bean->contracttype->nextnumber++;
         $this->bean->number = sprintf(self::PATTERN, $this->bean->contracttype->nickname, Flight::setting()->fiscalyear, date('m', strtotime($this->bean->bookingdate)), $number);
         //R::store($this->bean);
@@ -1098,20 +1098,20 @@ SQL;
     public function calcSums(Converter_Decimal $converter)
     {
         // calculate totals
-        $this->bean->net = 0;
-        $this->bean->vat = 0;
+        $this->bean->net  = 0;
+        $this->bean->vat  = 0;
         $this->bean->gros = 0;
-        $seq = 0;
+        $seq              = 0;
 
         // make buckets for each vat percentage
         $bucket = [];
         foreach (R::findAll('vat', " ORDER BY value") as $id => $vat) {
-            $bucket[$vat->value] = 0;//preset this vat bucket with zero
+            $bucket[$vat->value] = 0; //preset this vat bucket with zero
         }
 
         foreach ($this->bean->ownPosition as $id => $position) {
             if ($position->kind == Model_Position::KIND_POSITION) {
-                $seq++;//count me
+                $seq++; //count me
             }
             if ($position->alternative || $position->kind != Model_Position::KIND_POSITION) {
                 // skip this position if it is an alternative position
@@ -1121,9 +1121,9 @@ SQL;
             $total = $converter->convert($position->count) * $converter->convert($position->salesprice);
             if ($position->hasAdjustment()) {
                 $adjustment = $total * $converter->convert($position->adjustment) / 100;
-                $total = $total + $adjustment;
+                $total      = $total + $adjustment;
             }
-            if (!isset($bucket[$position->vatpercentage])) {
+            if ( ! isset($bucket[$position->vatpercentage])) {
                 $bucket[$position->vatpercentage] = 0;
             }
             $bucket[$position->vatpercentage] += $total;
@@ -1144,15 +1144,15 @@ SQL;
      */
     public function dispense()
     {
-        $this->bean->archived = 0;
-        $this->bean->donthidesome = 0;
-        $this->bean->locked = false;
-        $this->bean->accumulate = false;//flag to be used for dunning, if true all open items will be combinded in a pdf
-        $this->bean->number = '';//I18n::__('transaction_placeholder_number');
-        $this->bean->mytransactionid = 0;
-        $this->bean->duedays = 0;
-        $this->bean->status = 'open';
-        $this->bean->bookingdate = date('Y-m-d', time());
+        $this->bean->archived         = 0;
+        $this->bean->donthidesome     = 0;
+        $this->bean->locked           = false;
+        $this->bean->accumulate       = false; //flag to be used for dunning, if true all open items will be combinded in a pdf
+        $this->bean->number           = ''; //I18n::__('transaction_placeholder_number');
+        $this->bean->mytransactionid  = 0;
+        $this->bean->duedays          = 0;
+        $this->bean->status           = 'open';
+        $this->bean->bookingdate      = date('Y-m-d', time());
         $this->bean->dunningprintedon = date('Y-m-d', time());
         $this->addConverter('bookingdate', new Converter_Mysqldate());
         $this->addConverter('duedate', new Converter_Mysqldate());
@@ -1183,11 +1183,11 @@ SQL;
 
         // calculate payments, if it is not canceled and it is an already existing transaction
         if ($this->bean->status != 'canceled' && $this->bean->getId()) {
-            $this->bean->status = 'open'; //re-open just in case a payment was deleted
+            $this->bean->status    = 'open'; //re-open just in case a payment was deleted
             $this->bean->totalpaid = 0;
             foreach ($this->bean->ownPayment as $id => $payment) {
                 if ($payment->closingpayment) {
-                    $this->bean->status = "paid";//manually accepted payment as last payment, closing this transaction
+                    $this->bean->status = "paid"; //manually accepted payment as last payment, closing this transaction
                 }
                 $this->bean->totalpaid += $converter->convert($payment->amount);
             }
@@ -1195,12 +1195,12 @@ SQL;
 
             $this->bean->balance = round($this->bean->gros - $this->bean->totalpaid, 2);
             if ($this->bean->balance == 0 && $this->bean->gros != 0) {
-                $this->bean->status = "paid";// automatically set as paid when transaction is balanced
+                $this->bean->status = "paid"; // automatically set as paid when transaction is balanced
             }
         }
 
-        if (!CINNEBAR_MIP) {
-            if (!$this->bean->contracttype_id) {
+        if ( ! CINNEBAR_MIP) {
+            if ( ! $this->bean->contracttype_id) {
                 $this->bean->contracttype_id = null;
                 unset($this->bean->contracttype);
             }
@@ -1210,24 +1210,24 @@ SQL;
         $this->bean->duedate = date('Y-m-d', strtotime($this->bean->bookingdate . ' +' . $this->bean->duedays . 'days'));
 
         // customer (person)
-        if (!$this->bean->person_id) {
+        if ( ! $this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
         }
 
         // customer (person)
-        if (!$this->bean->dunning_id) {
+        if ( ! $this->bean->dunning_id) {
             $this->bean->dunning_id = null;
             unset($this->bean->dunning);
         }
 
         // discount (skonto) copied from customer (person)
-        if (!$this->bean->discount_id) {
+        if ( ! $this->bean->discount_id) {
             $this->bean->discount_id = null;
             unset($this->bean->discount);
         }
 
-        if (!$this->bean->getId()) {
+        if ( ! $this->bean->getId()) {
             // BEHOLD: This has to happen on a dedicated action, not when saving the first time
             // This is a new bean, we want to stamp its number
             //$number = $this->bean->contracttype->nextnumber;
@@ -1237,7 +1237,7 @@ SQL;
             $this->bean->number = '';
         }
 
-        $this->bean->stamp = time();
+        $this->bean->stamp  = time();
         $this->bean->editor = Flight::get('user');
     }
 }

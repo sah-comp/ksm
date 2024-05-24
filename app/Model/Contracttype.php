@@ -27,74 +27,74 @@ class Model_Contracttype extends Model
     {
         return [
             [
-                'name' => 'name',
-                'sort' => [
-                    'name' => 'name'
+                'name'   => 'name',
+                'sort'   => [
+                    'name' => 'name',
                 ],
                 'filter' => [
-                    'tag' => 'text'
-                ]
+                    'tag' => 'text',
+                ],
             ],
             [
-                'name' => 'nickname',
-                'sort' => [
-                    'name' => 'nickname'
+                'name'   => 'nickname',
+                'sort'   => [
+                    'name' => 'nickname',
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'text',
                 ],
-                'width' => '8rem'
+                'width'  => '8rem',
             ],
             [
-                'name' => 'nextnumber',
-                'sort' => [
-                    'name' => 'nextnumber'
+                'name'   => 'nextnumber',
+                'sort'   => [
+                    'name' => 'nextnumber',
                 ],
-                'class' => 'number',
+                'class'  => 'number',
                 'filter' => [
-                    'tag' => 'number'
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
+                'width'  => '8rem',
             ],
             [
-                'name' => 'enabled',
-                'sort' => [
-                    'name' => 'contracttype.enabled'
+                'name'     => 'enabled',
+                'sort'     => [
+                    'name' => 'contracttype.enabled',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '5rem'
+                'width'    => '5rem',
             ],
             [
-                'name' => 'service',
-                'sort' => [
-                    'name' => 'contracttype.service'
+                'name'     => 'service',
+                'sort'     => [
+                    'name' => 'contracttype.service',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '5rem'
+                'width'    => '5rem',
             ],
             [
-                'name' => 'ledger',
-                'sort' => [
-                    'name' => 'contracttype.ledger'
+                'name'     => 'ledger',
+                'sort'     => [
+                    'name' => 'contracttype.ledger',
                 ],
                 'callback' => [
-                    'name' => 'boolean'
+                    'name' => 'boolean',
                 ],
-                'filter' => [
-                    'tag' => 'bool'
+                'filter'   => [
+                    'tag' => 'bool',
                 ],
-                'width' => '5rem'
-            ]
+                'width'    => '5rem',
+            ],
         ];
     }
 
@@ -103,8 +103,9 @@ class Model_Contracttype extends Model
      */
     public function dispense()
     {
+        $this->bean->wordgros = '';
         $this->addValidator('name', [
-            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name'])
+            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name']),
         ]);
     }
 
