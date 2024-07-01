@@ -1,6 +1,5 @@
 .DS_Store
 public/.htaccess
-composer.lock
 composer.phar
 vendor/
 favicon.ico

@@ -1,4 +1,8 @@
 <?php
+
+use horstoeko\zugferd\ZugferdDocumentBuilder;
+use horstoeko\zugferd\ZugferdProfiles;
+
 /**
  * Cinnebar.
  *
@@ -96,6 +100,69 @@ class Model_Transaction extends Model
             'letterhead' => true,
             'blank'      => false,
         ];
+    }
+
+    /**
+     * Generate XML to be merged with an invoice PDF.
+     *
+     * @todo Generate the real XML for this invoice.
+     *
+     * @return string $xml that holds the invoice as a standard xml electornic invoice
+     */
+    public function getXML(): string
+    {
+        $company           = R::load('company', CINNEBAR_COMPANY_ID);
+        $buyer_address     = $this->bean->getPerson()->getAddress('billing');
+        $buyer_countrycode = null;
+        if ($buyer_address->country) {
+            $buyer_countrycode = $buyer_address->country->iso;
+        }
+
+        $document = ZugferdDocumentBuilder::CreateNew(ZugferdProfiles::PROFILE_EN16931);
+        // Add invoice and position information
+        $document
+            ->setDocumentInformation($this->bean->number, $this->bean->getContracttype()->code, \DateTime::createFromFormat("Ymd", date('Ymd', strtotime($this->bean->bookingdate))), "EUR")
+            ->addDocumentNote($this->bean->header)
+            ->setDocumentSupplyChainEvent(\DateTime::createFromFormat('Ymd', date('Ymd', strtotime($this->bean->bookingdate))))
+            ->setDocumentSeller($company->legalname)
+            ->addDocumentSellerGlobalId()
+            ->addDocumentSellerTaxRegistration("FC", $company->taxid)
+            ->addDocumentSellerTaxRegistration("VA", $company->vatid)
+            ->setDocumentSellerAddress($company->street, "", "", $company->zip, $company->city, "DE")
+            ->setDocumentBuyer($this->bean->customername, $this->bean->getPerson()->account)
+            ->setDocumentBuyerAddress($buyer_address->street, "", "", $buyer_address->zip, $buyer_address->city, $buyer_countrycode);
+
+        foreach ($this->bean->getVatSentences() as $vid => $vat) {
+            $document
+                ->addDocumentTax("S", "VAT", $vat['net'], $vat['vatvalue'], $vat['vatpercentage']);
+        }
+
+        $document
+            ->setDocumentSummation($this->bean->gros, $this->bean->balance, $this->bean->net, 0.0, 0.0, $this->bean->net, $this->bean->vat, null, 0.0)
+            ->addDocumentPaymentTerm($this->bean->paymentConditions());
+
+        // positions
+        foreach ($this->bean->with(' ORDER BY currentindex ASC ')->ownPosition as $pid => $pos) {
+            if ($pos->kind == Model_Position::KIND_POSITION) {
+                // code...
+
+                $gros = $pos->salesprice;
+                if ($pos->hasAdjustment()) {
+                    $gros = $pos->salesprice - ($pos->salesprice * $pos->adjustment / 100);
+                }
+                $document->addNewPosition($pos->sequence)
+                    ->setDocumentPositionProductDetails($pos->desc, "", $pos->ska)
+                    ->setDocumentPositionGrossPrice($gros)
+                    ->setDocumentPositionNetPrice($pos->salesprice)
+                    ->setDocumentPositionQuantity($pos->count, "H87")
+                    ->addDocumentPositionTax('S', 'VAT', $pos->vatpercentage)
+                    ->setDocumentPositionLineSummation($pos->total);
+            }
+        }
+
+        $xml = $document->getContent();
+
+        return $xml;
     }
 
     /**
