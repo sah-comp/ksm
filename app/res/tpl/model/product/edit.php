@@ -1,12 +1,12 @@
 <?php
-/**
- * Cinnebar.
- *
- * @package Cinnebar
- * @subpackage Template
- * @author $Author$
- * @version $Id$
- */
+    /**
+     * Cinnebar.
+     *
+     * @package Cinnebar
+     * @subpackage Template
+     * @author $Author$
+     * @version $Id$
+     */
 ?>
 <!-- product edit form -->
 <div>
@@ -56,7 +56,7 @@
                 value="<?php echo htmlspecialchars($record->matchcode ?? '') ?>" />
         </div>
     </div>
-    <div class="row <?php echo ($record->hasError('costunittype_id')) ? 'error' : ''; ?>">
+    <div class="row                                                                             <?php echo ($record->hasError('costunittype_id')) ? 'error' : ''; ?>">
         <label
             for="product-costunittype">
             <?php echo I18n::__('product_label_costunittype') ?>
@@ -70,10 +70,10 @@
                 value="<?php echo $_costunittype->getId() ?>"
                 <?php echo ($record->costunittype_id == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
             </option>
-            <?php endforeach ?>
+            <?php endforeach?>
         </select>
     </div>
-    <div class="row <?php echo ($record->hasError('description')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('description')) ? 'error' : ''; ?>">
         <label
             for="product-description">
             <?php echo I18n::__('product_label_description') ?>
@@ -84,18 +84,24 @@
             rows="3"
             cols="60"><?php echo htmlspecialchars($record->description ?? '') ?></textarea>
     </div>
-    <div class="row <?php echo ($record->hasError('unit')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('unit')) ? 'error' : ''; ?>">
         <label
             for="product-unit">
             <?php echo I18n::__('product_label_unit') ?>
         </label>
-        <input
+        <select
             id="product-unit"
-            type="text"
-            name="dialog[unit]"
-            value="<?php echo htmlspecialchars($record->unit ?? '') ?>" />
+            name="dialog[unit_id]">
+            <option value=""><?php echo I18n::__('product_unit_none') ?></option>
+            <?php foreach (R::findAll('unit') as $_id => $_unit): ?>
+            <option
+                value="<?php echo $_unit->getId() ?>"
+                <?php echo ($record->unit_id == $_unit->getId()) ? 'selected="selected"' : '' ?>><?php echo $_unit->name ?>
+            </option>
+            <?php endforeach?>
+        </select>
     </div>
-    <div class="row <?php echo ($record->hasError('purchaseprice')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('purchaseprice')) ? 'error' : ''; ?>">
         <label
             for="product-purchaseprice">
             <?php echo I18n::__('product_label_purchaseprice') ?>
@@ -124,10 +130,10 @@
             <option
                 value="<?php echo $_vat->getId() ?>"
                 <?php echo ($record->vat_id == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_vat->name ?? '') ?></option>
-            <?php endforeach ?>
+            <?php endforeach?>
         </select>
     </div>
-    <div class="row <?php echo ($record->hasError('salesprice')) ? 'error' : ''; ?>">
+    <div class="row                                                                             <?php echo ($record->hasError('salesprice')) ? 'error' : ''; ?>">
         <label
             for="product-salesprice">
             <?php echo I18n::__('product_label_salesprice') ?>

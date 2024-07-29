@@ -1,4 +1,7 @@
 <?php
+
+use horstoeko\zugferd\ZugferdDocumentPdfMerger;
+
 /**
  * KSM.
  *
@@ -38,13 +41,13 @@ class Controller_Transaction extends Controller_Scaffold
     {
         Permission::check(Flight::get('user'), $this->type, 'add');
         if (Flight::request()->query->submit == I18n::__('transaction_action_copy_as')) {
-            if (! Security::validateCSRFToken(Flight::request()->query->token)) {
+            if ( ! Security::validateCSRFToken(Flight::request()->query->token)) {
                 $this->redirect("/logout");
                 exit();
             }
             R::begin();
             try {
-                $copy = R::duplicate($this->record);
+                $copy                  = R::duplicate($this->record);
                 $copy->contracttype_id = Flight::request()->query->copyas;
                 $copy->mytransactionid = $this->record->getId();
                 $copy->resetAfterCopy();
@@ -113,17 +116,18 @@ class Controller_Transaction extends Controller_Scaffold
      */
     public function mail()
     {
+
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $user = Flight::get('user');
+        $user          = Flight::get('user');
 
         $filename = I18n::__('transaction_pdf_filename', null, [$this->record->getFilename()]);
-        $docname = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
-        $mpdf = $this->generatePDF('letterhead', $docname); //when sending email, it can only be letterhead
+        $docname  = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf     = $this->generatePDF('letterhead', $docname); //when sending email, it can only be letterhead
 
         $mail = new PHPMailer\PHPMailer\PHPMailer();
 
         if ($smtp = $this->company->smtp()) {
-            $mail->SMTPDebug = 4;                                 // Set debug mode, 1 = err/msg, 2 = msg
+            $mail->SMTPDebug = 4; // Set debug mode, 1 = err/msg, 2 = msg
             /**
              * uncomment this block to get verbose error logging in your error log file
              */
@@ -132,28 +136,28 @@ class Controller_Transaction extends Controller_Scaffold
                 error_log("debug level $level; message: $str");
             };
 
-            $mail->isSMTP();                                      // Set mailer to use SMTP
-            $mail->Host = $smtp['host'];                          // Specify main and backup server
+            $mail->isSMTP(); // Set mailer to use SMTP
+            $mail->Host = $smtp['host']; // Specify main and backup server
             if ($smtp['auth']) {
-                $mail->SMTPAuth = true;                           // Enable SMTP authentication
+                $mail->SMTPAuth = true; // Enable SMTP authentication
             } else {
-                $mail->SMTPAuth = false;                          // Disable SMTP authentication
+                $mail->SMTPAuth = false; // Disable SMTP authentication
             }
-            $mail->Port = $smtp['port'];                          // SMTP port
-            $mail->Username = $smtp['user'];                      // SMTP username
-            $mail->Password = $smtp['password'];                  // SMTP password
-            $mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
+            $mail->Port       = $smtp['port']; // SMTP port
+            $mail->Username   = $smtp['user']; // SMTP username
+            $mail->Password   = $smtp['password']; // SMTP password
+            $mail->SMTPSecure = 'tls'; // Enable encryption, 'ssl' also accepted
 
             /**
              * @see https://stackoverflow.com/questions/30371910/phpmailer-generates-php-warning-stream-socket-enable-crypto-peer-certificate
              */
-            $mail->SMTPOptions = array(
-                'ssl' => array(
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                    'allow_self_signed' => true
-                )
-            );
+            $mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer'       => false,
+                    'verify_peer_name'  => false,
+                    'allow_self_signed' => true,
+                ],
+            ];
         }
 
         $mail->CharSet = 'UTF-8';
@@ -163,6 +167,7 @@ class Controller_Transaction extends Controller_Scaffold
         $mail->addReplyTo($user->email, $user->name);
 
         //$mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
+
         $pos = strpos($this->record->billingemail, ';');
         if ($pos === false) {
             $mail->addAddress($this->record->billingemail, $this->record->person->name);
@@ -175,29 +180,39 @@ class Controller_Transaction extends Controller_Scaffold
 
         $mail->addBCC($user->email, $user->name);
 
-        $mail->WordWarp = 50;
         $mail->isHTML(true);
         $mail->Subject = $docname;
 
         ob_start();
-        Flight::render('model/transaction/mail/html', array(
-            'record' => $this->record,
+        Flight::render('model/transaction/mail/html', [
+            'record'  => $this->record,
             'company' => $this->company,
-            'user' => $user
-        ));
+            'user'    => $user,
+        ]);
         $html = ob_get_clean();
         ob_start();
-        Flight::render('model/transaction/mail/text', array(
-            'record' => $this->record,
+        Flight::render('model/transaction/mail/text', [
+            'record'  => $this->record,
             'company' => $this->company,
-            'user' => $user
-        ));
-        $text = ob_get_clean();
-        $mail->Body = $html;
+            'user'    => $user,
+        ]);
+        $text          = ob_get_clean();
+        $mail->Body    = $html;
         $mail->AltBody = $text;
-        $attachment = $mpdf->Output('', 'S');
 
-        $mail->addStringAttachment($attachment, $filename);
+        $attachment = $mpdf->Output('', 'S'); //the pdf as a string
+        // if that type of transaction wants to empbed XML into the pdf, do it:
+        if ($this->record->getContracttype()->xmlit) {
+            $xml   = $this->record->getXML(); //the xml of the invoice
+            $horse = new ZugferdDocumentPdfMerger($xml, $attachment);
+
+            $fullpdf = $horse->generateDocument()->downloadString($filename);
+        } else {
+            $fullpdf = $attachment;
+        }
+
+        $mail->addStringAttachment($fullpdf, $filename);
+
         if ($mail->send()) {
             $this->record->sent = true;
             Flight::get('user')->notify(I18n::__("transaction_mail_done"), 'success');
@@ -225,20 +240,20 @@ class Controller_Transaction extends Controller_Scaffold
         $ts = date('Y-m-d');
         $this->getTotals();
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $filename = I18n::__('transaction_pdf_list_filename', null, [$ts]);
-        $docname = I18n::__('transaction_pdf_list_docname', null, [$ts]);
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
+        $filename      = I18n::__('transaction_pdf_list_filename', null, [$ts]);
+        $docname       = I18n::__('transaction_pdf_list_docname', null, [$ts]);
+        $mpdf          = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
         ob_start();
         Flight::render('model/transaction/pdf/list', [
-            'title' => $docname,
-            'company' => $this->company,
-            'record' => $this->record,
-            'records' => $this->records,
-            'totals' => $this->totals,
-            'language' => Flight::get('language')
+            'title'    => $docname,
+            'company'  => $this->company,
+            'record'   => $this->record,
+            'records'  => $this->records,
+            'totals'   => $this->totals,
+            'language' => Flight::get('language'),
         ]);
         $html = ob_get_contents();
         ob_end_clean();
@@ -257,10 +272,10 @@ class Controller_Transaction extends Controller_Scaffold
     public function pdfSingleTransaction()
     {
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
-        $layout = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
-        $filename = I18n::__('transaction_pdf_filename', null, [$this->record->getFilename()]);
-        $docname = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
-        $mpdf = $this->generatePDF($layout, $docname);
+        $layout        = Flight::request()->query->layout; //get the choosen layout from the query paramter "layout"
+        $filename      = I18n::__('transaction_pdf_filename', null, [$this->record->getFilename()]);
+        $docname       = I18n::__('transaction_pdf_docname', null, [$this->record->getDocname()]);
+        $mpdf          = $this->generatePDF($layout, $docname);
         $mpdf->Output($filename, 'D');
         exit;
     }
@@ -280,10 +295,10 @@ class Controller_Transaction extends Controller_Scaffold
         $mpdf->SetDisplayMode('fullpage');
         ob_start();
         Flight::render('model/transaction/pdf/' . $layout, [
-            'title' => $docname,
-            'company' => $this->company,
-            'record' => $this->record,
-            'language' => Flight::get('language')
+            'title'    => $docname,
+            'company'  => $this->company,
+            'record'   => $this->record,
+            'language' => Flight::get('language'),
         ]);
         $html = ob_get_contents();
         ob_end_clean();
@@ -304,7 +319,7 @@ class Controller_Transaction extends Controller_Scaffold
     public function getTotals()
     {
         $where = $this->filter->buildWhereClause();
-        $sql = "SELECT CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat FROM transaction LEFT JOIN contracttype ON contracttype.id = transaction.contracttype_id LEFT JOIN person ON person.id = transaction.person_id WHERE " . $where;
+        $sql   = "SELECT CAST(SUM(gros) AS DECIMAL(10, 2)) AS totalgros, CAST(SUM(net) AS DECIMAL(10, 2)) AS totalnet, CAST(SUM(vat) AS DECIMAL(10, 2)) AS totalvat FROM transaction LEFT JOIN contracttype ON contracttype.id = transaction.contracttype_id LEFT JOIN person ON person.id = transaction.person_id WHERE " . $where;
         R::debug(true);
         $this->totals = R::getRow($sql, $this->filter->getFilterValues());
         R::debug(false);
@@ -323,21 +338,21 @@ class Controller_Transaction extends Controller_Scaffold
      */
     public function dependent()
     {
-        $person = R::load('person', Flight::request()->data->person_id);
-        $dependents = $this->record->getDependents($person);
+        $person               = R::load('person', Flight::request()->data->person_id);
+        $dependents           = $this->record->getDependents($person);
         $this->record->person = $person;
         ob_start();
         Flight::render('model/transaction/billingmail', [
-            'person' => $person,
-            'record' => $this->record,
-            'contacts' => $dependents['contacts']
+            'person'   => $person,
+            'record'   => $this->record,
+            'contacts' => $dependents['contacts'],
         ]);
         $html = ob_get_contents();
         ob_end_clean();
 
         $result = [
             'okay' => true,
-            'html' => $html
+            'html' => $html,
         ];
 
         Flight::jsonp($result, 'callback');

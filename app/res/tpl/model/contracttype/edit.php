@@ -1,12 +1,12 @@
 <?php
-/**
- * Cinnebar.
- *
- * @package Cinnebar
- * @subpackage Template
- * @author $Author$
- * @version $Id$
- */
+    /**
+     * Cinnebar.
+     *
+     * @package Cinnebar
+     * @subpackage Template
+     * @author $Author$
+     * @version $Id$
+     */
 ?>
 <!-- contracttype edit form -->
 <div>
@@ -16,7 +16,7 @@
 <fieldset>
     <legend class="verbose"><?php echo I18n::__('contracttypetype_legend') ?></legend>
 
-    <div class="row <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('name')) ? 'error' : ''; ?>">
         <label
             for="contracttype-name">
             <?php echo I18n::__('contracttype_label_name') ?>
@@ -28,7 +28,7 @@
             value="<?php echo htmlspecialchars($record->name ?? '') ?>"
             required="required" />
     </div>
-    <div class="row <?php echo ($record->hasError('bookable')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('bookable')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[bookable]"
@@ -45,7 +45,7 @@
             <?php echo I18n::__('contracttype_label_bookable') ?>
         </label>
     </div>
-    <div class="row <?php echo ($record->hasError('nickname')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('nickname')) ? 'error' : ''; ?>">
         <label
             for="contracttype-nickname">
             <?php echo I18n::__('contracttype_label_nickname') ?>
@@ -57,7 +57,35 @@
             value="<?php echo htmlspecialchars($record->nickname ?? '') ?>"
             required="required" />
     </div>
-    <div class="row <?php echo ($record->hasError('nextnumber')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('code')) ? 'error' : ''; ?>">
+        <label
+            for="contracttype-code">
+            <?php echo I18n::__('contracttype_label_code') ?>
+        </label>
+        <input
+            id="contracttype-code"
+            type="text"
+            name="dialog[code]"
+            value="<?php echo htmlspecialchars($record->code ?? '') ?>" />
+    </div>
+    <div class="row                    <?php echo ($record->hasError('xmlit')) ? 'error' : ''; ?>">
+        <input
+            type="hidden"
+            name="dialog[xmlit]"
+            value="0" />
+        <input
+            id="contracttype-xmlit"
+            type="checkbox"
+            name="dialog[xmlit]"
+            <?php echo ($record->xmlit) ? 'checked="checked"' : '' ?>
+            value="1" />
+        <label
+            for="contracttype-xmlit"
+            class="cb">
+            <?php echo I18n::__('contracttype_label_xmlit') ?>
+        </label>
+    </div>
+    <div class="row                    <?php echo ($record->hasError('nextnumber')) ? 'error' : ''; ?>">
         <label
             for="contracttype-nextnumber">
             <?php echo I18n::__('contracttype_label_nextnumber') ?>
@@ -70,7 +98,7 @@
             required="required" />
     </div>
 
-    <div class="row <?php echo ($record->hasError('service')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('service')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[service]"
@@ -88,7 +116,7 @@
         </label>
     </div>
 
-    <div class="row <?php echo ($record->hasError('ledger')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('ledger')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[ledger]"
@@ -106,7 +134,7 @@
         </label>
     </div>
 
-    <div class="row <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('enabled')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[enabled]"
@@ -123,7 +151,7 @@
             <?php echo I18n::__('contracttype_label_enabled') ?>
         </label>
     </div>
-    <div class="row <?php echo ($record->hasError('hidesome')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('hidesome')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[hidesome]"
@@ -140,7 +168,7 @@
             <?php echo I18n::__('contracttype_label_hidesome') ?>
         </label>
     </div>
-    <div class="row <?php echo ($record->hasError('hidetotal')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('hidetotal')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[hidetotal]"
@@ -157,7 +185,7 @@
             <?php echo I18n::__('contracttype_label_hidetotal') ?>
         </label>
     </div>
-    <div class="row <?php echo ($record->hasError('hideall')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('hideall')) ? 'error' : ''; ?>">
         <input
             type="hidden"
             name="dialog[hideall]"
@@ -174,7 +202,7 @@
             <?php echo I18n::__('contracttype_label_hideall') ?>
         </label>
     </div>
-    <div class="row <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
+    <div class="row                    <?php echo ($record->hasError('note')) ? 'error' : ''; ?>">
         <label
             for="contracttype-note">
             <?php echo I18n::__('contracttype_label_note') ?>
@@ -188,23 +216,23 @@
     </div>
 </fieldset>
 <div class="tab-container">
-    <?php Flight::render('shared/navigation/tabs', array(
-        'tab_id' => 'contracttype-tabs',
-        'tabs' => array(
-            'contracttype-detail' => I18n::__('contracttype_detail_tab'),
-            'contracttype-limb' => I18n::__('contracttype_limb_tab'),
-            'contracttype-style' => I18n::__('contracttype_style_tab'),
-            'contracttype-wording' => I18n::__('contracttype_wording_tab'),
-            'contracttype-email' => I18n::__('contracttype_email_tab')
-        ),
-                        'default_tab' => 'contracttype-detail'
-    )) ?>
+    <?php Flight::render('shared/navigation/tabs', [
+            'tab_id'      => 'contracttype-tabs',
+            'tabs'        => [
+                'contracttype-detail'  => I18n::__('contracttype_detail_tab'),
+                'contracttype-limb'    => I18n::__('contracttype_limb_tab'),
+                'contracttype-style'   => I18n::__('contracttype_style_tab'),
+                'contracttype-wording' => I18n::__('contracttype_wording_tab'),
+                'contracttype-email'   => I18n::__('contracttype_email_tab'),
+            ],
+            'default_tab' => 'contracttype-detail',
+    ])?>
     <fieldset
         id="contracttype-detail"
         class="tab"
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('contracttype_detail_legend') ?></legend>
-        <div class="row <?php echo ($record->hasError('text')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('text')) ? 'error' : ''; ?>">
             <label
                 for="contracttype-text">
                 <?php echo I18n::__('contracttype_label_text') ?>
@@ -219,7 +247,7 @@
     </fieldset>
     <fieldset id="contracttype-style" class="tab" style="display: none;">
         <legend class="verbose"><?php echo I18n::__('contracttype_style_legend') ?></legend>
-        <div class="row <?php echo ($record->hasError('css')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('css')) ? 'error' : ''; ?>">
             <label
                 for="contracttype-css">
                 <?php echo I18n::__('contracttype_label_css') ?>
@@ -234,7 +262,7 @@
     </fieldset>
     <fieldset id="contracttype-wording" class="tab" style="display: none;">
         <legend class="verbose"><?php echo I18n::__('contracttype_wording_legend') ?></legend>
-        <div class="row <?php echo ($record->hasError('wordgros')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('wordgros')) ? 'error' : ''; ?>">
             <label
                 for="contracttype-wordgros">
                 <?php echo I18n::__('contracttype_label_wordgros') ?>
@@ -246,7 +274,7 @@
                 value="<?php echo htmlspecialchars($record->wordgros ?? '') ?>">
             <p class="info"><?php echo I18n::__('contracttype_info_wordgros') ?></p>
         </div>
-        <div class="row <?php echo ($record->hasError('resetheader')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('resetheader')) ? 'error' : ''; ?>">
             <input
                 type="hidden"
                 name="dialog[resetheader]"
@@ -263,7 +291,7 @@
                 <?php echo I18n::__('contracttype_label_resetheader') ?>
             </label>
         </div>
-        <div class="row <?php echo ($record->hasError('resetfooter')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('resetfooter')) ? 'error' : ''; ?>">
             <input
                 type="hidden"
                 name="dialog[resetfooter]"
@@ -280,7 +308,7 @@
                 <?php echo I18n::__('contracttype_label_resetfooter') ?>
             </label>
         </div>
-        <div class="row <?php echo ($record->hasError('closeonarchive')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('closeonarchive')) ? 'error' : ''; ?>">
             <input
                 type="hidden"
                 name="dialog[closeonarchive]"
@@ -300,7 +328,7 @@
     </fieldset>
     <fieldset id="contracttype-email" class="tab" style="display: none;">
         <legend class="verbose"><?php echo I18n::__('contracttype_emailtext_legend') ?></legend>
-        <div class="row <?php echo ($record->hasError('css')) ? 'error' : ''; ?>">
+        <div class="row                        <?php echo ($record->hasError('css')) ? 'error' : ''; ?>">
             <label
                 for="contracttype-emailtext">
                 <?php echo I18n::__('contracttype_label_emailtext') ?>
@@ -347,19 +375,19 @@
         <div
             id="contracttype-<?php echo $record->getId() ?>-limb-container"
             class="container attachable detachable sortable">
-            <?php $_limbs = $record->with(' ORDER BY sequence ASC ')->ownLimb ?>
-            <?php if (count($_limbs) == 0) :
-                $_limbs[] = R::dispense('limb');
-            endif; ?>
-        <?php $index = 0 ?>
-        <?php foreach ($_limbs as $_limb_id => $_limb) : ?>
-            <?php $index++ ?>
-            <?php Flight::render('model/contracttype/own/limb', array(
-            'record' => $record,
-            '_limb' => $_limb,
-            'index' => $index
-        )) ?>
-        <?php endforeach ?>
+            <?php $_limbs = $record->with(' ORDER BY sequence ASC ')->ownLimb?>
+<?php if (count($_limbs) == 0):
+        $_limbs[] = R::dispense('limb');
+endif;?>
+<?php $index = 0?>
+<?php foreach ($_limbs as $_limb_id => $_limb): ?>
+<?php $index++?>
+<?php Flight::render('model/contracttype/own/limb', [
+        'record' => $record,
+        '_limb'  => $_limb,
+        'index'  => $index,
+])?>
+<?php endforeach?>
         </div>
     </fieldset>
 </div>
