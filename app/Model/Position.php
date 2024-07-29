@@ -55,29 +55,29 @@ class Model_Position extends Model
     {
         return [
             [
-                'name' => 'description',
-                'sort' => [
-                    'name' => 'position.description'
+                'name'   => 'description',
+                'sort'   => [
+                    'name' => 'position.description',
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'text',
                 ],
-                'width' => 'auto'
+                'width'  => 'auto',
             ],
             [
-                'name' => 'total',
-                'sort' => [
-                    'name' => 'position.total'
+                'name'     => 'total',
+                'sort'     => [
+                    'name' => 'position.total',
                 ],
-                'class' => 'number',
+                'class'    => 'number',
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'filter' => [
-                    'tag' => 'number'
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
-            ]
+                'width'    => '8rem',
+            ],
         ];
     }
 
@@ -101,7 +101,7 @@ class Model_Position extends Model
      */
     public function getProduct()
     {
-        if (! $this->bean->product) {
+        if ( ! $this->bean->product) {
             $this->bean->product = R::dispense('product');
         }
         return $this->bean->product;
@@ -124,7 +124,7 @@ class Model_Position extends Model
      */
     public function getVat()
     {
-        if (! $this->bean->vat) {
+        if ( ! $this->bean->vat) {
             $this->bean->vat = R::dispense('vat');
         }
         return $this->bean->vat;
@@ -147,10 +147,23 @@ class Model_Position extends Model
      */
     public function getCostunittype()
     {
-        if (! $this->bean->costunittype) {
+        if ( ! $this->bean->costunittype) {
             $this->bean->costunittype = R::dispense('costunittype');
         }
         return $this->bean->costunittype;
+    }
+
+    /**
+     * Return the unit bean.
+     *
+     * @return RedbeanPHP\OODBBean
+     */
+    public function getUnit()
+    {
+        if ( ! $this->bean->unit_id) {
+            $this->bean->unit = R::dispense('unit');
+        }
+        return $this->bean->unit;
     }
 
     /**
@@ -241,17 +254,17 @@ SQL;
      */
     public function dispense()
     {
-        $this->bean->kind = self::KIND_POSITION;//what kind of pos is it? position, subtotal, freetext
-        $this->bean->count = 0;
-        $this->bean->salesprice = 0;
-        $this->bean->adjustment = 0;
-        $this->bean->adjustval = 0;
-        $this->bean->total = 0;
+        $this->bean->kind          = self::KIND_POSITION; //what kind of pos is it? position, subtotal, freetext
+        $this->bean->count         = 0;
+        $this->bean->salesprice    = 0;
+        $this->bean->adjustment    = 0;
+        $this->bean->adjustval     = 0;
+        $this->bean->total         = 0;
         $this->bean->vatpercentage = 0;
-        $this->bean->vatamount = 0;
-        $this->bean->gros = 0;
-        $this->bean->currentindex = 0;
-        $this->bean->sequence = 0;
+        $this->bean->vatamount     = 0;
+        $this->bean->gros          = 0;
+        $this->bean->currentindex  = 0;
+        $this->bean->sequence      = 0;
         $this->addConverter('sequence', new Converter_Decimal());
         $this->addConverter('count', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
@@ -268,7 +281,7 @@ SQL;
      */
     public function calcPosition()
     {
-        if (!$this->bean->alternative && $this->bean->kind == self::KIND_POSITION) {
+        if ( ! $this->bean->alternative && $this->bean->kind == self::KIND_POSITION) {
             //$this->bean->total = round($this->bean->count * $this->bean->salesprice, 2);
             $this->bean->total = $this->bean->count * $this->bean->salesprice;
 
@@ -293,19 +306,24 @@ SQL;
     {
         parent::update();
 
-        if (!$this->bean->product_id) {
+        if ( ! $this->bean->product_id) {
             $this->bean->product_id = null;
             unset($this->bean->product);
         }
-        if (!$this->bean->vat_id) {
+        if ( ! $this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
         }
         $this->bean->vatpercentage = $this->bean->getVat()->value;
 
-        if (!$this->bean->costunittype_id) {
+        if ( ! $this->bean->costunittype_id) {
             $this->bean->costunittype_id = null;
             unset($this->bean->costunittype);
+        }
+
+        if ( ! $this->bean->unit_id) {
+            $this->bean->unit_id = null;
+            unset($this->bean->unit);
         }
         // calculate net, vat and gros
         $this->calcPosition();

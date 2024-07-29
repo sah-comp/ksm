@@ -47,6 +47,11 @@ class Doctor
     {
         $this->beanname = $this->args['-b'];
         switch ($this->beanname) {
+            case 'unit':
+                echo "Swap unit text of product and position with unit id of corresponding unit record\n";
+                $this->doctorUnit();
+                break;
+
             case 'transcust':
                 echo "Copy person name from person bean to transaction attribute customername\n";
                 $this->doctorTranscust();
@@ -108,7 +113,7 @@ class Doctor
                 'sell',
                 'co',
                 'van',
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
             ], [
                 ' ',
                 ' ',
@@ -119,27 +124,65 @@ class Doctor
                 '',
                 '',
                 '',
-                '', '', '', '', '', '', '', '', '', '', ''
+                '', '', '', '', '', '', '', '', '', '', '',
             ], mb_strtolower($supplier->name)));
             $names = explode(' ', $stripped, 2);
             $first = trim(reset($names));
             if ($first !== '') {
                 $person = R::findOne('person', "name LIKE :name AND personkind_id = :pkid LIMIT 1", [
                     ':name' => "%{$first}%",
-                    ':pkid' => 3
+                    ':pkid' => 3,
                 ]);
                 if ($person && $person->getId()) {
                     //echo '<' . $first . '> => ' . $person->account . ' ' . $person->name . "\n";
                     //echo '<' . $id . '> => ' . $person->getId() . "\n";
                     R::exec("UPDATE article SET person_id = :pid WHERE supplier_id = :sid", [
                         ':pid' => $person->getId(),
-                        ':sid' => $id
+                        ':sid' => $id,
                     ]);
                     echo '.';
                 }
             }
         }
         echo "Ready\n";
+        return true;
+    }
+
+    /**
+     * Doctor unit in product and position beans.
+     *
+     * @return bool
+     */
+    public function doctorUnit(): bool
+    {
+        // products
+        $products = R::findAll('product');
+        echo "\nDoctoring " . count($products) . " products:\n";
+        foreach ($products as $id => $product) {
+            echo ".";
+            $unit = R::findOne('unit', "name = ? LIMIT 1", [trim($product->unit)]);
+            if ( ! $unit) {
+                $product->unit_id = null;
+            } else {
+                $product->unit_id = $unit->getId();
+            }
+        }
+        R::storeAll($products);
+        // positions
+        $positions = R::findAll('position');
+        echo "\nDoctoring " . count($positions) . " positions:\n";
+        foreach ($positions as $id => $position) {
+            echo ".";
+            $unit = R::findOne('unit', "name = ? LIMIT 1", [trim($position->unit)]);
+            if ( ! $unit) {
+                $position->unit_id = null;
+            } else {
+                $position->unit_id = $unit->getId();
+            }
+        }
+        R::storeAll($positions);
+        echo "\nManually drop column unit from table position and product if all worked well.\n";
+        echo "\nReady.\n";
         return true;
     }
 
@@ -168,7 +211,7 @@ class Doctor
      */
     public function doctorTranscust(): bool
     {
-        $$sql = "UPDATE transaction AS t, person AS p SET t.customername = p.name WHERE p.id = t.person_id";
+        $$sql   = "UPDATE transaction AS t, person AS p SET t.customername = p.name WHERE p.id = t.person_id";
         $result = R::exec($sql);
         return true;
     }
@@ -180,7 +223,7 @@ class Doctor
      */
     public function doctorTreatyYMD(): bool
     {
-        $sql = "UPDATE treaty SET y = YEAR(bookingdate), m = MONTH(bookingdate), d = DAY(bookingdate)";
+        $sql    = "UPDATE treaty SET y = YEAR(bookingdate), m = MONTH(bookingdate), d = DAY(bookingdate)";
         $result = R::exec($sql);
         return true;
     }
@@ -193,38 +236,38 @@ class Doctor
     public function doctorMachineFields(): bool
     {
         $machines = R::findAll('machine');
-        $sql = "UPDATE machine SET payload = :payload WHERE id = :id LIMIT 1";
+        $sql      = "UPDATE machine SET payload = :payload WHERE id = :id LIMIT 1";
         echo "\nDoctoring " . count($machines) . " machines:\n";
         foreach ($machines as $id => $machine) {
             $data = [
-                'charger' => $machine->charger,
-                'lever' => $machine->lever,
-                'forks' => $machine->forks,
-                'weight' => $machine->weight,
-                'height' => $machine->height,
-                'maxload' => $machine->maxload,
-                'masttype' => $machine->masttype,
-                'mastserialnumber' => $machine->mastserialnumber,
-                'attachment' => $machine->attachment,
-                'attachmenttype' => $machine->attachmenttype,
+                'charger'                => $machine->charger,
+                'lever'                  => $machine->lever,
+                'forks'                  => $machine->forks,
+                'weight'                 => $machine->weight,
+                'height'                 => $machine->height,
+                'maxload'                => $machine->maxload,
+                'masttype'               => $machine->masttype,
+                'mastserialnumber'       => $machine->mastserialnumber,
+                'attachment'             => $machine->attachment,
+                'attachmenttype'         => $machine->attachmenttype,
                 'attachmentserialnumber' => $machine->attachmentserialnumber,
-                'motor' => $machine->motor,
-                'motorserialnumber' => $machine->motorserialnumber,
-                'controlvalve' => $machine->controlvalve,
-                'shutdownvalve' => $machine->shutdownvalve,
-                'mixer' => $machine->mixer,
-                'keynumber' => $machine->keynumber,
-                'fronttires' => $machine->fronttires,
-                'backtires' => $machine->backtires,
-                'controltype' => $machine->controltype,
-                'battery' => $machine->battery,
-                'hourlyrate' => $machine->hourlyrate,
-                'drivingcost' => $machine->drivingcost,
-                'forkmaxheight' => $machine->forkmaxheight
+                'motor'                  => $machine->motor,
+                'motorserialnumber'      => $machine->motorserialnumber,
+                'controlvalve'           => $machine->controlvalve,
+                'shutdownvalve'          => $machine->shutdownvalve,
+                'mixer'                  => $machine->mixer,
+                'keynumber'              => $machine->keynumber,
+                'fronttires'             => $machine->fronttires,
+                'backtires'              => $machine->backtires,
+                'controltype'            => $machine->controltype,
+                'battery'                => $machine->battery,
+                'hourlyrate'             => $machine->hourlyrate,
+                'drivingcost'            => $machine->drivingcost,
+                'forkmaxheight'          => $machine->forkmaxheight,
             ];
             $result = R::exec($sql, [
                 ':payload' => json_encode($data),
-                ':id' => $machine->getId()
+                ':id'      => $machine->getId(),
             ]);
             echo '.';
         }
@@ -240,14 +283,14 @@ class Doctor
     public function doctorTreatyFields(): bool
     {
         $treaties = R::findAll('treaty');
-        $sql = "UPDATE treaty SET payload = :payload WHERE id = :id LIMIT 1";
+        $sql      = "UPDATE treaty SET payload = :payload WHERE id = :id LIMIT 1";
         echo "\nDoctoring " . count($treaties) . " treaties:\n";
         foreach ($treaties as $id => $treaty) {
-            $data = json_decode($treaty->payload, true);
+            $data                 = json_decode($treaty->payload, true);
             $data['serialnumber'] = $treaty->serialnumber;
-            $result = R::exec($sql, [
+            $result               = R::exec($sql, [
                 ':payload' => json_encode($data),
-                ':id' => $treaty->getId()
+                ':id'      => $treaty->getId(),
             ]);
             echo '.';
         }
@@ -263,16 +306,16 @@ class Doctor
     public function doctorTreatyManufacturerFields(): bool
     {
         $treaties = R::findAll('treaty');
-        $sql = "UPDATE treaty SET payload = :payload WHERE id = :id LIMIT 1";
+        $sql      = "UPDATE treaty SET payload = :payload WHERE id = :id LIMIT 1";
         echo "\nDoctoring " . count($treaties) . " treaties:\n";
         foreach ($treaties as $id => $treaty) {
             $data = json_decode($treaty->payload, true);
-            if ((!isset($data['manufacturer']) || $data['manufacturer'] == '') && isset($data['product'])) {
+            if (( ! isset($data['manufacturer']) || $data['manufacturer'] == '') && isset($data['product'])) {
                 $data['manufacturer'] = $data['product'];
             }
             $result = R::exec($sql, [
                 ':payload' => json_encode($data),
-                ':id' => $treaty->getId()
+                ':id'      => $treaty->getId(),
             ]);
             echo '.';
         }
@@ -324,14 +367,14 @@ Options:
 
 DOC;
 
-require __DIR__.'/../vendor/docopt/docopt/src/docopt.php';
+require __DIR__ . '/../vendor/docopt/docopt/src/docopt.php';
 
 $args = Docopt::handle($doc, ['version' => 'Doctor 1.0']);
 
 $doctor = new Doctor($args);
 $doctor->run();
 
-$end_time = microtime(true);
+$end_time       = microtime(true);
 $execution_time = round(($end_time - $start_time) / 60, 2);
 
 echo "\nThe doctor fixed things in {$execution_time} minutes.\n";

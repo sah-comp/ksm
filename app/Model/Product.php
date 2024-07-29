@@ -27,89 +27,89 @@ class Model_Product extends Model
     {
         return [
             [
-                'name' => 'number',
-                'sort' => [
-                    'name' => 'product.number'
+                'name'   => 'number',
+                'sort'   => [
+                    'name' => 'product.number',
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'text',
                 ],
-                'width' => '12rem'
+                'width'  => '12rem',
             ],
             [
-                'name' => 'matchcode',
-                'sort' => [
-                    'name' => 'product.matchcode'
+                'name'   => 'matchcode',
+                'sort'   => [
+                    'name' => 'product.matchcode',
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'text',
                 ],
-                'width' => '12rem'
+                'width'  => '12rem',
             ],
             [
-                'name' => 'description',
-                'sort' => [
-                    'name' => 'product.description'
+                'name'   => 'description',
+                'sort'   => [
+                    'name' => 'product.description',
                 ],
                 'filter' => [
-                    'tag' => 'text'
+                    'tag' => 'text',
                 ],
-                'width' => 'auto'
+                'width'  => 'auto',
             ],
             [
-                'name' => 'costunittype.name',
-                'sort' => [
-                    'name' => 'costunittype.name'
+                'name'     => 'costunittype.name',
+                'sort'     => [
+                    'name' => 'costunittype.name',
                 ],
                 'callback' => [
-                    'name' => 'costunittypeName'
+                    'name' => 'costunittypeName',
                 ],
-                'filter' => [
-                    'tag' => 'text'
+                'filter'   => [
+                    'tag' => 'text',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'vat.name',
-                'sort' => [
-                    'name' => 'vat.name'
+                'name'     => 'vat.name',
+                'sort'     => [
+                    'name' => 'vat.name',
                 ],
                 'callback' => [
-                    'name' => 'vatName'
+                    'name' => 'vatName',
                 ],
-                'filter' => [
-                    'tag' => 'text'
+                'filter'   => [
+                    'tag' => 'text',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'purchaseprice',
-                'sort' => [
-                    'name' => 'product.purchaseprice'
+                'name'     => 'purchaseprice',
+                'sort'     => [
+                    'name' => 'product.purchaseprice',
                 ],
-                'class' => 'number',
+                'class'    => 'number',
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'filter' => [
-                    'tag' => 'number'
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
+                'width'    => '8rem',
             ],
             [
-                'name' => 'salesprice',
-                'sort' => [
-                    'name' => 'product.salesprice'
+                'name'     => 'salesprice',
+                'sort'     => [
+                    'name' => 'product.salesprice',
                 ],
-                'class' => 'number',
+                'class'    => 'number',
                 'callback' => [
-                    'name' => 'decimal'
+                    'name' => 'decimal',
                 ],
-                'filter' => [
-                    'tag' => 'number'
+                'filter'   => [
+                    'tag' => 'number',
                 ],
-                'width' => '8rem'
-            ]
+                'width'    => '8rem',
+            ],
         ];
     }
 
@@ -133,7 +133,7 @@ class Model_Product extends Model
      */
     public function getVat()
     {
-        if (! $this->bean->vat) {
+        if ( ! $this->bean->vat) {
             $this->bean->vat = R::dispense('vat');
         }
         return $this->bean->vat;
@@ -156,7 +156,7 @@ class Model_Product extends Model
      */
     public function getCostunittype()
     {
-        if (! $this->bean->costunittype) {
+        if ( ! $this->bean->costunittype) {
             $this->bean->costunittype = R::dispense('costunittype');
         }
         return $this->bean->costunittype;
@@ -178,9 +178,9 @@ class Model_Product extends Model
      * @param string $searchphrase
      * @return array
      */
-    public function searchGlobal($searchphrase):array
+    public function searchGlobal($searchphrase): array
     {
-        $searchphrase = '%'.$searchphrase.'%';
+        $searchphrase = '%' . $searchphrase . '%';
         return R::find(
             $this->bean->getMeta('type'),
             ' number LIKE :f OR matchcode LIKE :f OR description LIKE :f OR unit LIKE :f',
@@ -212,6 +212,7 @@ class Model_Product extends Model
                     CONCAT(product.description) AS value,
                     1 AS count,
                     product.unit AS unit,
+                    product.unit_id AS unit_id,
                     FORMAT(product.purchaseprice, 2, 'de_DE') AS purchaseprice,
                     FORMAT(product.salesprice, 2, 'de_DE') AS salesprice
                 FROM
@@ -227,7 +228,7 @@ class Model_Product extends Model
                 LIMIT {$limit}
 SQL;
         }
-        $result = R::getAll($sql, array(':searchtext' => '%' . $searchtext . '%' ));
+        $result = R::getAll($sql, [':searchtext' => '%' . $searchtext . '%']);
         return $result;
     }
 
@@ -272,10 +273,10 @@ SQL;
     public function dispense()
     {
         $this->bean->matchcode = '';
-        $this->addValidator('number', array(
+        $this->addValidator('number', [
             new Validator_HasValue(),
-            new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'number'))
-        ));
+            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'number']),
+        ]);
         $this->addConverter('purchaseprice', new Converter_Decimal());
         $this->addConverter('salesprice', new Converter_Decimal());
     }
@@ -285,12 +286,17 @@ SQL;
      */
     public function update()
     {
-        if (!$this->bean->costunittype_id) {
+        if ( ! $this->bean->costunittype_id) {
             $this->bean->costunittype_id = null;
             unset($this->bean->costunittype);
         }
 
-        if (!$this->bean->vat_id) {
+        if ( ! $this->bean->unit_id) {
+            $this->bean->unit_id = null;
+            unset($this->bean->unit);
+        }
+
+        if ( ! $this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
         }

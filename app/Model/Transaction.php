@@ -154,7 +154,7 @@ class Model_Transaction extends Model
                     ->setDocumentPositionProductDetails($pos->desc, "", $pos->ska)
                     ->setDocumentPositionGrossPrice($gros)
                     ->setDocumentPositionNetPrice($pos->salesprice)
-                    ->setDocumentPositionQuantity($pos->count, "H87")
+                    ->setDocumentPositionQuantity($pos->count, $pos->unit->code)
                     ->addDocumentPositionTax('S', 'VAT', $pos->vatpercentage)
                     ->setDocumentPositionLineSummation($pos->total);
             }

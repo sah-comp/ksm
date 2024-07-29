@@ -1,12 +1,12 @@
 <?php
-/**
- * Cinnebar.
- *
- * @package Cinnebar
- * @subpackage Template
- * @author $Author$
- * @version $Id$
- */
+    /**
+     * Cinnebar.
+     *
+     * @package Cinnebar
+     * @subpackage Template
+     * @author $Author$
+     * @version $Id$
+     */
 ?>
 <!-- position edit subform -->
 <fieldset
@@ -115,18 +115,19 @@
                 class="autocomplete"
                 data-source="<?php echo Url::build('/autocomplete/product/number/?callback=?') ?>"
                 data-spread='<?php
-                    echo json_encode([
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-ska' => 'ska',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-desc' => 'value',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-count' => 'count',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-id' => 'id',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-id-shadow' => 'id',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-unit' => 'unit',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-salesprice' => 'salesprice',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-vat-id' => 'vat_id',
-                        'transaction-'.$record->getId().'-position-'.$index.'-product-costunittype-id' => 'costunittype_id',
-                        'transaction-'.$record->getId().'-position-'.$index.'-vatpercentage' => 'vatpercentage'
-                    ]); ?>'
+                                 echo json_encode([
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-ska'             => 'ska',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-desc'            => 'value',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-count'           => 'count',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-id'              => 'id',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-id-shadow'       => 'id',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-unit'            => 'unit',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-unit-id'         => 'unit_id',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-salesprice'      => 'salesprice',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-vat-id'          => 'vat_id',
+                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-costunittype-id' => 'costunittype_id',
+                                 'transaction-' . $record->getId() . '-position-' . $index . '-vatpercentage'           => 'vatpercentage',
+                             ]); ?>'
                 value="<?php echo htmlspecialchars($_position->ska ?? '') ?>" />
         </div>
         <div class="span3">
@@ -145,11 +146,17 @@
                 value="<?php echo htmlspecialchars($_position->decimal('count') ?? '') ?>">
         </div>
         <div class="span1">
-            <input
-                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-unit"
-                type="text"
-                name="dialog[ownPosition][<?php echo $index ?>][unit]"
-                value="<?php echo htmlspecialchars($_position->unit ?? '') ?>">
+            <select
+                id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-unit-id"
+                name="dialog[ownPosition][<?php echo $index ?>][unit_id]">
+                <option value=""><?php echo I18n::__('product_unit_none') ?></option>
+                <?php foreach ($_units as $_id => $_unit): ?>
+                <option
+                    value="<?php echo $_unit->getId() ?>"
+                    <?php echo ($_position->unit->getId() == $_unit->getId()) ? 'selected="selected"' : '' ?>><?php echo $_unit->name ?>
+                </option>
+                <?php endforeach?>
+            </select>
         </div>
         <div class="span1">
             <div class="row">
@@ -158,12 +165,12 @@
                         id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-costunittype-id"
                         name="dialog[ownPosition][<?php echo $index ?>][costunittype_id]">
                         <option value=""><?php echo I18n::__('product_costunittype_none') ?></option>
-                        <?php foreach (R::findAll('costunittype') as $_id => $_costunittype) : ?>
+                        <?php foreach (R::findAll('costunittype') as $_id => $_costunittype): ?>
                         <option
                             value="<?php echo $_costunittype->getId() ?>"
                             <?php echo ($_position->getCostunittype()->getId() == $_costunittype->getId()) ? 'selected="selected"' : '' ?>><?php echo $_costunittype->name ?>
                         </option>
-                        <?php endforeach ?>
+                        <?php endforeach?>
                     </select>
                 </div>
                 <div class="span6">
@@ -175,12 +182,12 @@
                     <select
                         id="transaction-<?php echo $record->getId() ?>-position-<?php echo $index ?>-product-vat-id"
                         name="dialog[ownPosition][<?php echo $index ?>][vat_id]">
-                        <?php foreach (R::findAll('vat') as $_id => $_vat) : ?>
+                        <?php foreach (R::findAll('vat') as $_id => $_vat): ?>
                         <option
                             value="<?php echo $_vat->getId() ?>"
                             <?php echo ($_position->getVat()->getId() == $_vat->getId()) ? 'selected="selected"' : '' ?>><?php echo $_vat->name ?>
                         </option>
-                        <?php endforeach ?>
+                        <?php endforeach?>
                     </select>
                 </div>
             </div>

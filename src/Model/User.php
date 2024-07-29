@@ -25,49 +25,49 @@ class Model_User extends Model
      */
     public function getAttributes($layout = 'table')
     {
-        return array(
-            array(
-                'name' => 'shortname',
-                'sort' => array(
-                    'name' => 'user.shortname'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                ),
-                'width' => '8rem'
-            ),
-            array(
-                'name' => 'name',
-                'sort' => array(
-                    'name' => 'user.name'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            ),
-            array(
-                'name' => 'email',
-                'sort' => array(
-                    'name' => 'user.email'
-                ),
-                'filter' => array(
-                    'tag' => 'text'
-                )
-            ),
-            array(
-                'name' => 'isadmin',
-                'sort' => array(
-                    'name' => 'user.isadmin'
-                ),
-                'callback' => array(
-                    'name' => 'boolean'
-                ),
-                'filter' => array(
-                    'tag' => 'bool'
-                ),
-                'width' => '5rem'
-            )
-        );
+        return [
+            [
+                'name'   => 'shortname',
+                'sort'   => [
+                    'name' => 'user.shortname',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+                'width'  => '8rem',
+            ],
+            [
+                'name'   => 'name',
+                'sort'   => [
+                    'name' => 'user.name',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+            ],
+            [
+                'name'   => 'email',
+                'sort'   => [
+                    'name' => 'user.email',
+                ],
+                'filter' => [
+                    'tag' => 'text',
+                ],
+            ],
+            [
+                'name'     => 'isadmin',
+                'sort'     => [
+                    'name' => 'user.isadmin',
+                ],
+                'callback' => [
+                    'name' => 'boolean',
+                ],
+                'filter'   => [
+                    'tag' => 'bool',
+                ],
+                'width'    => '5rem',
+            ],
+        ];
     }
 
     /**
@@ -90,7 +90,7 @@ class Model_User extends Model
      *
      * @return bool
      */
-    public function isBooking():bool
+    public function isBooking(): bool
     {
         if (isset($_SESSION['user']['booking']) && $_SESSION['user']['booking'] === true) {
             return true;
@@ -125,7 +125,7 @@ class Model_User extends Model
      */
     public function getLanguage()
     {
-        if (! isset($_SESSION['backend']['language'])) {
+        if ( ! isset($_SESSION['backend']['language'])) {
             $_SESSION['backend']['language'] = Flight::get('language');
         }
         return $_SESSION['backend']['language'];
@@ -138,7 +138,7 @@ class Model_User extends Model
      */
     public function maxLifetime()
     {
-        if (! $this->bean->maxlifetime) {
+        if ( ! $this->bean->maxlifetime) {
             return MAX_SESSION_LIFETIME;
         }
         return $this->bean->maxlifetime;
@@ -175,8 +175,8 @@ class Model_User extends Model
         if (empty($message) || ! $this->bean->getId()) {
             return false;
         }
-        $notification = R::dispense('notification');
-        $notification->class = $class;
+        $notification          = R::dispense('notification');
+        $notification->class   = $class;
         $notification->content = $message;
         try {
             $this->bean->noLoad()->sharedNotification[] = $notification;
@@ -216,11 +216,11 @@ class Model_User extends Model
      */
     public function getRecordsPerPage($type = null)
     {
-        if (!$this->bean->recordsperpage && !$this->bean->allrecordsperpage) {
+        if ( ! $this->bean->recordsperpage && ! $this->bean->allrecordsperpage) {
             return CINNEBAR_RECORDS_PER_PAGE;
         }
         if ($this->bean->allrecordsperpage) {
-            return R::count($type) + 1;// we have to avoid division by zero
+            return R::count($type) + 1; // we have to avoid division by zero
         }
         return $this->bean->recordsperpage;
     }
@@ -244,18 +244,17 @@ class Model_User extends Model
         //$mail->Password = 'secret';                           // SMTP password
         //$mail->SMTPSecure = 'tls';                            // Enable encryption, 'ssl' also accepted
 
-        $mail->From = 'info@sah-company.com';
+        $mail->From     = 'info@sah-company.com';
         $mail->FromName = 'SAH';
-        $mail->addAddress('info@sah-company.com', 'Stephan Hombergs');  // Add a recipient
+        $mail->addAddress('info@sah-company.com', 'Stephan Hombergs'); // Add a recipient
         //$mail->addAddress('ellen@example.com');               // Name is optional
         $mail->addReplyTo('info@sah-company.com', 'Information');
         //$mail->addCC('cc@example.com');
         //$mail->addBCC('bcc@example.com');
 
-        $mail->WordWrap = 50;                                 // Set word wrap to 50 characters
         //$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
         //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-        $mail->isHTML(true);                                  // Set email format to HTML
+        $mail->isHTML(true); // Set email format to HTML
 
         $mail->Subject = 'Here is the subject';
         $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
@@ -275,7 +274,7 @@ class Model_User extends Model
      */
     public function changePassword($password, $newPassword, $newPasswordRepeat)
     {
-        if (! password_verify($password, $this->bean->pw)) {
+        if ( ! password_verify($password, $this->bean->pw)) {
             return false;
         }
         if ($newPassword !== $newPasswordRepeat) {
@@ -330,7 +329,7 @@ class Model_User extends Model
                 LIMIT {$limit}
 SQL;
         }
-        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        $result = R::getAll($sql, [':searchtext' => $searchtext . '%']);
         return $result;
     }
 
@@ -339,24 +338,24 @@ SQL;
      */
     public function dispense()
     {
-        $this->bean->email = '';
-        $this->bean->shortname = '';
-        $this->bean->name = '';
-        $this->bean->screenname = 'shortname';
-        $this->bean->maxlifetime = MAX_SESSION_LIFETIME;
+        $this->bean->email          = '';
+        $this->bean->shortname      = '';
+        $this->bean->name           = '';
+        $this->bean->screenname     = 'shortname';
+        $this->bean->maxlifetime    = MAX_SESSION_LIFETIME;
         $this->bean->recordsperpage = CINNEBAR_RECORDS_PER_PAGE;
-        $this->addValidator('name', array(
-            new Validator_HasValue()
-        ));
-        $this->addValidator('shortname', array(
+        $this->addValidator('name', [
             new Validator_HasValue(),
-            new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'shortname'))
-        ));
+        ]);
+        $this->addValidator('shortname', [
+            new Validator_HasValue(),
+            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'shortname']),
+        ]);
         $this->addValidator('pw', new Validator_HasValue());
-        $this->addValidator('email', array(
+        $this->addValidator('email', [
             new Validator_IsEmail(),
-            new Validator_IsUnique(array('bean' => $this->bean, 'attribute' => 'email'))
-        ));
+            new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'email']),
+        ]);
     }
 
     /**
@@ -364,7 +363,7 @@ SQL;
      */
     public function update()
     {
-        if (! $this->bean->getId()) {
+        if ( ! $this->bean->getId()) {
             $this->bean->pw = password_hash($this->bean->pw, PASSWORD_DEFAULT);
         }
         parent::update();

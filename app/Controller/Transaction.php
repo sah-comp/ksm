@@ -166,8 +166,8 @@ class Controller_Transaction extends Controller_Scaffold
 
         $mail->addReplyTo($user->email, $user->name);
 
-        $mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
-        /*
+        //$mail->addAddress(KSM_EMAIL_TESTADDRESS, KSM_EMAIL_TESTNAME);
+
         $pos = strpos($this->record->billingemail, ';');
         if ($pos === false) {
             $mail->addAddress($this->record->billingemail, $this->record->person->name);
@@ -177,10 +177,9 @@ class Controller_Transaction extends Controller_Scaffold
                 $mail->addAddress($email, $this->record->person->name);
             }
         }
-        */
+
         $mail->addBCC($user->email, $user->name);
 
-        //$mail->WordWarp = 50;
         $mail->isHTML(true);
         $mail->Subject = $docname;
 
