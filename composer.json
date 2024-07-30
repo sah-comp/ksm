@@ -23,7 +23,7 @@
         "parsecsv/php-parsecsv": "v1.2.*",
         "phpmailer/phpmailer": "^6.5",
         "phpcompatibility/php-compatibility": "*",
-        "horstoeko/zugferd": "^1"
+        "horstoeko/zugferd": "v1.0.57"
     },
     "suggest":
     {
