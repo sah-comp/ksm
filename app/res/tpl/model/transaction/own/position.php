@@ -8,6 +8,9 @@
      * @version $Id$
      */
 ?>
+<?php
+    $_units = R::findAll('unit');
+?>
 <!-- position edit subform -->
 <fieldset
     id="transaction-<?php echo $record->getId() ?>-ownPosition-<?php echo $index ?>">
@@ -121,7 +124,6 @@
                                      'transaction-' . $record->getId() . '-position-' . $index . '-product-count'           => 'count',
                                      'transaction-' . $record->getId() . '-position-' . $index . '-product-id'              => 'id',
                                      'transaction-' . $record->getId() . '-position-' . $index . '-product-id-shadow'       => 'id',
-                                     'transaction-' . $record->getId() . '-position-' . $index . '-product-unit'            => 'unit',
                                      'transaction-' . $record->getId() . '-position-' . $index . '-product-unit-id'         => 'unit_id',
                                      'transaction-' . $record->getId() . '-position-' . $index . '-product-salesprice'      => 'salesprice',
                                      'transaction-' . $record->getId() . '-position-' . $index . '-product-vat-id'          => 'vat_id',
@@ -153,7 +155,7 @@
                 <?php foreach ($_units as $_id => $_unit): ?>
                 <option
                     value="<?php echo $_unit->getId() ?>"
-                    <?php echo ($_position->unit->getId() == $_unit->getId()) ? 'selected="selected"' : '' ?>><?php echo $_unit->name ?>
+                    <?php echo ($_position->getUnit()->getId() == $_unit->getId()) ? 'selected="selected"' : '' ?>><?php echo $_unit->name ?>
                 </option>
                 <?php endforeach?>
             </select>

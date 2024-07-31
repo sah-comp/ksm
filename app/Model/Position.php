@@ -160,7 +160,7 @@ class Model_Position extends Model
      */
     public function getUnit()
     {
-        if ( ! $this->bean->unit_id) {
+        if ( ! $this->bean->unit) {
             $this->bean->unit = R::dispense('unit');
         }
         return $this->bean->unit;

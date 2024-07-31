@@ -211,7 +211,6 @@ class Model_Product extends Model
                     CONCAT(product.number, ' ', product.description, ' ', FORMAT(product.salesprice, 2, 'de_DE')) AS label,
                     CONCAT(product.description) AS value,
                     1 AS count,
-                    product.unit AS unit,
                     product.unit_id AS unit_id,
                     FORMAT(product.purchaseprice, 2, 'de_DE') AS purchaseprice,
                     FORMAT(product.salesprice, 2, 'de_DE') AS salesprice

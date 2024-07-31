@@ -82,7 +82,7 @@
                 <?php endif?>
         </div>
     </div>
-    <div class="row                    <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
+    <div class="row                                                                             <?php echo ($record->hasError('person_id')) ? 'error' : ''; ?>">
         <label
             for="transaction-person-name">
             <a href="<?php echo Url::build('/admin/%s/edit/%d', [$record->getPerson()->getMeta('type'), $record->getPerson()->getId()]) ?>" class="ir in-form"><?php echo I18n::__('form_link_related') ?></a>
@@ -134,7 +134,7 @@
                 class="ir scratch"><?php echo I18n::__('scaffold_action_scratch_linktext') ?></a>
             <p class="info"><?php echo I18n::__('transaction_info_person') ?></p>
     </div>
-        <div class="row                        <?php echo ($record->hasError('payhourly')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('payhourly')) ? 'error' : ''; ?>">
             <label
                 for="transaction-payhourly">
                 <?php echo I18n::__('person_label_payhourly') ?>
@@ -164,7 +164,7 @@
                 <?php endforeach?>
             </select>
         </div>
-        <div class="row                        <?php echo ($record->hasError('paydriveperkilometer')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('paydriveperkilometer')) ? 'error' : ''; ?>">
             <label
                 for="transaction-paydriveperkilometer">
                 <?php echo I18n::__('person_label_paydriveperkilometer') ?>
@@ -193,7 +193,7 @@
         class="tab"
         style="display: block;">
         <legend class="verbose"><?php echo I18n::__('transaction_legend_head') ?></legend>
-        <div class="row                        <?php echo ($record->hasError('postaladdress')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('postaladdress')) ? 'error' : ''; ?>">
             <label
                 for="transaction-postaladdress">
                 <?php echo I18n::__('transaction_label_postaladdress') ?>
@@ -205,7 +205,7 @@
                 cols="60"
                 required="required"><?php echo htmlspecialchars($record->postaladdress ?? '') ?></textarea>
         </div>
-        <div class="row                        <?php echo ($record->hasError('header')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('header')) ? 'error' : ''; ?>">
             <label
                 for="transaction-header">
                 <?php echo I18n::__('transaction_label_header') ?>
@@ -229,7 +229,7 @@
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('transaction_legend_foot') ?></legend>
-        <div class="row                        <?php echo ($record->hasError('duedays')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('duedays')) ? 'error' : ''; ?>">
             <label
                 for="transaction-duedays">
                 <?php echo I18n::__('transaction_label_duedays') ?>
@@ -256,7 +256,7 @@
                 <?php endforeach?>
             </select>
         </div>
-        <div class="row                        <?php echo ($record->hasError('footer')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('footer')) ? 'error' : ''; ?>">
             <label
                 for="transaction-footer">
                 <?php echo I18n::__('transaction_label_footer') ?>
@@ -335,7 +335,6 @@ endif;?>
         '_position' => $_position,
         'index'     => $index,
         '_subtotal' => $_SESSION['subtotal'],
-        '_units'    => R::findAll('unit'),
 ])?>
 <?php endforeach?>
         </div>
@@ -428,7 +427,7 @@ endif;?>
         class="tab"
         style="display: none;">
         <legend class="verbose"><?php echo I18n::__('transaction_legend_email') ?></legend>
-        <div class="row                        <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('billingemail')) ? 'error' : ''; ?>">
             <label
                 for="transaction-billingemail">
                 <?php echo I18n::__('transaction_label_billingemail') ?>
@@ -450,7 +449,7 @@ endif;?>
             <?php endif;?>
             </div>
         </div>
-        <div class="row                        <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
+        <div class="row                                                                                             <?php echo ($record->hasError('dunningemail')) ? 'error' : ''; ?>">
             <label
                 for="transaction-dunningemail">
                 <?php echo I18n::__('transaction_label_dunningemail') ?>
