@@ -85,7 +85,7 @@
     <htmlpageheader name="ksmheader" style="display: none;">
         <table width="100%">
             <tr>
-                <td width="60%" style="text-align: left;"><?php echo htmlspecialchars($company_name) ?></td>
+                <td width="60%" style="text-align: left;"><?php echo htmlspecialchars($company_name ?? '') ?></td>
                 <td width="40%" style="text-align: right;"><?php echo $pdf_headline ?></td>
             </tr>
         </table>
@@ -135,21 +135,21 @@
                 $_timecheck = $_record->isOverdue();
             ?>
 			        <tr>
-			            <td><?php echo htmlspecialchars($_record->localizedDate('date')) ?></td>
-			            <td><?php echo htmlspecialchars($_record->localizedTime('starttime', 'H:i')) ?></td>
-			            <td class="number"><?php echo htmlspecialchars($_record->localizedDate('date', 'W')) ?></td>
+			            <td><?php echo htmlspecialchars($_record->localizedDate('date') ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_record->localizedTime('starttime', 'H:i') ?? '') ?></td>
+			            <td class="number"><?php echo htmlspecialchars($_record->localizedDate('date', 'W') ?? '') ?></td>
 			            <td><?php echo ($_record->fix) ? I18n::__('bool_true') : '' ?></td>
-			            <td><?php echo htmlspecialchars($_record->localizedDate('receipt')) ?></td>
-			            <td><?php echo htmlspecialchars($_appointmenttype->name) ?></td>
-			            <td><?php echo htmlspecialchars($_user->getName()) ?></td>
-			            <td class="number"><?php echo htmlspecialchars($_record->decimal('duration')) ?></td>
-			            <td><?php echo htmlspecialchars($_person->name) ?></td>
-			            <td><?php echo htmlspecialchars($_loca_name) ?></td>
-			            <td><?php echo htmlspecialchars($_machine->machinebrandName()) ?></td>
-			            <td><?php echo htmlspecialchars($_machine->name) ?></td>
-			            <td><?php echo htmlspecialchars($_machine->serialnumber) ?></td>
-			            <td><?php echo htmlspecialchars($_machine->internalnumber) ?></td>
-			            <td><?php echo htmlspecialchars($_record->note) ?></td>
+			            <td><?php echo htmlspecialchars($_record->localizedDate('receipt') ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_appointmenttype->name ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_user->getName() ?? '') ?></td>
+			            <td class="number"><?php echo htmlspecialchars($_record->decimal('duration') ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_person->name ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_loca_name ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_machine->machinebrandName() ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_machine->name ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_machine->serialnumber ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_machine->internalnumber ?? '') ?></td>
+			            <td><?php echo htmlspecialchars($_record->note ?? '') ?></td>
 			        </tr>
 			        <?php endforeach;?>
         </tbody>

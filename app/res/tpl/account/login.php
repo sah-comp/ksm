@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -10,15 +11,15 @@
 ?>
 <!-- Login -->
 <?php if (isset($message)): ?>
-<!-- notifications of the current user -->
-<div
-    id="notification"
-    class="notification">
-    <div class="alert alert-error">
-        <?php echo Flight::textile($message) ?>
+    <!-- notifications of the current user -->
+    <div
+        id="notification"
+        class="notification">
+        <div class="alert alert-error">
+            <?php echo Flight::textile($message) ?>
+        </div>
     </div>
-</div>
-<!-- End of notifications -->
+    <!-- End of notifications -->
 <?php endif ?>
 <article class="main">
     <form
@@ -64,7 +65,8 @@
                     name="dialog[uname]"
                     value="<?php echo htmlspecialchars($record->uname) ?>"
                     required="required"
- 					autofocus="autofocus" />
+                    autofocus="autofocus"
+                    autocapitalize="none" />
             </div>
             <div
                 class="row <?php echo $record->hasError('pw') ? 'error' : '' ?>">

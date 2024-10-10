@@ -67,7 +67,7 @@
                 type="date"
                 name="dialog[date]"
                 placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-                value="<?php echo htmlspecialchars($record->date) ?>"
+                value="<?php echo htmlspecialchars($record->date ?? '') ?>"
                 required="required" />
             <input
             id="appointment-receipt"
@@ -75,7 +75,7 @@
             type="date"
             name="dialog[receipt]"
             placeholder="<?php echo I18n::__('placeholder_intl_date') ?>"
-            value="<?php echo htmlspecialchars($record->receipt) ?>"
+            value="<?php echo htmlspecialchars($record->receipt ?? '') ?>"
             title="<?php echo I18n::__('appointment_title_receipt') ?>" />
         </div>
         <div class="span2">
@@ -133,7 +133,7 @@
                         'appointment-transaction-id' => 'id',
                         'appointment-transaction-id-shadow' => 'id'
                     ]); ?>'
-                value="<?php echo htmlspecialchars($record->transactionnumber) ?>" />
+                value="<?php echo htmlspecialchars($record->transactionnumber ?? '') ?>" />
                 <a
                     href="#scratch-item"
                     title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
@@ -183,7 +183,7 @@
                 type="time"
                 name="dialog[starttime]"
                 placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
-                value="<?php echo htmlspecialchars($record->starttime) ?>" />
+                value="<?php echo htmlspecialchars($record->starttime ?? '') ?>" />
         </div>
         <div class="span2">
             <input
@@ -192,7 +192,7 @@
                 type="time"
                 name="dialog[endtime]"
                 placeholder="<?php echo I18n::__('placeholder_intl_time') ?>"
-                value="<?php echo htmlspecialchars($record->endtime) ?>" />
+                value="<?php echo htmlspecialchars($record->endtime ?? '') ?>" />
         </div>
         <div class="span2">
             <input
@@ -200,7 +200,7 @@
                 class="autowidth number"
                 type="text"
                 name="dialog[duration]"
-                value="<?php echo htmlspecialchars($record->decimal('duration')) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('duration') ?? '') ?>" />
         </div>
         <div class="span3">
             <input
@@ -208,7 +208,7 @@
                 class="autowidth number"
                 type="text"
                 name="dialog[interval]"
-                value="<?php echo htmlspecialchars($record->decimal('interval', 0)) ?>" />
+                value="<?php echo htmlspecialchars($record->decimal('interval', 0) ?? '') ?>" />
             <p class="info"><?php echo I18n::__('appointment_info_interval') ?></p>
         </div>
     </div>
@@ -274,7 +274,7 @@
                     'appointment-person-id-shadow' => 'id',
                     'appointment-person-note' => 'note'
                 ]); ?>'
-            value="<?php echo htmlspecialchars($record->getPerson()->name) ?>" />
+            value="<?php echo htmlspecialchars($record->getPerson()->name ?? '') ?>" />
             <a
                 href="#scratch-item"
                 title="<?php echo I18n::__('scaffold_action_scratch_title') ?>"
@@ -325,7 +325,7 @@
             <?php foreach (R::findAll('user', "ORDER BY name") as $_id => $_user) : ?>
             <option
                 value="<?php echo $_user->getId() ?>"
-                <?php echo ($record->user_id == $_user->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_user->getName() . ' ' . $_user->getContactinfo()) ?>
+                <?php echo ($record->user_id == $_user->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars(($_user->getName() . ' ' . $_user->getContactinfo() ?? '')) ?>
             </option>
             <?php endforeach ?>
         </select>
@@ -343,7 +343,7 @@
             id="appointment-note"
             name="dialog[note]"
             rows="5"
-            cols="60"><?php echo htmlspecialchars($record->note) ?></textarea>
+            cols="60"><?php echo htmlspecialchars($record->note ?? '') ?></textarea>
         <p class="info"><?php echo I18n::__('appointment_info_note') ?></p>
     </div>
 </fieldset>
