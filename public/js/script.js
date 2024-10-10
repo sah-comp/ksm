@@ -21,7 +21,7 @@ var counter = 0;
 var headeroffset = 120;
 
 /* Ready, Set, Go. */
-$('body').ready(function() {
+$('body').ready(function () {
 
     /**
      * If the page that was loaded has a hash scroll there, while respecting the offset of our header.
@@ -34,21 +34,31 @@ $('body').ready(function() {
     }
 
     /**
+     * Toggle the menu/page
+     */
+    $("#hamburger").on("click", function (event) {
+        event.preventDefault();
+        $(this).toggleClass("open");
+        $('#main-menu').toggleClass("open");
+        return false;
+    });
+
+    /**
      * Tooltips. Tippsy.
      */
-    $('body').on('click', '.tooltip-open', function(event) {
+    $('body').on('click', '.tooltip-open', function (event) {
         event.preventDefault();
         var tippsy = $(this).attr("data-tooltip");
         $('#' + tippsy).show('slow');
     });
 
-    $('body').on('click', '.tooltip-close', function(event) {
+    $('body').on('click', '.tooltip-close', function (event) {
         event.preventDefault();
         var tippsy = $(this).attr("data-tooltip");
         $('#' + tippsy).hide();
     });
 
-    $('body').on('click', '.empty-container', function(event) {
+    $('body').on('click', '.empty-container', function (event) {
         event.preventDefault();
         var container = '#' + $(this).attr("data-container");
         $(container).empty();
@@ -57,7 +67,7 @@ $('body').ready(function() {
     /**
      * Confirm if a link really should open (e.g. send email)
      */
-    $('body').on('click', '.confirm', function(event) {
+    $('body').on('click', '.confirm', function (event) {
         //event.preventDefault();
         var isConfirmed = confirm('Möchten Sie die Aktion tatsächlich durchführen?');
         if (!isConfirmed) {
@@ -97,15 +107,15 @@ $('body').ready(function() {
         "items": "> fieldset",
         "handle": "h2",
         "opacity": 0.8,
-        "start": function(event, ui) {
+        "start": function (event, ui) {
             //ui.item.css('margin-top', 0);
         },
-        "sort": function(event, ui) {
+        "sort": function (event, ui) {
             ui.helper.css({ 'top': ui.position.top + $(window).scrollTop() + 'px' });
         },
-        "stop": function(event, ui) {
+        "stop": function (event, ui) {
             //ui.item.css('margin-top', $(window).scrollTop());
-            $('.currentindex').each(function(i) {
+            $('.currentindex').each(function (i) {
                 $(this).val(i);
             });
         }
@@ -135,15 +145,15 @@ $('body').ready(function() {
      * This will install interval for heartbeats. We use this currently
      * on @see tpl/service/index.php
      */
-    $('.heartbeat').each(function() {
+    $('.heartbeat').each(function () {
         counter++; // count one up
         var delay = $(this).attr('data-delay');
         var url = $(this).attr('data-href');
         var container = $(this).attr('data-container');
         console.log('Heartbeat ' + url + ' is beating');
-        heartbeats[counter] = setInterval(function() {
+        heartbeats[counter] = setInterval(function () {
             if ($('#' + container).length > 0) {
-                $.get(url, function(data) {
+                $.get(url, function (data) {
                     $('#' + container).empty();
                     $('#' + container).append(data);
                 }, 'html');
@@ -158,9 +168,9 @@ $('body').ready(function() {
      */
     $(".notification").slideDown("slow");
 
-    $('body').bind("ajaxSend", function() {
+    $('body').bind("ajaxSend", function () {
         $("body").addClass("loading");
-    }).bind("ajaxComplete", function() {
+    }).bind("ajaxComplete", function () {
         $("body").removeClass("loading");
     });
 
@@ -168,7 +178,7 @@ $('body').ready(function() {
      * Plugin idTabs.
      */
     if ($(".tabs").length) {
-        $(".tabs").each(function() {
+        $(".tabs").each(function () {
             if (localStorage.getItem("lastTab") && $("#" + localStorage.getItem("lastTab")).length) {
                 // choose lastTab from localStorage as default tabs when it is on the current page
                 var defaultid = localStorage.getItem("lastTab");
@@ -178,7 +188,7 @@ $('body').ready(function() {
             //alert('Default tab is ' + defaultid);
             $("#" + $(this).attr("id") + " ul").idTabs({
                 start: defaultid,
-                click: function(id, all, container, settings) {
+                click: function (id, all, container, settings) {
                     localStorage.setItem("lastTab", id.substring(1));
                     //alert('clicked ' + id);
                     return true;
@@ -226,7 +236,7 @@ $('body').ready(function() {
     /**
      * Open a URL on double clicking a table row.
      */
-    $('body').on('dblclick', 'table.scaffold tbody tr', function(event) {
+    $('body').on('dblclick', 'table.scaffold tbody tr', function (event) {
         event.preventDefault();
         var url = $(this).attr('data-href');
         window.location = url;
@@ -236,11 +246,11 @@ $('body').ready(function() {
     /**
      * Click on a inspector link will load the file info into the sidebar of the directory viewer.
      */
-    $('body').on("click", 'a.inspector', function(event) {
+    $('body').on("click", 'a.inspector', function (event) {
         event.preventDefault();
         //var ident = $(this).attr('data-ident');
         ident = $(this).attr('data-ident');
-        $.get($(this).attr("href"), function(data) {
+        $.get($(this).attr("href"), function (data) {
             $("#inspector").empty();
             $("#inspector").append(data);
         }, "html");
@@ -251,7 +261,7 @@ $('body').ready(function() {
     /**
      * Open an URL on double clicking on a filename.
      */
-    $('body').on('dblclick', 'a.inspector', function(event) {
+    $('body').on('dblclick', 'a.inspector', function (event) {
         event.preventDefault();
         //alert('Die BETA Version kann nicht auf WebDAV zugreifen und somit keine Dateiein öffnen.');
         var href = $(this).attr('data-intrinsic');
@@ -262,7 +272,7 @@ $('body').ready(function() {
     /**
      * Click on a folder in filer index to use that folder as a target to copy the current file into.
      */
-    $('body').on('click', 'summary.filer-folder', function(event) {
+    $('body').on('click', 'summary.filer-folder', function (event) {
         //event.preventDefault();
         if (event.altKey) {
             //console.log('You have clicked w alt key pressed while ident ' +ident+ ' is active');
@@ -277,9 +287,9 @@ $('body').ready(function() {
     /**
      * Click on a sitemap link will load the domain and fill the content-container.
      */
-    $('body').on("click", '#sitemap a', function(event) {
+    $('body').on("click", '#sitemap a', function (event) {
         event.preventDefault();
-        $.get($(this).attr("href"), function(data) {
+        $.get($(this).attr("href"), function (data) {
             $("#content-container").empty();
             $("#content-container").append(data);
         }, "html");
@@ -290,9 +300,9 @@ $('body').ready(function() {
     /**
      * Click on a pages-container link will load the page and fill the page-container.
      */
-    $('body').on("click", '#pages-container a', function(event) {
+    $('body').on("click", '#pages-container a', function (event) {
         event.preventDefault();
-        $.get($(this).attr("href"), function(data) {
+        $.get($(this).attr("href"), function (data) {
             $("#page-container").empty();
             $("#page-container").append(data);
         }, "html");
@@ -303,10 +313,10 @@ $('body').ready(function() {
     /**
      * Click on a element with class slice-container loads editable slice.
      */
-    $('body').on("click", ".slice-container:not('.active')", function(event) {
+    $('body').on("click", ".slice-container:not('.active')", function (event) {
         event.preventDefault();
         var container = $(this).attr("data-container");
-        $.get($(this).attr("data-href"), function(data) {
+        $.get($(this).attr("data-href"), function (data) {
             $("#" + container).empty();
             $("#" + container).append(data);
         }, "html");
@@ -318,12 +328,12 @@ $('body').ready(function() {
      * Form with class inplace will be ajaxified by jQuery form plugin and
      * the response is placed into the element given in data-container.
      */
-    $('body').on("submit", ".inline, .inline-add", function(event) {
+    $('body').on("submit", ".inline, .inline-add", function (event) {
         var form = $(this);
         var container = form.attr("data-container");
         if ($("#" + container).hasClass("active")) $("#" + container).removeClass("active");
         form.ajaxSubmit({
-            success: function(response) {
+            success: function (response) {
                 if (!form.hasClass("inline-add")) $("#" + container).empty();
                 $("#" + container).append(response);
             }
@@ -341,7 +351,7 @@ $('body').ready(function() {
      *
      * @see app/res/tpl/scaffold/quickfilter.php
      */
-    $('body').on('change', '.submitOnChange', function() {
+    $('body').on('change', '.submitOnChange', function () {
         $(this).closest('form').submit();
     });
 
@@ -349,12 +359,12 @@ $('body').ready(function() {
      * all and future detach links send a post request and then
      * fade out and finally detach the element.
      */
-    $('body').on("click", ".detach", function(event) {
+    $('body').on("click", ".detach", function (event) {
         event.preventDefault();
         var target = $(this).attr("data-target");
         var url = $(this).attr("href");
-        $.post(url, function(data) {
-            $('#' + target).fadeOut('fast', function() {
+        $.post(url, function (data) {
+            $('#' + target).fadeOut('fast', function () {
                 $('#' + target).detach();
             });
         });
@@ -364,11 +374,11 @@ $('body').ready(function() {
      * all and future attach links post request a url and
      * insert a new element into the *-additional zone.
      */
-    $('body').on("click", ".attach", function(event) {
+    $('body').on("click", ".attach", function (event) {
         event.preventDefault();
         var target = $(this).attr("data-target");
         var url = $(this).attr("href");
-        $.post(url, function(data) {
+        $.post(url, function (data) {
             $("#" + target).append(data);
             initAutocompletes();
         });
@@ -378,12 +388,12 @@ $('body').ready(function() {
      * all and future finish links send a get request and then
      * fade out and finally detach the element.
      */
-    $('body').on("click", ".finish", function(event) {
+    $('body').on("click", ".finish", function (event) {
         event.preventDefault();
         var target = $(this).attr("data-target");
         var url = $(this).attr("href");
-        $.get(url, function(data) {
-            $('#' + target).fadeOut('fast', function() {
+        $.get(url, function (data) {
+            $('#' + target).fadeOut('fast', function () {
                 $('#' + target).detach();
                 $('table caption').addClass('scratched');
             });
@@ -393,11 +403,11 @@ $('body').ready(function() {
     /**
      * Load additional data into a container.
      */
-    $('body').on("click", ".additional-info", function(event) {
+    $('body').on("click", ".additional-info", function (event) {
         event.preventDefault();
         var target = '#' + $(this).attr("data-target");
         var url = $(this).attr("href");
-        $.get(url, function(data) {
+        $.get(url, function (data) {
             $(target).empty();
             $(target).append(data);
             $(target).addClass('active');
@@ -412,7 +422,7 @@ $('body').ready(function() {
      *
      * @todo make this work for any .action-delete
      */
-    $('body').on("click", ".action-delete", function(event) {
+    $('body').on("click", ".action-delete", function (event) {
         event.preventDefault();
         var isConfirmed = confirm('Möchten Sie die Aktion tatsächlich durchführen?');
         if (!isConfirmed) {
@@ -420,9 +430,9 @@ $('body').ready(function() {
         }
         var target = $(this).attr("data-target");
         var url = $(this).attr("href");
-        $.get(url, function(data) {
+        $.get(url, function (data) {
             $('#dtinstalledparts').DataTable().destroy(); // destroy the DataTable
-            $('#' + target).fadeOut('fast', function() {
+            $('#' + target).fadeOut('fast', function () {
                 $('#' + target).detach();
             });
             $('#dtinstalledparts').DataTable({
@@ -438,7 +448,7 @@ $('body').ready(function() {
      *
      * @return void
      */
-    $('body').on('focusin', '.blow-me-up', function(event) {
+    $('body').on('focusin', '.blow-me-up', function (event) {
         $('#my-notes').addClass('wider');
         return null;
     });
@@ -448,7 +458,7 @@ $('body').ready(function() {
      *
      * @return void
      */
-    $('body').on('focusout', '.blow-me-up', function(event) {
+    $('body').on('focusout', '.blow-me-up', function (event) {
         $('#my-notes').removeClass('wider');
         return null;
     });
@@ -457,7 +467,7 @@ $('body').ready(function() {
      * Changing a select value to null will hide a element, while
      * changing the value to something not null will show the element.
      */
-    $('body').on("change", '.showhide', function(event) {
+    $('body').on("change", '.showhide', function (event) {
         var el = $(this).attr('data-showhide');
         if ($(this).val()) {
             $('#' + el).removeClass('hidden');
@@ -471,7 +481,7 @@ $('body').ready(function() {
      * call on update.
      * This is mostly used on the service page.
      */
-    $('body').on("change", ".enpassant", function(event) {
+    $('body').on("change", ".enpassant", function (event) {
         var value = null;
         if ($(this).prop("type") == "checkbox") {
             // change booleans to 1 or 0 because PHP will get strings.
@@ -485,7 +495,7 @@ $('body').ready(function() {
             value = $(this).val();
         }
         var url = $(this).attr("data-url");
-        $.post(url, { value: value }, function(data) {
+        $.post(url, { value: value }, function (data) {
             if (data.okay) {
                 $("#" + data.bean).attr('data-sort', data.sortorder);
                 $('#' + data.bean).attr('class', data.trclass);
@@ -498,7 +508,7 @@ $('body').ready(function() {
         }, 'json');
     });
 
-    $('body').on('click', ".scratch", function(event) {
+    $('body').on('click', ".scratch", function (event) {
         event.preventDefault();
         var clear = $(this).attr('data-clear');
         var scratch = $(this).attr('data-scratch');
@@ -515,7 +525,7 @@ $('body').ready(function() {
      *
      * @todo unify this or get this ugly very specific code outta town
      */
-    $('body').on('click', '.within', function(event) {
+    $('body').on('click', '.within', function (event) {
         var url = $(this).attr("data-url");
         var target = $(this).attr("data-target");
         var zeros = [
@@ -535,14 +545,14 @@ $('body').ready(function() {
             purchaseprice: $("#ip-article-purchaseprice").val(),
             salesprice: $("#ip-article-salesprice").val(),
             adopt: $("#ip-article-adopt").val()
-        }, function(data) {
+        }, function (data) {
             if (data.okay) {
                 console.log('Installing article was successfull');
                 // clear the form. sorry for this, I am a JS dummy.
-                nils.forEach(function(item, index, array) {
+                nils.forEach(function (item, index, array) {
                     $('#' + item).val('');
                 });
-                zeros.forEach(function(item, index, array) {
+                zeros.forEach(function (item, index, array) {
                     $('#' + item).val('0');
                 });
 
@@ -567,12 +577,12 @@ $('body').ready(function() {
      * call on update.
      * This is mostly used on the service page.
      */
-    $('body').on("change", ".set-location-on-change", function(event) {
+    $('body').on("change", ".set-location-on-change", function (event) {
         var url = $(this).attr("data-url");
         var target = $(this).attr("data-target");
         var extra = $(this).attr("data-extra");
         //console.log('url ' + url + ' ' + extra + ' ' + target);
-        $.post(url, { machine_id: $('#' + extra).val() }, function(data) {
+        $.post(url, { machine_id: $('#' + extra).val() }, function (data) {
             if (data.okay) {
                 $('#' + target).val(data.location_id);
                 console.log('Select the correct location ' + data.location_id);
@@ -585,7 +595,7 @@ $('body').ready(function() {
     /**
      * Toogle a div display state.
      */
-    $('body').on('click', '.venetianblinds', function(event) {
+    $('body').on('click', '.venetianblinds', function (event) {
         event.preventDefault();
         var target = $(this).attr('data-target');
         $(this).toggleClass('active');
@@ -596,9 +606,9 @@ $('body').ready(function() {
      * A input element of type checkbox with class name all will toggle all checkboxes
      * with the class name selector.
      */
-    $("input.all[type=checkbox]").click(function() {
+    $("input.all[type=checkbox]").click(function () {
         var state = $(this).is(":checked");
-        $("input.selector[type=checkbox]").each(function() {
+        $("input.selector[type=checkbox]").each(function () {
             $(this).prop("checked", state);
         });
     });
@@ -611,7 +621,7 @@ $('body').ready(function() {
         $.ajax({
             url: url,
             dataType: 'json'
-        }).done(function(data, statusText, resObject) {
+        }).done(function (data, statusText, resObject) {
             var jsonData = resObject.responseJSON;
             var chart = new Chart($('#chart'), jsonData);
         });
