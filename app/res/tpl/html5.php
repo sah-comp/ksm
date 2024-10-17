@@ -21,7 +21,7 @@
 	<title><?php echo $title ?></title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width">
-
+	<meta name="format-detection" content="telephone=no">
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
 	<link rel="stylesheet" href="/css/style.css?v=<?php echo APP_VERSION; ?>">
