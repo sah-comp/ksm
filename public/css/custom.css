@@ -2259,6 +2259,7 @@ hr.person-contact-divider:after {
     }
 }
 
+/* inacurate pointing device and the screen is big */
 @media (pointer: coarse) and (min-width: 768px) {
 
     body {
@@ -2289,8 +2290,8 @@ hr.person-contact-divider:after {
         list-style: none;
     }
 
-    ul.main-navigation > li,
-    ul.main-navigation > li.parent,
+    ul.main-navigation>li,
+    ul.main-navigation>li.parent,
     ul.main-navigation li:last-child {
         margin-bottom: 1rem;
     }
@@ -2302,7 +2303,7 @@ hr.person-contact-divider:after {
         padding: 0.5rem 0;
     }
 
-    ul.main-navigation > li > a {
+    ul.main-navigation>li>a {
         font-weight: 700;
     }
 
@@ -2327,5 +2328,10 @@ hr.person-contact-divider:after {
 
     .tabs {
         height: 34px;
+    }
+
+    /* form table stuff */
+    .panel table {
+        table-layout: auto;
     }
 }
