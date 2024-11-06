@@ -19,6 +19,176 @@ a.logo {
     background-size: 48px 16px;
 }
 
+
+/* Hilite the target, the element identified by the hash part of the URL */
+:target {
+    animation: highlight 7000ms ease-out;
+}
+
+@keyframes highlight {
+    from {
+        background-color: #feffbc;
+    }
+}
+
+/* This CSS was taken from here: @see https://iamkate.com/code/tree-views/ */
+#directory {
+    width: 61.8%;
+    float: left;
+}
+
+#sidebar {
+    width: 38.2%;
+    float: right;
+    min-height: 100vh;
+    /*height: 100vh;*/
+    background-color: rgba(0, 0, 0, .05);
+}
+
+.inspector {
+    padding-left: 24px;
+    background: url(/img/glyphicons/glyphicons_030_pencil.png);
+    background-position: 3px center;
+    background-repeat: no-repeat;
+    background-size: 16px 16px;
+}
+
+.tree>ul {
+    --spacing: 1.5rem;
+    --radius: 10px;
+}
+
+.fileviewer {
+    margin-bottom: 10px;
+}
+
+.tree ul>li {
+    font-weight: bold;
+}
+
+.tree ul>li li {
+    font-weight: normal;
+}
+
+.tree ul li {
+    display: flex;
+    position: relative;
+    padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
+    align-items: center;
+}
+
+.tree a {
+    padding: 0.22rem 0.5rem 0.22rem 24px;
+}
+
+.tree li.active a {
+    background-color: #c2eddb;
+    /*color: white;*/
+}
+
+.tree ul ul {
+    margin-left: calc(var(--radius) - var(--spacing));
+    padding-left: 0;
+}
+
+.tree ul li {
+    border-left: 2px solid #ddd;
+}
+
+.tree ul li:last-child {
+    border-color: transparent;
+}
+
+.tree ul li::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: calc(var(--spacing) / -2);
+    left: -2px;
+    width: calc(var(--spacing) + 2px);
+    height: calc(var(--spacing) + 1px);
+    border: solid #ddd;
+    border-width: 0 0 2px 2px;
+}
+
+.tree summary {
+    display: block;
+    cursor: pointer;
+    color: rgb(88, 88, 88);
+}
+
+.tree summary::marker,
+.tree summary::-webkit-details-marker {
+    display: none;
+}
+
+.tree summary:focus {
+    outline: none;
+}
+
+.tree summary:focus-visible {
+    outline: 1px dotted #000;
+}
+
+.tree li::after,
+.tree summary::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: calc(var(--spacing) / 2 - var(--radius));
+    left: calc(var(--spacing) - var(--radius) - 1px);
+    width: calc(2 * var(--radius));
+    height: calc(2 * var(--radius));
+    border-radius: 50%;
+    background: #ddd;
+}
+
+.tree summary::before {
+    z-index: 1;
+    background: #696 url('/img/expand-collapse.svg') 0 0;
+}
+
+.tree details[open]>summary::before {
+    background-position: calc(-2 * var(--radius)) 0;
+}
+
+.tree a {
+    text-decoration: none;
+}
+
+.panel textarea.force100 {
+    width: 100%;
+}
+
+p.secondary {
+    font-size: 0.666rem;
+}
+
+.initally-empty {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#inspector input[type=submit] {
+    padding: 0.2rem 1rem;
+}
+
+.template {
+    font-style: italic;
+}
+
+.hasmachine {
+    color: blue;
+}
+
+.help {
+    font-size: small;
+    color: gray;
+    margin-top: 1rem;
+}
+
 /* only on big screens */
 @media only screen and (min-width: 768px) {
 
@@ -753,9 +923,7 @@ a.logo {
         left: auto;
     }
 
-    /**
- * global search form in header nav
- */
+    /* global search form in header nav */
     form#gsearch {
         display: inline;
         float: right;
@@ -1123,11 +1291,8 @@ a.logo {
  * copy it to default.css if everything works out fine
  * and you like to have in your base stylesheet.
  */
-    /**
- * Make negative table data red.
- *
- * @see https://stackoverflow.com/questions/1824266/colorize-negative-positive-numbers-jquery
- */
+
+    /* Make negative table data red. @see https://stackoverflow.com/questions/1824266/colorize-negative-positive-numbers-jquery */
     td[data-monetary-amount^="-"] {
         color: red;
     }
@@ -1291,8 +1456,7 @@ a.logo {
         line-height: 1.13rem;
     }
 
-    /* Autocomplete
-----------------------------------*/
+    /* Autocomplete ----------------------------------*/
     .ui-autocomplete {
         position: absolute;
         cursor: default;
@@ -1367,10 +1531,10 @@ a.logo {
     }
 
     /*
-th, td {
-    animation: widerthanyou 7000ms ease-out;
-}
-*/
+    th, td {
+        animation: widerthanyou 7000ms ease-out;
+    }
+    */
     .panel td.tar {
         text-align: right;
     }
@@ -1379,9 +1543,7 @@ th, td {
         text-align: left;
     }
 
-    /**
- * Service appointment table width settings.
- */
+    /* Service appointment table width settings. */
     table.service {
         font-size: 70%;
     }
@@ -1390,9 +1552,7 @@ th, td {
         border-left: 5px solid transparent;
     }
 
-    /**
- * These classes are indicating if an appointment is overdue or due today or later.
- */
+    /* These classes are indicating if an appointment is overdue or due today or later. */
     table.service tbody tr.overdue {
         border-left-color: red;
     }
@@ -1620,9 +1780,7 @@ th, td {
         width: 12rem;
     }
 
-    /**
- * Datatables stuff. From scratch.
- */
+    /* Datatables stuff. From scratch. */
     .datatable td a {
         text-decoration: none;
     }
@@ -1728,11 +1886,7 @@ th, td {
         padding-left: 23.404255317%;
     }
 
-    /**
- * Tooltip stuff.
- *
- * @see http://jsfiddle.net/Xotic750/9kBVu/
- */
+    /* Tooltip stuff. @see http://jsfiddle.net/Xotic750/9kBVu/ */
     .tooltip,
     .additional-box {
         position: absolute;
@@ -1795,14 +1949,14 @@ th, td {
     }
 
     /*
-.tooltip-link:hover+.tooltip {
-    display: inline-block;
-}
+    .tooltip-link:hover+.tooltip {
+        display: inline-block;
+    }
 
-.tooltip:hover {
-    display: block;
-}
-*/
+    .tooltip:hover {
+        display: block;
+    }
+    */
     article.main>header .tooltip h1,
     article.main>header .tooltip h2 {
         padding: 0;
@@ -1851,9 +2005,7 @@ th, td {
         padding-bottom: 2em;
     }
 
-    /**
- * Service print form
- */
+    /* Service print form */
     li:last-child form.pform {
         border-right: none;
         margin-right: 0;
@@ -1934,9 +2086,7 @@ th, td {
         padding: 0 1rem;
     }
 
-    /**
- * Override the absolute position of select2
- */
+    /* Override the absolute position of select2 */
     .select2-hidden-accessible {
         position: inherit !important;
     }
@@ -1957,13 +2107,13 @@ th, td {
         margin-right: 1rem;
     }
 
-    /**
- * treaty module has a "special" table layout which is used
- * instead of the common scaffold table. the treaty layout
- * has two divs. the left one show all contractype beans plus
- * a "all" entry and preselects the treaty beans which are shown
- * in the right div, that holds the usual table (of scaffold).
- */
+    /*
+    treaty module has a "special" table layout which is used
+    instead of the common scaffold table. the treaty layout
+    has two divs. the left one show all contractype beans plus
+    a "all" entry and preselects the treaty beans which are shown
+    in the right div, that holds the usual table (of scaffold).
+    */
     .directory {
         margin-top: 2.8rem;
         float: left;
@@ -2001,198 +2151,23 @@ th, td {
     }
 
     /*
-hr.person-contact-divider:after {
-    content: '\002702';
-    display: inline-block;
-    position: relative;
-    top: -12px;
-    left: 40px;
-    padding: 0 3px;
-    background: #f0f0f0;
-    color: #8c8b8b;
-    font-size: 18px;
-}
-*/
-    /* Hilite the target, the element identified by the hash part of the URL */
-    :target {
-        animation: highlight 7000ms ease-out;
-    }
-
-    @keyframes highlight {
-        from {
-            background-color: #feffbc;
-        }
-    }
-
-    /**
- * This CSS was taken from here:
- * @see https://iamkate.com/code/tree-views/
- */
-
-    #directory {
-        width: 61.8%;
-        float: left;
-    }
-
-    #sidebar {
-        width: 38.2%;
-        float: right;
-        min-height: 100vh;
-        /*height: 100vh;*/
-        background-color: rgba(0, 0, 0, .05);
-    }
-
-    .inspector {
-        padding-left: 24px;
-        background: url(/img/glyphicons/glyphicons_030_pencil.png);
-        background-position: 3px center;
-        background-repeat: no-repeat;
-        background-size: 16px 16px;
-    }
-
-    .tree>ul {
-        --spacing: 1.5rem;
-        --radius: 10px;
-    }
-
-    .fileviewer {
-        margin-bottom: 10px;
-    }
-
-    .tree ul>li {
-        font-weight: bold;
-    }
-
-    .tree ul>li li {
-        font-weight: normal;
-    }
-
-    .tree ul li {
-        display: flex;
+    hr.person-contact-divider:after {
+        content: '\002702';
+        display: inline-block;
         position: relative;
-        padding-left: calc(2 * var(--spacing) - var(--radius) - 2px);
-        align-items: center;
+        top: -12px;
+        left: 40px;
+        padding: 0 3px;
+        background: #f0f0f0;
+        color: #8c8b8b;
+        font-size: 18px;
     }
-
-    .tree a {
-        padding: 0.22rem 0.5rem 0.22rem 24px;
-    }
-
-    .tree li.active a {
-        background-color: #c2eddb;
-        /*color: white;*/
-    }
-
-    .tree ul ul {
-        margin-left: calc(var(--radius) - var(--spacing));
-        padding-left: 0;
-    }
-
-    .tree ul li {
-        border-left: 2px solid #ddd;
-    }
-
-    .tree ul li:last-child {
-        border-color: transparent;
-    }
-
-    .tree ul li::before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: calc(var(--spacing) / -2);
-        left: -2px;
-        width: calc(var(--spacing) + 2px);
-        height: calc(var(--spacing) + 1px);
-        border: solid #ddd;
-        border-width: 0 0 2px 2px;
-    }
-
-    .tree summary {
-        display: block;
-        cursor: pointer;
-        color: rgb(88, 88, 88);
-    }
-
-    .tree summary::marker,
-    .tree summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .tree summary:focus {
-        outline: none;
-    }
-
-    .tree summary:focus-visible {
-        outline: 1px dotted #000;
-    }
-
-    .tree li::after,
-    .tree summary::before {
-        content: '';
-        display: block;
-        position: absolute;
-        top: calc(var(--spacing) / 2 - var(--radius));
-        left: calc(var(--spacing) - var(--radius) - 1px);
-        width: calc(2 * var(--radius));
-        height: calc(2 * var(--radius));
-        border-radius: 50%;
-        background: #ddd;
-    }
-
-    .tree summary::before {
-        z-index: 1;
-        background: #696 url('/img/expand-collapse.svg') 0 0;
-    }
-
-    .tree details[open]>summary::before {
-        background-position: calc(-2 * var(--radius)) 0;
-    }
-
-    .tree a {
-        text-decoration: none;
-    }
-
-    .panel textarea.force100 {
-        width: 100%;
-    }
-
-    p.secondary {
-        font-size: 0.666rem;
-    }
-
-    .initally-empty {
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    #inspector input[type=submit] {
-        padding: 0.2rem 1rem;
-    }
-
-    .template {
-        font-style: italic;
-    }
-
-    .hasmachine {
-        color: blue;
-    }
-
-    .help {
-        font-size: small;
-        color: gray;
-        margin-top: 1rem;
-    }
+    */
 
 }
 
-/**
- * Devices with a inacurate pointing tool, e.g. a finger tip
- *
- * @see https://stackoverflow.com/questions/11387805/media-query-to-detect-if-device-is-touchscreen
- */
+/* Devices with a inacurate pointing tool, e.g. a finger tip */
+/* @see https://stackoverflow.com/questions/11387805/media-query-to-detect-if-device-is-touchscreen */
 @media (pointer: coarse) {
 
     /**
@@ -2257,6 +2232,68 @@ hr.person-contact-divider:after {
     table:not(.notsticky) thead {
         top: 45px;
     }
+
+    th {
+        white-space: nowrap;
+        position: sticky;
+    }
+
+
+    caption {
+        caption-side: top;
+    }
+
+    .fig-table {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        overflow: auto;
+        /*overflow-x: scroll;*/
+
+        background:
+            linear-gradient(90deg, var(--color-background) 20%, rgba(255, 255, 255, 0)),
+            linear-gradient(90deg, rgba(255, 255, 255, 0), var(--color-background) 80%) 100% 0,
+            radial-gradient(farthest-side at 0 0%, var(--color-shadow), rgba(0, 0, 0, 0)),
+            radial-gradient(farthest-side at 100% 0%, var(--color-shadow), rgba(0, 0, 0, 0)) 100% 0;
+        background-repeat: no-repeat;
+        background-size: 20% 200%, 20% 200%, 8% 400%, 8% 400%;
+        background-attachment: local, local, scroll, scroll;
+
+    }
+
+    /* form table stuff */
+    .panel table,
+    .panel table.service {
+        table-layout: auto;
+        width: fit-content;
+        font-variant-numeric: lining-nums tabular-nums;
+        min-width: 100%;
+    }
+
+    .panel th,
+    .panel td,
+    .panel td a {
+        overflow: hidden;
+        text-overflow: clip;
+        vertical-align: middle;
+    }
+
+    .panel td {
+        word-break: break-all;
+    }
+
+    /* Values generated with Utopia https://utopia.fyi/type/calculator/ */
+    /* @see https://www.smashingmagazine.com/2022/12/accessible-front-end-patterns-responsive-tables-part1/ */
+    /*
+    tbody {
+        font-size: clamp(1.13rem, calc(0.35rem + 2.19vw), 1.75rem);
+    }
+
+    tbody td {
+        padding-top: clamp(1.13rem, calc(0.35rem + 2.19vw), 1.75rem);
+        padding-bottom: clamp(2rem, calc(0.62rem + 3.9vw), 3.11rem);
+    }
+    */
 }
 
 /* inacurate pointing device and the screen is big */
@@ -2330,8 +2367,29 @@ hr.person-contact-divider:after {
         height: 34px;
     }
 
-    /* form table stuff */
-    .panel table {
-        table-layout: auto;
+    /* columns to lines */
+
+    table.treaty,
+    table.treaty caption,
+    table.treaty tbody,
+    table.treaty tr,
+    table.treaty th,
+    table.treaty td {
+        display: block;
+        text-align: left;
+    }
+
+    table.treaty thead,
+    table.treaty th:empty,
+    table.treaty td:empty {
+        display: none;
+        visibility: hidden;
+    }
+
+    table.treaty th[data-title]:before,
+    table.treaty td[data-title]:before {
+        content: attr(data-title) ": ";
+        display: inline-block;
+        width: 10rem;
     }
 }
