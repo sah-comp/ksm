@@ -19,6 +19,13 @@ a.logo {
     background-size: 48px 16px;
 }
 
+span.full {
+    display: inline;
+}
+span.less {
+    display: none;
+}
+
 
 /* Hilite the target, the element identified by the hash part of the URL */
 :target {
@@ -350,6 +357,7 @@ p.secondary {
     header#header-toolbar {
         width: 100%;
         background-color: rgb(254, 254, 254);
+        padding-bottom: 0.666rem;
     }
 
     body>header {
@@ -1632,6 +1640,7 @@ p.secondary {
 
     table.service th.note {
         width: 30rem;
+        min-width: 30rem;
     }
 
     table.service th.wider {
@@ -2358,6 +2367,10 @@ p.secondary {
         background-size: 16px 16px;
     }
 
+    select {
+        font-size: smaller;
+    }
+
     form#gsearch,
     .account-navigation a span {
         display: none;
@@ -2367,21 +2380,23 @@ p.secondary {
         height: 34px;
     }
 
-    /* columns to lines */
+    /* columns to lines for treaty table */
 
     table.treaty,
     table.treaty caption,
     table.treaty tbody,
-    table.treaty tr,
+    table.treaty tr:not(.coltitles),
     table.treaty th,
     table.treaty td {
         display: block;
         text-align: left;
+        overflow: visible;
     }
 
-    table.treaty thead,
+    tr.coltitles,
     table.treaty th:empty,
-    table.treaty td:empty {
+    table.treaty td:empty,
+    table.treaty tfoot {
         display: none;
         visibility: hidden;
     }
@@ -2391,5 +2406,17 @@ p.secondary {
         content: attr(data-title) ": ";
         display: inline-block;
         width: 10rem;
+    }
+
+    /* service table adjustments */
+    span.full {
+        display: none;
+    }
+    span.less {
+        display: inline;
+    }
+
+    table.service th.person {
+        width: 1rem;
     }
 }

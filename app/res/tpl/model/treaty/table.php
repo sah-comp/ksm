@@ -42,7 +42,7 @@
             </caption>
 
             <thead>
-                <tr>
+                <tr class="coltitles">
                     <th class="edit">
                         &nbsp;
                     </th>
@@ -114,7 +114,7 @@
                         </th>
 
                         <?php foreach ($_attributes as $_i => $_attribute) : ?>
-                            <th>
+                            <th data-title="<?php echo (isset($_attribute['label'])) ? $_attribute['label'] : I18n::__($record->getMeta('type') . '_label_' . $_attribute['name']) ?>">
                                 <?php if (isset($_attribute['filter']) && is_array($_attribute['filter'])) : ?>
                                     <?php $_criteria = $filter->getCriteria($_attribute) ?>
                                     <input

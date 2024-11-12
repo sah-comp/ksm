@@ -200,7 +200,8 @@ Flight::render('script/datatable_config');
                                     href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
                                     title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
                                     class="in-table">
-                                    <?php echo htmlspecialchars($_person->name) ?>
+                                    <span class="full"><?php echo htmlspecialchars($_person->name) ?></span>
+                                    <span class="less"><?php echo htmlspecialchars($_person->getShortname()) ?></span>
                                 </a>
                             </td>
                             <td
@@ -252,6 +253,7 @@ Flight::render('script/datatable_config');
                                     title="<?php echo htmlspecialchars($_record->note) ?>"
                                     name="note"
                                     type="text"
+                                    size="30"
                                     class="enpassant _blow-me-up"
                                     data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'note']) ?>"
                                     value="<?php echo htmlspecialchars($_record->note) ?>" />
