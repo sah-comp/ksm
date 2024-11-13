@@ -23,35 +23,35 @@ $_transactions = R::find('transaction', "person_id = ? ORDER BY number", [$recor
     ?>
         <tr>
             <td
-                data-order="<?php echo htmlspecialchars($_transaction->contracttype->name) ?>">
-                <?php echo htmlspecialchars($_transaction->contracttype->name) ?>
+                data-order="<?php echo htmlspecialchars($_transaction->contracttype->name ?? '') ?>">
+                <?php echo htmlspecialchars($_transaction->contracttype->name ?? '') ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_transaction->number) ?>">
+                data-order="<?php echo htmlspecialchars($_transaction->number ?? '') ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_transaction->getMeta('type'), $_transaction->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_transaction->number) ?>
+                    <?php echo htmlspecialchars($_transaction->number ?? '') ?>
                 </a>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_transaction->bookingdate) ?>">
-                <?php echo htmlspecialchars($_transaction->localizedDate('bookingdate')) ?>
+                data-order="<?php echo htmlspecialchars($_transaction->bookingdate ?? '') ?>">
+                <?php echo htmlspecialchars($_transaction->localizedDate('bookingdate') ?? '') ?>
             </td>
             <td
                 class="number"
-                data-order="<?php echo htmlspecialchars($_transaction->decimal('net')) ?>">
-                <?php echo htmlspecialchars($_transaction->decimal('net')) ?>
+                data-order="<?php echo htmlspecialchars($_transaction->decimal('net') ?? '') ?>">
+                <?php echo htmlspecialchars($_transaction->decimal('net') ?? '') ?>
             </td>
             <td
                 class="number"
-                data-order="<?php echo htmlspecialchars($_transaction->decimal('vat')) ?>">
-                <?php echo htmlspecialchars($_transaction->decimal('vat')) ?>
+                data-order="<?php echo htmlspecialchars($_transaction->decimal('vat') ?? '') ?>">
+                <?php echo htmlspecialchars($_transaction->decimal('vat') ?? '') ?>
             </td>
             <td
                 class="number"
-                data-order="<?php echo htmlspecialchars($_transaction->decimal('gros')) ?>">
-                <?php echo htmlspecialchars($_transaction->decimal('gros')) ?>
+                data-order="<?php echo htmlspecialchars($_transaction->decimal('gros') ?? '') ?>">
+                <?php echo htmlspecialchars($_transaction->decimal('gros') ?? '') ?>
             </td>
         </tr>
     <?php endforeach; ?>

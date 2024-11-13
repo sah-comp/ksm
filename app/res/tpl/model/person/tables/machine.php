@@ -26,27 +26,27 @@ $_contracts = R::find('contract', "person_id = ? ORDER BY @joined.machine.name, 
     ?>
         <tr>
             <td
-                data-order="<?php echo htmlspecialchars($_machine->getMachinebrand()->name) ?>">
+                data-order="<?php echo htmlspecialchars($_machine->getMachinebrand()->name ?? '') ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_machinebrand->getMeta('type'), $_machinebrand->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_machine->getMachinebrand()->name) ?>
+                    <?php echo htmlspecialchars($_machine->getMachinebrand()->name ?? '') ?>
                 </a>
             </td>
             <td
-                data-target="<?php echo htmlspecialchars($_machine->name) ?>">
+                data-target="<?php echo htmlspecialchars($_machine->name ?? '') ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_machine->getMeta('type'), $_machine->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_machine->name) ?>
+                    <?php echo htmlspecialchars($_machine->name ?? '') ?>
                 </a>
             </td>
             <td>
-                <?php echo htmlspecialchars($_machine->serialnumber) ?>
+                <?php echo htmlspecialchars($_machine->serialnumber ?? '') ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_machine->lastservice) ?>">
-                <?php echo htmlspecialchars($_machine->localizedDate('lastservice')) ?>
+                data-order="<?php echo htmlspecialchars($_machine->lastservice ?? '') ?>">
+                <?php echo htmlspecialchars($_machine->localizedDate('lastservice') ?? '') ?>
             </td>
         </tr>
     <?php endforeach; ?>
