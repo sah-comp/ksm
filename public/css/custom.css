@@ -2423,4 +2423,58 @@ p.secondary {
     table.service th.machine {
         letter-spacing: -1px;
     }
+
+    details.toolbar {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+
+    details>summary {
+        list-style: none;
+        text-align: right;
+    }
+
+    summary::-webkit-details-marker {
+        display: none
+    }
+
+    summary::marker {
+        content: none;
+    }
+
+    summary::after {
+        content: " \2303";
+    }
+
+    details[open]>summary:after {
+        content: " \2304";
+    }
+
+    form.pform {
+        padding-left: 0;
+    }
+
+    /* panel navigation */
+    ul.panel-navigation {
+        padding: 1rem 1rem;
+        background-color: rgb(254, 254, 254);
+        position: initial;
+        float: initial;
+        box-shadow: #333;
+    }
+
+    ul.panel-navigation li {
+        display: block;
+        float: initial;
+        line-height: 1.5;
+    }
+
+    ul.panel-navigation a {
+        display: block;
+        font-size: 1.2rem;
+        padding: 0.25rem 0.5rem;
+        text-decoration: none;
+    }
 }

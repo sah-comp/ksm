@@ -8,7 +8,7 @@
  * @version $Id$
  */
 
-define('APP_VERSION', '1.0.67');
+define('APP_VERSION', '1.0.72');
 
 /**
  * Set internal encoding to UTF-8.
@@ -106,7 +106,7 @@ Flight::set('possible_languages', R::dispense('language')->getEnabled(Flight::ge
 /**
  * Set the current language.
  *
- * This get changed by our routes if the called url begins with a 2-character iso code.
+ * This gets changed by our routes if the called url begins with a 2-character iso code.
  */
 Flight::set('language', CINNEBAR_DEFAULT_LANGUAGE);
 

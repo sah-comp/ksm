@@ -1432,4 +1432,5 @@ BIC COBADEFFXXX',
   'warning_no_selection' => 'Es wurden keine Einträge verändert. Bitte markieren Sie mindestens einen Eintrag.',
   'warning_too_many_records_to_print' => 'Das PDF wurde nicht erstellt. Reduzieren Sie die Anzahl der zu druckenden Einträge (derzeit %2$d) auf weniger als %1$d und versuchen Sie es erneut.',
   'welcome_head_title' => 'Willkommen - Diese Seite ist absichtlich leer',
+  'toolbar_details_title' => 'Funktionen'
 );
