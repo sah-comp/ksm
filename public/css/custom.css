@@ -22,6 +22,7 @@ a.logo {
 span.full {
     display: inline;
 }
+
 span.less {
     display: none;
 }
@@ -2412,11 +2413,14 @@ p.secondary {
     span.full {
         display: none;
     }
+
     span.less {
         display: inline;
     }
 
-    table.service th.person {
-        width: 1rem;
+    table.service th.location,
+    table.service th.machinebrand,
+    table.service th.machine {
+        letter-spacing: -1px;
     }
 }

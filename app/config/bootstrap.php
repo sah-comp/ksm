@@ -8,7 +8,7 @@
  * @version $Id$
  */
 
-define('APP_VERSION', '1.0.66');
+define('APP_VERSION', '1.0.67');
 
 /**
  * Set internal encoding to UTF-8.
