@@ -24,6 +24,16 @@ var headeroffset = 120;
 $('body').ready(function () {
 
     /**
+     * Are we on a device with a coarse pointer but a quite big screen?
+     */
+    let isTablet = window.matchMedia("only screen and (pointer: coarse) and (min-width: 760px)").matches;
+
+    if (isTablet) {
+        $('details.toolbar').removeAttr('open');
+    }
+
+
+    /**
      * If the page that was loaded has a hash scroll there, while respecting the offset of our header.
      *
      * @see https://theme.co/forum/t/scroll-to-anchor-with-offset-when-coming-from-another-page/26622/5

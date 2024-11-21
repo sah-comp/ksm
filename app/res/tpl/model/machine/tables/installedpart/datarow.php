@@ -14,7 +14,7 @@ $_ip_allowed = Permission::validate(Flight::get('user'), 'machine', 'pricing');
             id="<?php echo $_type ?>-<?php echo $_id ?>-number"
             name="article_number"
             type="text"
-            class=""
+            class="mobfont"
             readonly="readonly"
             value="<?php echo htmlspecialchars($_article->number) ?>" />
     </td>

@@ -1,16 +1,17 @@
 <article class="main">
     <header id="header-toolbar" class="fixable">
         <h1><?php echo $title ?></h1>
-        <nav>
+        <details open name="toolbar" class="toolbar">
+            <summary><?php echo I18n::__('toolbar_details_title') ?></summary>
             <?php echo $toolbar ?>
-        </nav>
+        </details>
     </header>
     <div id="directory">
         <div class="panel tree">
             <?php
-                //echo $record->dir(DMS_PATH);
-                $record->deactiveFiles(DMS_PATH);
-                $record->listFiles(DMS_PATH);
+            //echo $record->dir(DMS_PATH);
+            $record->deactiveFiles(DMS_PATH);
+            $record->listFiles(DMS_PATH);
             ?>
         </div>
     </div>

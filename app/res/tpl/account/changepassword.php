@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -11,10 +12,11 @@
 <!-- Account -->
 <article class="main">
     <header>
-		<h1><?php echo I18n::__('account_h1') ?></h1>
-		<nav>
+        <h1><?php echo I18n::__('account_h1') ?></h1>
+        <details open name="toolbar" class="toolbar">
+            <summary><?php echo I18n::__('toolbar_details_title') ?></summary>
             <?php echo $toolbar ?>
-        </nav>
+        </details>
     </header>
     <form
         id="form-<?php echo $record->getMeta('type') ?>"

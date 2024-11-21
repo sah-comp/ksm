@@ -20,7 +20,7 @@
             ?>
         <?php endif; ?>
         <div id="additional-info-container" class=""></div>
-        <details name="toolbar" class="toolbar">
+        <details open name="toolbar" class="toolbar">
             <summary><?php echo I18n::__('toolbar_details_title') ?></summary>
             <?php echo $toolbar ?>
         </details>
