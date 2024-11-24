@@ -2253,9 +2253,11 @@ p.secondary {
         left: 0;
     }
 
+    /*
     input[type=submit] {
         color: wheat;
     }
+    */
 
     #header-toolbar {
         top: 0;
@@ -2300,6 +2302,10 @@ p.secondary {
         width: fit-content;
         font-variant-numeric: lining-nums tabular-nums;
         min-width: 100%;
+    }
+
+    .panel .container table {
+        table-layout: fixed;
     }
 
     .panel th,
