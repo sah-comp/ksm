@@ -2304,7 +2304,8 @@ p.secondary {
         min-width: 100%;
     }
 
-    .panel .container table {
+    .panel .container table,
+    .panel table.revenue {
         table-layout: fixed;
     }
 
