@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -353,6 +354,15 @@ SQL;
     }
 
     /**
+     * Returns the first word of a person name
+     * 
+     * @return string
+     */
+    public function getShortname(): string {
+        return list($firstword) = explode(" ", trim($this->bean->name) . " ")[0];
+    }
+
+    /**
      * Returns associated array of personkind beans for use in scaffold filter.
      *
      * @return array
@@ -370,7 +380,7 @@ SQL;
      */
     public function getPersonkind()
     {
-        if ( ! $this->bean->personkind) {
+        if (! $this->bean->personkind) {
             $this->bean->personkind = R::dispense('personkind');
         }
         return $this->bean->personkind;
@@ -462,7 +472,7 @@ SQL;
      */
     public function getAddress($label = 'default')
     {
-        if ( ! $address = R::findOne('address', '(label = ? AND person_id = ?) LIMIT 1', [$label, $this->bean->getId()])) {
+        if (! $address = R::findOne('address', '(label = ? AND person_id = ?) LIMIT 1', [$label, $this->bean->getId()])) {
             $address = R::dispense('address');
         }
         return $address;
@@ -574,15 +584,15 @@ SQL;
             ));
         }
         */
-        if ( ! $this->bean->vat_id) {
+        if (! $this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
         }
-        if ( ! $this->bean->discount_id) {
+        if (! $this->bean->discount_id) {
             $this->bean->discount_id = null;
             unset($this->bean->discount);
         }
-        if ( ! $this->bean->personkind_id) {
+        if (! $this->bean->personkind_id) {
             $this->bean->personkind_id = null;
             unset($this->bean->personkind);
         }

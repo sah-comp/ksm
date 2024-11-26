@@ -25,7 +25,7 @@
                 'appointment-machine-name' => 'value',
                 'appointment-machine-id' => 'id'
             ]); ?>'
-        value="<?php echo htmlspecialchars($record->getMachine()->name) ?>" />
+        value="<?php echo htmlspecialchars($record->getMachine()->nam ?? '') ?>" />
 </div>
 
 <div class="row <?php echo ($record->hasError('contact_id')) ? 'error' : ''; ?>">
@@ -53,7 +53,7 @@
                 'appointment-contact-name' => 'value',
                 'appointment-contact-id' => 'id'
             ]); ?>'
-        value="<?php echo htmlspecialchars($record->getContact()->name) ?>" />
+        value="<?php echo htmlspecialchars($record->getContact()->name ?? '') ?>" />
 </div>
 
 <div class="row <?php echo ($record->hasError('location_id')) ? 'error' : ''; ?>">
@@ -81,5 +81,5 @@
                 'appointment-location-name' => 'value',
                 'appointment-location-id' => 'id'
             ]); ?>'
-        value="<?php echo htmlspecialchars($record->getLocation()->name) ?>" />
+        value="<?php echo htmlspecialchars($record->getLocation()->name ?? '') ?>" />
 </div>

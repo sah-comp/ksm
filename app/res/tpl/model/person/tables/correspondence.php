@@ -21,24 +21,24 @@ $_correspondences = R::find('correspondence', "person_id = ? ORDER BY stamp", [$
     ?>
         <tr>
             <td
-                data-order="<?php echo htmlspecialchars($_correspondence->writtenon) ?>">
+                data-order="<?php echo htmlspecialchars($_correspondence->writtenon ?? '') ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_correspondence->getMeta('type'), $_correspondence->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_correspondence->localizedDate('writtenon')) ?>
+                    <?php echo htmlspecialchars($_correspondence->localizedDate('writtenon') ?? '') ?>
                 </a>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_correspondence->confidential) ?>">
-                <?php echo htmlspecialchars($_correspondence->confidential) ?>
+                data-order="<?php echo htmlspecialchars($_correspondence->confidential ?? '') ?>">
+                <?php echo htmlspecialchars($_correspondence->confidential ?? '') ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_correspondence->subject) ?>">
-                <?php echo htmlspecialchars($_correspondence->subject) ?>
+                data-order="<?php echo htmlspecialchars($_correspondence->subject ?? '') ?>">
+                <?php echo htmlspecialchars($_correspondence->subject ?? '') ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_correspondence->payload) ?>">
-                <?php echo htmlspecialchars($_correspondence->stripHTML($_correspondence->payload)) ?>
+                data-order="<?php echo htmlspecialchars($_correspondence->payload ?? '') ?>">
+                <?php echo htmlspecialchars($_correspondence->stripHTML($_correspondence->payload) ?? '') ?>
             </td>
         </tr>
     <?php endforeach; ?>

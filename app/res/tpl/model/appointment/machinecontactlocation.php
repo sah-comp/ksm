@@ -12,7 +12,7 @@
         <?php foreach ($contacts as $_id => $_contact) : ?>
         <option
             value="<?php echo $_contact->getId() ?>"
-            <?php echo ($record->contact_id == $_contact->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_contact->name . ' (' . $_contact->jobdescription . ') ' . $_contact->getContactinfo()) ?>
+            <?php echo ($record->contact_id == $_contact->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars(($_contact->name . ' (' . $_contact->jobdescription . ') ' . $_contact->getContactinfo()) ?? '') ?>
         </option>
         <?php endforeach ?>
     </select>
@@ -35,7 +35,7 @@
         <?php foreach ($machines as $_id => $_machine) : ?>
         <option
             value="<?php echo $_machine->getId() ?>"
-            <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars($_machine->getMachinebrand()->name . ' ' . $_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ') ' . $_machine->locationName()) ?>
+            <?php echo ($record->machine_id == $_machine->getId()) ? 'selected="selected"' : '' ?>><?php echo htmlspecialchars(($_machine->getMachinebrand()->name . ' ' . $_machine->name . ' (' . trim($_machine->serialnumber . ' ' . $_machine->internalnumber) . ') ' . $_machine->locationName()) ?? '') ?>
         </option>
         <?php endforeach ?>
     </select>

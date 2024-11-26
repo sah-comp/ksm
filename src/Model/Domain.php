@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -86,7 +87,7 @@ class Model_Domain extends Model
                 'filter' => array(
                     'tag' => 'number'
                 ),
-				'width' => '8rem'
+                'width' => '8rem'
             ),
             array(
                 'name' => 'invisible',
@@ -99,7 +100,7 @@ class Model_Domain extends Model
                 'filter' => array(
                     'tag' => 'bool'
                 ),
-				'width' => '5rem'
+                'width' => '5rem'
             )
         );
     }
@@ -213,7 +214,7 @@ class Model_Domain extends Model
         $url_prefix = '',
         $lng = null,
         $invisible = false,
-                            $attr = 'url',
+        $attr = 'url',
         $break = null,
         $order = 'sequence ASC',
         $level = 0
@@ -225,7 +226,7 @@ class Model_Domain extends Model
         }
         $sql = sprintf(
             '%s = ? %s ORDER BY %s',
-            $this->bean->getMeta('type').'_id',
+            $this->bean->getMeta('type') . '_id',
             $sql_invisible,
             $order
         );
@@ -241,8 +242,8 @@ class Model_Domain extends Model
         foreach ($records as $record) {
             $menu->add(
                 $record->i18n($lng)->name,
-                Url::build($url_prefix.$record->{$attr}),
-                $record->getMeta('type').'-'.$record->getId(),
+                Url::build($url_prefix . $record->{$attr}),
+                $record->getMeta('type') . '-' . $record->getId(),
                 $record->hierMenu($url_prefix, $lng, $invisible, $attr, $break, $order, $level)
             );
         }

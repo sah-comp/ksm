@@ -1,132 +1,16 @@
-/*
- * Custom or experimental css.
- *
- * Try here first until everything works and choose to
- * copy it to default.css if everything works out fine
- * and you like to have in your base stylesheet.
- */
-/**
- * Make negative table data red.
- *
- * @see https://stackoverflow.com/questions/1824266/colorize-negative-positive-numbers-jquery
- */
-td[data-monetary-amount^="-"] {
-    color: red;
+/* general styles */
+body {
+    font: 22px/1 "Georgia", Palantino serif;
 }
 
-table.revenue tfoot {
-    display: table-row-group;
-}
-
-.panel .container {
-    /*overflow: visible;*/
-}
-
-table.scaffold a.dunning-pdf,
-table.scaffold a.dunning-mail {
-    display: inline-block;
-}
-
-table.gsearch {
-    margin-bottom: 5rem;
-}
-
-p.none-found {
-    text-align: center;
-    font-size: small;
-    color: gray;
-}
-
-h2.some-found {
-    text-align: center;
-}
-
-.dunning-pdf,
-.dunning-mail {
-    width: 20px;
-    height: 20px;
-    background-size: 16px 16px;
-}
-
-.dunning-pdf {
-    background-image: url(/img/glyphicons/glyphicons_135_inbox_out.png);
-}
-
-.dunning-mail {
-    background-image: url(/img/glyphicons/glyphicons_062_paperclip.png);
-}
-
-.drag-handle {
-    width: 16px;
-    height: 16px;
-    /*1em font-size + 2 x 0.222em padding in input fields*/
-    padding: 0;
-    margin: 0;
-    z-index: 1;
-    background-image: url(/img/glyphicons/glyphicons_319_sort.png);
-    background-size: 16px 16px;
-    position: absolute;
-    left: -28px;
-    top: 50%;
-    margin-top: -8px;
-    cursor: move;
-}
-
-article.main {
-    min-height: 100vh;
-}
-
-select {
-    font-size: inherit;
-}
-
-.panel table thead th.centered {
-    text-align: center;
-}
-
-.panel thead th.pastel {
-    color: black;
-}
-
-.panel table.revenue th,
-.panel table.revenue td {
-    padding-top: 0.333em;
-    padding-bottom: 0.333em;
-}
-
-.float-left {
-    float: left;
-}
-
-.flex-center {
-    display: flex;
-    align-items: center;
-}
-
-.panel label.salesprice {
-    color: #009933;
-}
-
-.btn {
-    font-size: 0.8em;
-    color: silver;
-    text-decoration: none;
-    margin-right: 2em;
-}
-
-.panel a.action.action-finish {
+a.logo {
     display: block;
-    width: 24px;
-    height: 24px;
-    background: url(/img/glyphicons/glyphicons_193_circle_ok.png);
-    background-position: center center;
+    width: 3em;
+    height: 2em;
+    background-image: url(/img/logo.jpg);
     background-repeat: no-repeat;
+    background-position: center center;
     background-size: 16px 16px;
-}
-
-/* scratch out the record count */
-.panel table caption.scratched {
-    text-decoration: line-through;
 }
 
 a.logo {
@@ -135,791 +19,37 @@ a.logo {
     background-size: 48px 16px;
 }
 
-.appointment-incomplete {
-    color: red;
+span.full {
+    display: inline;
 }
 
-.appointment-completed {
-    color: green;
-}
-
-.smaller-font {
-    font-size: 0.975rem;
-}
-
-.minor {
-    font-size: 0.666rem;
-}
-
-/* Cockpit stuff */
-div.domain {
-    width: calc(25% - 2px - 2rem);
-    height: 200px;
-    margin: 0 1rem 1rem 1rem;
-    float: left;
-    position: relative;
-    border: 1px solid gray;
-}
-
-div.domain h1 {
-    color: gray;
-    font-size: 1.13rem;
-    padding: 0.25rem;
-    border-bottom: 1px solid gray;
-}
-
-div.domain h1 a {
-    text-decoration: none;
-}
-
-div.domain p.the-count {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.25rem 1rem;
-    font-size: small;
-    color: gray;
-    line-height: 1.13rem;
-}
-
-/* Autocomplete
-----------------------------------*/
-.ui-autocomplete {
-    position: absolute;
-    cursor: default;
-    max-height: 280px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 20px;
-}
-
-.ui-autocomplete-loading {
-    background: white url('/img/loader.gif') right center no-repeat;
-}
-
-/* workarounds */
-* html .ui-autocomplete {
-    width: 1px;
-}
-
-/* without this, the menu expands to 100% in IE6 */
-/* Menu
-----------------------------------*/
-.ui-menu {
-    list-style: none;
-    padding: 2px;
-    margin: 0;
-    display: block;
-    background-color: whitesmoke;
-}
-
-.ui-menu .ui-menu {
-    margin-top: -3px;
-}
-
-.ui-menu .ui-menu-item {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-}
-
-.ui-menu .ui-menu-item a {
-    text-decoration: none;
-    display: block;
-    padding: .2em .4em;
-    line-height: 1.5;
-    zoom: 1;
-}
-
-.ui-menu .ui-menu-item a.ui-state-hover,
-.ui-menu .ui-menu-item a.ui-state-active {
-    /*margin: -1px;*/
-}
-
-.ui-helper-hidden-accessible {
-    position: absolute;
-    left: -999em;
-}
-
-form.panel,
-ul.tab-navigation a.selected {
-    background-color: rgb(252, 252, 252);
-}
-
-form.panel {
-    min-height: 100vh;
-}
-
-.autocomplete {}
-
-input[readonly=readonly],
-textarea[readonly=readonly] {
-    padding-right: 0;
-    background: white;
-    color: gray;
-}
-
-input[disabled=disabled],
-textarea[disabled=disabled] {
-    color: gray;
-}
-
-/*
-th, td {
-    animation: widerthanyou 7000ms ease-out;
-}
-*/
-.panel td.tar {
-    text-align: right;
-}
-
-.panel .buttons p.info {
-    text-align: left;
-}
-
-/**
- * Service appointment table width settings.
- */
-table.service {
-    font-size: 70%;
-}
-
-table.service tbody tr {
-    border-left: 5px solid transparent;
-}
-
-/**
- * These classes are indicating if an appointment is overdue or due today or later.
- */
-table.service tbody tr.overdue {
-    border-left-color: red;
-}
-
-table.service tbody tr.today {
-    border-left-color: orange;
-}
-
-table.service tbody tr.coming-up {
-    border-left-color: green;
-}
-
-.panel tbody tr:hover {
-    background-color: #c2eddb;
-}
-
-thead th.edit,
-thead th.switch {
-    width: 10px;
-}
-
-th.date {
-    width: 6rem;
-}
-
-table.service th.time {
-    width: 3.8rem;
-}
-
-table.service th.week {
-    width: 1rem;
-}
-
-table.service th.fix {
-    width: 1rem;
-}
-
-table.service th.receipt {
-    width: 2rem;
-}
-
-table.service th.worker {
-    width: 3rem;
-}
-
-table.service th.duration {
-    width: 2rem;
-}
-
-table.service th.person {
-    width: 4.5rem;
-}
-
-table.service th.contact {
-    width: 3.5rem;
-}
-
-table.service th.location {
-    width: 4rem;
-}
-
-table.service th.machinebrand {
-    width: 2.5rem;
-}
-
-table.service th.machine {
-    width: 3rem;
-}
-
-table.service th.machine-serialnumber {
-    width: 3rem;
-}
-
-table.service th.machine-internalnumber {
-    width: 3rem;
-}
-
-table.service th.note {
-    width: 30rem;
-}
-
-table.service th.wider {
-    transition: all 666ms;
-    width: 42rem;
-}
-
-.panel table.service td.minor {
-    font-size: smaller;
-    /*color: gray;*/
-}
-
-/* customer */
-table.service tr td:nth-child(11) {
-    background-color: #FF9AA2;
-}
-
-/* contact */
-table.service tr td:nth-child(12) {
-    background-color: #FFB7B2;
-}
-
-/* location */
-table.service tr td:nth-child(13) {
-    background-color: #FFDAC1;
-}
-
-/* machine brand */
-table.service tr td:nth-child(14) {
-    background-color: #E2F0CB;
-}
-
-/* machine */
-table.service tr td:nth-child(15) {
-    background-color: #B5EAD7;
-}
-
-/* machine s/n */
-table.service tr td:nth-child(16) {
-    background-color: #C7CEEA;
-}
-
-/* machine internal number */
-table.service tr td:nth-child(17) {
-    background-color: #FFCEE7;
-}
-
-table.service tbody tr {
-    border-bottom: 1px solid gray;
-}
-
-input.num {
-    text-align: right;
-}
-
-/* open item transaction table */
-th.gros,
-th.paid,
-th.balance {
-    width: 10rem;
-}
-
-th.duedays {
-    width: 8rem;
-}
-
-td.duedays {
-    font-size: smaller;
-}
-
-th.pdf {
-    width: 4rem;
-}
-
-th.accumulate {
-    width: 2rem;
-}
-
-a.in-table,
-a.in-form {
-    display: block;
-    background: url(/img/glyphicons/glyphicons_211_right_arrow.png);
-    background-position: center left;
-    background-repeat: no-repeat;
-    background-size: 8px 8px;
-    padding-left: 12px;
-    text-decoration: none;
-}
-
-a.no-master {
-    color: red;
-}
-
-a.in-form {
-    display: inline-block;
-}
-
-ul.panel-navigation a.volver {
-    display: block;
-    background: url(/img/glyphicons/glyphicons_210_left_arrow.png);
-    background-position: center left;
-    background-repeat: no-repeat;
-    background-size: 8px 8px;
-    padding-left: 12px;
-    color: orange;
-    font-style: italic;
-}
-
-/* Textarea failure is initally not visible, only when the appointment type is "service". */
-fieldset.only-on-service {
+span.less {
     display: none;
 }
 
-/* Service headline can have a badge with number of changed bean counts */
-.badge-container {
-    position: relative;
+/* toolbar flat line on desktops */
+details.toolbar {
+    position: initial;
+    top: initial;
+    right: initial;
 }
 
-span.badge {
-    position: absolute;
-    top: -12px;
-    right: -12px;
-    line-height: 20px;
-    display: table-cell;
-    overflow: hidden;
-    min-width: 24px;
-    height: 24px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 100%;
-    border: 3px solid #fff;
-    text-align: center;
-    vertical-align: middle;
-    background-color: #ff001f;
-    color: #fff;
-    background-clip: padding-box;
-}
 
-.panel input.lesswidth {
-    width: auto;
-    margin-left: 0;
-    margin-right: 0;
-}
-
-thead th.transaction-number {
-    width: 12rem;
-}
-
-.openitem-amount {
-    /*float: right;*/
-}
-
-/**
- * Datatables stuff. From scratch.
- */
-.datatable td a {
-    text-decoration: none;
-}
-
-.dataTables_info {
-    font-size: small;
-    color: gray;
-    text-align: center;
-}
-
-.panel .dataTables_filter label {
-    float: right;
-    width: 100%;
-}
-
-.panel .dataTables_filter input[type=search] {
-    font-size: 1em;
-}
-
-th.sorting {
-    color: white;
-    text-decoration: none;
-}
-
-th.sorting:hover,
-th.sorting_asc:hover,
-th.sorting_desc:hover {
-    cursor: pointer;
-}
-
-th.sorting_asc {
-    background-color: rgb(33, 33, 33);
-    background-repeat: no-repeat;
-    background-position: calc(100% - 16px) center;
-    padding-right: 1em;
-    background-image: url(/img/asc.png);
-}
-
-th.sorting_desc {
-    background-color: rgb(33, 33, 33);
-    background-repeat: no-repeat;
-    background-position: calc(100% - 16px) center;
-    padding-right: 1em;
-    background-image: url(/img/desc.png);
-}
-
-td.dataTables_empty {
-    font-size: small;
-    color: gray;
-    text-align: center;
-    padding: 2em;
-}
-
-a.action.action-delete {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    background: url(/img/glyphicons/glyphicons_191_circle_minus.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 16px 16px;
-    float: right;
-}
-
-.mini-container {
-    width: 100%;
-}
-
-.mini-container p.buttons {
-    text-align: center;
-}
-
-button {
-    font-size: .77em;
-}
-
-a.venetianblinds {
-    display: inline-block;
-    text-align: center;
-    border: 1px solid rgb(0, 128, 212);
-    color: rgb(0, 128, 212);
-    background-color: white;
-    padding: 0.5em 1em;
-    margin: 0.5em;
-    font-size: 77%;
-    text-decoration: none;
-    transition: 666ms;
-}
-
-a.venetianblinds.active {
-    color: white;
-    background-color: rgb(0, 128, 212);
-}
-
-.center {
-    text-align: center;
-}
-
-.heretic {
-    text-align: center;
-    font-size: small;
-    color: gray;
-    min-height: 4em;
-    padding-left: 23.404255317%;
-}
-
-/**
- * Tooltip stuff.
- *
- * @see http://jsfiddle.net/Xotic750/9kBVu/
- */
-.tooltip,
-.additional-box {
-    position: absolute;
-    width: 60%;
-    height: calc(100vh - 200px);
-    min-height: 10em;
-    overflow-y: scroll;
-    padding: 1em;
-    border: 1px solid gray;
-    border-top: 0;
-    background-color: white;
-    top: -1px;
-    left: calc((40% - 1em) / 2);
+details>summary {
+    list-style: initial;
+    text-align: initial;
     display: none;
 }
 
-.tooltip.open,
-.additional-box.open {
-    display: block;
-}
-
-.tooltip {
-    z-index: 10000;
-}
-
-table.scaffold a.tooltip-open,
-table.scaffold a.additional-info {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-image: url(/img/glyphicons/glyphicons_088_adress_book.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 12px 12px;
-    margin-right: 0.25rem;
-}
-
-table.scaffold a.additional-info.position {
-    background-image: url(/img/glyphicons/glyphicons_119_table.png);
-}
-
-table.service a.tooltip-open,
-table.service a.additional-info,
-table.openitem a.tooltip-open,
-table.openitem a.additional-info {
-    float: left;
-}
-
-a.empty-container,
-a.tooltip-close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    width: 20px;
-    height: 20px;
-    background: url(/img/glyphicons/glyphicons_192_circle_remove.png);
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 16px 16px;
-}
-
-/*
-.tooltip-link:hover+.tooltip {
-    display: inline-block;
-}
-
-.tooltip:hover {
-    display: block;
-}
-*/
-article.main>header .tooltip h1,
-article.main>header .tooltip h2 {
-    padding: 0;
-}
-
-article.main>header .tooltip h2 {
-    padding: 1rem 0;
-}
-
-.tooltip table {
-    table-layout: fixed;
-    border-collapse: collapse;
-    width: 100%;
-}
-
-.tooltip th {
-    text-align: left;
-}
-
-.tooltip table tr {
-    border-bottom: 1px solid grey;
-}
-
-.tooltip table tr:last-child {
-    border-bottom: none;
-}
-
-.tooltip table td {
-    vertical-align: top;
-    padding-top: 2px;
-    padding-bottom: 2px;
-}
-
-.tooltip th.number,
-.tooltip td.number {
-    text-align: right;
-}
-
-.cushion-right {
-    padding-right: 4px;
-}
-
-.spacer {
-    font-size: small;
-    text-align: left;
-    padding-bottom: 2em;
-}
-
-/**
- * Service print form
- */
-form.pform {
-    /*padding-right: 1em;*/
-}
-
-li:last-child form.pform {
-    border-right: none;
-    margin-right: 0;
-    padding-right: 0;
-}
-
-form.pform {
-    padding-left: 1em;
-}
-
-form.pform input.pday {
-    padding: 0.25em;
-    font-size: small;
-    width: auto;
-}
-
-select[multiple] {
-    font-size: 70%;
-    height: auto;
-}
-
-div.contact-info:last-child {
-    border-bottom: none;
-}
-
-hr.person-contact-divider {
-    /*border-top: 1px dashed #8c8b8b;*/
-    border: none;
-    padding: 1em 0;
-}
-
-hr.person-contact-divider:last-child {
+summary::-webkit-details-marker {
     display: none;
 }
 
-fieldset>.detach,
-fieldset>.attach {
-    top: 1em;
+summary::marker {
+    content: none;
 }
 
-fieldset.sub>.detach,
-fieldset.sub>.attach {
-    top: 50%;
-}
 
-.scratch {
-    position: absolute;
-    top: 0.222em;
-    bottom: 0;
-    right: 0.222em;
-    width: 26px;
-    height: 26px;
-    padding: 0;
-    margin: 0;
-    z-index: 1;
-    background-image: url(/img/glyphicons/glyphicons_191_circle_minus.png);
-}
-
-.mail.pending {
-    color: #ce838f;
-}
-
-.mail.sent {
-    color: #54b646;
-}
-
-/* quill */
-.quill-wrapper {
-    margin-left: 25.404255317%;
-}
-
-.ql-container {
-    font-size: 99%;
-}
-
-.quill-spacer {
-    display: inline-block;
-    padding: 0 1rem;
-}
-
-/**
- * Override the absolute position of select2
- */
-.select2-hidden-accessible {
-    position: inherit !important;
-}
-
-.select2smallfont {
-    font-size: 1rem;
-}
-
-.switch-start {
-    color: green;
-}
-
-.switch-stop {
-    color: red;
-}
-
-p.gsearch span {
-    margin-right: 1rem;
-}
-
-/**
- * treaty module has a "special" table layout which is used
- * instead of the common scaffold table. the treaty layout
- * has two divs. the left one show all contractype beans plus
- * a "all" entry and preselects the treaty beans which are shown
- * in the right div, that holds the usual table (of scaffold).
- */
-.directory {
-    margin-top: 2.8rem;
-    float: left;
-    width: calc(15% - 4px);
-    padding-right: 0;
-    margin-right: 2px;
-    border-right: 1px solid rgb(33, 33, 33);
-    padding-bottom: 2rem;
-}
-
-.directory ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.directory a {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    display: block;
-    text-decoration: none;
-    padding: 0.222em 0.444em;
-    font-size: 1em;
-}
-
-.directory a.current {
-    background-color: rgb(33, 33, 33);
-    color: white;
-}
-
-.listing {
-    float: left;
-    width: 85%;
-}
-
-/*
-hr.person-contact-divider:after {
-    content: '\002702';
-    display: inline-block;
-    position: relative;
-    top: -12px;
-    left: 40px;
-    padding: 0 3px;
-    background: #f0f0f0;
-    color: #8c8b8b;
-    font-size: 18px;
-}
-*/
 /* Hilite the target, the element identified by the hash part of the URL */
 :target {
     animation: highlight 7000ms ease-out;
@@ -931,11 +61,7 @@ hr.person-contact-divider:after {
     }
 }
 
-/**
- * This CSS was taken from here:
- * @see https://iamkate.com/code/tree-views/
- */
-
+/* This CSS was taken from here: @see https://iamkate.com/code/tree-views/ */
 #directory {
     width: 61.8%;
     float: left;
@@ -950,7 +76,7 @@ hr.person-contact-divider:after {
 }
 
 .inspector {
-    padding-left 24px;
+    padding-left: 24px;
     background: url(/img/glyphicons/glyphicons_030_pencil.png);
     background-position: 3px center;
     background-repeat: no-repeat;
@@ -1091,4 +217,2302 @@ p.secondary {
     font-size: small;
     color: gray;
     margin-top: 1rem;
+}
+
+/* only on big screens */
+@media only screen and (min-width: 768px) {
+
+    /* ==|== primary styles =====================================================
+   Author: info@sah-company.com
+   ========================================================================== */
+    /* Set your font stuff for the document here */
+    body {
+        font: 18px/1 "Georgia", Palantino serif;
+    }
+
+    body.loading {
+        background-image: url(/img/loader.gif);
+        background-position: 50% 0.5em;
+        background-repeat: no-repeat;
+    }
+
+    /* Layout with 2-columns and footer sticking to the bottom */
+    html {
+        position: relative;
+        min-height: 100%;
+    }
+
+    body {
+        margin: 0 0 6.5em;
+    }
+
+    body>footer {
+        border-top: 1px solid silver;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 4.5em;
+        padding: 1em;
+    }
+
+    .app-info,
+    .sys-info {
+        padding: 1em 0;
+        color: gray;
+        font-size: smaller;
+        float: left;
+    }
+
+    .app-info a {
+        color: gray;
+        text-decoration: none;
+    }
+
+    .sys-info {
+        float: right;
+    }
+
+    .notification {
+        padding: 1em;
+    }
+
+    /* headlines */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    ul,
+    ol {
+        margin-bottom: 1em;
+    }
+
+    /* list stuff */
+    ul {
+        list-style: disc;
+        padding-left: 1.2em;
+    }
+
+    ul li ul {
+        margin-bottom: inherit;
+    }
+
+    select {
+        font-size: small;
+    }
+
+    /* using local fonts? make sure to read up on Paul Irish's
+    Bulletproof @font-face syntax: http://mky.be/font-face/bulletproof/ */
+    /* we like off-black for text */
+    body,
+    select,
+    input,
+    textarea {
+        color: #222;
+    }
+
+    a {
+        color: #333;
+    }
+
+    /*#03f*/
+    a:hover {
+        color: #666;
+    }
+
+    /*#69f*/
+    /* Custom text-selection colors (remove any text shadows: twitter.com/miketaylr/status/12228805301) */
+    ::-moz-selection {
+        background: #fcd700;
+        color: #fff;
+        text-shadow: none;
+    }
+
+    ::selection {
+        background: #fcd700;
+        color: #fff;
+        text-shadow: none;
+    }
+
+    /*    j.mp/webkit-tap-highlight-color */
+    a:link {
+        -webkit-tap-highlight-color: #fcd700;
+    }
+
+    ins {
+        background-color: #fcd700;
+        color: #000;
+        text-decoration: none;
+    }
+
+    mark {
+        background-color: #fcd700;
+        color: #000;
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    /* article */
+    article header {
+        position: relative;
+    }
+
+    article.main>header h1,
+    article.main>header h2,
+    article.main>header h3,
+    article.main>header h4,
+    article.main>header h5,
+    article.main>header h6,
+    article.main>p {
+        padding: 0.5em 1em;
+        margin: 0;
+    }
+
+    article.main>header h1 {
+        display: inline-block;
+    }
+
+    /* Main navigation */
+    body>header,
+    header#header-toolbar {
+        width: 100%;
+        background-color: rgb(254, 254, 254);
+        padding-bottom: 0.666rem;
+    }
+
+    body>header {
+        z-index: 1000000;
+    }
+
+    header#header-toolbar.scroll-to-fixed-fixed {
+        border-bottom: 1px solid silver;
+    }
+
+    body>header>h1 {
+        margin: 0;
+        padding: 0;
+    }
+
+    #additional-info-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: auto;
+    }
+
+    ul.main-navigation,
+    ul.main-navigation ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+        border-top: 1px solid silver;
+        border-bottom: 1px solid silver;
+    }
+
+    ul.main-navigation>li {
+        position: relative;
+        float: left;
+    }
+
+    ul.main-navigation li ul>li {
+        border-bottom: 1px solid silver;
+    }
+
+    ul.main-navigation li ul>li:last-child {
+        border-bottom: 0;
+    }
+
+    ul.main-navigation a {
+        text-decoration: none;
+        display: block;
+        padding: 0.5em 1em 0.5em 1em;
+        /*text-shadow: 0px -1px -1px #eee;*/
+    }
+
+    ul.main-navigation li.parent {
+        background-image: url(/img/desc.png);
+        background-repeat: no-repeat;
+        background-position: center right;
+    }
+
+    /* sub-menu of master nav */
+    ul.main-navigation li ul {
+        margin: 0;
+        background-color: rgb(254, 254, 254);
+        position: absolute;
+        min-width: 100%;
+        top: 2em;
+        margin-top: -1px;
+        left: -1px;
+        display: none;
+        z-index: 1;
+        border: 1px solid silver;
+        border-top: 1px solid white;
+        /*box-shadow: 1px 1px 1px rgb(128, 128, 128);*/
+    }
+
+    ul.main-navigation li ul li {
+        position: relative;
+        display: block;
+        white-space: nowrap;
+        background: none;
+        width: 100%;
+    }
+
+    ul.main-navigation>li:hover ul {
+        display: block;
+    }
+
+    /* Account navigation */
+    ul.account-navigation,
+    ul.panel-navigation {
+        position: absolute;
+        top: 0.5em;
+        right: 1em;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        line-height: 1;
+    }
+
+    ul.account-navigation li,
+    ul.panel-navigation li {
+        display: inline;
+        float: left;
+    }
+
+    ul.account-navigation a img {
+        float: left;
+        margin-right: 0.25em;
+    }
+
+    ul.account-navigation a,
+    ul.panel-navigation a {
+        display: block;
+        font-size: 0.8em;
+        padding: 0.222em 0.444em;
+        text-decoration: none;
+    }
+
+    /* Pagination menu */
+    ul.pagination-navigation {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    ul.pagination-navigation li {
+        display: inline-block;
+    }
+
+    ul.pagination-navigation li.prev {
+        float: left;
+    }
+
+    ul.pagination-navigation li.next {
+        float: right;
+    }
+
+    ul.pagination-navigation a {
+        display: block;
+        padding: 0.222em 0.444em;
+        border: 1px solid gray;
+        text-decoration: none;
+    }
+
+    /* Forms */
+    form.inline,
+    form.inline-add {
+        padding: 0 1em 0 0;
+        line-height: 1;
+        border-top: none;
+    }
+
+    form.inline-add {
+        padding: 0 1em 0 0.5em;
+    }
+
+    form.page-add {
+        padding: 0;
+    }
+
+    form.quickfilter {
+        display: inline-flex;
+        width: auto;
+    }
+
+    .page-meta,
+    .preview {
+        border-left: 1px solid red;
+        margin-left: -0.5em;
+        padding-left: 1em;
+    }
+
+    .preview {
+        border-left: 1px solid silver;
+    }
+
+    .page-meta .buttons {
+        padding-left: 1em;
+    }
+
+    a.toggle-options {
+        display: block;
+        padding-left: 16px;
+        background: url(/img/right.png) left center no-repeat;
+        text-decoration: none;
+        margin-left: -0.8em;
+        margin-bottom: 0.5em;
+    }
+
+    a.toggle-options.active {
+        background: url(/img/desc.png) left center no-repeat;
+    }
+
+    .panel.page-add input.fn.fn-page-name {
+        margin: 0;
+        width: 100%;
+    }
+
+    form.inline-add.slice fieldset,
+    form.inline-add.slice div.buttons {
+        float: left;
+        margin-right: 1em;
+    }
+
+    form.langchooser {
+        padding: 0 0.444em;
+    }
+
+    form.langchooser select {
+        padding: 0;
+        margin: 0;
+        font-size: small;
+    }
+
+    form div.row {
+        margin-bottom: 0.5em;
+    }
+
+    fieldset {
+        margin-bottom: 0.5em;
+    }
+
+    fieldset.tab fieldset {
+        position: relative;
+        border-bottom: 1px dotted gray;
+    }
+
+    fieldset.tab fieldset:last-child {
+        border-bottom: none;
+    }
+
+    legend {
+        font-family: 'Georgia', serif;
+        margin-bottom: 0.25em;
+        font-style: italic;
+        font-size: small;
+    }
+
+    label {
+        display: inline-block;
+        font-weight: bold;
+        margin-bottom: 0.25em;
+        color: rgb(0, 128, 212);
+    }
+
+    input[type=text],
+    input[type=password],
+    input[type=email],
+    input[type=tel],
+    input[type=url],
+    input[type=number],
+    input[type=date],
+    input[type=time],
+    textarea {
+        width: 100%;
+        padding: 0.25em;
+    }
+
+    /* detailed form stuff */
+    .panel .buttons,
+    .inline .buttons {
+        text-align: right;
+    }
+
+    .buttons input[type=submit].danger {
+        float: left;
+    }
+
+    .panel legend,
+    .inline legend,
+    .inline-add legend {
+        display: none;
+    }
+
+    .panel {
+        padding: 0.5em 1em;
+        /*border-top: 1px solid silver;*/
+        position: relative;
+    }
+
+    .panel .row {
+        position: relative;
+        margin-bottom: 1em;
+    }
+
+    .panel .row.nomargins {
+        margin: 0;
+        margin-bottom: 0.33em;
+    }
+
+    .panel .row.last {
+        margin-bottom: 0;
+    }
+
+    .panel .container,
+    .panel .item {
+        position: relative;
+    }
+
+    .tabs {
+        position: relative;
+        border-bottom: 1px solid gray;
+        margin-bottom: 1em;
+        height: 28px;
+    }
+
+    ul.tab-navigation {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    ul.tab-navigation li {
+        float: none;
+        display: inline-block;
+    }
+
+    ul.tab-navigation a {
+        background-color: white;
+        text-decoration: none;
+        border: 1px solid gray;
+        color: inherit;
+        padding: 1px 25px;
+        display: inline-block;
+        margin-top: -12px;
+    }
+
+    ul.tab-navigation a.selected {
+        border-bottom: 1px solid white;
+    }
+
+    .panel label {
+        float: left;
+        width: 23.404255317%;
+        padding-top: 0.444em;
+        white-space: nowrap;
+        text-align: right;
+        font-weight: normal;
+    }
+
+    .panel p.info {
+        margin-top: 0.25em;
+        /*margin-left: 30%;*/
+        margin-left: 25.404255317%;
+        margin-bottom: 0;
+        font-size: small;
+        padding-left: 0.5em;
+        color: gray;
+    }
+
+    .panel .row [class*="span"] p.info {
+        margin-left: 0;
+    }
+
+    th.label {
+        width: 25.404255317%;
+    }
+
+    .panel label.cb {
+        text-align: left;
+        width: auto;
+        padding-left: 26.0%;
+    }
+
+    .panel .row.nomargins label {
+        margin: 0;
+        width: auto;
+    }
+
+    .panel input[type=text],
+    .panel input[type=password],
+    .panel input[type=email],
+    .panel input[type=url],
+    .panel input[type=number],
+    .panel input[type=date],
+    .panel input[type=time],
+    .panel input[type=datetime],
+    .panel input[type=tel],
+    .panel input[type=file],
+    .panel textarea,
+    .panel select {
+        width: 74.468085099%;
+        /*float: right;*/
+        margin-left: 2%;
+        padding: 0.222em;
+    }
+
+    .panel input[type=file],
+    .panel input[type=date],
+    .panel input[type=datetime] {
+        width: auto;
+    }
+
+    .panel input[type=number] {
+        padding-right: 0;
+    }
+
+    .panel .scaffold input {
+        width: 100%;
+        margin: 0;
+    }
+
+    .panel input[type=file],
+    .panel input[type=datetime] {
+        width: auto;
+    }
+
+    .panel .row select {
+        margin-top: 0.444em;
+    }
+
+    .page-add .row select {
+        margin-top: 0;
+    }
+
+    .panel input[type=number],
+    .panel input.number,
+    .panel select {
+        width: auto;
+    }
+
+    .panel select.cb {
+        /*margin-left: 32%;*/
+        margin-left: 27.666%;
+    }
+
+    .panel input.autowidth,
+    .panel select.autowidth {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* No left margin when within grid */
+    .panel .row [class*="span"] input {
+        margin-left: 0;
+    }
+
+    .detach,
+    .attach {
+        width: 26px;
+        height: 26px;
+        /*1em font-size + 2 x 0.222em padding in input fields*/
+        padding: 0;
+        margin: 0;
+        z-index: 1;
+        background-image: url(/img/glyphicons/glyphicons_191_circle_minus.png);
+        position: absolute;
+        left: 6px;
+        top: 50%;
+        margin-top: -13px;
+    }
+
+    .ir.attach {
+        background-image: url(/img/glyphicons/glyphicons_190_circle_plus.png);
+        left: 36px;
+        display: none;
+    }
+
+    .detach.small,
+    .attach.small {
+        background-size: 70%;
+    }
+
+    fieldset.tab fieldset:last-child .attach {
+        display: block;
+    }
+
+    /* label in .tab will stretch */
+    .panel .tab [class*="span"] label,
+    .panel label.left {
+        width: 100%;
+        margin: 0;
+        text-align: left;
+    }
+
+    .panel .tab [class*="span"].tar label {
+        text-align: right;
+    }
+
+    /* input, textarea and select in a tab will stretch */
+    .panel .tab [class*="span"] input,
+    .panel .tab [class*="span"] textarea,
+    .panel .tab [class*="span"] select {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .panel .tab [class*="span"] input[type=checkbox] {
+        position: static;
+        left: auto;
+        width: auto;
+        float: left;
+        top: auto;
+        margin-right: 0.5rem;
+    }
+
+    input[readonly=readonly] {
+        padding-right: 20px;
+        background: url(/img/glyphicons/glyphicons_203_lock.png) right center no-repeat;
+        background-size: 16px 19px;
+    }
+
+    /*
+.container input[type=text],
+.container input[type=password],
+.container input[type=email],
+.container input[type=url],
+.container input[type=number],
+.container input[type=date],
+.container input[type=time],
+.container input[type=url],
+.container input[type=tel],
+.container textarea,
+.container select {
+    margin-left: 0;
+    width: 100%;
+    padding: 0.222em;
+}
+*/
+    input[type=text]:focus,
+    input[type=password]:focus,
+    input[type=email]:focus,
+    input[type=url]:focus,
+    input[type=number]:focus,
+    input[type=date]:focus,
+    input[type=time]:focus,
+    input[type=datetime]:focus,
+    input[type=url]:focus,
+    input[type=tel]:focus,
+    textarea:focus {
+        background-color: #feffbc;
+    }
+
+    input[type=checkbox],
+    input[type=radio] {
+        margin: 0 0.222em 0 2%;
+        width: auto;
+        padding: 0;
+    }
+
+    .tar,
+    input[type=number],
+    input.number,
+    input.monetary {
+        text-align: right;
+    }
+
+    .panel .row input[type=checkbox],
+    .panel .row input[type=radio] {
+        position: absolute;
+        /*left: 23.404255317%;*/
+        left: 20.404255317%;
+        /*left: 28%;*/
+        top: 0.6em;
+    }
+
+    .panel .container {
+        min-height: 34px;
+    }
+
+    .panel .container.autoheight {
+        min-height: 0;
+    }
+
+    .panel .container input[type=checkbox],
+    .panel .container input[type=radio] {
+        position: static;
+        left: auto;
+    }
+
+    /* global search form in header nav */
+    form#gsearch {
+        display: inline;
+        float: right;
+        margin-top: -2.3rem;
+        margin-right: 1rem;
+    }
+
+    form#gsearch legend,
+    form#gsearch label {
+        display: none;
+    }
+
+    form#gsearch fieldset,
+    form#gsearch div.row {
+        margin: 0;
+        padding: 0;
+    }
+
+    form#gsearch input#q {
+        width: auto;
+        text-align: right;
+        border: 0;
+    }
+
+    table.scaffold a {
+        display: block;
+        text-decoration: none;
+    }
+
+    table.scaffold tr.invalid {
+        color: #ce838f;
+    }
+
+    /* form table stuff */
+    .panel table {
+        table-layout: fixed;
+        width: 100%;
+        margin-bottom: 1em;
+    }
+
+    .panel table thead th {
+        text-align: left;
+    }
+
+    .panel table thead th.switch,
+    .panel table thead th.edit {
+        width: 24px;
+        background-color: white;
+    }
+
+    /* adjust top if you want a higher main-menu */
+    .panel table caption {
+        text-align: center;
+        font-size: smaller;
+        color: gray;
+        padding: 0.5em 0 1em 0;
+    }
+
+    .panel th,
+    .panel td {
+        text-align: left;
+        font-size: 1em;
+        padding: 0.222em 0.444em;
+        /*padding: 0.25em;*/
+    }
+
+    .panel th,
+    .panel td,
+    .panel td a {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+
+    .panel td p {
+        white-space: normal;
+    }
+
+    .panel th.number,
+    .panel td.number {
+        text-align: right;
+    }
+
+    .panel thead tr {
+        background-color: gray;
+    }
+
+    .panel thead tr.filter {
+        background-color: white;
+        color: black;
+    }
+
+    .panel a.action.action-edit {
+        display: block;
+        width: 24px;
+        height: 24px;
+        background: url(/img/glyphicons/glyphicons_030_pencil.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+    }
+
+    .panel input[type=submit].filter-refresh {
+        width: 24px;
+        height: 24px;
+        background-image: url(/img/glyphicons/glyphicons_320_filter.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: auto 16px;
+    }
+
+    .panel input[type=submit].filter-clear {
+        width: 24px;
+        height: 24px;
+        background-image: url(/img/glyphicons/glyphicons_192_circle_remove.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+    }
+
+    input[type=submit].danger {
+        color: red;
+    }
+
+    .panel tfoot tr {
+        background-color: silver;
+    }
+
+    .panel thead th {
+        color: white;
+        white-space: nowrap;
+        font-weight: normal;
+        vertical-align: top;
+    }
+
+    .panel thead tr.filter th {
+        color: inherit;
+        vertical-align: middle;
+    }
+
+    .panel thead tr.filter input[type=text].filter {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .panel thead th.active {
+        background-color: rgb(33, 33, 33);
+    }
+
+    .panel thead th.order a {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        background-repeat: no-repeat;
+        background-position: center right;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .panel thead th.order.dir-ASC a {
+        padding-right: 1em;
+        background-image: url(/img/asc.png);
+    }
+
+    .panel thead th.order.dir-DESC a {
+        padding-right: 1em;
+        background-image: url(/img/desc.png);
+    }
+
+    .panel tbody tr:nth-child(odd) {
+        /*background-color: rgb(243, 246, 250);*/
+        background-color: rgba(0, 0, 0, .05);
+    }
+
+    .panel thead th.order a,
+    .fox-on-the-run {
+        cursor: pointer;
+    }
+
+    /* cms, sitemap */
+    #cms-container {
+        position: relative;
+        left: 0;
+        right: 0;
+        border-top: 1px solid silver;
+        padding: 0;
+        padding-top: 1em;
+    }
+
+    #sitemap ul {
+        line-height: 1.5;
+        margin: 0;
+        padding-left: 1em;
+        list-style: none;
+    }
+
+    #sitemap a,
+    #pages-container a {
+        display: block;
+        text-decoration: none;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    #sitemap a:hover,
+    #sitemap a.active,
+    #pages-container a:hover,
+    #pages-container a.active {
+        color: red;
+    }
+
+    #pages-container .unpublished {
+        color: gray;
+    }
+
+    #sitemap,
+    #pages-container {
+        margin-top: 1.5em;
+        padding-top: 1em;
+        border-top: 1px solid silver;
+    }
+
+    #pages-container,
+    #page-container {
+        position: relative;
+        line-height: 1.5;
+    }
+
+    #pages-container ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .slice-container {
+        position: relative;
+        border-left: 1px solid silver;
+        margin-left: -0.5em;
+        padding-left: 1em;
+        margin-bottom: 1em;
+        min-height: 1em;
+    }
+
+    .slice-container.active {
+        border-left: 1px solid red;
+    }
+
+    .slice-container.ui-state-highlight {
+        border-left: 1px solid green;
+    }
+
+    p.sitemap-choose,
+    p.page-choose {
+        width: 100%;
+        font-size: smaller;
+        color: gray;
+        text-align: center;
+        padding-top: 8em;
+    }
+
+    img.gravatar-account,
+    img.media-preview-icon {
+        position: absolute;
+        top: 1em;
+        left: 1em;
+        float: left;
+        z-index: 1;
+    }
+
+    /* Rounded gravatar: A background-image tag in html */
+    .circular {
+        width: 72px;
+        height: 72px;
+        border-radius: 36px;
+        -webkit-border-radius: 36px;
+        -moz-border-radius: 36px;
+        background: url(/img/glyphicons/glyphicons_003_user.png) center center;
+        background-repeat: no-repeat;
+        background-color: white;
+        /* stanze */
+        -webkit-box-shadow: 0px 1em 1em rgba(0, 0, 0, .66);
+        box-shadow: 0px 1em 1em rgba(0, 0, 0, .66);
+    }
+
+    .circular .circular-48 {
+        width: 48px;
+        height: 48px;
+        border-radius: 24px;
+        -webkit-border-radius: 24px;
+        -moz-border-radius: 24px;
+    }
+
+    .circular .circular-32 {
+        width: 32px;
+        height: 32px;
+        border-radius: 16px;
+        -webkit-border-radius: 16px;
+        -moz-border-radius: 16px;
+    }
+
+    .circular .circular-16 {
+        width: 16px;
+        height: 16px;
+        border-radius: 8px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+    }
+
+    .no-shadow {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    /* Mix, rip and burn some of the above together */
+    /* within a dialog a errornous input field will be erdbeer colored */
+    .panel div.row.error label,
+    .panel label.error {
+        color: #7a0b0a;
+    }
+
+    .validation-errors {
+        font-size: small;
+    }
+
+    .scaffold-filter-finds-no-records {
+        width: 100%;
+        margin-top: 23rem;
+    }
+
+    .scaffold-filter-finds-no-records p {
+        text-align: center;
+        font-size: 1.2rem;
+        color: rgb(222, 222, 222);
+    }
+
+    #header-top {
+        position: sticky;
+        top: 0;
+    }
+
+    #header-toolbar {
+        position: sticky;
+        top: 79px;
+        border-bottom: 1px solid silver;
+        z-index: 999995;
+    }
+
+    table:not(.notsticky) thead {
+        position: sticky;
+        top: 118px;
+    }
+
+    .flexi {
+        display: flex;
+        align-items: center;
+    }
+
+    /*
+ * Custom or experimental css.
+ *
+ * Try here first until everything works and choose to
+ * copy it to default.css if everything works out fine
+ * and you like to have in your base stylesheet.
+ */
+
+    /* Make negative table data red. @see https://stackoverflow.com/questions/1824266/colorize-negative-positive-numbers-jquery */
+    td[data-monetary-amount^="-"] {
+        color: red;
+    }
+
+    table.revenue tfoot {
+        display: table-row-group;
+    }
+
+
+    table.scaffold a.dunning-pdf,
+    table.scaffold a.dunning-mail {
+        display: inline-block;
+    }
+
+    table.gsearch {
+        margin-bottom: 5rem;
+    }
+
+    p.none-found {
+        text-align: center;
+        font-size: small;
+        color: gray;
+    }
+
+    h2.some-found {
+        text-align: center;
+    }
+
+    .dunning-pdf,
+    .dunning-mail {
+        width: 20px;
+        height: 20px;
+        background-size: 16px 16px;
+    }
+
+    .dunning-pdf {
+        background-image: url(/img/glyphicons/glyphicons_135_inbox_out.png);
+    }
+
+    .dunning-mail {
+        background-image: url(/img/glyphicons/glyphicons_062_paperclip.png);
+    }
+
+    .drag-handle {
+        width: 16px;
+        height: 16px;
+        /*1em font-size + 2 x 0.222em padding in input fields*/
+        padding: 0;
+        margin: 0;
+        z-index: 1;
+        background-image: url(/img/glyphicons/glyphicons_319_sort.png);
+        background-size: 16px 16px;
+        position: absolute;
+        left: -28px;
+        top: 50%;
+        margin-top: -8px;
+        cursor: move;
+    }
+
+    article.main {
+        min-height: 100vh;
+    }
+
+    select {
+        font-size: inherit;
+    }
+
+    .panel table thead th.centered {
+        text-align: center;
+    }
+
+    .panel thead th.pastel {
+        color: black;
+    }
+
+    .panel table.revenue th,
+    .panel table.revenue td {
+        padding-top: 0.333em;
+        padding-bottom: 0.333em;
+    }
+
+    .float-left {
+        float: left;
+    }
+
+    .flex-center {
+        display: flex;
+        align-items: center;
+    }
+
+    .panel label.salesprice {
+        color: #009933;
+    }
+
+    .btn {
+        font-size: 0.8em;
+        color: silver;
+        text-decoration: none;
+        margin-right: 2em;
+    }
+
+    .panel a.action.action-finish {
+        display: block;
+        width: 24px;
+        height: 24px;
+        background: url(/img/glyphicons/glyphicons_193_circle_ok.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+    }
+
+    /* scratch out the record count */
+    .panel table caption.scratched {
+        text-decoration: line-through;
+    }
+
+    .appointment-incomplete {
+        color: red;
+    }
+
+    .appointment-completed {
+        color: green;
+    }
+
+    .smaller-font {
+        font-size: 0.975rem;
+    }
+
+    .minor {
+        font-size: 0.666rem;
+    }
+
+    /* Cockpit stuff */
+    div.domain {
+        width: calc(25% - 2px - 2rem);
+        height: 200px;
+        margin: 0 1rem 1rem 1rem;
+        float: left;
+        position: relative;
+        border: 1px solid gray;
+    }
+
+    div.domain h1 {
+        color: gray;
+        font-size: 1.13rem;
+        padding: 0.25rem;
+        border-bottom: 1px solid gray;
+    }
+
+    div.domain h1 a {
+        text-decoration: none;
+    }
+
+    div.domain p.the-count {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0.25rem 1rem;
+        font-size: small;
+        color: gray;
+        line-height: 1.13rem;
+    }
+
+    /* Autocomplete ----------------------------------*/
+    .ui-autocomplete {
+        position: absolute;
+        cursor: default;
+        max-height: 280px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 20px;
+    }
+
+    .ui-autocomplete-loading {
+        background: white url('/img/loader.gif') right center no-repeat;
+    }
+
+    /* workarounds */
+    * html .ui-autocomplete {
+        width: 1px;
+    }
+
+    /* without this, the menu expands to 100% in IE6 */
+    /* Menu
+----------------------------------*/
+    .ui-menu {
+        list-style: none;
+        padding: 2px;
+        margin: 0;
+        display: block;
+        background-color: whitesmoke;
+    }
+
+    .ui-menu .ui-menu {
+        margin-top: -3px;
+    }
+
+    .ui-menu .ui-menu-item {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+    }
+
+    .ui-menu .ui-menu-item a {
+        text-decoration: none;
+        display: block;
+        padding: .2em .4em;
+        line-height: 1.5;
+        zoom: 1;
+    }
+
+    .ui-helper-hidden-accessible {
+        position: absolute;
+        left: -999em;
+    }
+
+    form.panel,
+    ul.tab-navigation a.selected {
+        background-color: rgb(252, 252, 252);
+    }
+
+    form.panel {
+        min-height: 100vh;
+    }
+
+    input[readonly=readonly],
+    textarea[readonly=readonly] {
+        padding-right: 0;
+        background: white;
+        color: gray;
+    }
+
+    input[disabled=disabled],
+    textarea[disabled=disabled] {
+        color: gray;
+    }
+
+    /*
+    th, td {
+        animation: widerthanyou 7000ms ease-out;
+    }
+    */
+    .panel td.tar {
+        text-align: right;
+    }
+
+    .panel .buttons p.info {
+        text-align: left;
+    }
+
+    /* Service appointment table width settings. */
+    table.service {
+        font-size: 70%;
+    }
+
+    table.service tbody tr {
+        border-left: 5px solid transparent;
+    }
+
+    /* These classes are indicating if an appointment is overdue or due today or later. */
+    table.service tbody tr.overdue {
+        border-left-color: red;
+    }
+
+    table.service tbody tr.today {
+        border-left-color: orange;
+    }
+
+    table.service tbody tr.coming-up {
+        border-left-color: green;
+    }
+
+    .panel tbody tr:hover {
+        background-color: #c2eddb;
+    }
+
+    thead th.edit,
+    thead th.switch {
+        width: 10px;
+    }
+
+    th.date {
+        width: 6rem;
+    }
+
+    table.service th.time {
+        width: 3.8rem;
+    }
+
+    table.service th.week {
+        width: 1rem;
+    }
+
+    table.service th.fix {
+        width: 1rem;
+    }
+
+    table.service th.receipt {
+        width: 2rem;
+    }
+
+    table.service th.worker {
+        width: 3rem;
+    }
+
+    table.service th.duration {
+        width: 2rem;
+    }
+
+    table.service th.person {
+        width: 4.5rem;
+    }
+
+    table.service th.contact {
+        width: 3.5rem;
+    }
+
+    table.service th.location {
+        width: 4rem;
+    }
+
+    table.service th.machinebrand {
+        width: 2.5rem;
+    }
+
+    table.service th.machine {
+        width: 3rem;
+    }
+
+    table.service th.machine-serialnumber {
+        width: 3rem;
+    }
+
+    table.service th.machine-internalnumber {
+        width: 3rem;
+    }
+
+    table.service th.note {
+        width: 30rem;
+        min-width: 30rem;
+    }
+
+    table.service th.wider {
+        transition: all 666ms;
+        width: 42rem;
+    }
+
+    .panel table.service td.minor {
+        font-size: smaller;
+        /*color: gray;*/
+    }
+
+    /* customer */
+    table.service tr td:nth-child(11) {
+        background-color: #FF9AA2;
+    }
+
+    /* contact */
+    table.service tr td:nth-child(12) {
+        background-color: #FFB7B2;
+    }
+
+    /* location */
+    table.service tr td:nth-child(13) {
+        background-color: #FFDAC1;
+    }
+
+    /* machine brand */
+    table.service tr td:nth-child(14) {
+        background-color: #E2F0CB;
+    }
+
+    /* machine */
+    table.service tr td:nth-child(15) {
+        background-color: #B5EAD7;
+    }
+
+    /* machine s/n */
+    table.service tr td:nth-child(16) {
+        background-color: #C7CEEA;
+    }
+
+    /* machine internal number */
+    table.service tr td:nth-child(17) {
+        background-color: #FFCEE7;
+    }
+
+    table.service tbody tr {
+        border-bottom: 1px solid gray;
+    }
+
+    input.num {
+        text-align: right;
+    }
+
+    /* open item transaction table */
+    th.gros,
+    th.paid,
+    th.balance {
+        width: 10rem;
+    }
+
+    th.duedays {
+        width: 8rem;
+    }
+
+    td.duedays {
+        font-size: smaller;
+    }
+
+    th.pdf {
+        width: 4rem;
+    }
+
+    th.accumulate {
+        width: 2rem;
+    }
+
+    a.in-table,
+    a.in-form {
+        display: block;
+        background: url(/img/glyphicons/glyphicons_211_right_arrow.png);
+        background-position: center left;
+        background-repeat: no-repeat;
+        background-size: 8px 8px;
+        padding-left: 12px;
+        text-decoration: none;
+    }
+
+    a.no-master {
+        color: red;
+    }
+
+    a.in-form {
+        display: inline-block;
+    }
+
+    ul.panel-navigation a.volver {
+        display: block;
+        background: url(/img/glyphicons/glyphicons_210_left_arrow.png);
+        background-position: center left;
+        background-repeat: no-repeat;
+        background-size: 8px 8px;
+        padding-left: 12px;
+        color: orange;
+        font-style: italic;
+    }
+
+    /* Textarea failure is initally not visible, only when the appointment type is "service". */
+    fieldset.only-on-service {
+        display: none;
+    }
+
+    /* Service headline can have a badge with number of changed bean counts */
+    .badge-container {
+        position: relative;
+    }
+
+    span.badge {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        line-height: 20px;
+        display: table-cell;
+        overflow: hidden;
+        min-width: 24px;
+        height: 24px;
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 100%;
+        border: 3px solid #fff;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #ff001f;
+        color: #fff;
+        background-clip: padding-box;
+    }
+
+    .panel input.lesswidth {
+        width: auto;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    thead th.transaction-number {
+        width: 12rem;
+    }
+
+    /* Datatables stuff. From scratch. */
+    .datatable td a {
+        text-decoration: none;
+    }
+
+    .dataTables_info {
+        font-size: small;
+        color: gray;
+        text-align: center;
+    }
+
+    .panel .dataTables_filter label {
+        float: right;
+        width: 100%;
+    }
+
+    .panel .dataTables_filter input[type=search] {
+        font-size: 1em;
+    }
+
+    th.sorting {
+        color: white;
+        text-decoration: none;
+    }
+
+    th.sorting:hover,
+    th.sorting_asc:hover,
+    th.sorting_desc:hover {
+        cursor: pointer;
+    }
+
+    th.sorting_asc {
+        background-color: rgb(33, 33, 33);
+        background-repeat: no-repeat;
+        background-position: calc(100% - 16px) center;
+        padding-right: 1em;
+        background-image: url(/img/asc.png);
+    }
+
+    th.sorting_desc {
+        background-color: rgb(33, 33, 33);
+        background-repeat: no-repeat;
+        background-position: calc(100% - 16px) center;
+        padding-right: 1em;
+        background-image: url(/img/desc.png);
+    }
+
+    td.dataTables_empty {
+        font-size: small;
+        color: gray;
+        text-align: center;
+        padding: 2em;
+    }
+
+    a.action.action-delete {
+        width: 24px;
+        height: 24px;
+        background: url(/img/glyphicons/glyphicons_191_circle_minus.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+        float: right;
+    }
+
+    .mini-container {
+        width: 100%;
+    }
+
+    .mini-container p.buttons {
+        text-align: center;
+    }
+
+    button {
+        font-size: .77em;
+    }
+
+    a.venetianblinds {
+        display: inline-block;
+        text-align: center;
+        border: 1px solid rgb(0, 128, 212);
+        color: rgb(0, 128, 212);
+        background-color: white;
+        padding: 0.5em 1em;
+        margin: 0.5em;
+        font-size: 77%;
+        text-decoration: none;
+        transition: 666ms;
+    }
+
+    a.venetianblinds.active {
+        color: white;
+        background-color: rgb(0, 128, 212);
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .heretic {
+        text-align: center;
+        font-size: small;
+        color: gray;
+        min-height: 4em;
+        padding-left: 23.404255317%;
+    }
+
+    /* Tooltip stuff. @see http://jsfiddle.net/Xotic750/9kBVu/ */
+    .tooltip,
+    .additional-box {
+        position: absolute;
+        width: 60%;
+        height: calc(100vh - 200px);
+        min-height: 10em;
+        overflow-y: scroll;
+        padding: 1em;
+        border: 1px solid gray;
+        border-top: 0;
+        background-color: white;
+        top: -1px;
+        left: calc((40% - 1em) / 2);
+        display: none;
+    }
+
+    .tooltip.open,
+    .additional-box.open {
+        display: block;
+    }
+
+    .tooltip {
+        z-index: 10000;
+    }
+
+    table.scaffold a.tooltip-open,
+    table.scaffold a.additional-info {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-image: url(/img/glyphicons/glyphicons_088_adress_book.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 12px 12px;
+        margin-right: 0.25rem;
+    }
+
+    table.scaffold a.additional-info.position {
+        background-image: url(/img/glyphicons/glyphicons_119_table.png);
+    }
+
+    table.service a.tooltip-open,
+    table.service a.additional-info,
+    table.openitem a.tooltip-open,
+    table.openitem a.additional-info {
+        float: left;
+    }
+
+    a.empty-container,
+    a.tooltip-close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 20px;
+        height: 20px;
+        background: url(/img/glyphicons/glyphicons_192_circle_remove.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 16px 16px;
+    }
+
+    /*
+    .tooltip-link:hover+.tooltip {
+        display: inline-block;
+    }
+
+    .tooltip:hover {
+        display: block;
+    }
+    */
+    article.main>header .tooltip h1,
+    article.main>header .tooltip h2 {
+        padding: 0;
+    }
+
+    article.main>header .tooltip h2 {
+        padding: 1rem 0;
+    }
+
+    .tooltip table {
+        table-layout: fixed;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .tooltip th {
+        text-align: left;
+    }
+
+    .tooltip table tr {
+        border-bottom: 1px solid grey;
+    }
+
+    .tooltip table tr:last-child {
+        border-bottom: none;
+    }
+
+    .tooltip table td {
+        vertical-align: top;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .tooltip th.number,
+    .tooltip td.number {
+        text-align: right;
+    }
+
+    .cushion-right {
+        padding-right: 4px;
+    }
+
+    .spacer {
+        font-size: small;
+        text-align: left;
+        padding-bottom: 2em;
+    }
+
+    /* Service print form */
+    li:last-child form.pform {
+        border-right: none;
+        margin-right: 0;
+        padding-right: 0;
+    }
+
+    form.pform {
+        padding-left: 1em;
+    }
+
+    form.pform input.pday {
+        padding: 0.25em;
+        font-size: small;
+        width: auto;
+    }
+
+    select[multiple] {
+        font-size: 70%;
+        height: auto;
+    }
+
+    div.contact-info:last-child {
+        border-bottom: none;
+    }
+
+    hr.person-contact-divider {
+        /*border-top: 1px dashed #8c8b8b;*/
+        border: none;
+        padding: 1em 0;
+    }
+
+    hr.person-contact-divider:last-child {
+        display: none;
+    }
+
+    fieldset>.detach,
+    fieldset>.attach {
+        top: 1em;
+    }
+
+    fieldset.sub>.detach,
+    fieldset.sub>.attach {
+        top: 50%;
+    }
+
+    .scratch {
+        position: absolute;
+        top: 0.222em;
+        bottom: 0;
+        right: 0.222em;
+        width: 26px;
+        height: 26px;
+        padding: 0;
+        margin: 0;
+        z-index: 1;
+        background-image: url(/img/glyphicons/glyphicons_191_circle_minus.png);
+    }
+
+    .mail.pending {
+        color: #ce838f;
+    }
+
+    .mail.sent {
+        color: #54b646;
+    }
+
+    /* quill */
+    .quill-wrapper {
+        margin-left: 25.404255317%;
+    }
+
+    .ql-container {
+        font-size: 99%;
+    }
+
+    .quill-spacer {
+        display: inline-block;
+        padding: 0 1rem;
+    }
+
+    /* Override the absolute position of select2 */
+    .select2-hidden-accessible {
+        position: inherit !important;
+    }
+
+    .select2smallfont {
+        font-size: 1rem;
+    }
+
+    .switch-start {
+        color: green;
+    }
+
+    .switch-stop {
+        color: red;
+    }
+
+    p.gsearch span {
+        margin-right: 1rem;
+    }
+
+    /*
+    treaty module has a "special" table layout which is used
+    instead of the common scaffold table. the treaty layout
+    has two divs. the left one show all contractype beans plus
+    a "all" entry and preselects the treaty beans which are shown
+    in the right div, that holds the usual table (of scaffold).
+    */
+    .directory {
+        margin-top: 2.8rem;
+        float: left;
+        width: calc(15% - 4px);
+        padding-right: 0;
+        margin-right: 2px;
+        border-right: 1px solid rgb(33, 33, 33);
+        padding-bottom: 2rem;
+    }
+
+    .directory ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .directory a {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: block;
+        text-decoration: none;
+        padding: 0.222em 0.444em;
+        font-size: 1em;
+    }
+
+    .directory a.current {
+        background-color: rgb(33, 33, 33);
+        color: white;
+    }
+
+    .listing {
+        float: left;
+        width: 85%;
+    }
+
+    /*
+    hr.person-contact-divider:after {
+        content: '\002702';
+        display: inline-block;
+        position: relative;
+        top: -12px;
+        left: 40px;
+        padding: 0 3px;
+        background: #f0f0f0;
+        color: #8c8b8b;
+        font-size: 18px;
+    }
+    */
+
+}
+
+/* Devices with a inacurate pointing tool, e.g. a finger tip */
+/* @see https://stackoverflow.com/questions/11387805/media-query-to-detect-if-device-is-touchscreen */
+@media (pointer: coarse) {
+
+    /**
+     * Hamburger menu icon with animation
+     */
+
+    /* the hamburger container */
+    #hamburger {
+        cursor: pointer;
+        position: fixed;
+        top: var(--hamburger-position-top, 0.5em);
+        right: var(--hamburger-position-right, 1rem);
+        z-index: 1000004;
+    }
+
+    /* hamburger bars */
+    #hamburger span {
+        display: block;
+        width: 35px;
+        height: var(--hamburger-thickness, 2px);
+        background-color: #333;
+        margin: var(--hamburger-margin, 6px) 0;
+        transition: 0.4s;
+    }
+
+    #hamburger.open span:nth-child(1) {
+        transform: translate(0, var(--hamburger-slate, 8px)) rotate(-45deg);
+    }
+
+    #hamburger.open span:nth-child(2) {
+        opacity: 0;
+    }
+
+    #hamburger.open span:nth-child(3) {
+        transform: translate(0, calc(-1 * var(--hamburger-slate, 8px))) rotate(45deg);
+    }
+
+    #main-menu {
+        background-color: white;
+        position: fixed;
+        top: 46px;
+        left: 100%;
+        width: 100%;
+        height: calc(100vh - 46px);
+        overflow-x: hidden;
+        overflow-y: scroll;
+        transition: all 0.333s ease-in;
+    }
+
+    #main-menu.open {
+        left: 0;
+    }
+
+    /*
+    input[type=submit] {
+        color: wheat;
+    }
+    */
+
+    #header-toolbar {
+        top: 0;
+    }
+
+    table:not(.notsticky) thead {
+        top: 45px;
+    }
+
+    th {
+        white-space: nowrap;
+        position: sticky;
+    }
+
+
+    caption {
+        caption-side: top;
+    }
+
+    .fig-table {
+        width: 100%;
+        min-width: 100%;
+        max-width: 100%;
+        overflow: auto;
+        /*overflow-x: scroll;*/
+
+        background:
+            linear-gradient(90deg, var(--color-background) 20%, rgba(255, 255, 255, 0)),
+            linear-gradient(90deg, rgba(255, 255, 255, 0), var(--color-background) 80%) 100% 0,
+            radial-gradient(farthest-side at 0 0%, var(--color-shadow), rgba(0, 0, 0, 0)),
+            radial-gradient(farthest-side at 100% 0%, var(--color-shadow), rgba(0, 0, 0, 0)) 100% 0;
+        background-repeat: no-repeat;
+        background-size: 20% 200%, 20% 200%, 8% 400%, 8% 400%;
+        background-attachment: local, local, scroll, scroll;
+
+    }
+
+    /* form table stuff */
+    .panel table,
+    .panel table.service {
+        table-layout: auto;
+        width: fit-content;
+        font-variant-numeric: lining-nums tabular-nums;
+        min-width: 100%;
+    }
+
+    .panel .container table,
+    .panel table.revenue {
+        table-layout: fixed;
+    }
+
+    .panel th,
+    .panel td,
+    .panel td a {
+        overflow: hidden;
+        text-overflow: clip;
+        vertical-align: middle;
+    }
+
+    .panel td {
+        word-break: break-all;
+    }
+
+    /* Values generated with Utopia https://utopia.fyi/type/calculator/ */
+    /* @see https://www.smashingmagazine.com/2022/12/accessible-front-end-patterns-responsive-tables-part1/ */
+    /*
+    tbody {
+        font-size: clamp(1.13rem, calc(0.35rem + 2.19vw), 1.75rem);
+    }
+
+    tbody td {
+        padding-top: clamp(1.13rem, calc(0.35rem + 2.19vw), 1.75rem);
+        padding-bottom: clamp(2rem, calc(0.62rem + 3.9vw), 3.11rem);
+    }
+    */
+}
+
+/* inacurate pointing device and the screen is big */
+@media (pointer: coarse) and (min-width: 768px) {
+
+    body {
+        font: 22px/1 "Georgia", Palantino serif;
+    }
+
+    ul.account-navigation {
+        top: 0.7em;
+        right: 6rem;
+    }
+
+    ul.main-navigation,
+    ul.main-navigation ul,
+    ul.main-navigation>li,
+    ul.main-navigation li ul>li,
+    ul.main-navigation li ul>li:last-child,
+    ul.main-navigation a,
+    ul.main-navigation li.parent,
+    ul.main-navigation li ul,
+    ul.main-navigation li ul li,
+    ul.main-navigation>li:hover ul {
+        all: revert;
+    }
+
+    ul.main-navigation {
+        column-count: 3;
+        column-gap: 1rem;
+        list-style: none;
+    }
+
+    ul.main-navigation>li,
+    ul.main-navigation>li.parent,
+    ul.main-navigation li:last-child {
+        margin-bottom: 1rem;
+    }
+
+    ul.main-navigation a {
+        display: block;
+        text-decoration: none;
+        color: rgb(51, 51, 51);
+        padding: 0.5rem 0;
+    }
+
+    ul.main-navigation>li>a {
+        font-weight: 700;
+    }
+
+    .account-navigation a.logout {
+        border: 0;
+        text-indent: -999em;
+        overflow: hidden;
+        background-color: transparent;
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-image: url(/img/glyphicons/glyphicons_179_eject.png);
+        background-size: 16px 16px;
+    }
+
+    select {
+        font-size: smaller;
+    }
+
+    form#gsearch,
+    .account-navigation a span {
+        display: none;
+    }
+
+    .tabs {
+        height: 34px;
+    }
+
+    /* columns to lines for treaty table */
+
+    table.treaty,
+    table.treaty caption,
+    table.treaty tbody,
+    table.treaty tr:not(.coltitles),
+    table.treaty th,
+    table.treaty td {
+        display: block;
+        text-align: left;
+        overflow: visible;
+    }
+
+    tr.coltitles,
+    table.treaty th:empty,
+    table.treaty td:empty,
+    table.treaty tfoot {
+        display: none;
+        visibility: hidden;
+    }
+
+    table.treaty th[data-title]:before,
+    table.treaty td[data-title]:before {
+        content: attr(data-title) ": ";
+        display: inline-block;
+        width: 10rem;
+    }
+
+    /* service table adjustments */
+    span.full {
+        display: none;
+    }
+
+    span.less {
+        display: inline;
+    }
+
+    table.service th.location,
+    table.service th.machinebrand,
+    table.service th.machine {
+        letter-spacing: -1px;
+    }
+
+    details.toolbar {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+
+    details>summary {
+        list-style: none;
+        text-align: right;
+        display: block;
+    }
+
+    summary::-webkit-details-marker {
+        display: none
+    }
+
+    summary::marker {
+        content: none;
+    }
+
+    summary::after {
+        content: " \2303";
+    }
+
+    details[open]>summary:after {
+        content: " \2304";
+    }
+
+    form.pform {
+        padding-left: 0;
+    }
+
+    /* panel navigation */
+    ul.panel-navigation {
+        padding: 1rem 1rem;
+        background-color: rgb(254, 254, 254);
+        position: initial;
+        float: initial;
+        box-shadow: #333;
+    }
+
+    ul.panel-navigation li {
+        display: block;
+        float: initial;
+        line-height: 1.5;
+    }
+
+    ul.panel-navigation a {
+        display: block;
+        font-size: 1.2rem;
+        padding: 0.25rem 0.5rem;
+        text-decoration: none;
+    }
+
+    .panel input[type=text].mobfont{
+        width: 100%;
+    }
+
+    .mobfont {
+        font-size: 70%;
+    }
 }
