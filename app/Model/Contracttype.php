@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -104,6 +105,7 @@ class Model_Contracttype extends Model
     public function dispense()
     {
         $this->bean->wordgros = '';
+        $this->bean->code = 0;
         $this->addValidator('name', [
             new Validator_IsUnique(['bean' => $this->bean, 'attribute' => 'name']),
         ]);
@@ -114,6 +116,9 @@ class Model_Contracttype extends Model
      */
     public function update()
     {
+        if ($this->bean->code == '') {
+            $this->bean->code = 0;
+        }
         $this->bean->updated = time();
         parent::update();
     }
