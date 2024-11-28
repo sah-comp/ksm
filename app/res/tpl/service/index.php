@@ -3,6 +3,7 @@ Flight::render('script/datatable_config');
 ?>
 <article class="main">
     <header id="header-toolbar" class="fixable">
+        <div id="additional-info-container" class=""></div>
         <h1><?php echo $title ?></h1>
         <details open name="toolbar" class="toolbar">
             <summary><?php echo I18n::__('toolbar_details_title') ?></summary>
@@ -19,7 +20,6 @@ Flight::render('script/datatable_config');
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
         <figure class="fig-table">
-            <div id="additional-info-container" class=""></div>
             <table
                 class="scaffold service datatable"
                 data-ordering="false">

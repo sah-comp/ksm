@@ -1998,9 +1998,11 @@ p.secondary {
         padding: 1rem 0;
     }
 
-    .tooltip table {
+    .tooltip table,
+    #additional-info-container table {
         table-layout: fixed;
         border-collapse: collapse;
+        /*width: calc(100% - 0.08em);*/
         width: 100%;
     }
 
