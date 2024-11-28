@@ -19,6 +19,7 @@ Flight::render('script/datatable_config');
 
         <input type="hidden" name="token" value="<?php echo Security::getCSRFToken() ?>" />
         <figure class="fig-table">
+            <div id="additional-info-container" class=""></div>
             <table
                 class="scaffold service datatable"
                 data-ordering="false">
