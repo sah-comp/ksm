@@ -129,7 +129,7 @@ Flight::render('script/datatable_config');
                                     <?php echo (isset($selection[$_record->getMeta('type')][$_record->getId()]) && $selection[$_record->getMeta('type')][$_record->getId()]) ? 'checked="checked"' : '' ?> />
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_record->localizedDate('date')) ?>">
+                                data-filter="<?php echo htmlspecialchars($_record->localizedDate('date') ?? '') ?>">
                                 <input
                                     id="<?php echo $_type ?>-<?php echo $_id ?>-date"
                                     name="date"
@@ -137,10 +137,10 @@ Flight::render('script/datatable_config');
                                     type="date"
                                     class="enpassant"
                                     data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'date']) ?>"
-                                    value="<?php echo htmlspecialchars($_record->date) ?>" />
+                                    value="<?php echo htmlspecialchars($_record->date ?? '') ?>" />
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_record->localizedTime('starttime')) ?>">
+                                data-filter="<?php echo htmlspecialchars($_record->localizedTime('starttime') ?? '') ?>">
                                 <input
                                     id="<?php echo $_type ?>-<?php echo $_id ?>-time"
                                     name="time"
@@ -153,8 +153,8 @@ Flight::render('script/datatable_config');
                             <td
                                 class="number"
                                 id="week-bean-<?php echo $_record->getId() ?>"
-                                data-filter="<?php echo htmlspecialchars($_record->localizedDate('date', 'W')) ?>">
-                                <?php echo htmlspecialchars($_record->localizedDate('date', 'W')) ?>
+                                data-filter="<?php echo htmlspecialchars($_record->localizedDate('date', 'W') ?? '') ?>">
+                                <?php echo htmlspecialchars($_record->localizedDate('date', 'W') ?? '') ?>
                             </td>
                             <td
                                 data-filter="<?php echo ($_record->fix) ? 'fix' : '' ?>">
@@ -169,15 +169,16 @@ Flight::render('script/datatable_config');
                             </td>
                             <td
                                 class="minor"
-                                data-filter="<?php echo htmlspecialchars($_record->localizedDate('receipt')) ?>">
-                                <?php echo htmlspecialchars($_record->localizedDate('receipt', 'd.m.y')) ?>
+                                data-filter="<?php echo htmlspecialchars($_record->localizedDate('receipt') ?? '') ?>">
+                                <?php echo htmlspecialchars($_record->localizedDate('receipt', 'd.m.y') ?? '') ?>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_record->getUser()->getName()) ?>">
+                                data-filter="<?php echo htmlspecialchars($_record->getUser()->getName() ?? '') ?>">
+                                <span class="printme"><?php echo htmlspecialchars($_record->getUser()->getName() ?? '') ?></span>
                                 <select
                                     id="<?php echo $_type ?>-<?php echo $_id ?>-worker"
                                     name="worker"
-                                    class="enpassant autowidth"
+                                    class="enpassant autowidth dontprintme"
                                     data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'user_id']) ?>">
                                     <option value=""><?php echo I18n::__('appointment_worker_select') ?></option>
                                     <?php foreach ($users as $_user_id => $_user): ?>
@@ -186,79 +187,80 @@ Flight::render('script/datatable_config');
                                 </select>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_record->decimal('duration')) ?>">
+                                data-filter="<?php echo htmlspecialchars($_record->decimal('duration') ?? '') ?>">
                                 <input
                                     id="<?php echo $_type ?>-<?php echo $_id ?>-duration"
                                     name="duration"
                                     type="text"
                                     class="enpassant num"
                                     data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'duration']) ?>"
-                                    value="<?php echo htmlspecialchars($_record->decimal('duration')) ?>" />
+                                    value="<?php echo htmlspecialchars($_record->decimal('duration') ?? '') ?>" />
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_person->name) ?>">
+                                data-filter="<?php echo htmlspecialchars($_person->name ?? '') ?>">
                                 <a href="<?php echo Url::build(sprintf('/admin/appointment/additional/%d/contactinfo', $_record->getId())) ?>" class="additional-info ir contactinfo" data-target="additional-info-container">CI</a>
                                 <a
                                     href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
-                                    title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account) ?>"
+                                    title="<?php echo htmlspecialchars($_person->name . ' ' . $_person->account ?? '') ?>"
                                     class="in-table">
-                                    <span class="full"><?php echo htmlspecialchars($_person->name) ?></span>
-                                    <span class="less"><?php echo htmlspecialchars($_person->getShortname()) ?></span>
+                                    <span class="full"><?php echo htmlspecialchars($_person->name ?? '') ?></span>
+                                    <span class="less"><?php echo htmlspecialchars($_person->getShortname() ?? '') ?></span>
                                 </a>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_contact->name) ?>">
+                                data-filter="<?php echo htmlspecialchars($_contact->name ?? '') ?>">
                                 <a
                                     href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_person->getMeta('type'), $_person->getId(), '/service/#bean-' . $_record->getId()]) ?>"
-                                    title="<?php echo htmlspecialchars(trim($_contact->name . ' ' . $_contact->getContactinfo())) ?>"
+                                    title="<?php echo htmlspecialchars(trim($_contact->name . ' ' . $_contact->getContactinfo()) ?? '') ?>"
                                     class="in-table">
-                                    <?php echo htmlspecialchars($_contact->name) ?>
+                                    <?php echo htmlspecialchars($_contact->name ?? '') ?>
                                 </a>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_location->name) ?>"
+                                data-filter="<?php echo htmlspecialchars($_location->name ?? '') ?>"
                                 class="minor">
                                 <?php if ($_location->getId()): ?>
-                                    <span title="<?php echo htmlspecialchars($_location->name) ?>"><?php echo htmlspecialchars($_location->name) ?></span>
+                                    <span title="<?php echo htmlspecialchars($_location->name ?? '') ?>"><?php echo htmlspecialchars($_location->name ?? '') ?></span>
                                 <?php else: ?>
-                                    <span title="<?php echo htmlspecialchars($_person->postalAddressService()) ?>"><?php echo htmlspecialchars($_person->postalAddressService()) ?></span>
+                                    <span title="<?php echo htmlspecialchars($_person->postalAddressService() ?? '') ?>"><?php echo htmlspecialchars($_person->postalAddressService() ?? '') ?></span>
                                 <?php endif; ?>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_machine->machinebrandName()) ?>"
+                                data-filter="<?php echo htmlspecialchars($_machine->machinebrandName() ?? '') ?>"
                                 class="minor">
-                                <span title="<?php echo htmlspecialchars($_machine->machinebrandName()) ?>"><?php echo htmlspecialchars($_machine->machinebrandName()) ?></span>
+                                <span title="<?php echo htmlspecialchars($_machine->machinebrandName() ?? '') ?>"><?php echo htmlspecialchars($_machine->machinebrandName() ?? '') ?></span>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_machine->name) ?>">
+                                data-filter="<?php echo htmlspecialchars($_machine->name ?? '') ?>">
                                 <a
                                     href="<?php echo Url::build('/admin/%s/edit/%d/?goto=%s', [$_machine->getMeta('type'), $_machine->getId(), '/service/#bean-' . $_record->getId()]) ?>"
-                                    title="<?php echo htmlspecialchars($_machine->name) ?>"
+                                    title="<?php echo htmlspecialchars($_machine->name ?? '') ?>"
                                     class="in-table                                                                                       <?php echo ($_machine->masterdata) ? 'yes-master' : 'no-master' ?>">
-                                    <?php echo htmlspecialchars($_machine->name) ?>
+                                    <?php echo htmlspecialchars($_machine->name ?? '') ?>
                                 </a>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_machine->serialnumber) ?>"
+                                data-filter="<?php echo htmlspecialchars($_machine->serialnumber ?? '') ?>"
                                 class="minor">
-                                <span title="<?php echo htmlspecialchars($_machine->serialnumber) ?>"><?php echo htmlspecialchars($_machine->serialnumber) ?></span>
+                                <span title="<?php echo htmlspecialchars($_machine->serialnumber ?? '') ?>"><?php echo htmlspecialchars($_machine->serialnumber ?? '') ?></span>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_machine->internalnumber) ?>"
+                                data-filter="<?php echo htmlspecialchars($_machine->internalnumber ?? '') ?>"
                                 class="minor">
-                                <span title="<?php echo htmlspecialchars($_machine->internalnumber) ?>"><?php echo htmlspecialchars($_machine->internalnumber) ?></span>
+                                <span title="<?php echo htmlspecialchars($_machine->internalnumber ?? '') ?>"><?php echo htmlspecialchars($_machine->internalnumber ?? '') ?></span>
                             </td>
                             <td
-                                data-filter="<?php echo htmlspecialchars($_record->note) ?>">
+                                data-filter="<?php echo htmlspecialchars($_record->note ?? '') ?>">
+                                <span class="printme"><?php echo htmlspecialchars($_record->note ?? '') ?></span>
                                 <input
                                     id="<?php echo $_type ?>-<?php echo $_id ?>-note"
-                                    title="<?php echo htmlspecialchars($_record->note) ?>"
+                                    title="<?php echo htmlspecialchars($_record->note ?? '') ?>"
                                     name="note"
                                     type="text"
                                     size="30"
-                                    class="enpassant _blow-me-up"
+                                    class="dontprintme enpassant _blow-me-up"
                                     data-url="<?php echo Url::build('/enpassant/%s/%d/%s/?callback=?', [$_record->getMeta('type'), $_record->getId(), 'note']) ?>"
-                                    value="<?php echo htmlspecialchars($_record->note) ?>" />
+                                    value="<?php echo htmlspecialchars($_record->note ?? '') ?>" />
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -3,6 +3,10 @@ body {
     font: 22px/1 "Georgia", Palantino serif;
 }
 
+.printme {
+    display: none;
+}
+
 a.logo {
     display: block;
     width: 3em;
@@ -2510,11 +2514,97 @@ p.secondary {
         text-decoration: none;
     }
 
-    .panel input[type=text].mobfont{
+    .panel input[type=text].mobfont {
         width: 100%;
     }
 
     .mobfont {
         font-size: 70%;
+    }
+}
+
+@media print {
+    * {
+        all: revert;
+    }
+
+    header,
+    footer,
+    #header-toolbar,
+    .buttons,
+    .dataTables_filter {
+        display: none;
+    }
+
+    input {
+        border: none;
+    }
+
+    table {
+        table-layout: fixed;
+        width: fit-content;
+        min-width: 100%;
+        width: 100%;
+        font-size: 9pt;
+        color: rgb(11, 11, 11);
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border-bottom: 1px solid rgb(11, 11, 11);
+        word-break: break-all;
+        white-space: initial;
+        word-wrap: normal;
+    }
+
+    th {
+        text-align: left;
+        overflow: hidden;
+    }
+
+    td {
+        padding: 3pt 5pt;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        display: none;
+    }
+
+    th.date,
+    th.time,
+    th.week,
+    th.fix,
+    th.receipt,
+    th.worker,
+    th.duration,
+    th.person,
+    th.contact,
+    th.location,
+    th.machinebrand,
+    th.machine,
+    th.machine-serialnumber,
+    th.machine-internalnumber,
+    th.note {
+        width: auto;
+        white-space: nowrap;
+    }
+
+    a,
+    a:link,
+    a:hover,
+    a:active,
+    a:visited {
+        text-decoration: none;
+        color: rgb(11, 11, 11);
+    }
+
+    .printme {
+        display: block;
+    }
+
+    .dontprintme {
+        display: none;
     }
 }
