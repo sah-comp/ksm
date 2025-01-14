@@ -32,9 +32,9 @@ endforeach;
     </colgroup>
     <thead>
         <tr>
-            <th style="width: 8rem;"><?php echo I18n::__('revenue_th_date') ?></th>
-            <th style="width: 10rem;"><?php echo I18n::__('revenue_th_number') ?></th>
-            <th style="width: 12rem;"><?php echo I18n::__('revenue_th_account') ?></th>
+            <th style="width: 5rem;"><?php echo I18n::__('revenue_th_date') ?></th>
+            <th style="width: 8rem;"><?php echo I18n::__('revenue_th_number') ?></th>
+            <th style="width: 4rem;"><?php echo I18n::__('revenue_th_account') ?></th>
             <th class="centered" colspan="2"><?php echo I18n::__('revenue_th_amount') ?></th>
             <?php foreach ($costunittypes as $_id => $_cut): ?>
             <th class="pastel centered" colspan="2" style="background-color: <?php echo $_cut->color ?>;"><?php echo $_cut->name ?></th>

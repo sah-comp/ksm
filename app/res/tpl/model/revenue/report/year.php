@@ -13,7 +13,7 @@
     </colgroup>
     <thead>
         <tr>
-            <th style="width: 30rem;" colspan="3"><?php echo I18n::__('revenue_th_monthname') ?></th>
+            <th style="width: 5rem;" colspan="3"><?php echo I18n::__('revenue_th_monthname') ?></th>
             <th class="centered" colspan="2"><?php echo I18n::__('revenue_th_amount') ?></th>
             <?php foreach ($costunittypes as $_id => $_cut): ?>
             <th class="pastel centered" colspan="2" style="background-color: <?php echo $_cut->color ?>;"><?php echo $_cut->name ?></th>
