@@ -20,7 +20,7 @@
             $_subtotal = 0; //adding up each (real) position (which is not alt.) to output a subtotal if wanted
         ?>
 <?php foreach ($record->with(' ORDER BY currentindex ASC ')->ownPosition as $_id => $_position): ?>
-        <tr class="<?php echo $_position->isAlternative() ? 'alternative' : '' ?><?php echo $_position->kindAsCss() ?>">
+        <tr class="<?php echo $_position->isAlternative() ? 'alternative ' : '' ?><?php echo $_position->kindAsCss() ?>">
             <?php
                 switch ($_position->kind):
                 case Model_Position::KIND_HR:

@@ -2526,7 +2526,7 @@ p.secondary {
         font-size: 75%;
     }
 }
-/*
+
 @media print {
     * {
         all: revert;
@@ -2612,4 +2612,3 @@ p.secondary {
         display: none;
     }
 }
-*/
