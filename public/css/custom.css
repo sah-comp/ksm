@@ -1336,6 +1336,19 @@ p.secondary {
         display: table-row-group;
     }
 
+    /* column width */
+    table.revenue th#rev-date {
+        width: 6rem;
+    }
+
+    table.revenue th#rev-inv {
+        width: 10rem;
+    }
+
+    table.revenue th#rev-acc {
+        min-width: 8rem;
+        width: auto;
+    }
 
     table.scaffold a.dunning-pdf,
     table.scaffold a.dunning-mail {
@@ -2524,6 +2537,19 @@ p.secondary {
 
     table.revenue {
         font-size: 75%;
+    }
+
+    /* column width */
+    table.revenue th#rev-date {
+        width: 6rem;
+    }
+
+    table.revenue th#rev-inv {
+        width: 9rem;
+    }
+
+    table.revenue th#rev-acc {
+        width: auto;/*4rem;*/
     }
 }
 
