@@ -129,7 +129,7 @@ class Model_Contract extends Model
      */
     public function getDefaultSortDir()
     {
-        return 1;
+        return 0;
     }
 
     /**
