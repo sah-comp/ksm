@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -88,6 +89,29 @@ class Model_Correspondence extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 0;
+    }
+
+    /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 1;
+    }
+
+    /**
      * Returns an array with layouts for PDF.
      *
      * @return array
@@ -143,7 +167,7 @@ class Model_Correspondence extends Model
         $sql = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
         $contacts = R::batch('contact', array_keys(R::getAssoc($sql, [':pid' => $person->getId()])));
         $result = [
-            'contacts' => $contacts//$person->with("ORDER BY name")->ownContact
+            'contacts' => $contacts //$person->with("ORDER BY name")->ownContact
         ];
         return $result;
     }
@@ -310,7 +334,7 @@ class Model_Correspondence extends Model
      */
     public function searchGlobal($searchphrase): array
     {
-        $searchphrase = '%'.$searchphrase.'%';
+        $searchphrase = '%' . $searchphrase . '%';
         return R::find(
             $this->bean->getMeta('type'),
             ' subject LIKE :f OR postaladdress LIKE :f OR confidential LIKE :f OR writtenon = :f OR @joined.person.name LIKE :f OR (@joined.contact.name LIKE :f OR @joined.contact.jobdescription LIKE :f)',
@@ -368,7 +392,7 @@ SQL;
      */
     public function sanitizeFilename($string = '', $is_filename = false)
     {
-        $string = preg_replace('/[^\w\-'. ($is_filename ? '~_\.' : ''). ']+/u', '-', $string);
+        $string = preg_replace('/[^\w\-' . ($is_filename ? '~_\.' : '') . ']+/u', '-', $string);
         return mb_strtolower(preg_replace('/--+/u', '-', $string));
     }
 
@@ -403,7 +427,7 @@ SQL;
                 $orgname = $file['name'];
                 $extension = strtolower($file_parts['extension']);
                 $sanename = $this->sanitizeFilename($file_parts['filename']);
-                $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
+                $filename = md5($this->bean->getId() . $sanename) . '.' . $extension;
                 if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
                     $this->addError('move_upload_file_failed', 'file');
                     throw new Exception('move_upload_file_failed');

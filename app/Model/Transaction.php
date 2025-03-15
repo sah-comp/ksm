@@ -103,6 +103,29 @@ class Model_Transaction extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 2;
+    }
+
+    /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 1;
+    }
+
+    /**
      * Generate XML to be merged with an invoice PDF.
      *
      * @todo Generate the real XML for this invoice.

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -222,7 +223,7 @@ class Controller_Scaffold extends Controller
         try {
             $this->record = R::load($type, $id);
         } catch (Exception $e) {
-            error_log("Scaffold::__construct() tried to load a bean, but failed. Check if your database is not frozen and a table for the bean type exists. If not unfreeze and try again.\n".$e);
+            error_log("Scaffold::__construct() tried to load a bean, but failed. Check if your database is not frozen and a table for the bean type exists. If not unfreeze and try again.\n" . $e);
             exit('No bean type could be created. Unfreeze your database.');
         }
 
@@ -289,7 +290,7 @@ class Controller_Scaffold extends Controller
         $record = R::load($subtype, $id);
         R::begin();
         try {
-            R::trash($record);//store or trash -- nothing else works here
+            R::trash($record); //store or trash -- nothing else works here
             R::commit();
             return true;
         } catch (Exception $e) {
@@ -316,7 +317,7 @@ class Controller_Scaffold extends Controller
         $_subrecord = R::dispense($subtype);
         Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
             'record' => $this->record,
-            '_'.$subtype => $_subrecord,
+            '_' . $subtype => $_subrecord,
             'index' => $index
         ));
         return true;
@@ -345,7 +346,7 @@ class Controller_Scaffold extends Controller
         Flight::render(sprintf('model/%s/%s/%s', $this->type, $prefix, $subtype), array(
             'record' => $main,
             '_contact' => $this->record,
-            '_'.$subtype => $_subrecord,
+            '_' . $subtype => $_subrecord,
             'index' => $index,
             '_index' => $_index
         ));
@@ -408,8 +409,8 @@ class Controller_Scaffold extends Controller
     {
         R::begin();
         try {
-            $this->record->{$this->next_action}();//execute the next action (can be a dummy)
-            R::$redbeanAction($this->record);//store or trash -- nothing else works here
+            $this->record->{$this->next_action}(); //execute the next action (can be a dummy)
+            R::$redbeanAction($this->record); //store or trash -- nothing else works here
             R::commit();
             $this->notifyAbout('success');
             return true;
@@ -451,7 +452,7 @@ class Controller_Scaffold extends Controller
                 $attributes = array(
                     'name' => 'id',
                     'sort' => array(
-                        'name' => $this->record->getMeta('type').'.name'
+                        'name' => $this->record->getMeta('type') . '.name'
                     ),
                     'filter' => array(
                         'tag' => 'number'
@@ -461,9 +462,9 @@ class Controller_Scaffold extends Controller
                 $attributes = $gestalt->getVirtualAttributes();
             }
         }
-        $order = $attributes[$this->order]['sort']['name'].' '.$this->dir_map[$this->dir];
+        $order = $attributes[$this->order]['sort']['name'] . ' ' . $this->dir_map[$this->dir];
         if (isset($attributes[$this->order]['order'])) {
-            $order = $attributes[$this->order]['order']['name'].' '.$this->dir_map[$this->dir];
+            $order = $attributes[$this->order]['order']['name'] . ' ' . $this->dir_map[$this->dir];
         }
         $sqlCollection = $this->record->getSql(
             //"DISTINCT({$this->type}.id) AS id, " . $attributes[$this->order]['sort']['name'],
@@ -526,7 +527,7 @@ class Controller_Scaffold extends Controller
         }
         $where = $this->filter->buildWhereClause();
         $attributes = $this->record->getAttributes($this->layout);
-        $order = $attributes[$this->order]['sort']['name'].' '.$this->dir_map[$this->dir];
+        $order = $attributes[$this->order]['sort']['name'] . ' ' . $this->dir_map[$this->dir];
         try {
             return R::getCell(
                 $this->record->getSql("DISTINCT({$this->type}.id) AS id, " . $attributes[$this->order]['sort']['name'], $where, $order, $offset, 1),
@@ -629,6 +630,9 @@ class Controller_Scaffold extends Controller
         $this->action = 'index';
         $this->layout = $layout;
         $this->page = $page;
+        if ($order === null) {
+            $order = $this->record->getDefaultOrderField();
+        }
         $this->order = $order;
         if ($dir === null) {
             $dir = $this->record->getDefaultSortDir();
@@ -826,6 +830,9 @@ class Controller_Scaffold extends Controller
         Permission::check(Flight::get('user'), $this->type, 'read');
         $this->action = 'edit';
         $this->page = $page;
+        if ($order === null) {
+            $order = $this->record->getDefaultOrderField();
+        }
         $this->order = $order;
         if ($dir === null) {
             $dir = $this->record->getDefaultSortDir();
@@ -842,7 +849,7 @@ class Controller_Scaffold extends Controller
                 $this->redirect("/logout");
                 exit();
             }
-            Permission::check(Flight::get('user'), $this->type, 'edit');//check for edit perm now
+            Permission::check(Flight::get('user'), $this->type, 'edit'); //check for edit perm now
             $this->record = R::graph(Flight::request()->data->dialog, true);
             $this->setNextAction(Flight::request()->data->next_action);
             if ($this->doRedbeanAction()) {
@@ -855,13 +862,17 @@ class Controller_Scaffold extends Controller
                 if ($this->getNextAction() == 'edit') {
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$this->record->getId()}/{$this->page}/{$this->order}/{$this->dir}/{$this->layout}/");
                     exit();
-                } elseif ($this->getNextAction() == 'next_edit' &&
-                                                $next_id = $this->id_at_offset($this->page + 1)) {
+                } elseif (
+                    $this->getNextAction() == 'next_edit' &&
+                    $next_id = $this->id_at_offset($this->page + 1)
+                ) {
                     $next_page = $this->page + 1;
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$next_id}/{$next_page}/{$this->order}/{$this->dir}/{$this->layout}/");
                     exit();
-                } elseif ($this->getNextAction() == 'prev_edit' &&
-                                                $prev_id = $this->id_at_offset($this->page - 1)) {
+                } elseif (
+                    $this->getNextAction() == 'prev_edit' &&
+                    $prev_id = $this->id_at_offset($this->page - 1)
+                ) {
                     $prev_page = $this->page - 1;
                     $this->redirect("{$this->base_url}/{$this->type}/edit/{$prev_id}/{$prev_page}/{$this->order}/{$this->dir}/{$this->layout}/");
                     exit();
@@ -882,7 +893,7 @@ class Controller_Scaffold extends Controller
     protected function render()
     {
         Flight::render('shared/notification', array(
-           'record' => $this->record
+            'record' => $this->record
         ), 'notification');
         //
         Flight::render('shared/navigation/account', array(), 'navigation_account');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -131,6 +132,16 @@ class Model_Article extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 5;
+    }
+
+    /**
      * Returns the default sort direction.
      *
      * 0 = asc
@@ -149,7 +160,7 @@ class Model_Article extends Model
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS():array
+    public function injectJS(): array
     {
         return ['/js/Chart.bundle.min'];
     }
@@ -207,9 +218,9 @@ class Model_Article extends Model
      * @param string $searchphrase
      * @return array
      */
-    public function searchGlobal($searchphrase):array
+    public function searchGlobal($searchphrase): array
     {
-        $searchphrase = '%'.$searchphrase.'%';
+        $searchphrase = '%' . $searchphrase . '%';
         return R::find(
             $this->bean->getMeta('type'),
             ' number LIKE :f OR description LIKE :f OR @joined.person.name LIKE :f',
@@ -250,7 +261,7 @@ class Model_Article extends Model
                 LIMIT {$limit}
 SQL;
         }
-        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%'));
         return $result;
     }
 

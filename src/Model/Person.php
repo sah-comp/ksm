@@ -48,6 +48,29 @@ class Model_Person extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 3;
+    }
+
+    /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 0;
+    }
+
+    /**
      * Returns an array of path to js files.
      *
      * @see Scaffold_Controller
@@ -358,7 +381,8 @@ SQL;
      * 
      * @return string
      */
-    public function getShortname(): string {
+    public function getShortname(): string
+    {
         return list($firstword) = explode(" ", trim($this->bean->name) . " ")[0];
     }
 

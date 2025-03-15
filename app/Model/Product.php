@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -114,6 +115,16 @@ class Model_Product extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 0;
+    }
+
+    /**
      * Returns the default sort direction.
      *
      * 0 = asc
@@ -123,7 +134,7 @@ class Model_Product extends Model
      */
     public function getDefaultSortDir()
     {
-        return 1;
+        return 0;
     }
 
     /**
@@ -133,7 +144,7 @@ class Model_Product extends Model
      */
     public function getVat()
     {
-        if ( ! $this->bean->vat) {
+        if (! $this->bean->vat) {
             $this->bean->vat = R::dispense('vat');
         }
         return $this->bean->vat;
@@ -156,7 +167,7 @@ class Model_Product extends Model
      */
     public function getCostunittype()
     {
-        if ( ! $this->bean->costunittype) {
+        if (! $this->bean->costunittype) {
             $this->bean->costunittype = R::dispense('costunittype');
         }
         return $this->bean->costunittype;
@@ -285,17 +296,17 @@ SQL;
      */
     public function update()
     {
-        if ( ! $this->bean->costunittype_id) {
+        if (! $this->bean->costunittype_id) {
             $this->bean->costunittype_id = null;
             unset($this->bean->costunittype);
         }
 
-        if ( ! $this->bean->unit_id) {
+        if (! $this->bean->unit_id) {
             $this->bean->unit_id = null;
             unset($this->bean->unit);
         }
 
-        if ( ! $this->bean->vat_id) {
+        if (! $this->bean->vat_id) {
             $this->bean->vat_id = null;
             unset($this->bean->vat);
         }

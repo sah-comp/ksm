@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -125,7 +126,6 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+/edit/@id:[0-9]+(/@page:[0-9]+)(/@o
         $page = 1;
     }
     if ($order === null) {
-        $order = 0;
     }
     if ($dir === null) {
         //$dir = 0;
@@ -153,7 +153,6 @@ Flight::route('(/[a-z]{2})/admin/@type:[a-z]+(/@layout:[a-z]+)(/@page:[0-9]+)(/@
         $page = 1;
     }
     if ($order === null) {
-        $order = 0;
     }
     if ($dir === null) {
         //$dir = 0;

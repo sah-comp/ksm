@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -139,12 +140,35 @@ class Model_Machine extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 6;
+    }
+
+    /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 1;
+    }
+
+    /**
      * Returns an array of path to js files.
      *
      * @see Scaffold_Controller
      * @return array
      */
-    public function injectJS():array
+    public function injectJS(): array
     {
         return ['/js/datatables.min'];
     }
@@ -155,7 +179,7 @@ class Model_Machine extends Model
      * @param string $searchphrase
      * @return array
      */
-    public function searchGlobal($searchphrase):array
+    public function searchGlobal($searchphrase): array
     {
         /*
         $searchphrase = '%'.$searchphrase.'%';
@@ -167,7 +191,7 @@ class Model_Machine extends Model
             ]
         );
         */
-        $searchphrase = '%'.$searchphrase.'%';
+        $searchphrase = '%' . $searchphrase . '%';
         $sql = 'SELECT m.* FROM machine AS m LEFT JOIN contract ON contract.machine_id = m.id LEFT JOIN person ON person.id = contract.person_id LEFT JOIN machinebrand ON machinebrand.id = m.machinebrand_id WHERE machinebrand.name LIKE :f OR person.name LIKE :f OR m.name LIKE :f OR m.serialnumber LIKE :f OR m.internalnumber LIKE :f OR m.buildyear LIKE :f OR m.lastservice = :f OR m.specialagreement LIKE :f OR m.payload LIKE :f';
         $rows = R::getAll($sql, [
             ':f' => $searchphrase
@@ -340,7 +364,7 @@ SQL;
                 LIMIT {$limit}
 SQL;
         }
-        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%' ));
+        $result = R::getAll($sql, array(':searchtext' => $searchtext . '%'));
         return $result;
     }
 
@@ -378,7 +402,7 @@ SQL;
      */
     public function sanitizeFilename($string = '', $is_filename = false)
     {
-        $string = preg_replace('/[^\w\-'. ($is_filename ? '~_\.' : ''). ']+/u', '-', $string);
+        $string = preg_replace('/[^\w\-' . ($is_filename ? '~_\.' : '') . ']+/u', '-', $string);
         return mb_strtolower(preg_replace('/--+/u', '-', $string));
     }
 
@@ -407,7 +431,7 @@ SQL;
                 $orgname = $file['name'];
                 $extension = strtolower($file_parts['extension']);
                 $sanename = $this->sanitizeFilename($file_parts['filename']);
-                $filename = md5($this->bean->getId(). $sanename) . '.' . $extension;
+                $filename = md5($this->bean->getId() . $sanename) . '.' . $extension;
                 if (! move_uploaded_file($file['tmp_name'], Flight::get('upload_dir') . '/' . $filename)) {
                     $this->addError('move_upload_file_failed', 'file');
                     throw new Exception('move_upload_file_failed');

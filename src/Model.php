@@ -111,6 +111,16 @@ class Model extends RedBean_SimpleModel
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 0;
+    }
+
+    /**
      * Returns the default sort direction.
      *
      * 0 = asc
@@ -495,9 +505,9 @@ SQL;
                 //$s .= $this->bean->{$attribute['prefix']['callback']['name']}($attribute['name']);
             }
             if (isset($attribute['callback'])) {
-                $s .= htmlspecialchars($this->bean->{$attribute['callback']['name']}($attribute['name']));
+                $s .= htmlspecialchars($this->bean->{$attribute['callback']['name']}($attribute['name']) ?? '');
             } else {
-                $s .= htmlspecialchars($this->bean->{$attribute['name']});
+                $s .= htmlspecialchars($this->bean->{$attribute['name']} ?? '');
             }
             $s .= '</td>';
         }

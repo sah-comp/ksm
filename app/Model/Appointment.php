@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Cinnebar.
  *
@@ -232,6 +233,29 @@ class Model_Appointment extends Model
     }
 
     /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 0;
+    }
+
+    /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 1;
+    }
+
+    /**
      * Returns string that is output before the attribute value (callback value) in a scaffold
      * list view column.
      *
@@ -333,7 +357,7 @@ class Model_Appointment extends Model
      */
     public function getTransaction()
     {
-        if ( ! $this->bean->transaction) {
+        if (! $this->bean->transaction) {
             $this->bean->transaction = R::dispense('transaction');
         }
         return $this->bean->transaction;
@@ -395,7 +419,7 @@ class Model_Appointment extends Model
      */
     public function isOverdue()
     {
-        if ( ! $this->bean->getId()) {
+        if (! $this->bean->getId()) {
             return '';
         }
         if ($this->bean->getId() && (strtotime($this->bean->date . ' ' . $this->bean->starttime) < time())) {
@@ -537,7 +561,7 @@ class Model_Appointment extends Model
      */
     public function getLocation()
     {
-        if ( ! $this->bean->location) {
+        if (! $this->bean->location) {
             $this->bean->location = R::dispense('location');
         }
         return $this->bean->location;
@@ -564,7 +588,7 @@ class Model_Appointment extends Model
      */
     public function getContact()
     {
-        if ( ! $this->bean->contact) {
+        if (! $this->bean->contact) {
             $this->bean->contact = R::dispense('contact');
         }
         return $this->bean->contact;
@@ -577,7 +601,7 @@ class Model_Appointment extends Model
      */
     public function getAppointmenttype()
     {
-        if ( ! $this->bean->appointmenttype) {
+        if (! $this->bean->appointmenttype) {
             $this->bean->appointmenttype = R::dispense('appointmenttype');
         }
         return $this->bean->appointmenttype;
@@ -600,7 +624,7 @@ class Model_Appointment extends Model
      */
     public function getPerson()
     {
-        if ( ! $this->bean->person) {
+        if (! $this->bean->person) {
             $this->bean->person = R::dispense('person');
         }
         return $this->bean->person;
@@ -623,7 +647,7 @@ class Model_Appointment extends Model
      */
     public function getMachine()
     {
-        if ( ! $this->bean->machine) {
+        if (! $this->bean->machine) {
             $this->bean->machine = R::dispense('machine');
         }
         return $this->bean->machine;
@@ -646,7 +670,7 @@ class Model_Appointment extends Model
      */
     public function getUser()
     {
-        if ( ! $this->bean->user) {
+        if (! $this->bean->user) {
             $this->bean->user = R::dispense('user');
         }
         return $this->bean->user;
@@ -689,7 +713,7 @@ class Model_Appointment extends Model
      */
     public function scaffoldStyle()
     {
-        if ( ! $this->bean->getAppointmenttype()->getId()) {
+        if (! $this->bean->getAppointmenttype()->getId()) {
             return "style=\"border-left: 5px solid inherit;\"";
         }
         return "style=\"border-left: 5px solid {$this->bean->getAppointmenttype()->color};\"";
@@ -835,30 +859,30 @@ SQL;
             Flight::get('user')->notify(I18n::__("appointment_completion_renewed", null, [$dup_id]), 'success');
         }
 
-        if ( ! $this->bean->person_id) {
+        if (! $this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
         }
 
-        if ( ! CINNEBAR_MIP) {
-            if ( ! $this->bean->machine_id) {
+        if (! CINNEBAR_MIP) {
+            if (! $this->bean->machine_id) {
                 $this->bean->machine_id = null;
                 unset($this->bean->machine);
             }
-            if ( ! $this->bean->user_id) {
+            if (! $this->bean->user_id) {
                 $this->bean->user_id = null;
                 unset($this->bean->user);
             }
-            if ( ! $this->bean->contact_id) {
+            if (! $this->bean->contact_id) {
                 $this->bean->contact_id = null;
                 unset($this->bean->contact);
             }
-            if ( ! $this->bean->location_id) {
+            if (! $this->bean->location_id) {
                 $this->bean->location_id = null;
                 unset($this->bean->location);
             }
             // transaction
-            if ( ! $this->bean->transaction_id) {
+            if (! $this->bean->transaction_id) {
                 $this->bean->transaction_id = null;
                 unset($this->bean->transaction);
             }
