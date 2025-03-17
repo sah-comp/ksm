@@ -29,7 +29,7 @@ class Model_Ledger extends Model
             [
                 'name' => 'fy',
                 'sort' => [
-                    'name' => 'fy, month'
+                    'name' => 'fy'
                 ],
                 'filter' => [
                     'tag' => 'select',
