@@ -894,7 +894,7 @@ SQL;
                     transaction.locked = 1 AND
                     transaction.contracttype_id IN ($slots)
                 ORDER BY
-                    transaction.number
+                    transaction.number DESC
                 LIMIT {$limit}
     SQL;
         }
