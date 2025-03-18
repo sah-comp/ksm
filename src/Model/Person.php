@@ -54,7 +54,7 @@ class Model_Person extends Model
      */
     public function getDefaultOrderField()
     {
-        return 3;
+        return 0;
     }
 
     /**

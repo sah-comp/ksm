@@ -150,6 +150,29 @@ class Model_Ledger extends Model
         return true;
     }
 
+        /**
+     * Returns the default order field.
+     *
+     * @return int
+     */
+    public function getDefaultOrderField()
+    {
+        return 0;
+    }
+
+    /**
+     * Returns the default sort direction.
+     *
+     * 0 = asc
+     * 1 = desc
+     *
+     * @return int
+     */
+    public function getDefaultSortDir()
+    {
+        return 1;
+    }
+
     /**
      * Returns a string that will work as a filename for ledger as PDF.
      *
