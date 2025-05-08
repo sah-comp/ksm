@@ -46,7 +46,7 @@
                 id="person-<?php echo $record->getId() ?>-location-<?php echo $index ?>-name"
                 class="autowidth"
                 name="dialog[ownLocation][<?php echo $index ?>][name]"
-                value="<?php echo htmlspecialchars($_location->name) ?>" />
+                value="<?php echo htmlspecialchars($_location->name ?? '') ?>" />
         </div>
     </div>
 </fieldset>

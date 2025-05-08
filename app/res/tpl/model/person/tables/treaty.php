@@ -21,24 +21,24 @@ $_treaties = R::find('treaty', "person_id = ? ORDER BY number", [$record->getId(
     ?>
         <tr>
             <td
-                data-order="<?php echo htmlspecialchars($_treaty->contracttype->name) ?>">
-                <?php echo htmlspecialchars($_treaty->contracttype->name) ?>
+                data-order="<?php echo htmlspecialchars($_treaty->contracttype->name ?? '') ?>">
+                <?php echo htmlspecialchars($_treaty->contracttype->name ?? '') ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_treaty->number) ?>">
+                data-order="<?php echo htmlspecialchars($_treaty->number ?? '') ?>">
                 <a
                     href="<?php echo Url::build('/admin/%s/edit/%d/', [$_treaty->getMeta('type'), $_treaty->getId()]) ?>"
                     class="in-table">
-                    <?php echo htmlspecialchars($_treaty->number) ?>
+                    <?php echo htmlspecialchars($_treaty->number ?? '') ?>
                 </a>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_treaty->startdate) ?>">
-                <?php echo htmlspecialchars($_treaty->localizedDate('startdate')) ?>
+                data-order="<?php echo htmlspecialchars($_treaty->startdate ?? '') ?>">
+                <?php echo htmlspecialchars($_treaty->localizedDate('startdate') ?? '') ?>
             </td>
             <td
-                data-order="<?php echo htmlspecialchars($_treaty->enddate) ?>">
-                <?php echo htmlspecialchars($_treaty->localizedDate('enddate')) ?>
+                data-order="<?php echo htmlspecialchars($_treaty->enddate ?? '') ?>">
+                <?php echo htmlspecialchars($_treaty->localizedDate('enddate') ?? '') ?>
             </td>
         </tr>
     <?php endforeach; ?>

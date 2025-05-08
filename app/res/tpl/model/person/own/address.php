@@ -111,7 +111,7 @@
         <option
             value="<?php echo $_country->getId() ?>"
             <?php echo ($_address->country_id == $_country->getId()) ? 'selected="selected"' : '' ?>>
-            <?php echo htmlspecialchars($_country->name) ?>
+            <?php echo htmlspecialchars($_country->name ?? '') ?>
         </option>
         <?php endforeach?>
     </select>
