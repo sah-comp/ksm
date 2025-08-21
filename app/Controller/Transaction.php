@@ -233,7 +233,7 @@ class Controller_Transaction extends Controller_Scaffold
         $this->getCollection();
 
         if (count($this->records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
-            Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
+            Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($this->records)]), 'warning');
             $this->redirect('/admin/transaction');
             exit();
         }
