@@ -147,13 +147,25 @@ class Model_Transaction extends Model
             ->setDocumentInformation($this->bean->number, $this->bean->getContracttype()->code, \DateTime::createFromFormat("Ymd", date('Ymd', strtotime($this->bean->bookingdate))), "EUR")
             ->addDocumentNote($this->bean->header)
             ->setDocumentSupplyChainEvent(\DateTime::createFromFormat('Ymd', date('Ymd', strtotime($this->bean->bookingdate))))
+            // Add business process for PEPPOL compliance (BR-DE-21)
+            ->setDocumentBusinessProcess("urn:fdc:peppol.eu:2017:poacc:billing:01:1.0")
+            // Set XRechnung specification identifier (BR-DE-21)  
+            ->setDocumentContextParameter("urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0")
+            // Add buyer reference (BR-DE-15)
+            ->setDocumentBuyerReference($this->bean->getPerson()->account)
             ->setDocumentSeller($company->legalname)
             ->addDocumentSellerGlobalId()
             ->addDocumentSellerTaxRegistration("FC", $company->taxid)
             ->addDocumentSellerTaxRegistration("VA", $company->vatid)
             ->setDocumentSellerAddress($company->street, "", "", $company->zip, $company->city, "DE")
+            // Add seller contact information (BR-DE-2)
+            ->addDocumentSellerContact($company->legalname, "", $company->phone ?? "", $company->fax ?? "", $company->email ?? "")
+            // Add seller electronic address (PEPPOL-EN16931-R020)
+            ->setDocumentSellerCommunication("EM", $company->email ?? "")
             ->setDocumentBuyer($this->bean->customername, $this->bean->getPerson()->account)
-            ->setDocumentBuyerAddress($buyer_address->street, "", "", $buyer_address->zip, $buyer_address->city, $buyer_countrycode);
+            ->setDocumentBuyerAddress($buyer_address->street, "", "", $buyer_address->zip, $buyer_address->city, $buyer_countrycode)
+            // Add buyer electronic address (PEPPOL-EN16931-R010)
+            ->setDocumentBuyerCommunication("EM", $this->bean->getPerson()->email ?? "");
 
         foreach ($this->bean->getVatSentences() as $vid => $vat) {
             $document
@@ -162,24 +174,36 @@ class Model_Transaction extends Model
 
         $document
             ->setDocumentSummation($this->bean->gros, $this->bean->balance, $this->bean->net, 0.0, 0.0, $this->bean->net, $this->bean->vat, null, 0.0)
-            ->addDocumentPaymentTerm($this->bean->paymentConditions());
+            ->addDocumentPaymentTerm($this->bean->paymentConditions())
+            // Add payment means (BR-DE-1)
+            ->addDocumentPaymentMeans("58", $this->bean->paymentConditions());
 
         // positions
         foreach ($this->bean->with(' ORDER BY currentindex ASC ')->ownPosition as $pid => $pos) {
             if ($pos->kind == Model_Position::KIND_POSITION) {
-                // code...
-
-                $gros = $pos->salesprice;
+                // Fix price calculation for PEPPOL-EN16931-R046 compliance
+                $grossPrice = $pos->salesprice;
+                $netPrice = $pos->salesprice;
+                $allowanceAmount = 0.0;
+                
                 if ($pos->hasAdjustment()) {
-                    $gros = $pos->salesprice - ($pos->salesprice * $pos->adjustment / 100);
+                    $allowanceAmount = $pos->salesprice * $pos->adjustment / 100;
+                    $netPrice = $pos->salesprice - $allowanceAmount;
+                    // Keep gross price as original salesprice
                 }
+                
                 $document->addNewPosition($pos->sequence)
                     ->setDocumentPositionProductDetails($pos->desc, "", $pos->ska)
-                    ->setDocumentPositionGrossPrice($gros)
-                    ->setDocumentPositionNetPrice($pos->salesprice)
+                    ->setDocumentPositionGrossPrice($grossPrice)
+                    ->setDocumentPositionNetPrice($netPrice)
                     ->setDocumentPositionQuantity($pos->count, $pos->unit->code)
                     ->addDocumentPositionTax('S', 'VAT', $pos->vatpercentage)
                     ->setDocumentPositionLineSummation($pos->total);
+                    
+                // Add allowance/charge if there's an adjustment
+                if ($allowanceAmount > 0) {
+                    $document->addDocumentPositionAllowanceCharge(false, $allowanceAmount, "EUR", "Discount");
+                }
             }
         }
 
