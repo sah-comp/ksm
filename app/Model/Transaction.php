@@ -142,30 +142,33 @@ class Model_Transaction extends Model
         }
 
         $document = ZugferdDocumentBuilder::CreateNew(ZugferdProfiles::PROFILE_EN16931);
-        // Add invoice and position information
         $document
-            ->setDocumentInformation($this->bean->number, $this->bean->getContracttype()->code, \DateTime::createFromFormat("Ymd", date('Ymd', strtotime($this->bean->bookingdate))), "EUR")
+            ->setDocumentInformation(
+                $this->bean->number,
+                $this->bean->getContracttype()->code,
+                \DateTime::createFromFormat("Ymd", date('Ymd', strtotime($this->bean->bookingdate))),
+                "EUR"
+            )
             ->addDocumentNote($this->bean->header)
             ->setDocumentSupplyChainEvent(\DateTime::createFromFormat('Ymd', date('Ymd', strtotime($this->bean->bookingdate))))
-            // Add business process for PEPPOL compliance (BR-DE-21)
             ->setDocumentBusinessProcess("urn:fdc:peppol.eu:2017:poacc:billing:01:1.0")
-            // Set XRechnung specification identifier (BR-DE-21)  
-            ->setDocumentContextParameter("urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0")
-            // Add buyer reference (BR-DE-15)
-            ->setDocumentBuyerReference($this->bean->getPerson()->account)
+            ->addDocumentNote("XRechnung specification identifier: urn:cen.eu:en16931:2017#compliant#urn:xeinkauf.de:kosit:xrechnung_3.0")
+            ->setDocumentBuyerReference($this->bean->getPerson()->account ?? "")
             ->setDocumentSeller($company->legalname)
             ->addDocumentSellerGlobalId()
             ->addDocumentSellerTaxRegistration("FC", $company->taxid)
             ->addDocumentSellerTaxRegistration("VA", $company->vatid)
             ->setDocumentSellerAddress($company->street, "", "", $company->zip, $company->city, "DE")
-            // Add seller contact information (BR-DE-2)
             ->addDocumentSellerContact($company->legalname, "", $company->phone ?? "", $company->fax ?? "", $company->email ?? "")
-            // Add seller electronic address (PEPPOL-EN16931-R020)
             ->setDocumentSellerCommunication("EM", $company->email ?? "")
             ->setDocumentBuyer($this->bean->customername, $this->bean->getPerson()->account)
-            ->setDocumentBuyerAddress($buyer_address->street, "", "", $buyer_address->zip, $buyer_address->city, $buyer_countrycode)
-            // Add buyer electronic address (PEPPOL-EN16931-R010)
-            ->setDocumentBuyerCommunication("EM", $this->bean->getPerson()->email ?? "");
+            ->setDocumentBuyerAddress($buyer_address->street, "", "", $buyer_address->zip, $buyer_address->city, $buyer_countrycode);
+        // Fix: Provide scheme identifier "EM" for email only if email is present
+        $buyerEmail = $this->bean->billingemail ?? "";
+        if (!empty($buyerEmail)) {
+            $document->setDocumentBuyerCommunication("EM", $buyerEmail);
+        }
+
 
         foreach ($this->bean->getVatSentences() as $vid => $vat) {
             $document
@@ -173,25 +176,47 @@ class Model_Transaction extends Model
         }
 
         $document
-            ->setDocumentSummation($this->bean->gros, $this->bean->balance, $this->bean->net, 0.0, 0.0, $this->bean->net, $this->bean->vat, null, 0.0)
+            // Pass correct values for summation according to BR-CO-16
+            ->setDocumentSummation(
+                $this->bean->gros,        // GrandTotalAmount (BT-112)
+                $this->bean->balance,     // DuePayableAmount (BT-115)
+                $this->bean->net,         // LineTotalAmount
+                0.0,                      // ChargeTotalAmount
+                0.0,                      // AllowanceTotalAmount
+                $this->bean->net,         // TaxBasisTotalAmount
+                $this->bean->vat,         // TaxTotalAmount
+                0.0,                      // RoundingAmount (BT-114)
+                $this->bean->totalpaid    // TotalPrepaidAmount (BT-113)
+            )
             ->addDocumentPaymentTerm($this->bean->paymentConditions())
-            // Add payment means (BR-DE-1)
-            ->addDocumentPaymentMeans("58", $this->bean->paymentConditions());
+            // Fix: Add payment means with IBAN/BIC if available
+            ->addDocumentPaymentMean(
+                "58",
+                null,
+                null,
+                null,
+                null,
+                null,
+                $company->iban ?? null,
+                $company->legalname ?? null,
+                null,
+                $company->bic ?? null
+            )
+            ->addDocumentPaymentTerm($this->bean->paymentConditions());
 
         // positions
         foreach ($this->bean->with(' ORDER BY currentindex ASC ')->ownPosition as $pid => $pos) {
             if ($pos->kind == Model_Position::KIND_POSITION) {
-                // Fix price calculation for PEPPOL-EN16931-R046 compliance
                 $grossPrice = $pos->salesprice;
-                $netPrice = $pos->salesprice;
                 $allowanceAmount = 0.0;
-                
+
                 if ($pos->hasAdjustment()) {
                     $allowanceAmount = $pos->salesprice * $pos->adjustment / 100;
-                    $netPrice = $pos->salesprice - $allowanceAmount;
-                    // Keep gross price as original salesprice
                 }
-                
+
+                // Net price must always be gross price minus allowance
+                $netPrice = $grossPrice - $allowanceAmount;
+
                 $document->addNewPosition($pos->sequence)
                     ->setDocumentPositionProductDetails($pos->desc, "", $pos->ska)
                     ->setDocumentPositionGrossPrice($grossPrice)
@@ -199,8 +224,7 @@ class Model_Transaction extends Model
                     ->setDocumentPositionQuantity($pos->count, $pos->unit->code)
                     ->addDocumentPositionTax('S', 'VAT', $pos->vatpercentage)
                     ->setDocumentPositionLineSummation($pos->total);
-                    
-                // Add allowance/charge if there's an adjustment
+
                 if ($allowanceAmount > 0) {
                     $document->addDocumentPositionAllowanceCharge(false, $allowanceAmount, "EUR", "Discount");
                 }
@@ -234,7 +258,7 @@ class Model_Transaction extends Model
      */
     public function getDependents($person)
     {
-        if ( ! $person->getId()) {
+        if (! $person->getId()) {
             return ['contacts' => []];
         }
         $sql      = "SELECT c.id, c.name FROM contact AS c LEFT JOIN contactinfo AS ci ON ci.contact_id = c.id WHERE c.person_id = :pid AND ci.label = 'email'";
@@ -262,7 +286,7 @@ class Model_Transaction extends Model
      */
     public function getDunning()
     {
-        if ( ! $this->bean->dunning) {
+        if (! $this->bean->dunning) {
             $this->bean->dunning = R::dispense('dunning');
         }
         return $this->bean->dunning;
@@ -336,7 +360,7 @@ class Model_Transaction extends Model
     {
         //error_log('I am dunned');
         $dunning = $this->bean->getDunning();
-        if ( ! $dunning->getId()) {
+        if (! $dunning->getId()) {
             $this->bean->penaltyfee  = 0;
             $this->bean->dunningdate = null;
             return false;
@@ -699,7 +723,7 @@ class Model_Transaction extends Model
      */
     public function getDiscount()
     {
-        if ( ! $this->bean->discount) {
+        if (! $this->bean->discount) {
             $this->bean->discount = R::dispense('discount');
         }
         return $this->bean->discount;
@@ -735,7 +759,7 @@ class Model_Transaction extends Model
      */
     public function hasEmail($emailtype = 'billingemail'): bool
     {
-        if ( ! $this->bean->getPerson()->{$emailtype . 'enabled'}) {
+        if (! $this->bean->getPerson()->{$emailtype . 'enabled'}) {
             return false; //if person has not checked billingemail or dunningemail enabled
         }
         if ($this->bean->{$emailtype}) {
@@ -760,11 +784,11 @@ class Model_Transaction extends Model
     /**
      * Return the contracttype bean.
      *
-     * @return RedbeanPHP\OODBBean
+     * @return RedBeanPHP\OODBBean
      */
     public function getContracttype()
     {
-        if ( ! $this->bean->contracttype) {
+        if (! $this->bean->contracttype) {
             $this->bean->contracttype = R::dispense('contracttype');
         }
         return $this->bean->contracttype;
@@ -787,7 +811,7 @@ class Model_Transaction extends Model
      */
     public function getPerson()
     {
-        if ( ! $this->bean->person) {
+        if (! $this->bean->person) {
             $this->bean->person = R::dispense('person');
         }
         return $this->bean->person;
@@ -1034,7 +1058,7 @@ SQL;
         } elseif ($archived) {
             $oldstatus = $this->bean->status;
             $status    = $this->bean->status;
-        } elseif ( ! $archived) {
+        } elseif (! $archived) {
             // un-archived, reset status
             $status    = $this->bean->oldstatus;
             $oldstatus = '';
@@ -1043,7 +1067,7 @@ SQL;
             $status    = $this->bean->status;
             $oldstatus = $this->bean->oldstatus;
         }
-        if ( ! $archived) {
+        if (! $archived) {
             $archived = 0;
         } else {
             $archived = 1;
@@ -1069,7 +1093,7 @@ SQL;
             return false;
             //throw new Exception(I18n::__('transaction_is_already_canceled'));
         }
-        if ( ! $this->bean->locked) {
+        if (! $this->bean->locked) {
             error_log('Transaction #' . $this->bean->getId() . ' is not yet booked and can not be canceled.');
             return false;
             //throw new Exception(I18n::__('transaction_is_already_canceled'));
@@ -1166,7 +1190,7 @@ SQL;
      */
     public function getEditor()
     {
-        if ( ! $this->bean->fetchAs('user')->editor) {
+        if (! $this->bean->fetchAs('user')->editor) {
             $this->bean->editor = R::dispense('user');
         }
         return $this->bean->fetchAs('user')->editor;
@@ -1237,7 +1261,7 @@ SQL;
                 $adjustment = $total * $converter->convert($position->adjustment) / 100;
                 $total      = $total + $adjustment;
             }
-            if ( ! isset($bucket[$position->vatpercentage])) {
+            if (! isset($bucket[$position->vatpercentage])) {
                 $bucket[$position->vatpercentage] = 0;
             }
             $bucket[$position->vatpercentage] += $total;
@@ -1313,8 +1337,8 @@ SQL;
             }
         }
 
-        if ( ! CINNEBAR_MIP) {
-            if ( ! $this->bean->contracttype_id) {
+        if (! CINNEBAR_MIP) {
+            if (! $this->bean->contracttype_id) {
                 $this->bean->contracttype_id = null;
                 unset($this->bean->contracttype);
             }
@@ -1324,24 +1348,24 @@ SQL;
         $this->bean->duedate = date('Y-m-d', strtotime($this->bean->bookingdate . ' +' . $this->bean->duedays . 'days'));
 
         // customer (person)
-        if ( ! $this->bean->person_id) {
+        if (! $this->bean->person_id) {
             $this->bean->person_id = null;
             unset($this->bean->person);
         }
 
         // customer (person)
-        if ( ! $this->bean->dunning_id) {
+        if (! $this->bean->dunning_id) {
             $this->bean->dunning_id = null;
             unset($this->bean->dunning);
         }
 
         // discount (skonto) copied from customer (person)
-        if ( ! $this->bean->discount_id) {
+        if (! $this->bean->discount_id) {
             $this->bean->discount_id = null;
             unset($this->bean->discount);
         }
 
-        if ( ! $this->bean->getId()) {
+        if (! $this->bean->getId()) {
             // BEHOLD: This has to happen on a dedicated action, not when saving the first time
             // This is a new bean, we want to stamp its number
             //$number = $this->bean->contracttype->nextnumber;
