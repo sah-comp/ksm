@@ -2474,7 +2474,7 @@ $legacy_database = [
     'db_host' => 'localhost',
     'db_name' => 'ksm',
     'db_user' => 'root',
-    'db_password' => 'elo58JiTs3_'
+    'db_password' => 'secret'
 ];
 
 R::freeze(false);
