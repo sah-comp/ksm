@@ -141,7 +141,7 @@ class Model_Transaction extends Model
             $buyer_countrycode = $buyer_address->country->iso;
         }
 
-        $document = ZugferdDocumentBuilder::CreateNew(ZugferdProfiles::PROFILE_EN16931);
+        $document = ZugferdDocumentBuilder::CreateNew(ZugferdProfiles::PROFILE_XRECHNUNG_3);
         $document
             ->setDocumentInformation(
                 $this->bean->number,
@@ -152,8 +152,6 @@ class Model_Transaction extends Model
             ->addDocumentNote($this->bean->header)
             ->setDocumentSupplyChainEvent(\DateTime::createFromFormat('Ymd', date('Ymd', strtotime($this->bean->bookingdate))))
             ->setDocumentBusinessProcess("urn:fdc:peppol.eu:2017:poacc:billing:01:1.0")
-            //->addDocumentNote("XRechnung specification identifier: urn:cen.eu:en16931:2017#compliant#urn:xoev-de:kosit:standard:xrechnung_1.2", "BT-24")
-            ->addDocumentNote("urn:cen.eu:en16931:2017", "BT-24")
             ->setDocumentBuyerReference($this->bean->getPerson()->account ?? "")
             ->setDocumentSeller($company->legalname)
             ->addDocumentSellerGlobalId()
