@@ -108,7 +108,14 @@ class Controller_Contract extends Controller
         $filename = I18n::__('contract_pdf_filename', null, [$this->contract->getFilename()]);
         $docname = I18n::__('contract_pdf_docname', null, [$this->contract->getDocname()]);
         $this->text = $this->substitute();
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');

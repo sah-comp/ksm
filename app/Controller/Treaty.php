@@ -182,7 +182,7 @@ class Controller_Treaty extends Controller_Scaffold
         }
 
         $mail->addBCC($user->email, $user->name);
-        $mail->WordWarp = 50;
+        //$mail->WordWarp = 50;
         $mail->isHTML(true);
         $mail->Subject = $docname;
 
@@ -252,7 +252,14 @@ class Controller_Treaty extends Controller_Scaffold
      */
     private function generatePDF($docname)
     {
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');

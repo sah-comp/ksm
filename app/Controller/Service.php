@@ -111,7 +111,14 @@ class Controller_Service extends Controller_Scaffold
             $company = R::load('company', CINNEBAR_COMPANY_ID);
             $filename = I18n::__('appointment_servicelist_filename', null, [date('Y-m-d-H-i-s')]);
             $title = I18n::__('appointment_servicelist_docname', null, [date('Y-m-d H:i:s')]);
-            $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
+            $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
             $mpdf->SetTitle($title);
             $mpdf->SetAuthor($company->legalname);
             $mpdf->SetDisplayMode('fullpage');

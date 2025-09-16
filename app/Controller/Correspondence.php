@@ -163,7 +163,7 @@ class Controller_Correspondence extends Controller_Scaffold
         }
 
         $mail->addBCC($user->email, $user->name);
-        $mail->WordWarp = 50;
+        //$mail->WordWarp = 50;
         $mail->isHTML(true);
         $mail->Subject = $this->record->subject;
 
@@ -227,14 +227,22 @@ class Controller_Correspondence extends Controller_Scaffold
         $this->getCollection();
 
         if (count($this->records) > CINNEBAR_MAX_RECORDS_TO_PDF) {
-            Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($records)]), 'warning');
+            Flight::get('user')->notify(I18n::__('warning_too_many_records_to_print', null, [CINNEBAR_MAX_RECORDS_TO_PDF, count($this->records)]), 'warning');
             $this->redirect('/admin/correspondence');
             exit();
         }
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
+        $ts = date('Y-m-d-H-i-s');
         $filename = I18n::__('correspondence_pdf_list_filename', null, [$ts]);
         $docname = I18n::__('correspondence_pdf_list_docname', null, [$ts]);
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
@@ -278,7 +286,14 @@ class Controller_Correspondence extends Controller_Scaffold
     {
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $docname = I18n::__('correspondence_pdf_docname', null, [$this->record->getDocname()]);
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');

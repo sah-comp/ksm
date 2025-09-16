@@ -41,7 +41,7 @@ class Controller_Transaction extends Controller_Scaffold
     {
         Permission::check(Flight::get('user'), $this->type, 'add');
         if (Flight::request()->query->submit == I18n::__('transaction_action_copy_as')) {
-            if ( ! Security::validateCSRFToken(Flight::request()->query->token)) {
+            if (! Security::validateCSRFToken(Flight::request()->query->token)) {
                 $this->redirect("/logout");
                 exit();
             }
@@ -242,7 +242,14 @@ class Controller_Transaction extends Controller_Scaffold
         $this->company = R::load('company', CINNEBAR_COMPANY_ID);
         $filename      = I18n::__('transaction_pdf_list_filename', null, [$ts]);
         $docname       = I18n::__('transaction_pdf_list_docname', null, [$ts]);
-        $mpdf          = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
@@ -289,7 +296,14 @@ class Controller_Transaction extends Controller_Scaffold
      */
     private function generatePDF($layout = 'letterhead', $docname = 'Transaction')
     {
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');

@@ -1,5 +1,7 @@
+html, body, * {
+    font-family: dejavusans;
+}
 body, pre, h1, h2, h3 {
-    font-family: sans-serif;
     font-size: 9pt;
 }
 p, ul, ol {

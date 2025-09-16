@@ -66,7 +66,14 @@ class Controller_Revenue extends Controller
             $startdate,
             $enddate
         ]);
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'c', 'format' => 'A4-L']);
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4-L',
+            'PDFA' => true,
+            'default_font' => 'dejavusans',
+        ]);
+        // Set font for all content to ensure embedding
+        $mpdf->SetFont('dejavusans');
         $mpdf->SetTitle($title);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
