@@ -25,6 +25,11 @@ define('CINNEBAR_DB_FREEZE_FLAG', true);
 define('CINNEBAR_COMPANY_ID', 1);
 
 /**
+ * Define the default font for mPDF.
+ */
+define('CINNEBAR_MPDF_DEFAULT_FONT', 'freesans');
+
+/**
  * Define if our Models will do conversion andn validation.
  */
 if (! defined('CINNEBAR_MODEL_CONVERT_AND_VALIDATE')) {
