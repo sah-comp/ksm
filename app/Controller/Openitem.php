@@ -269,10 +269,10 @@ class Controller_Openitem extends Controller_Scaffold
             'mode' => 'utf-8',
             'format' => 'A4',
             'PDFA' => true,
-            'default_font' => 'dejavusans',
+            'default_font' => CINNEBAR_MPDF_DEFAULT_FONT,
         ]);
         // Set font for all content to ensure embedding
-        $mpdf->SetFont('dejavusans');
+        $mpdf->SetFont(CINNEBAR_MPDF_DEFAULT_FONT);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');
@@ -318,10 +318,10 @@ class Controller_Openitem extends Controller_Scaffold
             'mode' => 'utf-8',
             'format' => 'A4-L',
             'PDFA' => true,
-            'default_font' => 'dejavusans',
+            'default_font' => CINNEBAR_MPDF_DEFAULT_FONT,
         ]);
         // Set font for all content to ensure embedding
-        $mpdf->SetFont('dejavusans');
+        $mpdf->SetFont(CINNEBAR_MPDF_DEFAULT_FONT);
         $mpdf->SetTitle($docname);
         $mpdf->SetAuthor($this->company->legalname);
         $mpdf->SetDisplayMode('fullpage');

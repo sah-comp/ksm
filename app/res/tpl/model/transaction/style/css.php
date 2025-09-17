@@ -1,5 +1,5 @@
 html, body, * {
-    font-family: dejavusans;
+    font-family: freesans;
 }
 body, pre, h1, h2, h3 {
     font-size: 9pt;
