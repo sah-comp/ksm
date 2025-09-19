@@ -1,5 +1,5 @@
-html, body, * {
-    font-family: freesans;
+html, body, pre, * {
+    font-family: <?php echo CINNEBAR_MPDF_DEFAULT_FONT ?>;
 }
 body, pre, h1, h2, h3 {
     font-size: 9pt;
