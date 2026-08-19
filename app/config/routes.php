@@ -15,7 +15,8 @@
  * @todo maybe use language bean? What should happen if a unknown/inactive lang is requested?
  */
 Flight::route('(/@language:[a-z]{2})/*', function ($language) {
-    if (in_array($language, Flight::get('possible_languages'))) {
+    //if (in_array($language, Flight::get('possible_languages'))) {
+    if (in_array($language, ['de'])) {
         Flight::set('language', $language);
         I18n::load();
     }

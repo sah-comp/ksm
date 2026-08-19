@@ -204,6 +204,8 @@ ini_set('session.use_only_cookies', '1');
 define('MAX_SESSION_LIFETIME', CINNEBAR_MAX_SESSION_LIFETIME); // 4 hours
 
 $sessionhandler = new Sessionhandler_Database();
+session_set_save_handler($sessionhandler, true);
+/*
 session_set_save_handler(
     array($sessionhandler, 'open'),
     array($sessionhandler, 'close'),
@@ -212,6 +214,7 @@ session_set_save_handler(
     array($sessionhandler, 'destroy'),
     array($sessionhandler, 'gc')
 );
+*/
 register_shutdown_function('session_write_close');
 
 /**

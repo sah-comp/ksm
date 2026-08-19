@@ -383,7 +383,8 @@ SQL;
      */
     public function getShortname(): string
     {
-        return list($firstword) = explode(" ", trim($this->bean->name) . " ")[0];
+        return $this->bean->name;
+        //return list($firstword) = explode(" ", trim($this->bean->name) . " ")[0];
     }
 
     /**

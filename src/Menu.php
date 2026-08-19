@@ -88,7 +88,7 @@ class Menu
      * @param string (optional) $id
      * @return $this
      */
-    public function add($title, $url, $class = null, Menu $sub = null, $id = null)
+    public function add($title, $url, $class = null, Menu $sub, $id = null)
     {
         $this->items[] = array(
             'id' => $id,
