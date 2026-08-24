@@ -17695,10 +17695,12 @@ if ( !function_exists( 'DBPrefix' ) ) {
 }
 
 
-if (defined('Pdo\Mysql::ATTR_INIT_COMMAND')) {
-	//define('RB_PDO_MYSQL_ATTR_INIT_COMMAND', Pdo\Mysql::ATTR_INIT_COMMAND);
-} else {
-	define('RB_PDO_MYSQL_ATTR_INIT_COMMAND', \PDO::MYSQL_ATTR_INIT_COMMAND);
+if (!defined('RB_PDO_MYSQL_ATTR_INIT_COMMAND')) {
+	if (defined('Pdo\Mysql::ATTR_INIT_COMMAND')) {
+		define('RB_PDO_MYSQL_ATTR_INIT_COMMAND', Pdo\Mysql::ATTR_INIT_COMMAND);
+	} elseif (defined('\PDO::MYSQL_ATTR_INIT_COMMAND')) {
+		define('RB_PDO_MYSQL_ATTR_INIT_COMMAND', \PDO::MYSQL_ATTR_INIT_COMMAND);
+	}
 }
 
 
