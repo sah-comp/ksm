@@ -88,7 +88,7 @@ class Menu
      * @param string (optional) $id
      * @return $this
      */
-    public function add($title, $url, $class = null, Menu $sub, $id = null)
+    public function add($title, $url, $class, Menu $sub, $id = null)
     {
         $this->items[] = array(
             'id' => $id,
@@ -108,7 +108,7 @@ class Menu
      * @param array $items the parent item's array, only used internally
      * @return string HTML unordered list
      */
-    public function render(array $attrs = null, $current = null, array $items = null)
+    public function render(?array $attrs, ?array $current = [], ?array $items = [])
     {
         static $i;
         
